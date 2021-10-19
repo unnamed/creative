@@ -40,9 +40,10 @@ metadata:
 #################################################################
 
 # How to generate resource pack?
-# - mcpacks -> upload to https://mc-packs.net/ (consider donating them)
-# - zip     -> generate zip file in plugin folder (resource-pack.zip)
-# - folder  -> generate resource-pack in a folder (resource-pack/)
+# - mcpacks                -> upload to https://mc-packs.net/ (consider donating them)
+# - polymath:<host>:<user> -> upload to a polymath server (authentication required)
+# - zip                    -> generate zip file in plugin folder (resource-pack.zip)
+# - folder                 -> generate resource-pack in a folder (resource-pack/)
 generation: mcpacks
 
 

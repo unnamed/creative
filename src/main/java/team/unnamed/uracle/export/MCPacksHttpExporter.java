@@ -29,7 +29,7 @@ public class MCPacksHttpExporter implements ResourceExporter {
     private static final String DOWNLOAD_URL_TEMPLATE = "https://download.mc-packs.net/pack/" +
             "%HASH%.zip";
 
-    private static final String BOUNDARY = "HephaestusBoundary";
+    private static final String BOUNDARY = "UracleBoundary";
     private static final String LINE_FEED = "\r\n";
 
     private final URL url;
@@ -44,12 +44,10 @@ public class MCPacksHttpExporter implements ResourceExporter {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        connection.setConnectTimeout(10000);
-
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
 
-        connection.setRequestProperty("User-Agent", "Unnamed-Emojis");
+        connection.setRequestProperty("User-Agent", "Uracle");
         connection.setRequestProperty("Charset", "utf-8");
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 
@@ -61,7 +59,7 @@ public class MCPacksHttpExporter implements ResourceExporter {
             Streams.writeUTF(
                     output,
                     "--" + BOUNDARY + LINE_FEED
-                            + "Content-Disposition: form-data; name=\"file\"; filename=\"emojis.zip\""
+                            + "Content-Disposition: form-data; name=\"file\"; filename=\"resource-pack.zip\""
                             + LINE_FEED + "Content-Type: application/zip" + LINE_FEED + LINE_FEED
             );
 
