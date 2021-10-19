@@ -1,0 +1,9 @@
+# Editor files
+.idea
+*.iml
+
+# Gradle files
+.gradle
+
+# Output files
+/build/
