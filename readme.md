@@ -1,5 +1,5 @@
 # Uracle
-Library API for next generation servers using resource packs.
+Library and API for next generation servers using resource packs.
 
 ## Features
 - Library for compatibility between external plugins using resource packs

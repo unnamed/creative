@@ -2,7 +2,7 @@ load: STARTUP
 main: team.unnamed.uracle.UraclePlugin
 name: Uracle
 version: 1.0.0
-description: Bukkit Plugin API for next generation servers
+description: Library and API for next generation servers using resource packs
 author: The Unnamed Team
 website: https://unnamed.team/uracle
 api-version: 1.13
