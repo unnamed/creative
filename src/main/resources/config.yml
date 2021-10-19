@@ -1,0 +1,70 @@
+#################################################################
+##                                                             ##
+##     /$$   /$$                              /$$              ##
+##    | $$  | $$                             | $$              ##
+##    | $$  | $$  /$$$$$$  /$$$$$$   /$$$$$$$| $$  /$$$$$$     ##
+##    | $$  | $$ /$$__  $$|____  $$ /$$_____/| $$ /$$__  $$    ##
+##    | $$  | $$| $$  \__/ /$$$$$$$| $$      | $$| $$$$$$$$    ##
+##    | $$  | $$| $$      /$$__  $$| $$      | $$| $$_____/    ##
+##    |  $$$$$$/| $$     |  $$$$$$$|  $$$$$$$| $$|  $$$$$$$    ##
+##    \______/ |__/      \_______/ \_______/|__/ \_______/     ##
+##                                     by unnamed_team         ##
+##                                                             ##
+#################################################################
+
+# This is the configuration file for Uracle
+# If you want to use special characters in this file, you must
+# save the file using UTF-8
+
+
+
+#################################################################
+## +---------------------------------------------------------+ ##
+## |                Resource Pack Metadata                   | ##
+## +---------------------------------------------------------+ ##
+#################################################################
+metadata:
+    # 6 -> 1.16
+    # 7 .> 1.17
+    format: 7
+    description: |-
+        &6MyServer Resource Pack
+        Awesome
+
+
+
+#################################################################
+## +---------------------------------------------------------+ ##
+## |            Resource Pack Generation Settings            | ##
+## +---------------------------------------------------------+ ##
+#################################################################
+
+# How to generate resource pack?
+# - mcpacks -> upload to https://mc-packs.net/ (consider donating them)
+# - zip     -> generate zip file in plugin folder (resource-pack.zip)
+# - folder  -> generate resource-pack in a folder (resource-pack/)
+generation: mcpacks
+
+
+
+#################################################################
+## +---------------------------------------------------------+ ##
+## |           Resource Pack Application Settings            | ##
+## +---------------------------------------------------------+ ##
+#################################################################
+
+# How to apply resource pack?
+application:
+    # Should the resource pack be forced to players?
+    # (They will be kicked if they don't accept it)
+    force: true
+
+    # Message shown to players when they are prompted
+    # to accept the resource pack (only if force: true)
+    prompt: |-
+        &c&lHey! &7You must accept our resource-pack
+        &7to enjoy the full experience, are you ready?
+
+
+
+# Congratulations! You are done with configuration
