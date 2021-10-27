@@ -27,7 +27,7 @@ public class UraclePlugin extends JavaPlugin {
             File iconFile = new File(getDataFolder(), "pack.png");
             metadata = new ResourcePackInfo(
                     config.getInt("metadata.format", 7),
-                    Texts.colorize(Texts.escapeDoubleQuotes(config.getString("metadata.descripion"))),
+                    Texts.colorize(Texts.escapeDoubleQuotes(config.getString("metadata.description"))),
                     iconFile.exists() ? Writeable.ofFile(iconFile) : null
             );
         } else {
