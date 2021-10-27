@@ -1,4 +1,4 @@
-# Uracle
+# Uracle ![Build Status](https://img.shields.io/github/workflow/status/unnamed/uracle/build/main) [![MIT License](https://img.shields.io/badge/license-MIT-blue)](license.txt)
 Library and API for next generation servers using resource packs.
 
 ## Features
