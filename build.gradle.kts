@@ -23,6 +23,12 @@ val snapshotRepository: String by project
 val releaseRepository: String by project
 
 tasks {
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(8))
+        }
+    }
+
     test {
         useJUnitPlatform()
     }
