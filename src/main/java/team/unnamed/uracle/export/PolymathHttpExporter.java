@@ -4,8 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.io.Streams;
-import team.unnamed.uracle.io.Writeable;
+import team.unnamed.uracle.io.TreeOutputStream;
 import team.unnamed.uracle.resourcepack.RemoteResource;
 
 import java.io.BufferedReader;
@@ -15,8 +16,11 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.ZipOutputStream;
 
 public class PolymathHttpExporter implements ResourceExporter {
+
+    public static final String NAME = "polymath";
 
     private static final JsonParser JSON_PARSER = new JsonParser();
 
@@ -33,7 +37,7 @@ public class PolymathHttpExporter implements ResourceExporter {
 
     @Override
     public @Nullable RemoteResource export(
-            Writeable writer
+            ResourcePackWriter writer
     ) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -69,7 +73,13 @@ public class PolymathHttpExporter implements ResourceExporter {
                             + "Content-Disposition: form-data; name=\"pack\"; filename=\"resource-pack.zip\""
                             + LINE_FEED + "Content-Type: application/zip" + LINE_FEED + LINE_FEED
             );
-            writer.write(output);
+
+            TreeOutputStream tree = TreeOutputStream.forZip(new ZipOutputStream(output));
+            try {
+                writer.write(tree);
+            } finally {
+                tree.finish();
+            }
             Streams.writeUTF(
                     output,
                     LINE_FEED + "--" + BOUNDARY + "--" + LINE_FEED

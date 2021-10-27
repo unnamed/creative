@@ -1,7 +1,7 @@
 package team.unnamed.uracle.export;
 
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.io.Writeable;
+import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.resourcepack.RemoteResource;
 
 import java.io.IOException;
@@ -16,6 +16,6 @@ public interface ResourceExporter {
      * given {@code writer}
      */
     @Nullable
-    RemoteResource export(Writeable writer) throws IOException;
+    RemoteResource export(ResourcePackWriter writer) throws IOException;
 
 }

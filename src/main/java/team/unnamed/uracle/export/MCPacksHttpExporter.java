@@ -1,9 +1,9 @@
 package team.unnamed.uracle.export;
 
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.io.Streams;
 import team.unnamed.uracle.io.TreeOutputStream;
-import team.unnamed.uracle.io.Writeable;
 import team.unnamed.uracle.resourcepack.RemoteResource;
 
 import java.io.IOException;
@@ -25,6 +25,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class MCPacksHttpExporter implements ResourceExporter {
 
+    public static final String NAME = "mcpacks";
+
     private static final String UPLOAD_URL = "https://mc-packs.net/";
     private static final String DOWNLOAD_URL_TEMPLATE = "https://download.mc-packs.net/pack/" +
             "%HASH%.zip";
@@ -40,7 +42,7 @@ public class MCPacksHttpExporter implements ResourceExporter {
 
     @Override
     @NotNull
-    public RemoteResource export(Writeable writer) throws IOException {
+    public RemoteResource export(ResourcePackWriter writer) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
