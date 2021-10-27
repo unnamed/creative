@@ -1,7 +1,7 @@
 load: STARTUP
 main: team.unnamed.uracle.UraclePlugin
 name: Uracle
-version: 1.0.0
+version: @version@
 description: Library and API for next generation servers using resource packs
 author: The Unnamed Team
 website: https://unnamed.team/uracle
