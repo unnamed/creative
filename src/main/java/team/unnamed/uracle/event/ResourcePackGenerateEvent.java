@@ -3,6 +3,7 @@ package team.unnamed.uracle.event;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import team.unnamed.uracle.io.TreeOutputStream;
@@ -66,6 +67,11 @@ public class ResourcePackGenerateEvent extends Event {
 
     public static HandlerList getHandlerList() {
         return HANDLER_LIST;
+    }
+
+    public static void call(TreeOutputStream output) {
+        Bukkit.getPluginManager()
+                .callEvent(new ResourcePackGenerateEvent(output));
     }
 
 }
