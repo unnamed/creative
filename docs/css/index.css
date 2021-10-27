@@ -1,0 +1,102 @@
+:root {
+    /* Variables */
+    --color: #925aff;
+    --accent: #8148ee;
+
+    --white: #f8f8f8;
+    --white-2: #afabab;
+    --black: #28282c;
+    --black-2: #202023;
+}
+
+html, body {
+    height: 100vh;
+}
+
+body {
+    margin: 0;
+
+    color: var(--white);
+    background-color: var(--black);
+
+    font-family: 'Rubik', sans-serif;
+}
+
+a { color: var(--color); }
+p, span { font-weight: 300; }
+hr { border: none; border-top: 1px solid var(--white-2); }
+
+/*
+ * Classes
+ * ===========================
+ */
+/* Displays */
+.flex   { display: flex; }
+.hidden { display: none; }
+
+/* Flexbox */
+.flex-1 { flex: 1; }
+
+/* Misc */
+.v-resize { resize: vertical; }
+
+/*
+ * Scroll
+ * ===========================================================
+ */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #00000011; }
+::-webkit-scrollbar-thumb { background: var(--color); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/*
+ * Sidebar
+ * ===========================
+ */
+aside {
+    background-color: var(--black-2);
+    min-width: 15%;
+    resize: both;
+}
+
+/*
+ * Main
+ * ===========================
+ */
+main {
+    padding: 0 100px;
+    overflow: hidden scroll;
+}
+
+main section {
+    margin: 40px 0;
+}
+
+/*
+ * Repositories
+ * ===========================
+ */
+.repository {
+    margin: 10px 0;
+    padding: 0 20px;
+
+    background-color: var(--black-2);
+    border: 1px solid var(--white-2);
+    border-radius: 10px;
+}
+
+.repository .header {
+    cursor: pointer;
+    padding: 20px 0;
+}
+
+.repository .name {
+    font-weight: 500;
+    margin: 0 0 8px;
+}
+
+.repository .body {
+    padding: 20px 0;
+}
+
+
