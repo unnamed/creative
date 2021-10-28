@@ -120,25 +120,15 @@ main section h3 {
  */
 .repository {
     margin: 10px 0;
-    padding: 0 20px;
+    padding: 20px;
 
     background-color: var(--black-2);
-    border: 1px solid var(--white-2);
-    border-radius: 10px;
-}
-
-.repository .header {
     cursor: pointer;
-    padding: 20px 0;
 }
 
 .repository .name {
     font-weight: 500;
     margin: 0 0 8px;
-}
-
-.repository .body {
-    padding: 20px 0;
 }
 
 

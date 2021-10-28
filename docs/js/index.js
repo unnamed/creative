@@ -6,32 +6,15 @@
     const container = document.getElementById("repositories");
     let currentPage = 1;
 
-    function fetchReadme(owner, repo, branch) {
-        return Promise.any(["README.md", "readme.md"].map(file => new Promise((resolve, reject) => {
-            fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${file}`)
-                    .then(response => response.text())
-                    .then(text => {
-                        if (text === "404: Not Found") {
-                            reject("Not Found");
-                        } else {
-                            resolve(text);
-                        }
-                    });
-        })));
-    }
-
     /**
      *
      * @param {object} repository
-     * @param {string} docs
      * @return {HTMLElement}
      */
-    function createElement(repository, docs) {
+    function createElement(repository) {
         const element = document.createElement("div");
-        const header = document.createElement("div");
-        const body = document.createElement("div");
 
-        header.innerHTML = DOMPurify.sanitize(`
+        element.innerHTML = DOMPurify.sanitize(`
         <p class="name">${repository["full_name"]}</p>
         <p>${repository["description"]}</p>
         <div>
@@ -40,16 +23,8 @@
         </div>
         `);
 
-
-        header.classList.add("header");
-
-        body.classList.add("body", "hidden");
-        body.innerHTML = DOMPurify.sanitize(marked(docs), { USE_PROFILES: { html: true } });
-
+        element.addEventListener("click", () => window.open(repository["html_url"]));
         element.classList.add("repository");
-        element.append(header, body);
-
-        header.addEventListener("click", () => body.classList.toggle("hidden"));
 
         return element;
     }
@@ -67,8 +42,7 @@
                 .then(response => response.json())
                 .then(({ items }) => {
                     for (const item of items) {
-                        fetchReadme(item["owner"]["login"], item["name"], item["default_branch"])
-                                .then(readme => container.appendChild(createElement(item, readme)));
+                        container.appendChild(createElement(item));
                     }
                 });
     }
