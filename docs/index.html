@@ -44,8 +44,9 @@
                 </li>
 
                 <li>
-                    <h2>Developer API</h2>
+                    <h2>For Developers</h2>
                     <ul>
+                        <li><a href="#dev-installation">Installation</a></li>
                         <li><a href="#dev-assets">Asset Writing</a></li>
                     </ul>
                 </li>
@@ -252,6 +253,41 @@
     </section>
 
     <!-- Developer API -->
+    <section id="dev-installation">
+        <h2>API Installation</h2>
+        <p>You can use Maven, Gradle or just download the JAR file to use the API</p>
+        <h3>Maven</h3>
+        <p>Add our repository</p>
+        <pre><code class="language-xml">
+    &lt;repository&gt;
+        &lt;id&gt;unnamed-public&lt;/id&gt;
+        &lt;url&gt;https://repo.unnamed.team/repository/unnamed-public/&lt;/url&gt;
+    &lt;/repository&gt;
+        </code></pre>
+        <p>And the dependency</p>
+        <pre><code class="language-xml">
+    &lt;dependency&gt;
+        &lt;groupId&gt;team.unnamed&lt;/groupId&gt;
+        &lt;artifactId&gt;uracle&lt;/artifactId&gt;
+        &lt;version&gt;0.1.0&lt;/version&gt;
+    &lt;/dependency&gt;
+        </code></pre>
+
+        <h3>Gradle <span><i>(Groovy DSL)</i></span></h3>
+        <p>Add our repository</p>
+        <pre><code class="language-gradle">
+    repositories {
+        maven { url = "https://repo.unnamed.team/repository/unnamed-public/" }
+    }
+        </code></pre>
+        <p>And the dependency</p>
+        <pre><code class="language-gradle">
+    dependencies {
+        compileOnly "team.unnamed:uracle:0.1.0"
+    }
+        </code></pre>
+    </section>
+
     <section id="dev-assets">
         <h2>Writing Assets</h2>
         <p>Writing assets can't be simpler, it's just listening to <code>ResourcePackGenerateEvent</code>,
@@ -300,6 +336,8 @@
 <script src="lib/marked.min.js"></script>
 <script src="lib/highlight.min.js"></script>
 <script src="lib/yaml.min.js"></script>
+<script src="lib/xml.min.js"></script>
+<script src="lib/gradle.min.js"></script>
 <script src="js/index.js"></script>
 <script>
     // highlight
