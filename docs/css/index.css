@@ -65,7 +65,7 @@ aside {
     position: relative;
     min-width: 30%;
 
-    background: linear-gradient(180deg, var(--black-2) 0%, var(--black) 100%);
+    background-color: var(--black-2);
 }
 
 aside a {
