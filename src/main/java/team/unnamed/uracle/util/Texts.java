@@ -13,15 +13,21 @@ public final class Texts {
     }
 
     /**
-     * Adds a backslash before every double quote found
-     * in the given {@code text} string
+     * Adds a backslash before every special character JSON
+     * doesn't accept for a string found in the given {@code text}
+     * string
      */
-    public static String escapeDoubleQuotes(String text) {
+    public static String escapeForJson(String text) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '"') {
-                result.append('\\');
+                result.append('\\').append(c);
+                continue;
+            } else if (c == '\n') {
+                // append '\n' (literal, not the character)
+                result.append("\\n");
+                continue;
             }
             result.append(c);
         }

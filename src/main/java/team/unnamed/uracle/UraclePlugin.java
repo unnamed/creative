@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
-import team.unnamed.uracle.io.Streams;
 import team.unnamed.uracle.io.Writeable;
 import team.unnamed.uracle.listener.ResourcePackInfoWriter;
 import team.unnamed.uracle.resourcepack.RemoteResource;
@@ -15,10 +14,7 @@ import team.unnamed.uracle.resourcepack.ResourcePackInfo;
 import team.unnamed.uracle.util.Texts;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Level;
 
 public class UraclePlugin extends JavaPlugin {
@@ -35,7 +31,7 @@ public class UraclePlugin extends JavaPlugin {
             File iconFile = new File(getDataFolder(), "pack.png");
             metadata = new ResourcePackInfo(
                     config.getInt("metadata.format", 7),
-                    Texts.colorize(Texts.escapeDoubleQuotes(config.getString("metadata.description"))),
+                    Texts.colorize(Texts.escapeForJson(config.getString("metadata.description"))),
                     iconFile.exists() ? Writeable.ofFile(iconFile) : null
             );
         } else {
