@@ -344,8 +344,10 @@
     // make all 'a' links be smooth
     document.querySelectorAll(`a[href^="#"]`).forEach(anchor => {
         anchor.addEventListener("click", event => {
+            const selector = anchor.getAttribute("href");
+            window.history.replaceState(undefined, undefined, selector);
             event.preventDefault();
-            document.querySelector(anchor.getAttribute("href"))
+            document.querySelector(selector)
                     .scrollIntoView({ behavior: "smooth" });
         });
     });
