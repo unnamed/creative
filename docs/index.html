@@ -15,27 +15,282 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/faed1641f3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="lib/highlight.min.css">
     <title>Unnamed | Uracle</title>
 </head>
 <body class="flex">
 
 <aside class="flex">
+    <div class="relative right-0 v-margin-20">
+
+        <!-- Links -->
+        <div>
+            <ul>
+                <li>
+                    <h2>Prologue</h2>
+                    <ul>
+                        <li><a href="#why">Why Uracle?</a></li>
+                        <li><a href="#inspiration">Inspiration</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <h2>Getting Started</h2>
+                    <ul>
+                        <li><a href="#installation">Installation</a></li>
+                        <li><a href="#file-structure">File Structure</a></li>
+                        <li><a href="#configuration">Configuration</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <h2>Developer API</h2>
+                    <ul>
+                        <li><a href="#dev-assets">Asset Writing</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <h2>Plugins</h2>
+                    <ul>
+                        <li><a href="#plugins">Plugins using Uracle</a></li>
+                        <!-- <li><a href="#official">Official plugins</a></li> -->
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
 </aside>
 
 <main class="flex-1">
 
     <section>
         <h1>Uracle</h1>
-        <p>There are a lot of plugins that use Minecraft resource-packs to extend the
-        default Minecraft experience, using resource-packs allows servers to do a lot
-        of this that would not be possible without them: adding new entities, items,
-        emojis, inventories, music, etc.</p>
-
-        <p>That's where Uracle joins, Uracle is an API for those plugins, to make them
-        work together, take it as "Vault" for next generation servers</p>
     </section>
 
-    <section>
+    <!-- Prologue -->
+    <section id="why">
+        <h2>Why Uracle</h2>
+        <p>There are a lot of plugins that use Minecraft resource-packs to extend the
+            default Minecraft experience, using resource-packs allows servers to do a lot
+            of this that would not be possible without them: adding new entities, items,
+            emojis, inventories, music, etc.</p>
+
+        <p>That's where Uracle joins, Uracle is an API for those plugins, to make them
+            work together, take it as "Vault" for next generation servers</p>
+    </section>
+
+    <section id="inspiration">
+        <h2>Inspiration</h2>
+        <p>Uracle is expected to be an essential API for these next-generation servers
+        where a resource-pack is required, similar to Vault for economy and chat integration</p>
+    </section>
+
+    <!-- Getting Started -->
+    <section id="installation">
+        <h2>Installation</h2>
+        <p>Installation requires a few steps:</p>
+        <ol>
+            <li>
+                <p>Download the <code>Uracle.jar</code> file from
+                <a href="https://github.com/unnamed/uracle/releases">GitHub</a></p>
+            </li>
+            <li>
+                <p>Put the <code>Uracle.jar</code> file in your <code>plugins/</code>
+                folder in Spigot or Paper</p>
+            </li>
+            <li>
+                <p>Start your server to generate the default configuration files</p>
+            </li>
+        </ol>
+    </section>
+
+    <section id="file-structure">
+        <h2>File Structure</h2>
+        <p>The Uracle file structure is very simple, it contains a single configuration file:
+            the <code>config.yml</code> file, two folders and an image (resource pack icon)</p>
+
+        <ul>
+            <li>
+                <i class="fas fa-file"></i> config.yml <span><i>(file)</i></span>
+                <p>In this file you can set resource-pack metadata (<code>pack.mcmeta</code>),
+                    resource-pack prompt and modify how to apply it (whether it's required or
+                    not)</p>
+            </li>
+            <li>
+                <i class="fas fa-file-image"></i> pack.png <span><i>(optional file)</i></span>
+                <p>
+                    This is the resource-pack icon, shown in the resource-pack list in the 
+                    Minecraft client
+                </p>
+            </li>
+            <li>
+                <i class="fas fa-folder"></i> overrides <span><i>(optional folder)</i></span>
+                <p>
+                    Files that will be included in the final resource-pack, they can't be
+                    overridden by plugins when writing their own assets, be careful when
+                    including files here
+                </p>
+            </li>
+            <li>
+                <i class="fas fa-folder"></i> optionals <span><i>(optional folder)</i></span>
+                <p>
+                    Files that will be included in the final resource-pack if they aren't
+                    overridden by plugins (recommended instead of <code>overrides</code>)
+                </p>
+            </li>
+        </ul>
+    </section>
+
+    <section id="configuration">
+        <h2>Configuration</h2>
+        <p>This section describes how to edit the <code>config.yml</code> file depending
+        on what you want to do</p>
+
+        <h3>Change description or Minecraft version</h3>
+        <p>You can change the resource-pack description <i>(shown in resource-pack list
+        in Minecraft client)</i> and Minecraft version at the first section (<code>metadata</code>),
+        e.g.</p>
+        <pre><code class="language-yaml">
+    metadata:
+        format: 7
+        description: "&6My Awesome Resource Pack"
+        </code></pre>
+        <p>Where <code>description</code> is the resource-pack description, accepts colors, and
+            <code>format</code> specifies the Minecraft version, see the table below</p>
+        <table>
+            <thead>
+            <tr>
+                <td>Format</td>
+                <td>Versions</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>1</code></td>
+                <td><span>1.6.1 - 1.8.9</span></td>
+            </tr>
+            <tr>
+                <td><code>2</code></td>
+                <td><span>1.9 - 1.10.2</span></td>
+            </tr>
+            <tr>
+                <td><code>3</code></td>
+                <td><span>1.11 - 1.12.2</span></td>
+            </tr>
+            <tr>
+                <td><code>4</code></td>
+                <td><span>1.13 - 1.14.4</span></td>
+            </tr>
+            <tr>
+                <td><code>5</code></td>
+                <td><span>1.15 - 1.16.1</span></td>
+            </tr>
+            <tr>
+                <td><code>6</code></td>
+                <td><span>1.16.2 - 1.16.5</span></td>
+            </tr>
+            <tr>
+                <td><code>7</code></td>
+                <td><span>1.17 - 1.17.1</span></td>
+            </tr>
+            <tr>
+                <td><code>8</code></td>
+                <td><span>1.18</span></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Change generation</h3>
+        <p>You can change how to generate the resource-pack, you decide if you want to upload
+        it to a server like <a href="https://mc-packs.net/">MCPacks</a> or just generate a ZIP
+        file or put all the files in a folder</p>
+        <pre><code class="language-yaml">
+    generation: mcpacks
+        </code></pre>
+        <p>There are some default values you can use, see the table below</p>
+        <table>
+            <thead>
+            <tr>
+                <td>Format</td>
+                <td>Description</td>
+                <td>Example</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>mcpacks</code></td>
+                <td><span>Uploads the resource-pack to <a href="https://mc-packs.net/">MCPacks</a>,
+                allows to dynamically apply resource-pack to players</span></td>
+                <td><code>generation: mcpacks</code></td>
+            </tr>
+            <tr>
+                <td><code>zip</code></td>
+                <td><span>Generates a ZIP file inside the plugin folder, the plugin won't apply the
+                resource-pack to players if you use this option</span></td>
+                <td><code>generation: zip</code></td>
+            </tr>
+            <tr>
+                <td><code>folder</code></td>
+                <td><span>Generates a folder containing all the resource-pack assets inside the plugin
+                folder, as in <code>zip</code> option, it won't apply the resource-pack to players.</span></td>
+                <td><code>generation: folder</code></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Application settings</h3>
+        <p>You can configure if resource-pack must be forced <i>(players can't join if they don't use
+            the resource-pack)</i> and configure the prompt message <i>(shown when they are asked to
+            use the resource-pack)</i> in the <code>application</code> section:</p>
+        <pre><code class="language-yaml">
+    application:
+        force: true
+        prompt: "Hey! Please accept our &cresource-pack"
+        </code></pre>
+        <p>Where <code>force</code> determines if the resource-pack is required, and <code>prompt</code>
+        specifies the prompt message <i>(only shown if <code>force</code> is true)</i></p>
+
+        <p>That's all the configuration!</p>
+    </section>
+
+    <!-- Developer API -->
+    <section id="dev-assets">
+        <h2>Writing Assets</h2>
+        <p>Writing assets can't be simpler, it's just listening to <code>ResourcePackGenerateEvent</code>,
+        in example:</p>
+        <pre><code class="language-java">
+    import team.unnamed.uracle.event.ResourcePackGenerateEvent;
+    import team.unnamed.uracle.io.Writeable;
+
+    public class PackGenerationListener implements Listener {
+
+        @EventHandler
+        public void onGenerate(ResourcePackGenerateEvent event) {
+
+            // writing an image
+            File icon = new File("/path/to/icon.png");
+            event.write("pack.png", Writeable.ofFile(icon));
+
+            // writing a credits.txt file
+            event.write("credits.txt", "Credits");
+
+            // writing raw bytes
+            event.write("path/to/binary", new byte[0]);
+
+            // writing a json element (Gson)
+            JsonObject json = new JsonObject();
+            json.addProperty("hello", "world");
+            json.addProperty("foo", true);
+            event.write("path/to/file", json);
+        }
+
+    }
+        </code></pre>
+    </section>
+
+    <!-- Plugins -->
+    <section id="plugins">
         <h2>Plugins using Uracle</h2>
         <p>You can add your plugin by adding the <code>uracle-plugin</code> topic to
         your repository on GitHub</p>
@@ -46,7 +301,21 @@
 
 <script src="lib/purify.min.js"></script>
 <script src="lib/marked.min.js"></script>
+<script src="lib/highlight.min.js"></script>
+<script src="lib/yaml.min.js"></script>
 <script src="js/index.js"></script>
+<script>
+    // highlight
+    hljs.highlightAll();
+    // make all 'a' links be smooth
+    document.querySelectorAll(`a[href^="#"]`).forEach(anchor => {
+        anchor.addEventListener("click", event => {
+            event.preventDefault();
+            document.querySelector(anchor.getAttribute("href"))
+                    .scrollIntoView({ behavior: "smooth" });
+        });
+    });
+</script>
 
 </body>
 </html>

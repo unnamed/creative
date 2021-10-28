@@ -5,8 +5,8 @@
 
     --white: #f8f8f8;
     --white-2: #afabab;
-    --black: #28282c;
-    --black-2: #202023;
+    --black: #171923;
+    --black-2: #13151D;
 }
 
 html, body {
@@ -25,6 +25,10 @@ body {
 a { color: var(--color); }
 p, span { font-weight: 300; }
 hr { border: none; border-top: 1px solid var(--white-2); }
+table { border-collapse: collapse; }
+table thead { background-color: var(--black-2); }
+table td { padding: 8px; border: 1px solid var(--white-2); }
+pre, code { background-color: var(--black-2); }
 
 /*
  * Classes
@@ -34,11 +38,15 @@ hr { border: none; border-top: 1px solid var(--white-2); }
 .flex   { display: flex; }
 .hidden { display: none; }
 
+/* Positions */
+.relative { position: absolute; }
+.right-0 { right: 0; }
+
 /* Flexbox */
 .flex-1 { flex: 1; }
 
-/* Misc */
-.v-resize { resize: vertical; }
+/* Margin */
+.v-margin-20 { margin: 40px 20%; }
 
 /*
  * Scroll
@@ -54,9 +62,39 @@ hr { border: none; border-top: 1px solid var(--white-2); }
  * ===========================
  */
 aside {
-    background-color: var(--black-2);
-    min-width: 15%;
-    resize: both;
+    position: relative;
+    min-width: 30%;
+
+    background: linear-gradient(180deg, var(--black-2) 0%, var(--black) 100%);
+}
+
+aside a {
+    color: inherit;
+    text-decoration: none;
+}
+
+aside ul {
+    margin: 0;
+    padding: 5px 20px;
+    color: var(--white-2);
+}
+
+aside li {
+    list-style: none;
+    font-weight: 300;
+    margin: 12px 0;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+aside li h2 {
+    margin: 0 0 10px;
+    transition: 0.5s;
+    font-size: 20px;
+}
+
+aside li li:hover, aside li h2:hover {
+    transform: translateX(10%);
 }
 
 /*
