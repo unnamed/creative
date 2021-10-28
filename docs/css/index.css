@@ -110,6 +110,10 @@ main section {
     margin: 85px 0;
 }
 
+main section h3 {
+    margin: 40px 0 20px;
+}
+
 /*
  * Repositories
  * ===========================
