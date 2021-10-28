@@ -1,23 +1,31 @@
 package team.unnamed.uracle;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
+import team.unnamed.uracle.io.Streams;
 import team.unnamed.uracle.io.Writeable;
+import team.unnamed.uracle.listener.ResourcePackInfoWriter;
+import team.unnamed.uracle.resourcepack.RemoteResource;
 import team.unnamed.uracle.resourcepack.ResourcePackInfo;
 import team.unnamed.uracle.util.Texts;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 
 public class UraclePlugin extends JavaPlugin {
 
     private ResourcePackInfo metadata;
     private ResourceExporter exporter;
+    private RemoteResource resource;
 
     private void loadConfiguration() {
         ConfigurationSection config = getConfig();
@@ -53,14 +61,24 @@ public class UraclePlugin extends JavaPlugin {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             saveResource("config.yml", true);
-            saveResource("pack.png", true);
+            saveResource("pack.png", false);
         }
 
         loadConfiguration();
 
+        if (metadata != null) {
+            Bukkit.getPluginManager().registerEvents(
+                    new ResourcePackInfoWriter(metadata),
+                    this
+            );
+        }
+
         if (exporter != null) {
             try {
-                exporter.export(ResourcePackGenerateEvent::call);
+                resource = exporter.export(ResourcePackGenerateEvent::call);
+                if (resource != null) {
+                    getLogger().info("Uploaded resource-pack to " + resource.getUrl());
+                }
             } catch (IOException e) {
                 getLogger().log(
                         Level.SEVERE,

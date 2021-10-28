@@ -57,8 +57,10 @@ tasks {
     }
 
     processResources {
-        filter<org.apache.tools.ant.filters.ReplaceTokens>(
-            "tokens" to mapOf("version" to project.version)
-        )
+        filesMatching("**/*.yml") {
+            filter<org.apache.tools.ant.filters.ReplaceTokens>(
+                "tokens" to mapOf("version" to project.version)
+            )
+        }
     }
 }
