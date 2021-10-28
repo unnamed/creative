@@ -46,7 +46,7 @@ pre, code { background-color: var(--black-2); }
 .flex-1 { flex: 1; }
 
 /* Margin */
-.v-margin-20 { margin: 40px 20%; }
+.v-margin-15 { margin: 40px 15%; }
 
 /*
  * Scroll
@@ -90,7 +90,7 @@ aside li {
 aside li h2 {
     margin: 0 0 10px;
     transition: 0.5s;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 aside li li:hover, aside li h2:hover {
