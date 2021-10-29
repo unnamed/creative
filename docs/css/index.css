@@ -1,7 +1,7 @@
 :root {
     /* Variables */
-    --color: #925aff;
-    --accent: #8148ee;
+    --color: #ff3a3a;
+    --accent: #cc1b1b;
 
     --white: #f8f8f8;
     --white-2: #afabab;
@@ -43,7 +43,8 @@ pre, code { background-color: var(--black-2); }
 .right-0 { right: 0; }
 
 /* Flexbox */
-.flex-1 { flex: 1; }
+.flex-1       { flex: 1; }
+.center-items { align-items: center; }
 
 /* Margin */
 .v-margin-15 { margin: 40px 15%; }
@@ -66,6 +67,10 @@ aside {
     min-width: 30%;
 
     background-color: var(--black-2);
+}
+
+aside h1 {
+    margin: 24px 16px;
 }
 
 aside a {
