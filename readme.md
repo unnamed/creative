@@ -1,5 +1,14 @@
-# Uracle ![Build Status](https://img.shields.io/github/workflow/status/unnamed/uracle/build/main) [![MIT License](https://img.shields.io/badge/license-MIT-blue)](license.txt)
+<p align="center"><img src="docs/assets/logo.svg" alt="logo" height="150"></p>
+<h1 align="center">
+Uracle
+<p>
+<a><img src="https://img.shields.io/github/workflow/status/unnamed/uracle/build/main" alt="Build Status"></a>
+<a href="license.txt"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License"></a>
+</p>
+</h1>
+<p align="center">
 Library and API for next generation servers using resource packs.
+</p>
 
 ## Features
 - Library for compatibility between external plugins using resource packs
@@ -7,35 +16,7 @@ Library and API for next generation servers using resource packs.
 
 ## Usage
 Usage is simple, simply listen to `ResourcePackGenerateEvent` and write
-your assets, see this example:
-```java
-import team.unnamed.uracle.event.ResourcePackGenerateEvent;
-import team.unnamed.uracle.io.Writeable;
-
-public class PackGenerationListener implements Listener {
-    
-    @EventHandler
-    public void onGenerate(ResourcePackGenerateEvent event) {
-        
-        // writing an image
-        File icon = new File("/path/to/icon.png");
-        event.write("pack.png", Writeable.ofFile(icon));
-        
-        // writing a credits.txt file
-        event.write("credits.txt", "Credits");
-        
-        // writing raw bytes
-        event.write("path/to/binary", new byte[0]);
-        
-        // writing a json element (Gson)
-        JsonObject json = new JsonObject();
-        json.addProperty("hello", "world");
-        json.addProperty("foo", true);
-        event.write("path/to/file", json);
-    }
-    
-}
-```
+your assets, check [the documentation](https://unnamed.team/uracle)
 
 ## Building
 You can build Uracle by executing `./gradlew build`, or install to your Maven local repository
