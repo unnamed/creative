@@ -45,6 +45,7 @@ pre, code { background-color: var(--black-2); }
 /* Flexbox */
 .flex-1       { flex: 1; }
 .center-items { align-items: center; }
+.column       { flex-direction: column; }
 
 /* Margin */
 .v-margin-15 { margin: 40px 15%; }
@@ -53,7 +54,7 @@ pre, code { background-color: var(--black-2); }
  * Scroll
  * ===========================================================
  */
-::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: #00000011; }
 ::-webkit-scrollbar-thumb { background: var(--color); }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
@@ -69,8 +70,21 @@ aside {
     background-color: var(--black-2);
 }
 
-aside h1 {
-    margin: 24px 16px;
+.brand h1, .brand p {
+    margin: 0;
+}
+
+.brand p {
+    font-size: 12px;
+}
+
+aside .brand .text {
+    margin: 0 16px;
+}
+
+aside .brand {
+    width: max-content;
+    margin: 24px auto;
 }
 
 aside a {
