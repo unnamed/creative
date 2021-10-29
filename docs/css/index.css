@@ -102,8 +102,6 @@ aside li {
     list-style: none;
     font-weight: 300;
     margin: 12px 0;
-    transition: 0.5s;
-    cursor: pointer;
 }
 
 aside li h2 {
@@ -112,7 +110,12 @@ aside li h2 {
     font-size: 16px;
 }
 
-aside li li:hover, aside li h2:hover {
+aside li li {
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+aside li li:hover {
     transform: translateX(10%);
 }
 
