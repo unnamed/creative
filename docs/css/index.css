@@ -102,6 +102,7 @@ aside li {
     list-style: none;
     font-weight: 300;
     margin: 12px 0;
+    transition: 0.5s;
 }
 
 aside li h2 {
@@ -153,4 +154,42 @@ main section h3 {
     margin: 0 0 8px;
 }
 
+/*
+ * Adaption
+ * ===========================
+ */
+.menu-toggle {
+    display: none;
+    color: var(--white-2);
+
+    padding: 8px;
+    top: 1%;
+    right: 2%;
+
+    background: var(--black-2);
+    border: 1px solid var(--white-2);
+    cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+    aside {
+        position: absolute;
+
+        min-width: 0;
+        height: 100vh;
+        width: 0;
+
+        transition: 0.5s ease;
+    }
+
+    aside.collapsed {
+        width: 100vw;
+        min-width: 100%;
+    }
+
+    .menu-toggle {
+        display: block;
+        position: fixed;
+    }
+}
 

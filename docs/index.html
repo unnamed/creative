@@ -78,6 +78,7 @@
 
 <main class="flex-1">
 
+    <button class="menu-toggle"><i class="fas fa-bars"></i></button>
     <!-- Prologue -->
     <section id="why">
         <h2>Why Uracle</h2>
@@ -359,6 +360,7 @@
             const selector = anchor.getAttribute("href");
             window.history.replaceState(undefined, undefined, selector);
             event.preventDefault();
+            document.querySelector("aside").classList.toggle("collapsed");
             document.querySelector(selector)
                     .scrollIntoView({ behavior: "smooth" });
         });

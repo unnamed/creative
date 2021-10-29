@@ -50,4 +50,9 @@
     // initial
     fetchRepositories(currentPage);
 
+    // menu collapse
+    document.querySelector(".menu-toggle").addEventListener("click", () => {
+        document.querySelector("aside").classList.toggle("collapsed");
+    });
+
 })();
