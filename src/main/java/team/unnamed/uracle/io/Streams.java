@@ -1,5 +1,6 @@
 package team.unnamed.uracle.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,26 +46,6 @@ public final class Streams {
     }
 
     /**
-     * Returns the bytes from the given {@code string}
-     * expected to be encoded using hexadecimal characters
-     * (0-9a-f), string length must be even
-     */
-    public static byte[] getBytesFromHex(String string) {
-        int length = string.length();
-        if (length % 2 != 0) {
-            throw new IllegalArgumentException("Invalid hex string: "
-                    + string + ". It must be even!");
-        }
-        byte[] bytes = new byte[length / 2];
-        for (int i = 0; i < length; i += 2) {
-            int firstPart = Character.digit(string.charAt(i), 16);
-            int secondPart = Character.digit(string.charAt(i + 1), 16);
-            bytes[i / 2] = (byte) ((firstPart << 4) + secondPart);
-        }
-        return bytes;
-    }
-
-    /**
      * Writes the given {@code string} into
      * the specified {@code output} using the
      * UTF-8 charset
@@ -76,6 +57,26 @@ public final class Streams {
             String string
     ) throws IOException {
         output.write(string.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Recursively deletes the given {@code file},
+     * if it's a folder, it deletes all its children
+     * before the folder is deleted
+     */
+    public static void deleteRecursively(File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (!file.isFile()) {
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteRecursively(child);
+                }
+            }
+        }
+        file.delete();
     }
 
 }
