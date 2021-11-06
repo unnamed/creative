@@ -5,6 +5,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
@@ -111,14 +112,9 @@ public class UraclePlugin extends JavaPlugin {
 
         loadConfiguration();
 
-        Bukkit.getPluginManager().registerEvents(
+        listen(
                 new ResourcePackApplyListener(this),
-                this
-        );
-
-        Bukkit.getPluginManager().registerEvents(
-                new PresetsWriter(this),
-                this
+                new PresetsWriter(this)
         );
 
         if (metadata != null) {
@@ -126,6 +122,12 @@ public class UraclePlugin extends JavaPlugin {
                     new PackMetaWriter(metadata),
                     this
             );
+        }
+    }
+
+    private void listen(Listener... listeners) {
+        for (Listener listener : listeners) {
+            Bukkit.getPluginManager().registerEvents(listener, this);
         }
     }
 
