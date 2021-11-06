@@ -4,12 +4,12 @@ package team.unnamed.uracle.resourcepack;
  * Class that represents a remote resource,
  * consists on a URL and the resource hash
  */
-public class RemoteResource {
+public class UrlAndHash {
 
     private final String url;
-    private final byte[] hash;
+    private final String hash;
 
-    public RemoteResource(String url, byte[] hash) {
+    public UrlAndHash(String url, String hash) {
         this.url = url;
         this.hash = hash;
     }
@@ -18,7 +18,7 @@ public class RemoteResource {
         return url;
     }
 
-    public byte[] getHash() {
+    public String getHash() {
         return hash;
     }
 

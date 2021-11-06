@@ -9,7 +9,7 @@ import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
 import team.unnamed.uracle.io.Writeable;
 import team.unnamed.uracle.listener.ResourcePackInfoWriter;
-import team.unnamed.uracle.resourcepack.RemoteResource;
+import team.unnamed.uracle.resourcepack.UrlAndHash;
 import team.unnamed.uracle.resourcepack.ResourcePackInfo;
 import team.unnamed.uracle.util.Texts;
 
@@ -21,7 +21,7 @@ public class UraclePlugin extends JavaPlugin {
 
     private ResourcePackInfo metadata;
     private ResourceExporter exporter;
-    private RemoteResource resource;
+    private UrlAndHash resource;
 
     private void loadConfiguration() {
         ConfigurationSection config = getConfig();

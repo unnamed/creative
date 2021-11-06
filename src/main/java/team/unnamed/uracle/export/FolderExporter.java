@@ -3,7 +3,7 @@ package team.unnamed.uracle.export;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.io.TreeOutputStream;
-import team.unnamed.uracle.resourcepack.RemoteResource;
+import team.unnamed.uracle.resourcepack.UrlAndHash;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class FolderExporter implements ResourceExporter {
     }
 
     @Override
-    public @Nullable RemoteResource export(ResourcePackWriter writer) throws IOException {
+    public @Nullable UrlAndHash export(ResourcePackWriter writer) throws IOException {
         // write resource pack
         try (TreeOutputStream output = TreeOutputStream.forFolder(root)) {
             writer.write(output);

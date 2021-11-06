@@ -3,7 +3,7 @@ package team.unnamed.uracle.export;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.io.TreeOutputStream;
-import team.unnamed.uracle.resourcepack.RemoteResource;
+import team.unnamed.uracle.resourcepack.UrlAndHash;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ public class ZipExporter implements ResourceExporter {
     }
 
     @Override
-    public @Nullable RemoteResource export(ResourcePackWriter writer)
+    public @Nullable UrlAndHash export(ResourcePackWriter writer)
             throws IOException {
 
         if (!target.exists()) {

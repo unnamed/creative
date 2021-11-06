@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.io.Streams;
 import team.unnamed.uracle.io.TreeOutputStream;
-import team.unnamed.uracle.resourcepack.RemoteResource;
+import team.unnamed.uracle.resourcepack.UrlAndHash;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class PolymathHttpExporter implements ResourceExporter {
     }
 
     @Override
-    public @Nullable RemoteResource export(
+    public @Nullable UrlAndHash export(
             ResourcePackWriter writer
     ) throws IOException {
 
@@ -101,10 +101,10 @@ public class PolymathHttpExporter implements ResourceExporter {
                         + json.get("error").getAsString());
             }
 
-            String url = json.get("url").getAsString();
-            byte[] hash = Streams.getBytesFromHex(json.get("sha1").getAsString());
-
-            return new RemoteResource(url, hash);
+            return new UrlAndHash(
+                    json.get("url").getAsString(),
+                    json.get("sha1").getAsString()
+            );
         }
     }
 
