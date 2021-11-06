@@ -114,15 +114,9 @@ public class UraclePlugin extends JavaPlugin {
 
         listen(
                 new ResourcePackApplyListener(this),
-                new PresetsWriter(this)
+                new PresetsWriter(this),
+                new PackMetaWriter(this)
         );
-
-        if (metadata != null) {
-            Bukkit.getPluginManager().registerEvents(
-                    new PackMetaWriter(metadata),
-                    this
-            );
-        }
     }
 
     private void listen(Listener... listeners) {
