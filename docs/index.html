@@ -61,6 +61,7 @@
                     <ul>
                         <li><a href="#dev-installation">Installation</a></li>
                         <li><a href="#dev-assets">Asset Writing</a></li>
+                        <li><a href="#dev-static">Static API</a></li>
                     </ul>
                 </li>
 
@@ -332,6 +333,17 @@
         }
 
     }
+        </code></pre>
+    </section>
+
+    <section id="dev-static">
+        <h2>Static API</h2>
+        <p>There are some static methods for interacting with the Uracle plugin, these are in the
+        <code>Uracle</code> class</p>
+        <pre><code class="language-java">
+    // determine if player has server resource pack
+    // (for servers where resource pack is optional)
+    boolean hasResourcePack = Uracle.hasResourcePack(player);
         </code></pre>
     </section>
 
