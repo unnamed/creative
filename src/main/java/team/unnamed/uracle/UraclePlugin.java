@@ -71,6 +71,7 @@ public class UraclePlugin extends JavaPlugin {
 
         if (exporter != null) {
             try {
+                getLogger().info("Exporting resource-pack...");
                 resource = exporter.export(ResourcePackGenerateEvent::call);
                 if (resource != null) {
                     getLogger().info("Uploaded resource-pack to " + resource.getUrl());
