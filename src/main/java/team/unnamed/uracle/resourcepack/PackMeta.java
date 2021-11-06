@@ -9,7 +9,7 @@ import java.util.Objects;
  * Resource pack information, contains extra information
  * that can be omitted by a resource pack writer
  */
-public class ResourcePackInfo {
+public class PackMeta {
 
     private final int format;
     private final String description;
@@ -23,7 +23,7 @@ public class ResourcePackInfo {
      * @param icon The resource-pack icon, it won't be written if
      *             it's null
      */
-    public ResourcePackInfo(
+    public PackMeta(
             int format,
             String description,
             @Nullable Writeable icon
@@ -59,7 +59,7 @@ public class ResourcePackInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ResourcePackInfo that = (ResourcePackInfo) o;
+        PackMeta that = (PackMeta) o;
         return format == that.format
                 && description.equals(that.description)
                 && Objects.equals(icon, that.icon);

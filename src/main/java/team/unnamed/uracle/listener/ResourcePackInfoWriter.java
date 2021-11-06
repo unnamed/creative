@@ -4,13 +4,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.io.Writeable;
-import team.unnamed.uracle.resourcepack.ResourcePackInfo;
+import team.unnamed.uracle.resourcepack.PackMeta;
 
 public class ResourcePackInfoWriter implements Listener {
 
-    private final ResourcePackInfo packInfo;
+    private final PackMeta packInfo;
 
-    public ResourcePackInfoWriter(ResourcePackInfo packInfo) {
+    public ResourcePackInfoWriter(PackMeta packInfo) {
         this.packInfo = packInfo;
     }
 
