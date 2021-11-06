@@ -68,4 +68,38 @@ application:
 
 
 
+#################################################################
+## +---------------------------------------------------------+ ##
+## |                         Messages                        | ##
+## +---------------------------------------------------------+ ##
+#################################################################
+message:
+    # Kick message sent when a player declines the resource-pack,
+    # but it is required
+    declined: |-
+        &c&lUracle &8| &7by &d&lUnnamed Team
+        &f
+        &c&lHey!
+        &7You must accept the server resource pack
+        &7to join the server, enable it in the server
+        &7list, check this tutorial:
+        &d&nhttps://unnamed.team/uracle/player#enable
+        &f
+        &dThanks for playing!
+
+    # Kick message sent when a player can not download the
+    # resource-pack, but it is required
+    failed: |-
+        &c&lUracle &8| &7by &d&lUnnamed Team
+        &f
+        &c&lHey!
+        &7Seems like your client has issues downloading
+        &7the server resource pack, try re-joining or
+        &7check this tutorial:
+        &d&nhttps://unnamed.team/uracle/player#issues
+        &f
+        &dThanks for playing!
+
+
+
 # Congratulations! You are done with configuration

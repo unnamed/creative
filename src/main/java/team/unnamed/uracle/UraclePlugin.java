@@ -1,6 +1,7 @@
 package team.unnamed.uracle;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +10,8 @@ import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
 import team.unnamed.uracle.io.Writeable;
 import team.unnamed.uracle.listener.PackMetaWriter;
+import team.unnamed.uracle.listener.ResourcePackApplyListener;
+import team.unnamed.uracle.resourcepack.ResourcePack;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
 import team.unnamed.uracle.resourcepack.PackMeta;
 import team.unnamed.uracle.util.Texts;
@@ -21,6 +24,7 @@ public class UraclePlugin extends JavaPlugin {
 
     private PackMeta metadata;
     private ResourceExporter exporter;
+    private ResourcePack pack;
     private UrlAndHash resource;
 
     private void loadConfiguration() {
@@ -62,6 +66,11 @@ public class UraclePlugin extends JavaPlugin {
 
         loadConfiguration();
 
+        Bukkit.getPluginManager().registerEvents(
+                new ResourcePackApplyListener(this),
+                this
+        );
+
         if (metadata != null) {
             Bukkit.getPluginManager().registerEvents(
                     new PackMetaWriter(metadata),
@@ -91,8 +100,20 @@ public class UraclePlugin extends JavaPlugin {
         return metadata;
     }
 
+    @Nullable
+    public ResourcePack getPack() {
+        return pack;
+    }
+
     public ResourceExporter getExporter() {
         return exporter;
+    }
+
+    public String getMessage(String key) {
+        return ChatColor.translateAlternateColorCodes('&', getConfig().getString(
+                "message." + key,
+                "Missing message: " + key
+        ));
     }
 
 }
