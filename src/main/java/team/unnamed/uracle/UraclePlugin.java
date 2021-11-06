@@ -110,13 +110,13 @@ public class UraclePlugin extends JavaPlugin {
             overridesFolder.mkdirs();
         }
 
-        loadConfiguration();
-
         listen(
                 new ResourcePackApplyListener(this),
                 new PresetsWriter(this),
                 new PackMetaWriter(this)
         );
+
+        loadConfiguration();
     }
 
     private void listen(Listener... listeners) {
