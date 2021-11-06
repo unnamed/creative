@@ -24,6 +24,10 @@ public class ResourcePackGenerateEvent extends Event {
         this.output = output;
     }
 
+    public boolean has(String name) {
+        return output.hasEntry(name);
+    }
+
     public void write(String name, Writeable writeable) {
         try {
             output.useEntry(name);

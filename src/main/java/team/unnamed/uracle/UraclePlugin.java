@@ -12,6 +12,7 @@ import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
 import team.unnamed.uracle.io.Writeable;
 import team.unnamed.uracle.listener.PackMetaWriter;
+import team.unnamed.uracle.listener.PresetsWriter;
 import team.unnamed.uracle.listener.ResourcePackApplyListener;
 import team.unnamed.uracle.resourcepack.ResourcePack;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
@@ -27,6 +28,9 @@ public class UraclePlugin extends JavaPlugin {
     private PackMeta metadata;
     private ResourceExporter exporter;
     private ResourcePack pack;
+
+    private File overridesFolder;
+    private File optionalsFolder;
 
     private void loadConfiguration() {
         ConfigurationSection config = getConfig();
@@ -92,10 +96,17 @@ public class UraclePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        optionalsFolder = new File(getDataFolder(), "optionals");
+        overridesFolder = new File(getDataFolder(), "overrides");
         File configFile = new File(getDataFolder(), "config.yml");
+
         if (!configFile.exists()) {
             saveResource("config.yml", true);
             saveResource("pack.png", false);
+
+            // create our folders
+            optionalsFolder.mkdirs();
+            overridesFolder.mkdirs();
         }
 
         loadConfiguration();
@@ -105,12 +116,25 @@ public class UraclePlugin extends JavaPlugin {
                 this
         );
 
+        Bukkit.getPluginManager().registerEvents(
+                new PresetsWriter(this),
+                this
+        );
+
         if (metadata != null) {
             Bukkit.getPluginManager().registerEvents(
                     new PackMetaWriter(metadata),
                     this
             );
         }
+    }
+
+    public File getOptionalsFolder() {
+        return optionalsFolder;
+    }
+
+    public File getOverridesFolder() {
+        return overridesFolder;
     }
 
     @Nullable

@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -21,6 +23,12 @@ import java.util.zip.ZipOutputStream;
  */
 public abstract class TreeOutputStream
         extends OutputStream {
+
+    /**
+     * Determines if an entry with the given {@code name}
+     * exists in the tree
+     */
+    public abstract boolean hasEntry(String name);
 
     /**
      * Start using the given {@code name} to
@@ -54,9 +62,15 @@ public abstract class TreeOutputStream
             extends TreeOutputStream {
 
         private final ZipOutputStream delegate;
+        private final Set<String> entries = new HashSet<>();
 
         private ZipTreeOutputStream(ZipOutputStream delegate) {
             this.delegate = delegate;
+        }
+
+        @Override
+        public boolean hasEntry(String name) {
+            return entries.contains(name);
         }
 
         @Override
@@ -64,6 +78,7 @@ public abstract class TreeOutputStream
             ZipEntry entry = new ZipEntry(name);
             // TODO: Maybe the invoker method should have the control of this
             entry.setTime(0L);
+            entries.add(name);
             delegate.putNextEntry(entry);
         }
 
@@ -123,12 +138,18 @@ public abstract class TreeOutputStream
             extends TreeOutputStream {
 
         private final File root;
+        private final Set<String> entries = new HashSet<>();
         @Nullable private OutputStream entry;
 
         private FileTreeOutputStream(File root) {
             this.root = root;
             Streams.deleteRecursively(root);
             root.mkdirs();
+        }
+
+        @Override
+        public boolean hasEntry(String name) {
+            return entries.contains(name);
         }
 
         @Override
@@ -151,6 +172,7 @@ public abstract class TreeOutputStream
                 throw new IOException("Cannot create" +
                         " entry file");
             }
+            entries.add(name);
             this.entry = new FileOutputStream(file);
         }
 
