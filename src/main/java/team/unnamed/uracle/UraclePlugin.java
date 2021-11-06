@@ -8,7 +8,7 @@ import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
 import team.unnamed.uracle.io.Writeable;
-import team.unnamed.uracle.listener.ResourcePackInfoWriter;
+import team.unnamed.uracle.listener.PackMetaWriter;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
 import team.unnamed.uracle.resourcepack.PackMeta;
 import team.unnamed.uracle.util.Texts;
@@ -64,7 +64,7 @@ public class UraclePlugin extends JavaPlugin {
 
         if (metadata != null) {
             Bukkit.getPluginManager().registerEvents(
-                    new ResourcePackInfoWriter(metadata),
+                    new PackMetaWriter(metadata),
                     this
             );
         }

@@ -6,12 +6,12 @@ import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.io.Writeable;
 import team.unnamed.uracle.resourcepack.PackMeta;
 
-public class ResourcePackInfoWriter implements Listener {
+public class PackMetaWriter implements Listener {
 
-    private final PackMeta packInfo;
+    private final PackMeta meta;
 
-    public ResourcePackInfoWriter(PackMeta packInfo) {
-        this.packInfo = packInfo;
+    public PackMetaWriter(PackMeta meta) {
+        this.meta = meta;
     }
 
     @EventHandler
@@ -21,13 +21,13 @@ public class ResourcePackInfoWriter implements Listener {
                 "pack.mcmeta",
                 "{" +
                         "\"pack\": {" +
-                        "\"pack_format\": " + packInfo.getFormat() + "," +
-                        "\"description\": \"" + packInfo.getDescription() + "\"" +
+                        "\"pack_format\": " + meta.getFormat() + "," +
+                        "\"description\": \"" + meta.getDescription() + "\"" +
                         "}" +
                         "}"
         );
 
-        Writeable icon = packInfo.getIcon();
+        Writeable icon = meta.getIcon();
         if (icon != null) {
             event.write("pack.png", icon);
         }
