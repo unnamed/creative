@@ -1,5 +1,7 @@
 package team.unnamed.uracle;
 
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -25,7 +27,6 @@ public class UraclePlugin extends JavaPlugin {
     private PackMeta metadata;
     private ResourceExporter exporter;
     private ResourcePack pack;
-    private UrlAndHash resource;
 
     private void loadConfiguration() {
         ConfigurationSection config = getConfig();
@@ -54,6 +55,39 @@ public class UraclePlugin extends JavaPlugin {
                     e
             );
         }
+
+        // load 'application'
+        boolean required = config.getBoolean("application.force", false);
+        String prompt = config.getString("application.prompt", null);
+
+        if (prompt != null) {
+            // colorize and translate to JSON
+            prompt = ChatColor.translateAlternateColorCodes('&', prompt);
+            prompt = ComponentSerializer.toString(TextComponent.fromLegacyText(prompt));
+        }
+
+        if (exporter != null) {
+            try {
+                getLogger().info("Exporting resource-pack...");
+                UrlAndHash location = exporter.export(ResourcePackGenerateEvent::call);
+                if (location != null) {
+                    getLogger().info("Uploaded resource-pack to " + location.getUrl());
+
+                    pack = new ResourcePack(
+                            location.getUrl(),
+                            location.getHash(),
+                            required,
+                            prompt
+                    );
+                }
+            } catch (IOException e) {
+                getLogger().log(
+                        Level.SEVERE,
+                        "Failed to export resource pack",
+                        e
+                );
+            }
+        }
     }
 
     @Override
@@ -76,22 +110,6 @@ public class UraclePlugin extends JavaPlugin {
                     new PackMetaWriter(metadata),
                     this
             );
-        }
-
-        if (exporter != null) {
-            try {
-                getLogger().info("Exporting resource-pack...");
-                resource = exporter.export(ResourcePackGenerateEvent::call);
-                if (resource != null) {
-                    getLogger().info("Uploaded resource-pack to " + resource.getUrl());
-                }
-            } catch (IOException e) {
-                getLogger().log(
-                        Level.SEVERE,
-                        "Failed to export resource pack",
-                        e
-                );
-            }
         }
     }
 
