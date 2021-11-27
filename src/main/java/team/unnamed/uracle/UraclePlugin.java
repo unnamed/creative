@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.command.UracleCommand;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.export.ResourceExporter;
 import team.unnamed.uracle.export.ResourceExporterFactory;
@@ -33,7 +34,7 @@ public class UraclePlugin extends JavaPlugin {
     private File overridesFolder;
     private File optionalsFolder;
 
-    private void loadConfiguration() {
+    public void loadConfiguration() {
         ConfigurationSection config = getConfig();
 
         // load 'metadata'
@@ -117,6 +118,7 @@ public class UraclePlugin extends JavaPlugin {
         );
 
         loadConfiguration();
+        getCommand("uracle").setExecutor(new UracleCommand(this));
     }
 
     private void listen(Listener... listeners) {

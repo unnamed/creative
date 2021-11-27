@@ -100,6 +100,17 @@ message:
         &f
         &dThanks for playing!
 
+    # Message sent when a player executes /uracle, but they
+    # have no permission to do it ('uracle' permission)
+    permission: "&c&lUracle &8| &cError &8| &7You don't have permission to execute this command!"
+
+    help: |-
+        &c&lUracle &8| &7Help &8| &7by &d&lUnnamed Team
+        &f
+        &c/uracle help &8- &7Shows this message
+        &c/uracle reload &8- &7Reload configuration
+        &c/uracle apply [players...] &8- &7Sends the resource-pack to the specified players, or everyone if not specified
+
 
 
 # Congratulations! You are done with configuration

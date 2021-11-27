@@ -6,3 +6,7 @@ description: Library and API for next generation servers using resource packs
 author: The Unnamed Team
 website: https://unnamed.team/uracle
 api-version: 1.13
+commands:
+    uracle:
+        description: Manage your server resource pack
+        permission: uracle
