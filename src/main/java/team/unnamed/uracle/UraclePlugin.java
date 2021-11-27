@@ -117,8 +117,12 @@ public class UraclePlugin extends JavaPlugin {
                 new PackMetaWriter(this)
         );
 
-        loadConfiguration();
         getCommand("uracle").setExecutor(new UracleCommand(this));
+
+        // make loadConfiguration() be called after the server finishes loading
+        getServer()
+                .getScheduler()
+                .runTaskLater(this, this::loadConfiguration, 1L);
     }
 
     private void listen(Listener... listeners) {
