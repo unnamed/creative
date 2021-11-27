@@ -79,6 +79,7 @@ public class UracleCommand implements CommandExecutor {
                         Player player = Bukkit.getPlayerExact(args[i]);
                         if (player != null) {
                             ResourcePackApplier.setResourcePack(player, pack);
+                            count++;
                         }
                     }
                 }
@@ -91,8 +92,7 @@ public class UracleCommand implements CommandExecutor {
                 return true;
             }
 
-            case "?":
-            case "help": {
+            default: {
                 sendHelp(sender);
                 return true;
             }
