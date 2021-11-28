@@ -67,6 +67,7 @@ aside {
     position: relative;
     min-width: 30%;
 
+    overflow-y: scroll;
     background-color: var(--black-2);
 }
 
