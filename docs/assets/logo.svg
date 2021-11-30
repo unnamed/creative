@@ -1,15 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-    <polygon
-            points="47.2 25.21 47.2 45.6 25.07 45.6 25.07 32.75 14.1 32.75 14.1 12.49 38.93 12.49 38.93 25.21 47.2 25.21"
-            fill="#fff"/>
-    <rect x="14.09" y="32.75" width="10.98" height="12.85" fill="#fff" opacity="0.85"/>
-    <polygon points="25.07 45.6 25.07 49.31 8.52 49.31 8.52 32.75 14.1 32.75 14.1 45.6 25.07 45.6" fill="#fff"
-             opacity="0.7"/>
-    <rect x="26.94" y="50.42" width="8.28" height="8.28" fill="#fff" opacity="0.6"/>
-    <rect x="17.71" y="57.64" width="4.14" height="4.14" fill="#fff" opacity="0.4"/>
-    <rect x="38.93" y="12.5" width="8.28" height="12.72" fill="#fff" opacity="0.85"/>
-    <polygon points="55.48 8.66 55.48 25.21 47.2 25.21 47.2 12.49 38.93 12.49 38.93 8.66 55.48 8.66" fill="#fff"
-             opacity="0.7"/>
-    <rect x="22.37" y="2.22" width="8.28" height="8.28" fill="#fff" opacity="0.6"/>
-    <rect x="9.96" y="4.29" width="4.14" height="4.14" fill="#fff" opacity="0.4"/>
+  <defs>
+    <style>
+      .a, .b, .c, .d, .e {
+        fill: #fff;
+      }
+
+      .b, .c, .d, .e {
+        isolation: isolate;
+      }
+
+      .b {
+        opacity: 0.85;
+      }
+
+      .c {
+        opacity: 0.7;
+      }
+
+      .d {
+        opacity: 0.6;
+      }
+
+      .e {
+        opacity: 0.4;
+      }
+    </style>
+  </defs>
+  <g>
+    <polygon class="a" points="47.2 25.21 47.2 45.6 25.07 45.6 25.07 32.75 14.1 32.75 14.1 12.49 38.93 12.49 38.93 25.21 47.2 25.21"/>
+    <rect class="b" x="14.09" y="32.75" width="10.98" height="12.85"/>
+    <polygon class="c" points="25.07 45.6 25.07 49.31 8.52 49.31 8.52 32.75 14.1 32.75 14.1 45.6 25.07 45.6"/>
+    <rect class="d" x="26.94" y="50.42" width="8.28" height="8.28"/>
+    <rect class="e" x="17.71" y="57.64" width="4.14" height="4.14"/>
+    <rect class="b" x="38.93" y="12.5" width="8.28" height="12.72"/>
+    <polygon class="c" points="55.48 8.66 55.48 25.21 47.2 25.21 47.2 12.49 38.93 12.49 38.93 8.66 55.48 8.66"/>
+    <rect class="d" x="22.37" y="2.22" width="8.28" height="8.28"/>
+    <rect class="e" x="9.96" y="4.29" width="4.14" height="4.14"/>
+  </g>
 </svg>
