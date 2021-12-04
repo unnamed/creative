@@ -15,6 +15,6 @@ public interface ResourceExporter {
      * given {@code writer}
      */
     @Nullable
-    UrlAndHash export(ResourcePackWriter writer) throws IOException;
+    UrlAndHash export(TreeWriteable writer) throws IOException;
 
 }

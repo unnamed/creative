@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.generate.ResourceExporter;
-import team.unnamed.uracle.generate.ResourcePackWriter;
+import team.unnamed.uracle.generate.TreeWriteable;
 import team.unnamed.uracle.generate.Streams;
 import team.unnamed.uracle.generate.TreeOutputStream;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
@@ -38,7 +38,7 @@ public class PolymathHttpExporter implements ResourceExporter {
 
     @Override
     public @Nullable UrlAndHash export(
-            ResourcePackWriter writer
+            TreeWriteable writer
     ) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

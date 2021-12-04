@@ -2,7 +2,7 @@ package team.unnamed.uracle.generate.impl;
 
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.generate.ResourceExporter;
-import team.unnamed.uracle.generate.ResourcePackWriter;
+import team.unnamed.uracle.generate.TreeWriteable;
 import team.unnamed.uracle.generate.Streams;
 import team.unnamed.uracle.generate.TreeOutputStream;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
@@ -43,7 +43,7 @@ public class MCPacksHttpExporter implements ResourceExporter {
 
     @Override
     @NotNull
-    public UrlAndHash export(ResourcePackWriter writer) throws IOException {
+    public UrlAndHash export(TreeWriteable writer) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
