@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
-import team.unnamed.uracle.Uracle;
+import team.unnamed.uracle.UracleProvider;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.resourcepack.ResourcePack;
 import team.unnamed.uracle.resourcepack.ResourcePackApplier;
@@ -53,7 +53,7 @@ public class ResourcePackApplyListener implements Listener {
             case SUCCESSFULLY_LOADED: {
                 // successfully loaded, mark player
                 // as resource-pack-ed
-                Uracle.setHasResourcePack(player);
+                UracleProvider.setHasResourcePack(player);
                 // remove retry metadata
                 player.removeMetadata(RETRIES_KEY, plugin);
                 break;

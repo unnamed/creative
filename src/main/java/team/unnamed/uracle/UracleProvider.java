@@ -10,12 +10,12 @@ import org.bukkit.plugin.java.JavaPlugin;
  * Class holding static API methods for ease their
  * access
  */
-public final class Uracle {
+public final class UracleProvider {
 
     private static final String METADATA_KEY = "uracle_has_resourcepack";
     private static final Plugin PLUGIN = JavaPlugin.getPlugin(UraclePlugin.class);
 
-    private Uracle() {
+    private UracleProvider() {
         throw new UnsupportedOperationException();
     }
 
