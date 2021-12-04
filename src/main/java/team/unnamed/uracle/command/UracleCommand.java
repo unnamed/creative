@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.resourcepack.ResourcePack;
-import team.unnamed.uracle.resourcepack.ResourcePackApplier;
+import team.unnamed.uracle.resourcepack.ReflectiveResourcePackApplier;
 
 public class UracleCommand implements CommandExecutor {
 
@@ -70,7 +70,7 @@ public class UracleCommand implements CommandExecutor {
                 if (args.length == 1) {
                     // no more arguments, select everyone
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        ResourcePackApplier.setResourcePack(player, pack);
+                        ReflectiveResourcePackApplier.setResourcePack(player, pack);
                         count++;
                     }
                 } else {
@@ -78,7 +78,7 @@ public class UracleCommand implements CommandExecutor {
                     for (int i = 1; i < args.length; i++) {
                         Player player = Bukkit.getPlayerExact(args[i]);
                         if (player != null) {
-                            ResourcePackApplier.setResourcePack(player, pack);
+                            ReflectiveResourcePackApplier.setResourcePack(player, pack);
                             count++;
                         }
                     }

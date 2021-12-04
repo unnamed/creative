@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
  *
  * @author yusshu (Andre Roldan)
  */
-public final class ResourcePackApplier {
+public final class ReflectiveResourcePackApplier {
 
     private static final Method SET_RESOURCE_PACK_METHOD;
     private static final Method GET_HANDLE_METHOD;
