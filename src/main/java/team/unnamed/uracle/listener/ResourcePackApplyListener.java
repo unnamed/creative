@@ -10,7 +10,7 @@ import org.bukkit.metadata.MetadataValue;
 import team.unnamed.uracle.UracleProvider;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.resourcepack.ResourcePack;
-import team.unnamed.uracle.resourcepack.ReflectiveResourcePackApplier;
+import team.unnamed.uracle.resourcepack.ReflectiveResourcePackSender;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class ResourcePackApplyListener implements Listener {
             return;
         }
 
-        ReflectiveResourcePackApplier.setResourcePack(player, pack);
+        ReflectiveResourcePackSender.setResourcePack(player, pack);
     }
 
     @EventHandler
@@ -77,7 +77,7 @@ public class ResourcePackApplyListener implements Listener {
                 if (retries < RETRIES) {
                     // retry download
                     setRetries(player, retries + 1);
-                    ReflectiveResourcePackApplier.setResourcePack(player, pack);
+                    ReflectiveResourcePackSender.setResourcePack(player, pack);
                 } else if (pack.isRequired()) {
                     // max retries exceeded, pack is required
                     // kick player
