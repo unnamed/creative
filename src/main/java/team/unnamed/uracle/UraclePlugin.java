@@ -4,6 +4,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -119,7 +122,7 @@ public class UraclePlugin extends JavaPlugin {
                 new PackMetaWriter(this)
         );
 
-        getCommand("uracle").setExecutor(new UracleCommand(this, service));
+        registerCommand("uracle", new UracleCommand(this, service));
 
         // make loadConfiguration() be called after the server finishes loading
         getServer()
@@ -131,6 +134,16 @@ public class UraclePlugin extends JavaPlugin {
         for (Listener listener : listeners) {
             Bukkit.getPluginManager().registerEvents(listener, this);
         }
+    }
+
+    private <T extends CommandExecutor & TabCompleter> void registerCommand(String name, T behavior) {
+        PluginCommand command = getCommand(name);
+        if (command == null) {
+            throw new IllegalArgumentException("Invalid command: "
+                    + name + ". Did you forget to add it to plugin.yml?");
+        }
+        command.setExecutor(behavior);
+        command.setTabCompleter(behavior);
     }
 
     public File getOptionalsFolder() {

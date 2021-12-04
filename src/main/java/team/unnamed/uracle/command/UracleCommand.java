@@ -5,12 +5,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import team.unnamed.uracle.Uracle;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.resourcepack.ResourcePack;
 
-public class UracleCommand implements CommandExecutor {
+import java.util.Collections;
+import java.util.List;
+
+public class UracleCommand implements CommandExecutor, TabCompleter {
 
     private final UraclePlugin plugin;
     private final Uracle uracle;
@@ -105,6 +109,11 @@ public class UracleCommand implements CommandExecutor {
 
     private void sendHelp(CommandSender receiver) {
         receiver.sendMessage(plugin.getMessage("help"));
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return Collections.emptyList();
     }
 
 }
