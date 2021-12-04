@@ -1,6 +1,7 @@
 package team.unnamed.uracle.generate;
 
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.generate.exporter.ResourceExporter;
 import team.unnamed.uracle.resourcepack.ResourcePack;
 
 /**

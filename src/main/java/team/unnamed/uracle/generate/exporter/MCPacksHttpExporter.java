@@ -1,7 +1,6 @@
-package team.unnamed.uracle.generate.impl;
+package team.unnamed.uracle.generate.exporter;
 
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.generate.ResourceExporter;
 import team.unnamed.uracle.generate.TreeWriteable;
 import team.unnamed.uracle.generate.Streams;
 import team.unnamed.uracle.generate.TreeOutputStream;

@@ -1,10 +1,9 @@
-package team.unnamed.uracle.generate.impl;
+package team.unnamed.uracle.generate.exporter;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.generate.ResourceExporter;
 import team.unnamed.uracle.generate.TreeWriteable;
 import team.unnamed.uracle.generate.Streams;
 import team.unnamed.uracle.generate.TreeOutputStream;
