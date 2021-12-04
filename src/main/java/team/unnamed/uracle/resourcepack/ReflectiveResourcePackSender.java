@@ -7,13 +7,14 @@ import team.unnamed.uracle.util.Version;
 import java.lang.reflect.Method;
 
 /**
- * Utility for applying resource packs to specific
- * {@link Player} across all supported Bukkit,
- * Spigot and Paper versions
+ * Implementation of {@link ResourcePackSender} that internally
+ * uses reflection to send {@link ResourcePack} to players. It
+ * is compatible with most Spigot and Paper versions
  *
  * @author yusshu (Andre Roldan)
  */
-public final class ReflectiveResourcePackSender {
+public final class ReflectiveResourcePackSender
+        implements ResourcePackSender {
 
     private static final Method SET_RESOURCE_PACK_METHOD;
     private static final Method GET_HANDLE_METHOD;
@@ -67,10 +68,11 @@ public final class ReflectiveResourcePackSender {
      * server version, it's silently ignored (e.g. prompts in <1.17)
      *
      * @param player Player to apply resource pack
-     * @param resourcePack The applied resource pack
+     * @param pack The applied resource pack
      */
     @SuppressWarnings("all") // ide detects parameter mismatch
-    public static void setResourcePack(Player player, ResourcePack resourcePack) {
+    @Override
+    public void send(Player player, ResourcePack pack) {
         try {
             Object handle = GET_HANDLE_METHOD.invoke(player);
 
@@ -78,16 +80,16 @@ public final class ReflectiveResourcePackSender {
                 // 'required' and 'prompt' fields not supported
                 SET_RESOURCE_PACK_METHOD.invoke(
                         handle,
-                        resourcePack.getUrl(),
-                        resourcePack.getHash()
+                        pack.getUrl(),
+                        pack.getHash()
                 );
             } else {
-                String prompt = resourcePack.getPrompt();
+                String prompt = pack.getPrompt();
                 SET_RESOURCE_PACK_METHOD.invoke(
                         handle,
-                        resourcePack.getUrl(),
-                        resourcePack.getHash(),
-                        resourcePack.isRequired(),
+                        pack.getUrl(),
+                        pack.getHash(),
+                        pack.isRequired(),
                         prompt == null ? null : DESERIALIZE_COMPONENT_METHOD.invoke(null, prompt)
                 );
             }
