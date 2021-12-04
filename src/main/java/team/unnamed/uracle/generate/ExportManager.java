@@ -4,6 +4,8 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.generate.exporter.ResourceExporter;
 import team.unnamed.uracle.resourcepack.ResourcePack;
 
+import java.io.IOException;
+
 /**
  * Responsible for managing resource-pack exports
  * and holding the server resource-pack
@@ -34,7 +36,10 @@ public interface ExportManager {
      * its state so {@link ExportManager#getResourcePack}
      * will return the new resource-pack if it was
      * correctly uploaded
+     *
+     * @throws IOException If resource pack writing
+     * fails
      */
-    void exportAndUpdate();
+    void exportAndUpdate() throws IOException;
 
 }
