@@ -34,6 +34,8 @@ public class UraclePlugin extends JavaPlugin {
     private File overridesFolder;
     private File optionalsFolder;
 
+    private Uracle service;
+
     public void loadConfiguration() {
         ConfigurationSection config = getConfig();
 
@@ -112,7 +114,7 @@ public class UraclePlugin extends JavaPlugin {
         }
 
         listen(
-                new ResourcePackApplyListener(this),
+                new ResourcePackApplyListener(this, service),
                 new PresetsWriter(this),
                 new PackMetaWriter(this)
         );

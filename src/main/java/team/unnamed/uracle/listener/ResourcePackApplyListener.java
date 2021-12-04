@@ -7,10 +7,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import team.unnamed.uracle.Uracle;
 import team.unnamed.uracle.UracleProvider;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.resourcepack.ResourcePack;
-import team.unnamed.uracle.resourcepack.ReflectiveResourcePackSender;
 
 import java.util.List;
 
@@ -20,9 +20,11 @@ public class ResourcePackApplyListener implements Listener {
     private static final int RETRIES = 3;
 
     private final UraclePlugin plugin;
+    private final Uracle uracle;
 
-    public ResourcePackApplyListener(UraclePlugin plugin) {
+    public ResourcePackApplyListener(UraclePlugin plugin, Uracle uracle) {
         this.plugin = plugin;
+        this.uracle = uracle;
     }
 
     @EventHandler
@@ -35,7 +37,7 @@ public class ResourcePackApplyListener implements Listener {
             return;
         }
 
-        ReflectiveResourcePackSender.setResourcePack(player, pack);
+        uracle.getSender().send(player, pack);
     }
 
     @EventHandler
@@ -77,7 +79,7 @@ public class ResourcePackApplyListener implements Listener {
                 if (retries < RETRIES) {
                     // retry download
                     setRetries(player, retries + 1);
-                    ReflectiveResourcePackSender.setResourcePack(player, pack);
+                    uracle.getSender().send(player, pack);
                 } else if (pack.isRequired()) {
                     // max retries exceeded, pack is required
                     // kick player
