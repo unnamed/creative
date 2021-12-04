@@ -1,4 +1,4 @@
-package team.unnamed.uracle.export;
+package team.unnamed.uracle.generate;
 
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.resourcepack.ResourcePack;

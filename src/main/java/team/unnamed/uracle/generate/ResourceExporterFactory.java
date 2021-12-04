@@ -1,11 +1,11 @@
-package team.unnamed.uracle.export;
+package team.unnamed.uracle.generate;
 
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.UraclePlugin;
-import team.unnamed.uracle.export.impl.FolderExporter;
-import team.unnamed.uracle.export.impl.MCPacksHttpExporter;
-import team.unnamed.uracle.export.impl.PolymathHttpExporter;
-import team.unnamed.uracle.export.impl.ZipExporter;
+import team.unnamed.uracle.generate.impl.FolderExporter;
+import team.unnamed.uracle.generate.impl.MCPacksHttpExporter;
+import team.unnamed.uracle.generate.impl.PolymathHttpExporter;
+import team.unnamed.uracle.generate.impl.ZipExporter;
 
 import java.io.File;
 import java.io.IOException;

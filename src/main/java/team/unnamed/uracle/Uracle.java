@@ -1,6 +1,6 @@
 package team.unnamed.uracle;
 
-import team.unnamed.uracle.export.ExportManager;
+import team.unnamed.uracle.generate.ExportManager;
 import team.unnamed.uracle.resourcepack.ResourcePackSender;
 
 /**
