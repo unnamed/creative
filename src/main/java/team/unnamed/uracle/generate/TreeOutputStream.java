@@ -1,4 +1,4 @@
-package team.unnamed.uracle.io;
+package team.unnamed.uracle.generate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

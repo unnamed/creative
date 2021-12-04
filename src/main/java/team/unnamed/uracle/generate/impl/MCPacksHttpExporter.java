@@ -2,9 +2,9 @@ package team.unnamed.uracle.generate.impl;
 
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.generate.ResourceExporter;
-import team.unnamed.uracle.io.ResourcePackWriter;
-import team.unnamed.uracle.io.Streams;
-import team.unnamed.uracle.io.TreeOutputStream;
+import team.unnamed.uracle.generate.ResourcePackWriter;
+import team.unnamed.uracle.generate.Streams;
+import team.unnamed.uracle.generate.TreeOutputStream;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
 
 import java.io.IOException;

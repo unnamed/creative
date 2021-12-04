@@ -1,4 +1,4 @@
-package team.unnamed.uracle.io;
+package team.unnamed.uracle.generate;
 
 import java.io.IOException;
 

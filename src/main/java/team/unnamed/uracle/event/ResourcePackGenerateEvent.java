@@ -6,8 +6,8 @@ import com.google.gson.stream.JsonWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import team.unnamed.uracle.io.TreeOutputStream;
-import team.unnamed.uracle.io.Writeable;
+import team.unnamed.uracle.generate.TreeOutputStream;
+import team.unnamed.uracle.generate.Writeable;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

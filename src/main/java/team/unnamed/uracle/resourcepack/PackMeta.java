@@ -1,7 +1,7 @@
 package team.unnamed.uracle.resourcepack;
 
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.io.Writeable;
+import team.unnamed.uracle.generate.Writeable;
 
 import java.util.Objects;
 

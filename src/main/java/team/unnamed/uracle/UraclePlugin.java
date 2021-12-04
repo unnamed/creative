@@ -12,7 +12,7 @@ import team.unnamed.uracle.command.UracleCommand;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.generate.ResourceExporter;
 import team.unnamed.uracle.generate.ResourceExporterFactory;
-import team.unnamed.uracle.io.Writeable;
+import team.unnamed.uracle.generate.Writeable;
 import team.unnamed.uracle.listener.PackMetaWriter;
 import team.unnamed.uracle.listener.PresetsWriter;
 import team.unnamed.uracle.listener.ResourcePackApplyListener;

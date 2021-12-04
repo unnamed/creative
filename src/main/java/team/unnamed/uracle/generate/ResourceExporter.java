@@ -1,7 +1,6 @@
 package team.unnamed.uracle.generate;
 
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.io.ResourcePackWriter;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
 
 import java.io.IOException;
