@@ -117,7 +117,7 @@ public class UraclePlugin extends JavaPlugin {
                 new PackMetaWriter(this)
         );
 
-        getCommand("uracle").setExecutor(new UracleCommand(this));
+        getCommand("uracle").setExecutor(new UracleCommand(this, service));
 
         // make loadConfiguration() be called after the server finishes loading
         getServer()

@@ -5,18 +5,51 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Class holding static API methods for ease their
- * access
+ * Class providing static access to a singleton {@link Uracle}
+ * API entry point
  */
 public final class UracleProvider {
 
     private static final String METADATA_KEY = "uracle_has_resourcepack";
     private static final Plugin PLUGIN = JavaPlugin.getPlugin(UraclePlugin.class);
 
+    private static Uracle instance;
+
     private UracleProvider() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the held {@link Uracle} singleton instance to
+     * access the entire library
+     *
+     * @throws IllegalStateException If API has not been initialized
+     * yet
+     */
+    public static @NotNull Uracle get() {
+        Uracle instance = UracleProvider.instance;
+        if (instance == null) {
+            throw new IllegalStateException(
+                    "Cannot access Uracle API before it is initialized. This"
+                    + " error can be caused by a plugin that doesn't declare its"
+                    + " dependency on Uracle"
+            );
+        }
+        return instance;
+    }
+
+    @ApiStatus.Internal
+    void setService(Uracle instance) {
+        UracleProvider.instance = instance;
+    }
+
+    @ApiStatus.Internal
+    void unsetService() {
+        UracleProvider.instance = null;
     }
 
     /**

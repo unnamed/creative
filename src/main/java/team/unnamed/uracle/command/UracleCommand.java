@@ -6,16 +6,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import team.unnamed.uracle.Uracle;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.resourcepack.ResourcePack;
-import team.unnamed.uracle.resourcepack.ReflectiveResourcePackSender;
 
 public class UracleCommand implements CommandExecutor {
 
     private final UraclePlugin plugin;
+    private final Uracle uracle;
 
-    public UracleCommand(UraclePlugin plugin) {
+    public UracleCommand(UraclePlugin plugin, Uracle uracle) {
         this.plugin = plugin;
+        this.uracle = uracle;
     }
 
     @Override
@@ -70,7 +72,7 @@ public class UracleCommand implements CommandExecutor {
                 if (args.length == 1) {
                     // no more arguments, select everyone
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        ReflectiveResourcePackSender.setResourcePack(player, pack);
+                        uracle.getSender().send(player, pack);
                         count++;
                     }
                 } else {
@@ -78,7 +80,7 @@ public class UracleCommand implements CommandExecutor {
                     for (int i = 1; i < args.length; i++) {
                         Player player = Bukkit.getPlayerExact(args[i]);
                         if (player != null) {
-                            ReflectiveResourcePackSender.setResourcePack(player, pack);
+                            uracle.getSender().send(player, pack);
                             count++;
                         }
                     }
