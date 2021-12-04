@@ -1,5 +1,6 @@
 package team.unnamed.uracle;
 
+import team.unnamed.uracle.export.ExportManager;
 import team.unnamed.uracle.resourcepack.ResourcePackSender;
 
 /**
@@ -16,8 +17,17 @@ public interface Uracle {
      * service can provide, it is responsible for sending
      * resource packs to players
      *
-     * @return Returns the resource pack sender
+     * @return The resource pack sender
      */
     ResourcePackSender getSender();
+
+    /**
+     * Returns the {@link ExportManager} that this service
+     * can provide, it is responsible for holding and exporting
+     * the server resource pack
+     *
+     * @return The export manager for this service
+     */
+    ExportManager getExportManager();
 
 }
