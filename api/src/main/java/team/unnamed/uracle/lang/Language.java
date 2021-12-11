@@ -1,4 +1,6 @@
-package team.unnamed.uracle;
+package team.unnamed.uracle.lang;
+
+import team.unnamed.uracle.ResourceLocation;
 
 import java.util.Collections;
 import java.util.HashMap;
