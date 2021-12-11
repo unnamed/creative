@@ -5,9 +5,9 @@ import java.util.Map;
 public class PackMeta {
 
     private final PackInfo pack;
-    private final Map<String, PackLanguage> languages;
+    private final Map<String, Language> languages;
 
-    public PackMeta(PackInfo pack, Map<String, PackLanguage> languages) {
+    public PackMeta(PackInfo pack, Map<String, Language> languages) {
         this.pack = pack;
         this.languages = languages;
     }
