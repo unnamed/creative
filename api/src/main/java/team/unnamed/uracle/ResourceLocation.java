@@ -116,7 +116,7 @@ public class ResourceLocation {
      * @param path The resource location path
      * @return A new {@link ResourceLocation} instance
      */
-    public static ResourceLocation ofNamespaced(String namespace, String path) {
+    public static ResourceLocation of(String namespace, String path) {
         return new ResourceLocation(
                 requireNonNull(namespace, "namespace"),
                 path

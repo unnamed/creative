@@ -30,4 +30,16 @@ public class TextureMeta {
         this.mipmaps = mipmaps;
     }
 
+    public boolean isBlur() {
+        return blur;
+    }
+
+    public boolean isClamp() {
+        return clamp;
+    }
+
+    public int[] getMipmaps() {
+        return mipmaps;
+    }
+
 }

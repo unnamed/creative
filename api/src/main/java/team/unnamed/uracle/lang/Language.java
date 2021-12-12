@@ -198,6 +198,9 @@ public class Language {
         private boolean bidirectional = false;
         private Map<String, String> translations = Collections.emptyMap();
 
+        private Builder() {
+        }
+
         public Builder resource(ResourceLocation resource) {
             this.resource = requireNonNull(resource, "resource");
             return this;
