@@ -66,7 +66,7 @@ public class Language {
             Map<String, String> translations
     ) {
         requireNonNull(translations, "translations");
-        this.resource = requireNonNull(resource, "resouce");
+        this.resource = requireNonNull(resource, "resource");
         this.name = requireNonNull(name, "name");
         this.region = requireNonNull(region, "region");
         this.bidirectional = bidirectional;
