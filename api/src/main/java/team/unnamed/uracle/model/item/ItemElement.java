@@ -36,47 +36,47 @@ public class ItemElement {
      * Start point of a cuboid. Values must be
      * between -16 and 32.
      */
-    private final Vector3Float from;
+    private Vector3Float from;
 
     /**
      * Stop point of a cuboid. Values must be
      * between -16 and 32.
      */
-    private final Vector3Float to;
+    private Vector3Float to;
 
-    private final Rotation rotation;
+    private Rotation rotation;
 
-    private final boolean shade;
+    private boolean shade;
 
     /**
      * Holds all the faces of the cuboid. If a face is
      * left out, it does not render
      */
-    private final Map<Direction, Face> faces;
+    private Map<Direction, Face> faces;
 
     public static class Rotation {
 
-        private final Vector3Float origin;
+        private Vector3Float origin;
 
-        private final Axis3D axis;
+        private Axis3D axis;
 
-        private final float angle;
+        private float angle;
 
-        private final boolean rescale;
+        private boolean rescale;
 
     }
 
     public static class Face {
 
-        private final Vector4Int uv;
+        private Vector4Int uv;
 
-        private final String texture;
+        private String texture;
 
-        private final Direction cullFace;
+        private Direction cullFace;
 
-        private final int rotation;
+        private int rotation;
 
-        private final boolean tint;
+        private boolean tint;
 
     }
 

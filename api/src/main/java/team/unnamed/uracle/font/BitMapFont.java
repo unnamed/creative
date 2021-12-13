@@ -23,6 +23,7 @@
  */
 package team.unnamed.uracle.font;
 
+import net.kyori.examination.string.StringExaminer;
 import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.texture.Texture;
 
@@ -34,6 +35,8 @@ import java.util.Objects;
  * Represents a bitmap font (font that uses a set of
  * string characters and PNG images to render) for
  * Minecraft resource packs
+ *
+ * @since 1.0.0
  */
 public class BitMapFont implements Font {
 
@@ -85,7 +88,7 @@ public class BitMapFont implements Font {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.BITMAP;
     }
 
@@ -94,7 +97,7 @@ public class BitMapFont implements Font {
      *
      * @return The font texture
      */
-    public Texture getTexture() {
+    public Texture texture() {
         return texture;
     }
 
@@ -103,7 +106,7 @@ public class BitMapFont implements Font {
      *
      * @return The font characters height
      */
-    public int getHeight() {
+    public int height() {
         return height;
     }
 
@@ -113,7 +116,7 @@ public class BitMapFont implements Font {
      *
      * @return The font characters ascent
      */
-    public int getAscent() {
+    public int ascent() {
         return ascent;
     }
 
@@ -139,7 +142,7 @@ public class BitMapFont implements Font {
     @Override
     public void write(TreeWriter.Context context) {
         context.writeStringField("type", "bitmap");
-        context.writeStringField("file", texture.getLocation().toString());
+        context.writeStringField("file", texture.key().toString());
         if (height != DEFAULT_HEIGHT) {
             // only write if height is not equal to
             // the default height
@@ -163,12 +166,7 @@ public class BitMapFont implements Font {
 
     @Override
     public String toString() {
-        return "BitMapFont{" +
-                "texture=" + texture +
-                ", height=" + height +
-                ", ascent=" + ascent +
-                ", characters=" + characters +
-                '}';
+        return examine(StringExaminer.simpleEscaping());
     }
 
     @Override

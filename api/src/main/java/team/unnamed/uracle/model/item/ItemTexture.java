@@ -31,10 +31,10 @@ import java.util.Map;
 
 public class ItemTexture {
 
-    private final List<Key> layers;
+    private List<Key> layers;
 
-    @Nullable private final Key particle;
+    @Nullable private Key particle;
 
-    private final Map<String, Key> variables;
+    private Map<String, Key> variables;
 
 }

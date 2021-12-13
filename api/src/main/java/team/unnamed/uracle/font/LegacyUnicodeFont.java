@@ -24,6 +24,7 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
+import team.unnamed.uracle.TreeWriter;
 
 public class LegacyUnicodeFont implements Font {
 
@@ -57,4 +58,18 @@ public class LegacyUnicodeFont implements Font {
         return template;
     }
 
+    @Override
+    public void write(TreeWriter writer) {
+
+    }
+
+    @Override
+    public void write(TreeWriter.Context context) {
+
+    }
+
+    @Override
+    public Type type() {
+        return null;
+    }
 }

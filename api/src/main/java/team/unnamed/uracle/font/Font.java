@@ -23,13 +23,14 @@
  */
 package team.unnamed.uracle.font;
 
+import net.kyori.examination.Examinable;
 import team.unnamed.uracle.Element;
 
 /**
  * Represents a Minecraft Resource Pack Font
  * provider
  */
-public interface Font extends Element, Element.Part {
+public interface Font extends Element, Element.Part, Examinable {
 
     /**
      * Returns the type of this font, the font
@@ -37,7 +38,7 @@ public interface Font extends Element, Element.Part {
      *
      * @return The font type
      */
-    Type getType();
+    Type type();
 
     enum Type {
         BITMAP,

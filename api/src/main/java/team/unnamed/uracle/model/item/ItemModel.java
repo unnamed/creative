@@ -35,7 +35,7 @@ public class ItemModel implements Model {
     public static final Key ITEM_GENERATED = Key.key("item/generated");
     public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");
 
-    private final Key location;
+    private Key location;
 
     /**
      * Loads a different model from the given path, in form
@@ -51,21 +51,21 @@ public class ItemModel implements Model {
      * doesn't work for all items (only for chests, ender chests,
      * mob heads, shields, banners and tridents</p>
      */
-    private final Key parent;
+    private Key parent;
 
     /**
      * Holds the different places where item models are displayed
      */
-    private final Map<ItemDisplay.Type, ItemDisplay> display;
+    private Map<ItemDisplay.Type, ItemDisplay> display;
 
-    private final ItemTexture textures;
+    private ItemTexture textures;
 
     /**
      * Can be {@link GuiLight#FRONT} or {@link GuiLight#SIDE}. If set
      * to "side", the model is rendered like a block. If set to "front",
      * model is shaded like a flat item. Defaults to "side"
      */
-    @Nullable private final GuiLight guiLight;
+    @Nullable private GuiLight guiLight;
 
     /**
      * Determines cases in which a different model should be used based on
@@ -74,7 +74,7 @@ public class ItemModel implements Model {
      * if it has been already overridden once, for example this avoids recursion
      * on overriding to the same model.
      */
-    private final List<ItemOverride> overrides;
+    private List<ItemOverride> overrides;
 
 
     public enum GuiLight {

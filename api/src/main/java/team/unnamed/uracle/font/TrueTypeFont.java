@@ -24,6 +24,7 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
+import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.Vector2Float;
 
 import java.util.List;
@@ -71,4 +72,18 @@ public class TrueTypeFont implements Font {
         this.skip = skip;
     }
 
+    @Override
+    public void write(TreeWriter writer) {
+
+    }
+
+    @Override
+    public void write(TreeWriter.Context context) {
+
+    }
+
+    @Override
+    public Type type() {
+        return null;
+    }
 }
