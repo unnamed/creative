@@ -23,23 +23,67 @@
  */
 package team.unnamed.uracle;
 
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
+import java.util.stream.Stream;
 
-public class PackInfo implements Element.Part {
+import static java.util.Objects.requireNonNull;
 
+/**
+ * Class representing the "pack" section of the
+ * pack.mcmeta file for Minecraft Resource Packs
+ *
+ * @since 1.0.0
+ */
+public class PackInfo implements Element.Part, Examinable {
+
+    /**
+     * Pack version. If this number does not match the current
+     * required number, the resource pack displays an error and
+     * requires additional confirmation to load the pack
+     *
+     * <p>There are format versions assigned to specific Minecraft
+     * client versions, e.g.: 7 for Minecraft 1.17 and 1.17.1, 8
+     * for Minecraft 1.18 and 1.18.1</p>
+     */
     private final int format;
+
+    /**
+     * Pack description. Text shown below the pack name in the resource
+     * pack menu. The text is shown on two lines. If the text is too long
+     * it is truncated.
+     */
     private final String description;
 
-    public PackInfo(int format, String description) {
+    public PackInfo(
+            int format,
+            String description
+    ) {
         this.format = format;
-        this.description = description;
+        this.description = requireNonNull(description, "description");
     }
 
-    public int getFormat() {
+    /**
+     * Gets the resource-pack format number
+     *
+     * @return The format number
+     * @since 1.0.0
+     */
+    public int format() {
         return format;
     }
 
-    public String getDescription() {
+    /**
+     * Gets the resource-pack description string
+     *
+     * @return The description
+     * @since 1.0.0
+     */
+    public String description() {
         return description;
     }
 
@@ -50,11 +94,16 @@ public class PackInfo implements Element.Part {
     }
 
     @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("format", format),
+                ExaminableProperty.of("description", description)
+        );
+    }
+
+    @Override
     public String toString() {
-        return "PackInfo{" +
-                "format=" + format +
-                ", description='" + description + '\'' +
-                '}';
+        return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
@@ -62,7 +111,8 @@ public class PackInfo implements Element.Part {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PackInfo packInfo = (PackInfo) o;
-        return format == packInfo.format && description.equals(packInfo.description);
+        return format == packInfo.format
+                && description.equals(packInfo.description);
     }
 
     @Override
