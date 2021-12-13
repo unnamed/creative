@@ -1,13 +1,13 @@
 package team.unnamed.uracle.model.item;
 
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.ResourceLocation;
 
 public class ItemOverride {
 
     private final Predicate predicate;
 
-    private final ResourceLocation model;
+    private final Key model;
 
     public static class Predicate {
 

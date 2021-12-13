@@ -9,7 +9,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains:annotations:23.0.0")
+    compileOnlyApi("org.jetbrains:annotations:23.0.0")
+    api("net.kyori:adventure-key:4.9.3")
 }
 
 val snapshotRepository: String by project

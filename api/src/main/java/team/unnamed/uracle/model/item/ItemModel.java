@@ -1,7 +1,7 @@
 package team.unnamed.uracle.model.item;
 
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.ResourceLocation;
 import team.unnamed.uracle.model.Model;
 
 import java.util.List;
@@ -9,10 +9,10 @@ import java.util.Map;
 
 public class ItemModel implements Model {
 
-    public static final ResourceLocation ITEM_GENERATED = ResourceLocation.of("item/generated");
-    public static final ResourceLocation BUILT_IN_ENTITY = ResourceLocation.of("builtin/entity");
+    public static final Key ITEM_GENERATED = Key.key("item/generated");
+    public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");
 
-    private final ResourceLocation location;
+    private final Key location;
 
     /**
      * Loads a different model from the given path, in form
@@ -28,7 +28,7 @@ public class ItemModel implements Model {
      * doesn't work for all items (only for chests, ender chests,
      * mob heads, shields, banners and tridents</p>
      */
-    private final ResourceLocation parent;
+    private final Key parent;
 
     /**
      * Holds the different places where item models are displayed

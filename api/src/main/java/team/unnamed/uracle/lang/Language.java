@@ -1,6 +1,8 @@
 package team.unnamed.uracle.lang;
 
-import team.unnamed.uracle.ResourceLocation;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Element;
 import team.unnamed.uracle.TreeWriter;
 
@@ -23,14 +25,14 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language implements Element, Element.Part {
+public class Language implements Element, Element.Part, Keyed {
 
     /**
      * The language JSON file location inside
      * assets/&lt;namespace&gt;/lang, the resource
      * location path also identifies this language
      */
-    private final ResourceLocation resource;
+    private final Key key;
 
     /**
      * The full name of this language, shown in the
@@ -61,14 +63,14 @@ public class Language implements Element, Element.Part {
     private final Map<String, String> translations;
 
     private Language(
-            ResourceLocation resource,
+            Key key,
             String name,
             String region,
             boolean bidirectional,
             Map<String, String> translations
     ) {
         requireNonNull(translations, "translations");
-        this.resource = requireNonNull(resource, "resource");
+        this.key = requireNonNull(key, "key");
         this.name = requireNonNull(name, "name");
         this.region = requireNonNull(region, "region");
         this.bidirectional = bidirectional;
@@ -82,8 +84,9 @@ public class Language implements Element, Element.Part {
      *
      * @return The language resource location
      */
-    public ResourceLocation getResource() {
-        return resource;
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
@@ -139,7 +142,7 @@ public class Language implements Element, Element.Part {
      */
     @Override
     public void write(TreeWriter writer) {
-        try (TreeWriter.Context context = writer.enter(resource, "lang")) {
+        try (TreeWriter.Context context = writer.join(key, "lang")) {
             // JSON object is formatted like
             // {
             //    "translation.key": "The actual translation"
@@ -172,7 +175,7 @@ public class Language implements Element, Element.Part {
 
     @Override
     public String toString() {
-        return "Language(" + resource + ") {"
+        return "Language(" + key + ") {"
                 + "name = " + name
                 + ", region = " + region
                 + ", bidirectional = " + bidirectional
@@ -185,7 +188,7 @@ public class Language implements Element, Element.Part {
         if (o == null || getClass() != o.getClass()) return false;
         Language language = (Language) o;
         return bidirectional == language.bidirectional
-                && resource.equals(language.resource)
+                && key.equals(language.key)
                 && name.equals(language.name)
                 && region.equals(language.region)
                 && translations.equals(language.translations);
@@ -194,7 +197,7 @@ public class Language implements Element, Element.Part {
     @Override
     public int hashCode() {
         return Objects.hash(
-                resource, name, region,
+                key, name, region,
                 bidirectional, translations
         );
     }
@@ -202,7 +205,7 @@ public class Language implements Element, Element.Part {
     /**
      * Creates a new Minecraft {@link Language} instance
      *
-     * @param resource The language resource location and
+     * @param key The language resource location and
      *                 identifier
      * @param name The language full name
      * @param region The language region or country
@@ -210,14 +213,14 @@ public class Language implements Element, Element.Part {
      * @param translations The language translations
      */
     public static Language of(
-            ResourceLocation resource,
+            Key key,
             String name,
             String region,
             boolean bidirectional,
             Map<String, String> translations
     ) {
         return new Language(
-                resource, name, region,
+                key, name, region,
                 bidirectional, translations
         );
     }
@@ -239,7 +242,7 @@ public class Language implements Element, Element.Part {
      */
     public static class Builder {
 
-        private ResourceLocation resource;
+        private Key key;
         private String name;
         private String region;
         private boolean bidirectional = false;
@@ -248,8 +251,8 @@ public class Language implements Element, Element.Part {
         private Builder() {
         }
 
-        public Builder resource(ResourceLocation resource) {
-            this.resource = requireNonNull(resource, "resource");
+        public Builder key(Key key) {
+            this.key = requireNonNull(key, "key");
             return this;
         }
 
@@ -282,7 +285,7 @@ public class Language implements Element, Element.Part {
          */
         public Language build() {
             return new Language(
-                    resource, name, region,
+                    key, name, region,
                     bidirectional, translations
             );
         }

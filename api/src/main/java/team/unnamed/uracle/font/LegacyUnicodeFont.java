@@ -1,6 +1,6 @@
 package team.unnamed.uracle.font;
 
-import team.unnamed.uracle.ResourceLocation;
+import net.kyori.adventure.key.Key;
 
 public class LegacyUnicodeFont implements Font {
 
@@ -10,7 +10,7 @@ public class LegacyUnicodeFont implements Font {
      * each character from 0 to 15. The file extension of the target file
      * should be .bin
      */
-    private final ResourceLocation sizes;
+    private final Key sizes;
 
     /**
      * The resource location inside assets/&lt;namespace&gt;/textures that leads to
@@ -19,18 +19,18 @@ public class LegacyUnicodeFont implements Font {
      * of the replaced characters, so a single provider of this type can point
      * into multiple texture files.
      */
-    private final ResourceLocation template;
+    private final Key template;
 
-    public LegacyUnicodeFont(ResourceLocation sizes, ResourceLocation template) {
+    public LegacyUnicodeFont(Key sizes, Key template) {
         this.sizes = sizes;
         this.template = template;
     }
 
-    public ResourceLocation getSizes() {
+    public Key getSizes() {
         return sizes;
     }
 
-    public ResourceLocation getTemplate() {
+    public Key getTemplate() {
         return template;
     }
 

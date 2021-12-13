@@ -33,7 +33,7 @@ public class PackMeta implements Element {
         //      }
         //   }
         // }
-        try (TreeWriter.Context context = writer.enter("pack.mcmeta")) {
+        try (TreeWriter.Context context = writer.join("pack.mcmeta")) {
             context.startObject();
             context.writeKey("pack");
             // todo: write "pack"

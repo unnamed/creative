@@ -1,8 +1,10 @@
 package team.unnamed.uracle.texture;
 
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.Element;
-import team.unnamed.uracle.ResourceLocation;
 import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.Writable;
 
@@ -19,7 +21,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Texture implements Element {
+public class Texture implements Element, Keyed {
 
     /**
      * The location of this texture data, the {@code data}
@@ -27,7 +29,7 @@ public class Texture implements Element {
      * context is assets/&lt;namespace&gt;/textures, this
      * path includes the file extension (.PNG)
      */
-    private final ResourceLocation location;
+    private final Key key;
 
     /**
      * The actual PNG image of this texture, stored using
@@ -51,12 +53,12 @@ public class Texture implements Element {
     @Nullable private final AnimationMeta animation;
 
     private Texture(
-            ResourceLocation location,
+            Key key,
             Writable data,
             @Nullable TextureMeta meta,
             @Nullable AnimationMeta animation
     ) {
-        this.location = requireNonNull(location, "location");
+        this.key = requireNonNull(key, "key");
         this.data = requireNonNull(data, "data");
         this.meta = meta;
         this.animation = animation;
@@ -67,10 +69,11 @@ public class Texture implements Element {
      * using assets/&lt;namespace&gt;/textures as base
      * path
      *
-     * @return This texture resource location
+     * @return This texture resource location (or key)
      */
-    public ResourceLocation getLocation() {
-        return location;
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
@@ -112,7 +115,7 @@ public class Texture implements Element {
     @Override
     public void write(TreeWriter writer) {
         // write the actual texture PNG image
-        try (TreeWriter.Context context = writer.enter(location, "textures")) {
+        try (TreeWriter.Context context = writer.join(key, "textures")) {
             data.write(context);
         } catch (IOException e) {
             throw new UncheckedIOException("Cannot write texture", e);
@@ -123,7 +126,7 @@ public class Texture implements Element {
 
         // write the metadata
         if (hasMeta || hasAnimation) {
-            try (TreeWriter.Context context = writer.enter(location, "textures", ".mcmeta")) {
+            try (TreeWriter.Context context = writer.join(key, "textures", ".mcmeta")) {
                 context.startObject();
 
                 if (hasMeta) {
@@ -149,7 +152,7 @@ public class Texture implements Element {
     @Override
     public String toString() {
         return "Texture{" +
-                "location=" + location +
+                "key=" + key +
                 ", data=" + data +
                 ", meta=" + meta +
                 ", animation=" + animation +
@@ -161,7 +164,7 @@ public class Texture implements Element {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Texture texture = (Texture) o;
-        return location.equals(texture.location)
+        return key.equals(texture.key)
                 && data.equals(texture.data)
                 && Objects.equals(meta, texture.meta)
                 && Objects.equals(animation, texture.animation);
@@ -169,46 +172,46 @@ public class Texture implements Element {
 
     @Override
     public int hashCode() {
-        return Objects.hash(location, data, meta, animation);
+        return Objects.hash(key, data, meta, animation);
     }
 
     /**
      * Creates a new {@link Texture} instance using the
      * provided values
      *
-     * @param location The texture location using
-     *                 assets/&lt;namespace&gt;/textures
-     *                 as base path
+     * @param key The texture location using
+     *            assets/&lt;namespace&gt;/textures
+     *            as base path
      * @param data The PNG texture data
      * @param meta The optional texture meta
      * @param animation The optional animation meta
      * @return A new {@link Texture} instance
      */
     public static Texture of(
-            ResourceLocation location,
+            Key key,
             Writable data,
             @Nullable TextureMeta meta,
             @Nullable AnimationMeta animation
     ) {
-        return new Texture(location, data, meta, animation);
+        return new Texture(key, data, meta, animation);
     }
 
     /**
      * Creates a new {@link Texture} instance without metadata,
      * using the provided values
      *
-     * @param location The texture location using
-     *                 assets/&lt;namespace&gt;/textures
-     *                 as base path
+     * @param key The texture location using
+     *            assets/&lt;namespace&gt;/textures
+     *            as base path
      * @param data The PNG texture data
      * @return A new {@link Texture} instance without
      * metadata
      */
     public static Texture of(
-            ResourceLocation location,
+            Key key,
             Writable data
     ) {
-        return new Texture(location, data, null, null);
+        return new Texture(key, data, null, null);
     }
 
     /**
@@ -227,7 +230,7 @@ public class Texture implements Element {
      */
     public static class Builder {
 
-        private ResourceLocation location;
+        private Key key;
         private Writable data;
         private TextureMeta meta;
         private AnimationMeta animation;
@@ -235,8 +238,8 @@ public class Texture implements Element {
         private Builder() {
         }
 
-        public Builder location(ResourceLocation location) {
-            this.location = requireNonNull(location, "location");
+        public Builder key(Key key) {
+            this.key = requireNonNull(key, "key");
             return this;
         }
 
@@ -263,7 +266,7 @@ public class Texture implements Element {
          * @return The recently created texture
          */
         public Texture build() {
-            return new Texture(location, data, meta, animation);
+            return new Texture(key, data, meta, animation);
         }
 
     }

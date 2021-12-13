@@ -1,14 +1,16 @@
 package team.unnamed.uracle;
 
+import net.kyori.adventure.key.Key;
+
 import java.io.OutputStream;
 
 public interface TreeWriter {
 
-    Context enter(ResourceLocation location, String suffix);
+    Context join(Key location, String suffix);
 
-    Context enter(ResourceLocation location, String suffix, String extension);
+    Context join(Key location, String suffix, String extension);
 
-    Context enter(String location);
+    Context join(String location);
 
     abstract class Context extends OutputStream implements AutoCloseable {
 

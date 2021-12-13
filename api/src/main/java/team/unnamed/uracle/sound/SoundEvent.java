@@ -1,7 +1,7 @@
 package team.unnamed.uracle.sound;
 
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.ResourceLocation;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class SoundEvent {
      * assets/&lt;namespace&gt;/sounds.json. This property specifies
      * the namespace and name of this file
      */
-    private ResourceLocation location;
+    private Key location;
 
     /**
      * True if the sounds listed in {@link SoundEvent#sounds}

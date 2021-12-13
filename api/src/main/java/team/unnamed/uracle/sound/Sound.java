@@ -1,11 +1,11 @@
 package team.unnamed.uracle.sound;
 
-import team.unnamed.uracle.ResourceLocation;
+import net.kyori.adventure.key.Key;
 import team.unnamed.uracle.Writable;
 
 public class Sound {
 
-    private ResourceLocation location;
+    private Key key;
 
     /**
      * The OGG sound data, located at the specified {@code location}

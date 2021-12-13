@@ -1,6 +1,6 @@
 package team.unnamed.uracle.font;
 
-import team.unnamed.uracle.ResourceLocation;
+import net.kyori.adventure.key.Key;
 import team.unnamed.uracle.Vector2Float;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public class TrueTypeFont implements Font {
      * The resource location of the TrueType font file within
      * assets/&lt;namespace&gt;/font
      */
-    private final ResourceLocation file;
+    private final Key file;
 
     /**
      * The distance by which the characters of this provider are
@@ -35,7 +35,7 @@ public class TrueTypeFont implements Font {
     private final List<String> skip;
 
     public TrueTypeFont(
-            ResourceLocation file,
+            Key file,
             Vector2Float shift,
             float size,
             float oversample,
