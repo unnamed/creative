@@ -1,7 +1,7 @@
 package team.unnamed.uracle.font;
 
 import team.unnamed.uracle.ResourceLocation;
-import team.unnamed.uracle.base.Vector2Float;
+import team.unnamed.uracle.Vector2Float;
 
 import java.util.List;
 

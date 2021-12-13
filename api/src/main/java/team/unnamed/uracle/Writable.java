@@ -1,4 +1,4 @@
-package team.unnamed.uracle.base;
+package team.unnamed.uracle;
 
 import java.io.IOException;
 import java.io.OutputStream;

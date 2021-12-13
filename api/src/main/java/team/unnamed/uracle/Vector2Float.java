@@ -1,4 +1,4 @@
-package team.unnamed.uracle.base;
+package team.unnamed.uracle;
 
 public class Vector2Float {
 

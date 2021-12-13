@@ -1,6 +1,8 @@
 package team.unnamed.uracle.lang;
 
 import team.unnamed.uracle.ResourceLocation;
+import team.unnamed.uracle.Element;
+import team.unnamed.uracle.TreeWriter;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language {
+public class Language implements Element, Element.Part {
 
     /**
      * The language JSON file location inside
@@ -121,6 +123,51 @@ public class Language {
      */
     public Map<String, String> getTranslations() {
         return Collections.unmodifiableMap(translations);
+    }
+
+    /**
+     * Implementation of {@link Element#write(TreeWriter)}
+     * for {@link Language} instances, languages are composed
+     * by two parts, the first part must be written into the
+     * pack meta file, and the second part has its own file.
+     *
+     * <p>Only the second part (which has its own file) is
+     * created and written by this method, registration must
+     * be done by calling {@link Language#writeRegistration}</p>
+     *
+     * @param writer The target tree writer
+     */
+    @Override
+    public void write(TreeWriter writer) {
+        try (TreeWriter.Context context = writer.enter(resource, "assets", "lang")) {
+            // JSON object is formatted like
+            // {
+            //    "translation.key": "The actual translation"
+            // }
+            context.startObject();
+            for (Map.Entry<String, String> translation : translations.entrySet()) {
+                String key = translation.getKey();
+                String value = translation.getValue();
+                context.writeStringField(key, value);
+            }
+            context.endObject();
+        }
+    }
+
+    /**
+     * Writes the language registration to an already created
+     * {@link TreeWriter.Context}, it must belong to a pack
+     * meta file
+     *
+     * @param context The context where to write the registration
+     */
+    @Override
+    public void write(TreeWriter.Context context) {
+        context.startObject();
+        context.writeStringField("name", name);
+        context.writeStringField("region", region);
+        context.writeBooleanField("bidirectional", bidirectional);
+        context.endObject();
     }
 
     @Override

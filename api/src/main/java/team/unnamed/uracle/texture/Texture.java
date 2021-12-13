@@ -2,7 +2,7 @@ package team.unnamed.uracle.texture;
 
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.ResourceLocation;
-import team.unnamed.uracle.base.Writable;
+import team.unnamed.uracle.Writable;
 
 import java.util.Objects;
 

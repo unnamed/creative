@@ -1,7 +1,7 @@
 package team.unnamed.uracle.sound;
 
 import team.unnamed.uracle.ResourceLocation;
-import team.unnamed.uracle.base.Writable;
+import team.unnamed.uracle.Writable;
 
 public class Sound {
 
