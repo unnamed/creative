@@ -1,9 +1,13 @@
 package team.unnamed.uracle.texture;
 
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.Element;
 import team.unnamed.uracle.ResourceLocation;
+import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.Writable;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
@@ -15,12 +19,13 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Texture {
+public class Texture implements Element {
 
     /**
      * The location of this texture data, the {@code data}
      * property will be written there. Base path in this
-     * context is assets/&lt;namespace&gt;/textures
+     * context is assets/&lt;namespace&gt;/textures, this
+     * path includes the file extension (.PNG)
      */
     private final ResourceLocation location;
 
@@ -95,6 +100,50 @@ public class Texture {
      */
     public @Nullable AnimationMeta getAnimation() {
         return animation;
+    }
+
+    /**
+     * Writes this texture information into the given
+     * {@code writer}, may contain more than one file
+     * when required
+     *
+     * @param writer The target tree writer
+     */
+    @Override
+    public void write(TreeWriter writer) {
+        // write the actual texture PNG image
+        try (TreeWriter.Context context = writer.enter(location, "textures")) {
+            data.write(context);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Cannot write texture", e);
+        }
+
+        boolean hasMeta = meta != null;
+        boolean hasAnimation = animation != null;
+
+        // write the metadata
+        if (hasMeta || hasAnimation) {
+            try (TreeWriter.Context context = writer.enter(location, "textures", ".mcmeta")) {
+                context.startObject();
+
+                if (hasMeta) {
+                    context.writeKey("texture");
+                    context.writePart(meta);
+                    if (hasAnimation) {
+                        // write separator for next
+                        // object
+                        context.writeSeparator();
+                    }
+                }
+
+                if (hasAnimation) {
+                    context.writeKey("animation");
+                    context.writePart(animation);
+                }
+
+                context.endObject();
+            }
+        }
     }
 
     @Override

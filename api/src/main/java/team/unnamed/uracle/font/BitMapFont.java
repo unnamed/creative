@@ -1,30 +1,43 @@
 package team.unnamed.uracle.font;
 
-import team.unnamed.uracle.ResourceLocation;
+import team.unnamed.uracle.TreeWriter;
+import team.unnamed.uracle.texture.Texture;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * Represents a bitmap font (font that uses a set of
+ * string characters and PNG images to render) for
+ * Minecraft resource packs
+ */
 public class BitMapFont implements Font {
 
     /**
-     * Resource location of the bitmap file, starting from
-     * assets/&lt;namespace&gt;/textures
+     * Default bitmap font height
      */
-    private final ResourceLocation file;
+    public static final int DEFAULT_HEIGHT = 8;
+
+    /**
+     * The texture of this bitmap font, must be
+     * a PNG image
+     */
+    private final Texture texture;
 
     /**
      * Optional. The height of the character, measured in pixels.
      * Can be negative. This tag is separate from the area used
      * in the source texture and just rescales the displayed
-     * result. Default is 8
+     * result
      */
-    private final int height = 8;
+    private final int height;
 
     /**
      * The ascent of the character, measured in pixels. This value
      * adds a vertical shift to the displayed result.
      */
-    private final int ascent = 0;
+    private final int ascent;
 
     /**
      * A list of strings containing the characters replaced by this
@@ -36,9 +49,119 @@ public class BitMapFont implements Font {
      */
     private final List<String> characters;
 
-    public BitMapFont(ResourceLocation file, List<String> characters) {
-        this.file = file;
+    public BitMapFont(
+            Texture texture,
+            int height,
+            int ascent,
+            List<String> characters
+    ) {
+        this.texture = texture;
+        this.height = height;
+        this.ascent = ascent;
         this.characters = characters;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.BITMAP;
+    }
+
+    /**
+     * Returns the texture of this bitmap font
+     *
+     * @return The font texture
+     */
+    public Texture getTexture() {
+        return texture;
+    }
+
+    /**
+     * Returns the font characters height
+     *
+     * @return The font characters height
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Returns the font characters ascent, this
+     * value as a vertical shift to the fonts
+     *
+     * @return The font characters ascent
+     */
+    public int getAscent() {
+        return ascent;
+    }
+
+    /**
+     * Writes the bitmap required information, if the
+     * {@link BitMapFont#write(TreeWriter.Context)} method
+     * is not called, the written files will be ignored
+     *
+     * @param writer The target tree writer
+     */
+    @Override
+    public void write(TreeWriter writer) {
+        // delegate to write the texture
+        texture.write(writer);
+    }
+
+    /**
+     * Writes the bitmap font provider registration, it is
+     * part of the actual font
+     *
+     * @param context The target context, will not close
+     */
+    @Override
+    public void write(TreeWriter.Context context) {
+        context.writeStringField("type", "bitmap");
+        context.writeStringField("file", texture.getLocation().toString());
+        if (height != DEFAULT_HEIGHT) {
+            // only write if height is not equal to
+            // the default height
+            context.writeIntField("height", height);
+        }
+        context.writeIntField("ascent", ascent);
+
+        context.writeKey("chars");
+        context.startArray();
+        {
+            Iterator<String> iterator = characters.iterator();
+            while (iterator.hasNext()) {
+                context.writeStringValue(iterator.next());
+                if (iterator.hasNext()) {
+                    context.writeSeparator();
+                }
+            }
+        }
+        context.endArray();
+    }
+
+    @Override
+    public String toString() {
+        return "BitMapFont{" +
+                "texture=" + texture +
+                ", height=" + height +
+                ", ascent=" + ascent +
+                ", characters=" + characters +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BitMapFont that = (BitMapFont) o;
+        return height == that.height
+                && ascent == that.ascent
+                && texture.equals(that.texture)
+                && characters.equals(that.characters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(texture, height, ascent, characters);
     }
 
 }

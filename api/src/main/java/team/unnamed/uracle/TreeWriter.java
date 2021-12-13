@@ -1,31 +1,45 @@
 package team.unnamed.uracle;
 
+import java.io.OutputStream;
+
 public interface TreeWriter {
 
-    Context enter(ResourceLocation location, String prefix, String suffix);
+    Context enter(ResourceLocation location, String suffix);
+
+    Context enter(ResourceLocation location, String suffix, String extension);
 
     Context enter(String location);
 
-    interface Context extends AutoCloseable {
+    abstract class Context extends OutputStream implements AutoCloseable {
 
-        void startObject();
+        public abstract void startObject();
 
-        void writeKey(String key);
+        public abstract void endObject();
 
-        void writeStringField(String key, String value);
+        public abstract void startArray();
 
-        void writeBooleanField(String key, boolean value);
+        public abstract void endArray();
 
-        void writeSeparator();
+        public abstract void writeKey(String key);
 
-        void endObject();
+        public abstract void writeStringField(String key, String value);
 
-        default void writePart(Element.Part value) {
+        public abstract void writeBooleanField(String key, boolean value);
+
+        public abstract void writeIntField(String key, int value);
+
+        public abstract void writeSeparator();
+
+        public abstract void writeStringValue(String value);
+
+        public abstract void writeIntValue(int value);
+
+        public void writePart(Element.Part value) {
             value.write(this);
         }
 
         @Override
-        void close();
+        public abstract void close();
 
     }
 

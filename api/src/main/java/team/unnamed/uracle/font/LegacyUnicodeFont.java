@@ -26,4 +26,12 @@ public class LegacyUnicodeFont implements Font {
         this.template = template;
     }
 
+    public ResourceLocation getSizes() {
+        return sizes;
+    }
+
+    public ResourceLocation getTemplate() {
+        return template;
+    }
+
 }

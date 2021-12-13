@@ -139,7 +139,7 @@ public class Language implements Element, Element.Part {
      */
     @Override
     public void write(TreeWriter writer) {
-        try (TreeWriter.Context context = writer.enter(resource, "assets", "lang")) {
+        try (TreeWriter.Context context = writer.enter(resource, "lang")) {
             // JSON object is formatted like
             // {
             //    "translation.key": "The actual translation"

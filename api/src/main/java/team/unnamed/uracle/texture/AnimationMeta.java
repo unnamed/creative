@@ -1,5 +1,8 @@
 package team.unnamed.uracle.texture;
 
+import team.unnamed.uracle.Element;
+import team.unnamed.uracle.TreeWriter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +17,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class AnimationMeta {
+public class AnimationMeta implements Element.Part {
 
     /**
      * If true, Minecraft generates additional frames
@@ -113,6 +116,11 @@ public class AnimationMeta {
      */
     public List<Frame> getFrames() {
         return Collections.unmodifiableList(frames);
+    }
+
+    @Override
+    public void write(TreeWriter.Context context) {
+
     }
 
     @Override

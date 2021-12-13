@@ -1,6 +1,9 @@
 package team.unnamed.uracle.texture;
 
-public class TextureMeta {
+import team.unnamed.uracle.Element;
+import team.unnamed.uracle.TreeWriter;
+
+public class TextureMeta implements Element.Part {
 
     /**
      * Causes the texture to blur when viewed
@@ -40,6 +43,23 @@ public class TextureMeta {
 
     public int[] getMipmaps() {
         return mipmaps;
+    }
+
+    @Override
+    public void write(TreeWriter.Context context) {
+        context.writeBooleanField("blur", blur);
+        context.writeBooleanField("clamp", clamp);
+        context.writeKey("mipmaps");
+        context.startArray();
+        for (int i = 0; i < mipmaps.length; i++) {
+            if (i != 0) {
+                // write separator from previous
+                // value and current value
+                context.writeSeparator();
+            }
+            context.writeIntValue(mipmaps[i]);
+        }
+        context.endArray();
     }
 
 }
