@@ -23,7 +23,31 @@
  */
 package team.unnamed.uracle;
 
-public class Vector4Int {
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+
+/**
+ * Represents a fixed-size vector of two 32-bit
+ * integer numbers, immutable
+ *
+ * <p>Note: this is a vector and not a matrix, but
+ * it has two "X" and two "Y" values (just names)</p>
+ *
+ * @since 1.0.0
+ */
+public class Vector4Int implements Examinable {
+
+    /**
+     * Constant for {@link Vector2Float} value with
+     * all four components with {@code 0} zero as
+     * value
+     */
+    public static final Vector4Int ZERO = new Vector4Int(0, 0, 0, 0);
 
     private final int x;
     private final int y;
@@ -36,4 +60,76 @@ public class Vector4Int {
         this.x2 = x2;
         this.y2 = y2;
     }
+
+    /**
+     * Gets the first "X" value for this
+     * vector
+     *
+     * @return The first X component
+     */
+    public int x() {
+        return x;
+    }
+
+    /**
+     * Gets the first "Y" value for this
+     * vector
+     *
+     * @return The first Y component
+     */
+    public int y() {
+        return y;
+    }
+
+    /**
+     * Gets the second "X" value for
+     * this vector
+     *
+     * @return The second X component
+     */
+    public int x2() {
+        return x2;
+    }
+
+    /**
+     * Gets the second "Y" value for
+     * this vector
+     *
+     * @return The second Y component
+     */
+    public int y2() {
+        return y2;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("x", x),
+                ExaminableProperty.of("y", y),
+                ExaminableProperty.of("x2", x2),
+                ExaminableProperty.of("y2", y2)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector4Int that = (Vector4Int) o;
+        return x == that.x
+                && y == that.y
+                && x2 == that.x2
+                && y2 == that.y2;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, x2, y2);
+    }
+
 }

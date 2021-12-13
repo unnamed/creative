@@ -23,6 +23,10 @@
  */
 package team.unnamed.uracle.texture;
 
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Element;
 import team.unnamed.uracle.TreeWriter;
 
@@ -31,6 +35,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class AnimationMeta implements Element.Part {
+public class AnimationMeta implements Element.Part, Examinable {
 
     /**
      * If true, Minecraft generates additional frames
@@ -180,14 +185,19 @@ public class AnimationMeta implements Element.Part {
     }
 
     @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("interpolate", interpolate),
+                ExaminableProperty.of("width", width),
+                ExaminableProperty.of("height", height),
+                ExaminableProperty.of("frameTime", frameTime),
+                ExaminableProperty.of("frames", frames)
+        );
+    }
+
+    @Override
     public String toString() {
-        return "AnimationMeta{" +
-                "interpolate=" + interpolate +
-                ", width=" + width +
-                ", height=" + height +
-                ", frameTime=" + frameTime +
-                ", frames=" + frames +
-                '}';
+        return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
@@ -252,7 +262,7 @@ public class AnimationMeta implements Element.Part {
      *
      * @since 1.0.0
      */
-    public static class Frame {
+    public static class Frame implements Examinable {
 
         /**
          * A number corresponding to position of a frame from the
@@ -295,11 +305,16 @@ public class AnimationMeta implements Element.Part {
         }
 
         @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("index", index),
+                    ExaminableProperty.of("frameTime", frameTime)
+            );
+        }
+
+        @Override
         public String toString() {
-            return "Frame{" +
-                    "index=" + index +
-                    ", frameTime=" + frameTime +
-                    '}';
+            return examine(StringExaminer.simpleEscaping());
         }
 
         @Override
@@ -307,7 +322,8 @@ public class AnimationMeta implements Element.Part {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Frame frame = (Frame) o;
-            return index == frame.index && frameTime == frame.frameTime;
+            return index == frame.index
+                    && frameTime == frame.frameTime;
         }
 
         @Override

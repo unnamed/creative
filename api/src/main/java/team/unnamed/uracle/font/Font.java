@@ -30,8 +30,11 @@ import team.unnamed.uracle.texture.Texture;
 import java.util.List;
 
 /**
- * Represents a Minecraft Resource Pack Font
- * provider
+ * Represents a Minecraft Resource Pack Font provider,
+ * can be bit-map, true type font, or (LEGACY) unicode
+ * font
+ *
+ * @since 1.0.0
  */
 public interface Font extends Element, Element.Part, Examinable {
 
@@ -43,6 +46,12 @@ public interface Font extends Element, Element.Part, Examinable {
      */
     Type type();
 
+    /**
+     * Enum of all possible font provider
+     * types
+     *
+     * @since 1.0.0
+     */
     enum Type {
         BITMAP,
         LEGACY_UNICODE,
@@ -57,6 +66,7 @@ public interface Font extends Element, Element.Part, Examinable {
      * @param ascent The characters ascent
      * @param characters The characters string
      * @return A new bit-map font
+     * @since 1.0.0
      */
     static BitMapFont bitMap(
             Texture texture,

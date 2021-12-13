@@ -23,10 +23,26 @@
  */
 package team.unnamed.uracle.texture;
 
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Element;
 import team.unnamed.uracle.TreeWriter;
 
-public class TextureMeta implements Element.Part {
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
+
+/**
+ * Represents {@link Texture} meta-information that is applicable
+ * for any texture type
+ *
+ * @since 1.0.0
+ */
+public class TextureMeta implements Element.Part, Examinable {
 
     /**
      * Causes the texture to blur when viewed
@@ -46,25 +62,43 @@ public class TextureMeta implements Element.Part {
      */
     private final int[] mipmaps;
 
-    public TextureMeta(
+    private TextureMeta(
             boolean blur,
             boolean clamp,
             int[] mipmaps
     ) {
         this.blur = blur;
         this.clamp = clamp;
-        this.mipmaps = mipmaps;
+        this.mipmaps = requireNonNull(mipmaps, "mipmaps");
     }
 
-    public boolean isBlur() {
+    /**
+     * Determines whether the texture will be
+     * blur-ed when viewed from close up
+     *
+     * @return True to blur texture
+     */
+    public boolean blur() {
         return blur;
     }
 
-    public boolean isClamp() {
+    /**
+     * Determines whether the texture is stretched instead of
+     * tiled
+     *
+     * @return True to clamp
+     */
+    public boolean clamp() {
         return clamp;
     }
 
-    public int[] getMipmaps() {
+    /**
+     * Returns custom mipmap values for this
+     * texture
+     *
+     * @return The custom mipmaps
+     */
+    public int[] mipmaps() {
         return mipmaps;
     }
 
@@ -83,6 +117,54 @@ public class TextureMeta implements Element.Part {
             context.writeIntValue(mipmaps[i]);
         }
         context.endArray();
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("blur", blur),
+                ExaminableProperty.of("clamp", clamp),
+                ExaminableProperty.of("mipmaps", mipmaps)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TextureMeta that = (TextureMeta) o;
+        return blur == that.blur
+                && clamp == that.clamp
+                && Arrays.equals(mipmaps, that.mipmaps);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(blur, clamp);
+        result = 31 * result + Arrays.hashCode(mipmaps);
+        return result;
+    }
+
+    /**
+     * Creates a new {@link TextureMeta} instance to
+     * be applied to a {@link Texture}
+     *
+     * @param blur To make the texture blur
+     * @param clamp To stretch the texture
+     * @param mipmaps Custom texture mipmaps
+     * @return A new texture metadata instance
+     */
+    public static TextureMeta of(
+            boolean blur,
+            boolean clamp,
+            int[] mipmaps
+    ) {
+        return new TextureMeta(blur, clamp, mipmaps);
     }
 
 }

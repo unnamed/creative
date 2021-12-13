@@ -23,7 +23,27 @@
  */
 package team.unnamed.uracle;
 
-public class Vector2Float {
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+
+/**
+ * Represents a fixed-size vector of two 32-bit
+ * floating-point numbers, immutable
+ *
+ * @since 1.0.0
+ */
+public final class Vector2Float implements Examinable {
+
+    /**
+     * Constant for {@link Vector2Float} value with
+     * abscissa and ordinate of {@code 0} zero.
+     */
+    public static final Vector2Float ZERO = new Vector2Float(0F, 0F);
 
     private final float x;
     private final float y;
@@ -31,6 +51,53 @@ public class Vector2Float {
     public Vector2Float(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Returns the "X" component or abscissa
+     * of this vector
+     *
+     * @return The vector abscissa
+     */
+    public float x() {
+        return x;
+    }
+
+    /**
+     * Returns the "Y" component or ordinate
+     * of this vector
+     *
+     * @return The vector ordinate
+     */
+    public float y() {
+        return y;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("x", x),
+                ExaminableProperty.of("y", y)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector2Float that = (Vector2Float) o;
+        return Float.compare(that.x, x) == 0
+                && Float.compare(that.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
 }

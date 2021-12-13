@@ -25,6 +25,9 @@ package team.unnamed.uracle.texture;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.Element;
@@ -34,6 +37,7 @@ import team.unnamed.uracle.Writable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Texture implements Element, Keyed {
+public class Texture implements Element, Keyed, Examinable {
 
     /**
      * The location of this texture data, the {@code data}
@@ -104,7 +108,7 @@ public class Texture implements Element, Keyed {
      *
      * @return This texture's PNG data
      */
-    public Writable getData() {
+    public Writable data() {
         return data;
     }
 
@@ -114,7 +118,7 @@ public class Texture implements Element, Keyed {
      *
      * @return This texture metadata
      */
-    public @Nullable TextureMeta getMeta() {
+    public @Nullable TextureMeta meta() {
         return meta;
     }
 
@@ -124,7 +128,7 @@ public class Texture implements Element, Keyed {
      *
      * @return This texture animation metadata
      */
-    public @Nullable AnimationMeta getAnimation() {
+    public @Nullable AnimationMeta animation() {
         return animation;
     }
 
@@ -173,13 +177,18 @@ public class Texture implements Element, Keyed {
     }
 
     @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("key", key),
+                ExaminableProperty.of("data", data),
+                ExaminableProperty.of("meta", meta),
+                ExaminableProperty.of("animation", animation)
+        );
+    }
+
+    @Override
     public String toString() {
-        return "Texture{" +
-                "key=" + key +
-                ", data=" + data +
-                ", meta=" + meta +
-                ", animation=" + animation +
-                '}';
+        return examine(StringExaminer.simpleEscaping());
     }
 
     @Override

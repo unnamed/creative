@@ -25,7 +25,11 @@ package team.unnamed.uracle.lang;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.Element;
 import team.unnamed.uracle.TreeWriter;
 
@@ -33,7 +37,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -48,7 +54,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language implements Element, Element.Part, Keyed {
+public class Language implements Element, Element.Part, Keyed, Examinable {
 
     /**
      * The language JSON file location inside
@@ -83,7 +89,7 @@ public class Language implements Element, Element.Part, Keyed {
      *
      * <p>"block.minecraft.stone" -> "Stone"</p>
      */
-    private final Map<String, String> translations;
+    @Unmodifiable private final Map<String, String> translations;
 
     private Language(
             Key key,
@@ -97,8 +103,9 @@ public class Language implements Element, Element.Part, Keyed {
         this.name = requireNonNull(name, "name");
         this.region = requireNonNull(region, "region");
         this.bidirectional = bidirectional;
-        // create a copy to avoid modifications
-        this.translations = new HashMap<>(translations);
+        // create a copy and wrap into a unmodifiable map to
+        // avoid modifications
+        this.translations = unmodifiableMap(new HashMap<>(translations));
     }
 
     /**
@@ -118,7 +125,7 @@ public class Language implements Element, Element.Part, Keyed {
      *
      * @return The language full name
      */
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -127,7 +134,7 @@ public class Language implements Element, Element.Part, Keyed {
      *
      * @return The language region or country
      */
-    public String getRegion() {
+    public String region() {
         return region;
     }
 
@@ -137,7 +144,7 @@ public class Language implements Element, Element.Part, Keyed {
      *
      * @return True if this language is bidirectional
      */
-    public boolean isBidirectional() {
+    public boolean bidirectional() {
         return bidirectional;
     }
 
@@ -147,8 +154,8 @@ public class Language implements Element, Element.Part, Keyed {
      *
      * @return The language translations
      */
-    public Map<String, String> getTranslations() {
-        return Collections.unmodifiableMap(translations);
+    public @Unmodifiable Map<String, String> translations() {
+        return translations;
     }
 
     /**
@@ -197,12 +204,18 @@ public class Language implements Element, Element.Part, Keyed {
     }
 
     @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("key", key),
+                ExaminableProperty.of("name", name),
+                ExaminableProperty.of("region", region),
+                ExaminableProperty.of("bidirectional", bidirectional)
+        );
+    }
+
+    @Override
     public String toString() {
-        return "Language(" + key + ") {"
-                + "name = " + name
-                + ", region = " + region
-                + ", bidirectional = " + bidirectional
-                + "}";
+        return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
