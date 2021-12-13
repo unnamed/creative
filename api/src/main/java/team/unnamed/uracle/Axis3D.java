@@ -23,8 +23,37 @@
  */
 package team.unnamed.uracle;
 
+/**
+ * Enum of axis in a three-dimensional space,
+ * always X, Y and Z
+ *
+ * @since 1.0.0
+ */
 public enum Axis3D {
+    /**
+     * The "X" axis or abscissa. It is the
+     * first element in our three-dimensional
+     * vectors
+     *
+     * @since 1.0.0
+     */
     X,
+
+    /**
+     * The "Y" axis or ordinate. It is the
+     * second element in our three-dimensional
+     * vectors
+     *
+     * @since 1.0.0
+     */
     Y,
+
+    /**
+     * The "Z" axis or applicate. It is the
+     * third and last element in our three-
+     * dimensional vectors
+     *
+     * @since 1.0.0
+     */
     Z
 }
