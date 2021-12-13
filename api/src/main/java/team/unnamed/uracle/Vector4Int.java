@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public class Vector4Int implements Examinable {
+public final class Vector4Int implements Examinable {
 
     /**
      * Constant for {@link Vector2Float} value with
