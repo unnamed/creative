@@ -50,11 +50,11 @@ public class LegacyUnicodeFont implements Font {
         this.template = template;
     }
 
-    public Key getSizes() {
+    public Key sizes() {
         return sizes;
     }
 
-    public Key getTemplate() {
+    public Key template() {
         return template;
     }
 
