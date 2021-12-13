@@ -24,7 +24,7 @@
 package team.unnamed.uracle.model.item;
 
 import team.unnamed.uracle.Axis3D;
-import team.unnamed.uracle.Direction;
+import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector3Float;
 import team.unnamed.uracle.Vector4Int;
 
@@ -52,7 +52,7 @@ public class ItemElement {
      * Holds all the faces of the cuboid. If a face is
      * left out, it does not render
      */
-    private Map<Direction, Face> faces;
+    private Map<CubeFace, Face> faces;
 
     public static class Rotation {
 
@@ -72,7 +72,7 @@ public class ItemElement {
 
         private String texture;
 
-        private Direction cullFace;
+        private CubeFace cullFace;
 
         private int rotation;
 

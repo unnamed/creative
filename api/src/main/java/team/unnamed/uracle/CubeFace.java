@@ -23,11 +23,52 @@
  */
 package team.unnamed.uracle;
 
-public enum Direction {
-    DOWN,
-    UP,
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST
+/**
+ * Enum of (three-dimensional) cubes faces (6),
+ * can be positive or negative {@link Axis3D#X},
+ * {@link Axis3D#Y} or {@link Axis3D#Z}
+ *
+ * @since 1.0.0
+ */
+public enum CubeFace {
+
+    WEST(Axis3D.X, -1),
+    EAST(Axis3D.X, 1),
+    DOWN(Axis3D.Y, -1),
+    UP(Axis3D.Y, 1),
+    NORTH(Axis3D.Z, -1),
+    SOUTH(Axis3D.Z, 1);
+
+    private final Axis3D axis;
+    private final int factor;
+
+    CubeFace(Axis3D axis, int factor) {
+        this.axis = axis;
+        this.factor = factor;
+    }
+
+    /**
+     * Returns the axis of this face, X for
+     * west and east, Y for down and up, and
+     * Z for north and south
+     *
+     * @return The face axis
+     * @since 1.0.0
+     */
+    public Axis3D axis() {
+        return axis;
+    }
+
+    /**
+     * Returns the factor of this face direction,
+     * 1 for positive directions, -1 for negative
+     * directions
+     *
+     * @return The face factor
+     * @since 1.0.0
+     */
+    public int factor() {
+        return factor;
+    }
+
 }

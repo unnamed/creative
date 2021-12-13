@@ -23,13 +23,16 @@
  */
 package team.unnamed.uracle.font;
 
+import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.texture.Texture;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Represents a bitmap font (font that uses a set of
@@ -75,7 +78,7 @@ public class BitMapFont implements Font {
      */
     private final List<String> characters;
 
-    public BitMapFont(
+    protected BitMapFont(
             Texture texture,
             int height,
             int ascent,
@@ -162,6 +165,17 @@ public class BitMapFont implements Font {
             }
         }
         context.endArray();
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("type", "bitmap"),
+                ExaminableProperty.of("height", height),
+                ExaminableProperty.of("ascent", ascent),
+                ExaminableProperty.of("texture", texture),
+                ExaminableProperty.of("chars", characters)
+        );
     }
 
     @Override

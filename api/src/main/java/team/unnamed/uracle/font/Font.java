@@ -25,6 +25,9 @@ package team.unnamed.uracle.font;
 
 import net.kyori.examination.Examinable;
 import team.unnamed.uracle.Element;
+import team.unnamed.uracle.texture.Texture;
+
+import java.util.List;
 
 /**
  * Represents a Minecraft Resource Pack Font
@@ -44,6 +47,24 @@ public interface Font extends Element, Element.Part, Examinable {
         BITMAP,
         LEGACY_UNICODE,
         TTF
+    }
+
+    /**
+     * Creates a new bit-map font from the provided values
+     *
+     * @param texture The bit-map texture in PNG format
+     * @param height The characters height
+     * @param ascent The characters ascent
+     * @param characters The characters string
+     * @return A new bit-map font
+     */
+    static BitMapFont bitMap(
+            Texture texture,
+            int height,
+            int ascent,
+            List<String> characters
+    ) {
+        return new BitMapFont(texture, height, ascent, characters);
     }
 
 }
