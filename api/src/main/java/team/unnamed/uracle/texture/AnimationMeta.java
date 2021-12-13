@@ -5,6 +5,7 @@ import team.unnamed.uracle.TreeWriter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -120,7 +121,39 @@ public class AnimationMeta implements Element.Part {
 
     @Override
     public void write(TreeWriter.Context context) {
+        context.writeBooleanField("interpolate", interpolate);
+        context.writeIntField("width", width);
+        context.writeIntField("height", height);
+        context.writeIntField("frameTime", frameTime);
+        context.writeKey("frames");
+        context.startArray();
+        {
+            Iterator<Frame> iterator = frames.iterator();
+            while (iterator.hasNext()) {
+                Frame frame = iterator.next();
+                int index = frame.getIndex();
+                int time = frame.getFrameTime();
 
+                if (frameTime == time) {
+                    // same as default frameTime, we can
+                    // skip it
+                    context.writeIntValue(index);
+                } else {
+                    // specific frameTime, write as
+                    // an object
+                    context.startObject();
+                    context.writeIntField("index", index);
+                    context.writeIntField("time", time);
+                    context.endObject();
+                }
+
+                if (iterator.hasNext()) {
+                    // separate from next frame
+                    context.writeSeparator();
+                }
+            }
+        }
+        context.endArray();
     }
 
     @Override
