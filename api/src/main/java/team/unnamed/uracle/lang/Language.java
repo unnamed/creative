@@ -133,7 +133,7 @@ public class Language implements Element, Element.Part {
      *
      * <p>Only the second part (which has its own file) is
      * created and written by this method, registration must
-     * be done by calling {@link Language#writeRegistration}</p>
+     * be done by calling {@link Language#write(TreeWriter.Context)}</p>
      *
      * @param writer The target tree writer
      */
