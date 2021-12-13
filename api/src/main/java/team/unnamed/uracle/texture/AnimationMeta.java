@@ -104,7 +104,7 @@ public class AnimationMeta implements Element.Part, Examinable {
      *
      * @return True if animation is interpolated
      */
-    public boolean isInterpolate() {
+    public boolean interpolate() {
         return interpolate;
     }
 
@@ -113,7 +113,7 @@ public class AnimationMeta implements Element.Part, Examinable {
      *
      * @return The tile width
      */
-    public int getWidth() {
+    public int width() {
         return width;
     }
 
@@ -122,7 +122,7 @@ public class AnimationMeta implements Element.Part, Examinable {
      *
      * @return The tile height
      */
-    public int getHeight() {
+    public int height() {
         return height;
     }
 
@@ -133,7 +133,7 @@ public class AnimationMeta implements Element.Part, Examinable {
      * @return The fallback frame-time for frames that
      * don't specify one
      */
-    public int getFrameTime() {
+    public int frameTime() {
         return frameTime;
     }
 
@@ -143,7 +143,7 @@ public class AnimationMeta implements Element.Part, Examinable {
      *
      * @return The animation frames
      */
-    public List<Frame> getFrames() {
+    public List<Frame> frames() {
         return Collections.unmodifiableList(frames);
     }
 
@@ -159,8 +159,8 @@ public class AnimationMeta implements Element.Part, Examinable {
             Iterator<Frame> iterator = frames.iterator();
             while (iterator.hasNext()) {
                 Frame frame = iterator.next();
-                int index = frame.getIndex();
-                int time = frame.getFrameTime();
+                int index = frame.index();
+                int time = frame.frameTime();
 
                 if (frameTime == time) {
                     // same as default frameTime, we can
@@ -257,7 +257,7 @@ public class AnimationMeta implements Element.Part, Examinable {
     /**
      * Represents a texture animation frame, includes the
      * index of the frame and its specific but optional
-     * frame-time, it will use {@link AnimationMeta#getFrameTime()}
+     * frame-time, it will use {@link AnimationMeta#frameTime()}
      * if it is not specified
      *
      * @since 1.0.0
@@ -272,7 +272,7 @@ public class AnimationMeta implements Element.Part, Examinable {
 
         /**
          * The time in ticks to show this frame, uses
-         * {@link AnimationMeta#getFrameTime()} when it is
+         * {@link AnimationMeta#frameTime()} when it is
          * not specified
          */
         private final int frameTime;
@@ -291,7 +291,7 @@ public class AnimationMeta implements Element.Part, Examinable {
          *
          * @return The frame index
          */
-        public int getIndex() {
+        public int index() {
             return index;
         }
 
@@ -300,7 +300,7 @@ public class AnimationMeta implements Element.Part, Examinable {
          *
          * @return The frame time in ticks
          */
-        public int getFrameTime() {
+        public int frameTime() {
             return frameTime;
         }
 
