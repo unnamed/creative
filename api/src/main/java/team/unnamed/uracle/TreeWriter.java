@@ -53,6 +53,8 @@ public interface TreeWriter {
 
         public abstract void writeIntField(String key, int value);
 
+        public abstract void writeFloatField(String key, float value);
+
         public abstract void writeSeparator();
 
         public abstract void writeStringValue(String value);

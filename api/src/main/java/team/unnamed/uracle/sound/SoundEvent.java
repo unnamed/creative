@@ -24,11 +24,28 @@
 package team.unnamed.uracle.sound;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.Element;
+import team.unnamed.uracle.TreeWriter;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-public class SoundEvent {
+/**
+ * Represents a sound event, a compound of {@link Sound}
+ * instances
+ *
+ * @since 1.0.0
+ */
+public class SoundEvent implements Element.Part, Keyed, Examinable {
 
     /**
      * The sound event location, usually separated in categories
@@ -36,7 +53,7 @@ public class SoundEvent {
      * assets/&lt;namespace&gt;/sounds.json. This property specifies
      * the namespace and name of this file
      */
-    private Key location;
+    private final Key key;
 
     /**
      * True if the sounds listed in {@link SoundEvent#sounds}
@@ -45,19 +62,113 @@ public class SoundEvent {
      * sounds listed should be added to the list of
      * default sounds
      */
-    private boolean replace;
+    private final boolean replace;
 
     /**
      * Translated as the subtitle of the sound if
      * "Show Subtitles" is enabled in-game, optional
      */
-    @Nullable private String subtitle;
+    @Nullable private final String subtitle;
 
     /**
      * The sounds this sound event uses, one of the
      * listed sounds is randomly selected to play when
      * this sound event is triggered, optional
      */
-    @Nullable private List<Sound> sounds;
+    @Nullable @Unmodifiable
+    private final List<Sound> sounds;
+
+    private SoundEvent(
+            Key key,
+            boolean replace,
+            @Nullable String subtitle,
+            @Nullable List<Sound> sounds
+    ) {
+        this.key = key;
+        this.replace = replace;
+        this.subtitle = subtitle;
+        this.sounds = sounds;
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
+    }
+
+    public boolean replace() {
+        return replace;
+    }
+
+    public @Nullable String subtitle() {
+        return subtitle;
+    }
+
+    public @Nullable @Unmodifiable List<Sound> sounds() {
+        return sounds;
+    }
+
+    /**
+     * Writes this sound event information into an
+     * existing {@link TreeWriter.Context}, that should
+     * be the {@code sounds.json} file
+     *
+     * @param context The target context, will not
+     *                close
+     */
+    @Override
+    public void write(TreeWriter.Context context) {
+        context.writeKey(key.asString());
+        context.startObject();
+        context.writeBooleanField("replace", replace);
+        if (subtitle != null) {
+            context.writeStringField("subtitle", subtitle);
+        }
+        if (sounds != null) {
+            context.writeKey("sounds");
+            context.startArray();
+            Iterator<Sound> iterator = sounds.iterator();
+            while (iterator.hasNext()) {
+                context.writePart(iterator.next());
+
+                if (iterator.hasNext()) {
+                    // write separator for next sound
+                    context.writeSeparator();
+                }
+            }
+            context.endArray();
+        }
+        context.endObject();
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("key", key),
+                ExaminableProperty.of("replace", replace),
+                ExaminableProperty.of("subtitle", subtitle),
+                ExaminableProperty.of("sounds", sounds)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SoundEvent that = (SoundEvent) o;
+        return replace == that.replace
+                && key.equals(that.key)
+                && Objects.equals(subtitle, that.subtitle)
+                && Objects.equals(sounds, that.sounds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, replace, subtitle, sounds);
+    }
 
 }
