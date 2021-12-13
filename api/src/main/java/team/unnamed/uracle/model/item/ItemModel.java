@@ -35,7 +35,7 @@ public class ItemModel implements Model {
      */
     private final Map<ItemDisplay.Type, ItemDisplay> display;
 
-    // todo: add "textures"
+    private final ItemTexture textures;
 
     /**
      * Can be {@link GuiLight#FRONT} or {@link GuiLight#SIDE}. If set
