@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package team.unnamed.uracle.lang;
 
 import net.kyori.adventure.key.Key;
@@ -31,9 +32,9 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.Element;
+import team.unnamed.uracle.PackMeta;
 import team.unnamed.uracle.TreeWriter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,43 +44,20 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Object representing a Minecraft's Resource
- * Pack language addition
- *
- * <p>Resource packs can create language files of
- * the type .json in the folder assets/&lt;namespace&gt;/lang.
- * Each file either replaces information from a file of the
- * same name in the default or a lower pack, or it creates a
- * new language as defined by pack.mcmeta. </p>
+ * Represents a set of translations for a specific
+ * language. Custom language additions require a
+ * {@link LanguageEntry} being added to the {@link PackMeta}
+ * instance of the resource pack
  *
  * @since 1.0.0
  */
-public class Language implements Element, Element.Part, Keyed, Examinable {
+public class Language implements Element, Keyed, Examinable {
 
     /**
-     * The language JSON file location inside
-     * assets/&lt;namespace&gt;/lang, the resource
-     * location path also identifies this language
+     * This language JSON file location inside
+     * assets/&lt;namespace&gt;/lang
      */
     private final Key key;
-
-    /**
-     * The full name of this language, shown in the
-     * default client Minecraft language menu
-     */
-    private final String name;
-
-    /**
-     * The country or region name, shown in the default
-     * Minecraft client language menu
-     */
-    private final String region;
-
-    /**
-     * If true, the language reads right
-     * to left
-     */
-    private final boolean bidirectional;
 
     /**
      * Map containing all the translations for this language,
@@ -91,61 +69,25 @@ public class Language implements Element, Element.Part, Keyed, Examinable {
      */
     @Unmodifiable private final Map<String, String> translations;
 
-    private Language(
+    public Language(
             Key key,
-            String name,
-            String region,
-            boolean bidirectional,
             Map<String, String> translations
     ) {
         requireNonNull(translations, "translations");
         this.key = requireNonNull(key, "key");
-        this.name = requireNonNull(name, "name");
-        this.region = requireNonNull(region, "region");
-        this.bidirectional = bidirectional;
         // create a copy and wrap into a unmodifiable map to
         // avoid modifications
         this.translations = unmodifiableMap(new HashMap<>(translations));
     }
 
     /**
-     * Returns the resource location and identifier
-     * for this language
+     * Returns the resource location of this language
      *
      * @return The language resource location
      */
     @Override
     public @NotNull Key key() {
         return key;
-    }
-
-    /**
-     * Returns the language full name, shown in the
-     * Minecraft language menu
-     *
-     * @return The language full name
-     */
-    public String name() {
-        return name;
-    }
-
-    /**
-     * Returns the region or country of this language
-     *
-     * @return The language region or country
-     */
-    public String region() {
-        return region;
-    }
-
-    /**
-     * Determines if this language is bidirectional, in
-     * that case, it must be read from right to left
-     *
-     * @return True if this language is bidirectional
-     */
-    public boolean bidirectional() {
-        return bidirectional;
     }
 
     /**
@@ -160,13 +102,13 @@ public class Language implements Element, Element.Part, Keyed, Examinable {
 
     /**
      * Implementation of {@link Element#write(TreeWriter)}
-     * for {@link Language} instances, languages are composed
+     * for {@link LanguageEntry} instances, languages are composed
      * by two parts, the first part must be written into the
      * pack meta file, and the second part has its own file.
      *
      * <p>Only the second part (which has its own file) is
      * created and written by this method, registration must
-     * be done by calling {@link Language#write(TreeWriter.Context)}</p>
+     * be done by calling {@link LanguageEntry#write(TreeWriter.Context)}</p>
      *
      * @param writer The target tree writer
      */
@@ -187,29 +129,11 @@ public class Language implements Element, Element.Part, Keyed, Examinable {
         }
     }
 
-    /**
-     * Writes the language registration to an already created
-     * {@link TreeWriter.Context}, it must belong to a pack
-     * meta file
-     *
-     * @param context The context where to write the registration
-     */
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeStringField("name", name);
-        context.writeStringField("region", region);
-        context.writeBooleanField("bidirectional", bidirectional);
-        context.endObject();
-    }
-
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("key", key),
-                ExaminableProperty.of("name", name),
-                ExaminableProperty.of("region", region),
-                ExaminableProperty.of("bidirectional", bidirectional)
+                ExaminableProperty.of("translations", translations)
         );
     }
 
@@ -223,109 +147,13 @@ public class Language implements Element, Element.Part, Keyed, Examinable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Language language = (Language) o;
-        return bidirectional == language.bidirectional
-                && key.equals(language.key)
-                && name.equals(language.name)
-                && region.equals(language.region)
+        return key.equals(language.key)
                 && translations.equals(language.translations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                key, name, region,
-                bidirectional, translations
-        );
-    }
-
-    /**
-     * Creates a new Minecraft {@link Language} instance
-     *
-     * @param key The language resource location and
-     *                 identifier
-     * @param name The language full name
-     * @param region The language region or country
-     * @param bidirectional True if read from right to left
-     * @param translations The language translations
-     */
-    public static Language of(
-            Key key,
-            String name,
-            String region,
-            boolean bidirectional,
-            Map<String, String> translations
-    ) {
-        return new Language(
-                key, name, region,
-                bidirectional, translations
-        );
-    }
-
-    /**
-     * Static factory method for our builder implementation
-     * @return A new builder for {@link Language} instances
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
-     * Mutable and fluent-style builder for {@link Language}
-     * instances, since it has a lot of parameters, we create
-     * a builder for ease its creation
-     *
-     * @since 1.0.0
-     */
-    public static class Builder {
-
-        private Key key;
-        private String name;
-        private String region;
-        private boolean bidirectional = false;
-        private Map<String, String> translations = Collections.emptyMap();
-
-        private Builder() {
-        }
-
-        public Builder key(Key key) {
-            this.key = requireNonNull(key, "key");
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = requireNonNull(name, "name");
-            return this;
-        }
-
-        public Builder region(String region) {
-            this.region = requireNonNull(region, "region");
-            return this;
-        }
-
-        public Builder bidirectional(boolean bidirectional) {
-            this.bidirectional = bidirectional;
-            return this;
-        }
-
-        public Builder translations(Map<String, String> translations) {
-            this.translations =  requireNonNull(translations, "translations");;
-            return this;
-        }
-
-        /**
-         * Finishes building the {@link Language} instance,
-         * this method may fail if values were not correctly
-         * provided
-         *
-         * @return The recently created language
-         */
-        public Language build() {
-            return new Language(
-                    key, name, region,
-                    bidirectional, translations
-            );
-        }
-
+        return Objects.hash(key, translations);
     }
 
 }

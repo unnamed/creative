@@ -28,7 +28,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.lang.Language;
+import team.unnamed.uracle.lang.LanguageEntry;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,11 +48,11 @@ import static java.util.Objects.requireNonNull;
 public class PackMeta implements Element, Examinable {
 
     private final PackInfo pack;
-    @Unmodifiable private final Map<String, Language> languages;
+    @Unmodifiable private final Map<String, LanguageEntry> languages;
 
     private PackMeta(
             PackInfo pack,
-            Map<String, Language> languages
+            Map<String, LanguageEntry> languages
     ) {
         requireNonNull(languages, "languages");
         this.pack = requireNonNull(pack, "pack");
@@ -78,7 +78,7 @@ public class PackMeta implements Element, Examinable {
      *
      * @return The registered languages
      */
-    public @Unmodifiable Map<String, Language> languages() {
+    public @Unmodifiable Map<String, LanguageEntry> languages() {
         return languages;
     }
 
@@ -101,11 +101,11 @@ public class PackMeta implements Element, Examinable {
                 context.writeKey("language");
                 context.startObject();
 
-                Iterator<Map.Entry<String, Language>> iterator
+                Iterator<Map.Entry<String, LanguageEntry>> iterator
                         = languages.entrySet().iterator();
 
                 while (iterator.hasNext()) {
-                    Map.Entry<String, Language> entry = iterator.next();
+                    Map.Entry<String, LanguageEntry> entry = iterator.next();
 
                     context.writeKey(entry.getKey());
                     context.writePart(entry.getValue());
