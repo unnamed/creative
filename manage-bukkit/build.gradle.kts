@@ -6,7 +6,7 @@ repositories {
     mavenLocal()
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://oss.sonatype.org/content/repositories/central/")
-    maven("https://repo.codemc.io/repository/nms/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     mavenCentral()
 }
 
