@@ -23,9 +23,9 @@
  */
 package team.unnamed.uracle.font;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import team.unnamed.uracle.Element;
-import team.unnamed.uracle.texture.Texture;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-public interface Font extends Element, Element.Part, Examinable {
+public interface Font extends Element.Part, Examinable {
 
     /**
      * Returns the type of this font, the font
@@ -61,7 +61,7 @@ public interface Font extends Element, Element.Part, Examinable {
     /**
      * Creates a new bit-map font from the provided values
      *
-     * @param texture The bit-map texture in PNG format
+     * @param file The bit-map texture location in PNG format
      * @param height The characters height
      * @param ascent The characters ascent
      * @param characters The characters string
@@ -69,12 +69,22 @@ public interface Font extends Element, Element.Part, Examinable {
      * @since 1.0.0
      */
     static BitMapFont bitMap(
-            Texture texture,
+            Key file,
             int height,
             int ascent,
             List<String> characters
     ) {
-        return new BitMapFont(texture, height, ascent, characters);
+        return new BitMapFont(file, height, ascent, characters);
+    }
+
+    /**
+     * Static factory method for our builder implementation
+     *
+     * @return A new builder for {@link BitMapFont} instances
+     * @since 1.0.0
+     */
+    static BitMapFont.Builder bitMap() {
+        return new BitMapFont.Builder();
     }
 
 }

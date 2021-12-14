@@ -23,15 +23,18 @@
  */
 package team.unnamed.uracle.font;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.TreeWriter;
-import team.unnamed.uracle.texture.Texture;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a bitmap font (font that uses a set of
@@ -48,10 +51,10 @@ public class BitMapFont implements Font {
     public static final int DEFAULT_HEIGHT = 8;
 
     /**
-     * The texture of this bitmap font, must be
-     * a PNG image
+     * The texture location of this bitmap font, must
+     * be a PNG image
      */
-    private final Texture texture;
+    private final Key file;
 
     /**
      * Optional. The height of the character, measured in pixels.
@@ -78,12 +81,12 @@ public class BitMapFont implements Font {
     private final List<String> characters;
 
     protected BitMapFont(
-            Texture texture,
+            Key file,
             int height,
             int ascent,
             List<String> characters
     ) {
-        this.texture = texture;
+        this.file = requireNonNull(file, "file");
         this.height = height;
         this.ascent = ascent;
         this.characters = characters;
@@ -95,12 +98,13 @@ public class BitMapFont implements Font {
     }
 
     /**
-     * Returns the texture of this bitmap font
+     * Returns the texture location of this
+     * bitmap font
      *
      * @return The font texture
      */
-    public Texture texture() {
-        return texture;
+    public Key file() {
+        return file;
     }
 
     /**
@@ -123,19 +127,6 @@ public class BitMapFont implements Font {
     }
 
     /**
-     * Writes the bitmap required information, if the
-     * {@link BitMapFont#write(TreeWriter.Context)} method
-     * is not called, the written files will be ignored
-     *
-     * @param writer The target tree writer
-     */
-    @Override
-    public void write(TreeWriter writer) {
-        // delegate to write the texture
-        texture.write(writer);
-    }
-
-    /**
      * Writes the bitmap font provider registration, it is
      * part of the actual font
      *
@@ -144,7 +135,7 @@ public class BitMapFont implements Font {
     @Override
     public void write(TreeWriter.Context context) {
         context.writeStringField("type", "bitmap");
-        context.writeStringField("file", texture.key().toString());
+        context.writeStringField("file", file.toString());
         if (height != DEFAULT_HEIGHT) {
             // only write if height is not equal to
             // the default height
@@ -166,7 +157,7 @@ public class BitMapFont implements Font {
                 ExaminableProperty.of("type", "bitmap"),
                 ExaminableProperty.of("height", height),
                 ExaminableProperty.of("ascent", ascent),
-                ExaminableProperty.of("texture", texture),
+                ExaminableProperty.of("file", file),
                 ExaminableProperty.of("chars", characters)
         );
     }
@@ -183,13 +174,62 @@ public class BitMapFont implements Font {
         BitMapFont that = (BitMapFont) o;
         return height == that.height
                 && ascent == that.ascent
-                && texture.equals(that.texture)
+                && file.equals(that.file)
                 && characters.equals(that.characters);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(texture, height, ascent, characters);
+        return Objects.hash(file, height, ascent, characters);
+    }
+
+    /**
+     * Mutable and fluent-style builder for {@link BitMapFont}
+     * instances
+     *
+     * @since 1.0.0
+     */
+    public static class Builder {
+
+        private int height = DEFAULT_HEIGHT;
+        private int ascent;
+        private Key file;
+        private List<String> characters = Collections.emptyList();
+
+        protected Builder() {
+        }
+
+        public Builder height(int height) {
+            this.height = height;
+            return this;
+        }
+
+        public Builder ascent(int ascent) {
+            this.ascent = ascent;
+            return this;
+        }
+
+        public Builder file(Key file) {
+            this.file = requireNonNull(file, "file");
+            return this;
+        }
+
+        public Builder characters(List<String> characters) {
+            this.characters = requireNonNull(characters, "characters");
+            return this;
+        }
+
+        /**
+         * Finishes building the {@link BitMapFont} instance,
+         * this method may fail if values were not correctly
+         * provided
+         *
+         * @return The recently created language
+         */
+        public BitMapFont build() {
+            return new BitMapFont(file, height, ascent, characters);
+        }
+
     }
 
 }
