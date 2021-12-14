@@ -78,13 +78,30 @@ public interface Font extends Element.Part, Examinable {
     }
 
     /**
-     * Static factory method for our builder implementation
+     * Static factory method for {@link BitMapFont}
+     * builder implementation
      *
      * @return A new builder for {@link BitMapFont} instances
      * @since 1.0.0
      */
     static BitMapFont.Builder bitMap() {
         return new BitMapFont.Builder();
+    }
+
+    /**
+     * Creates a new legacy unicode font from the provided
+     * values, this font type should not be used since it
+     * is deprecated and is only prioritized when the "Force
+     * Unicode Font" option is turned on
+     *
+     * @param sizes Location to the file that specifies the
+     *              character sizes
+     * @param template Location of the file that specifies
+     *                 the character textures
+     * @return A new {@link LegacyUnicodeFont} font
+     */
+    static LegacyUnicodeFont legacyUnicode(Key sizes, Key template) {
+        return new LegacyUnicodeFont(sizes, template);
     }
 
 }

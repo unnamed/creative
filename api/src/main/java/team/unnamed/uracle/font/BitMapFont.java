@@ -134,6 +134,7 @@ public class BitMapFont implements Font {
      */
     @Override
     public void write(TreeWriter.Context context) {
+        context.startObject();
         context.writeStringField("type", "bitmap");
         context.writeStringField("file", file.toString());
         if (height != DEFAULT_HEIGHT) {
@@ -149,6 +150,7 @@ public class BitMapFont implements Font {
             context.writeStringValue(character);
         }
         context.endArray();
+        context.endObject();
     }
 
     @Override

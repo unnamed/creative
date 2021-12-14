@@ -24,11 +24,27 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.Vector2Float;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A {@link Font} implementation that uses fonts
+ * with the True Type Font format
+ *
+ * @since 1.0.0
+ */
 public class TrueTypeFont implements Font {
 
     /**
@@ -56,34 +72,103 @@ public class TrueTypeFont implements Font {
     /**
      * List of strings to exclude
      */
-    private final List<String> skip;
+    @Unmodifiable private final List<String> skip;
 
-    public TrueTypeFont(
+    protected TrueTypeFont(
             Key file,
             Vector2Float shift,
             float size,
             float oversample,
             List<String> skip
     ) {
-        this.file = file;
-        this.shift = shift;
+        requireNonNull(skip, "skip");
+        this.file = requireNonNull(file, "file");
+        this.shift = requireNonNull(shift, "shift");
         this.size = size;
         this.oversample = oversample;
-        this.skip = skip;
-    }
-
-    @Override
-    public void write(TreeWriter writer) {
-
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-
+        this.skip = unmodifiableList(new ArrayList<>(skip));
     }
 
     @Override
     public Type type() {
-        return null;
+        return Type.TTF;
     }
+
+    public Key file() {
+        return file;
+    }
+
+    public Vector2Float shift() {
+        return shift;
+    }
+
+    public float size() {
+        return size;
+    }
+
+    public float oversample() {
+        return oversample;
+    }
+
+    public @Unmodifiable List<String> skip() {
+        return skip;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("file", file),
+                ExaminableProperty.of("shift", shift),
+                ExaminableProperty.of("size", size),
+                ExaminableProperty.of("oversample", oversample),
+                ExaminableProperty.of("skip", skip)
+        );
+    }
+
+    @Override
+    public void write(TreeWriter.Context context) {
+        context.startObject();
+        context.writeStringField("file", file.asString());
+
+        context.writeKey("shift");
+        context.startArray();
+        context.writeFloatValue(shift.x());
+        context.writeFloatValue(shift.y());
+        context.endArray();
+
+        context.writeFloatField("size", size);
+        context.writeFloatField("oversample", oversample);
+
+        context.writeKey("skip");
+        context.startArray();
+        for (String toSkip : skip) {
+            context.writeStringValue(toSkip);
+        }
+        context.endArray();
+
+        context.endObject();
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TrueTypeFont that = (TrueTypeFont) o;
+        return Float.compare(that.size, size) == 0
+                && Float.compare(that.oversample, oversample) == 0
+                && file.equals(that.file)
+                && shift.equals(that.shift)
+                && skip.equals(that.skip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file, shift, size, oversample, skip);
+    }
+
 }

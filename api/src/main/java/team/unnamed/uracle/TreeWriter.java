@@ -168,6 +168,15 @@ public interface TreeWriter {
         public abstract void writeIntValue(int value);
 
         /**
+         * Writes a float value (without key) into this
+         * file. In case of JSON, it just writes its decimal
+         * representation into this file.
+         *
+         * @param value The written value
+         */
+        public abstract void writeFloatValue(float value);
+
+        /**
          * Writes an {@link Element.Part} into this
          * file
          *
