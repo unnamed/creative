@@ -159,11 +159,6 @@ public class Texture implements Element, Keyed, Examinable {
                 if (hasMeta) {
                     context.writeKey("texture");
                     context.writePart(meta);
-                    if (hasAnimation) {
-                        // write separator for next
-                        // object
-                        context.writeSeparator();
-                    }
                 }
 
                 if (hasAnimation) {

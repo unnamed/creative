@@ -89,8 +89,10 @@ public class PackInfo implements Element.Part, Examinable {
 
     @Override
     public void write(TreeWriter.Context context) {
+        context.startObject();
         context.writeIntField("format", format);
         context.writeStringField("description", description);
+        context.endObject();
     }
 
     @Override

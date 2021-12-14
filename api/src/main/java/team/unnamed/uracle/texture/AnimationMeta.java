@@ -149,39 +149,32 @@ public class AnimationMeta implements Element.Part, Examinable {
 
     @Override
     public void write(TreeWriter.Context context) {
+        context.startObject();
         context.writeBooleanField("interpolate", interpolate);
         context.writeIntField("width", width);
         context.writeIntField("height", height);
         context.writeIntField("frameTime", frameTime);
         context.writeKey("frames");
         context.startArray();
-        {
-            Iterator<Frame> iterator = frames.iterator();
-            while (iterator.hasNext()) {
-                Frame frame = iterator.next();
-                int index = frame.index();
-                int time = frame.frameTime();
+        for (Frame frame : frames) {
+            int index = frame.index();
+            int time = frame.frameTime();
 
-                if (frameTime == time) {
-                    // same as default frameTime, we can
-                    // skip it
-                    context.writeIntValue(index);
-                } else {
-                    // specific frameTime, write as
-                    // an object
-                    context.startObject();
-                    context.writeIntField("index", index);
-                    context.writeIntField("time", time);
-                    context.endObject();
-                }
-
-                if (iterator.hasNext()) {
-                    // separate from next frame
-                    context.writeSeparator();
-                }
+            if (frameTime == time) {
+                // same as default frameTime, we can
+                // skip it
+                context.writeIntValue(index);
+            } else {
+                // specific frameTime, write as
+                // an object
+                context.startObject();
+                context.writeIntField("index", index);
+                context.writeIntField("time", time);
+                context.endObject();
             }
         }
         context.endArray();
+        context.endObject();
     }
 
     @Override

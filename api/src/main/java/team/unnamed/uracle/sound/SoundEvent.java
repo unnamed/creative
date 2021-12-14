@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.Element;
 import team.unnamed.uracle.TreeWriter;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -126,14 +125,8 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
         if (sounds != null) {
             context.writeKey("sounds");
             context.startArray();
-            Iterator<Sound> iterator = sounds.iterator();
-            while (iterator.hasNext()) {
-                context.writePart(iterator.next());
-
-                if (iterator.hasNext()) {
-                    // write separator for next sound
-                    context.writeSeparator();
-                }
+            for (Sound sound : sounds) {
+                context.writePart(sound);
             }
             context.endArray();
         }

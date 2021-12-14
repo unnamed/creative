@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.texture.Texture;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -155,14 +154,8 @@ public class BitMapFont implements Font {
 
         context.writeKey("chars");
         context.startArray();
-        {
-            Iterator<String> iterator = characters.iterator();
-            while (iterator.hasNext()) {
-                context.writeStringValue(iterator.next());
-                if (iterator.hasNext()) {
-                    context.writeSeparator();
-                }
-            }
+        for (String character : characters) {
+            context.writeStringValue(character);
         }
         context.endArray();
     }

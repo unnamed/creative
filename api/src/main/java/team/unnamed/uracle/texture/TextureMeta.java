@@ -104,19 +104,16 @@ public class TextureMeta implements Element.Part, Examinable {
 
     @Override
     public void write(TreeWriter.Context context) {
+        context.startObject();
         context.writeBooleanField("blur", blur);
         context.writeBooleanField("clamp", clamp);
         context.writeKey("mipmaps");
         context.startArray();
-        for (int i = 0; i < mipmaps.length; i++) {
-            if (i != 0) {
-                // write separator from previous
-                // value and current value
-                context.writeSeparator();
-            }
-            context.writeIntValue(mipmaps[i]);
+        for (int mipmap : mipmaps) {
+            context.writeIntValue(mipmap);
         }
         context.endArray();
+        context.endObject();
     }
 
     @Override
