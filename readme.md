@@ -8,6 +8,13 @@ drop of Minecraft's power.
 Other resource-pack extensions may be created for some client
 modifications like OptiFine
 
+## Features
+- Add new fonts (bitmap, legacy unicode, ttf)
+- Add new languages
+- Add new models (items, ~~blocks~~, ~~block states~~)
+- Add new sounds
+- Add new textures (supporting animations)
+
 ## Building
 You can build Uracle by executing `./gradlew build`, or install to your Maven local repository
 using `./gradlew publishToMavenLocal`
