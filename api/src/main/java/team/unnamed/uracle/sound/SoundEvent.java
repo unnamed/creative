@@ -23,8 +23,6 @@
  */
 package team.unnamed.uracle.sound;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -40,7 +38,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a sound event, a compound of {@link Sound}
@@ -48,15 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Element.Part, Keyed, Examinable {
-
-    /**
-     * The sound event location, usually separated in categories
-     * (such as entity.enderman.stare), the file is always at
-     * assets/&lt;namespace&gt;/sounds.json. This property specifies
-     * the namespace and name of this file
-     */
-    private final Key key;
+public class SoundEvent implements Element.Part, Examinable {
 
     /**
      * True if the sounds listed in {@link SoundEvent#sounds}
@@ -82,12 +71,10 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
     private final List<Sound> sounds;
 
     private SoundEvent(
-            Key key,
             boolean replace,
             @Nullable String subtitle,
             @Nullable List<Sound> sounds
     ) {
-        this.key = requireNonNull(key, "key");
         this.replace = replace;
         this.subtitle = subtitle;
 
@@ -96,11 +83,6 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
         } else {
             this.sounds = unmodifiableList(new ArrayList<>(sounds));
         }
-    }
-
-    @Override
-    public @NotNull Key key() {
-        return key;
     }
 
     public boolean replace() {
@@ -125,7 +107,6 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
      */
     @Override
     public void write(TreeWriter.Context context) {
-        context.writeKey(key.asString());
         context.startObject();
         context.writeBooleanField("replace", replace);
         if (subtitle != null) {
@@ -145,7 +126,6 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("replace", replace),
                 ExaminableProperty.of("subtitle", subtitle),
                 ExaminableProperty.of("sounds", sounds)
@@ -163,14 +143,13 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
         if (o == null || getClass() != o.getClass()) return false;
         SoundEvent that = (SoundEvent) o;
         return replace == that.replace
-                && key.equals(that.key)
                 && Objects.equals(subtitle, that.subtitle)
                 && Objects.equals(sounds, that.sounds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, replace, subtitle, sounds);
+        return Objects.hash(replace, subtitle, sounds);
     }
 
 }
