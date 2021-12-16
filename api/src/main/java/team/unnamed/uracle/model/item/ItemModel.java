@@ -25,6 +25,7 @@ package team.unnamed.uracle.model.item;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.model.ModelDisplay;
 import team.unnamed.uracle.model.Model;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class ItemModel implements Model {
     /**
      * Holds the different places where item models are displayed
      */
-    private Map<ItemDisplay.Type, ItemDisplay> display;
+    private Map<ModelDisplay.Type, ModelDisplay> display;
 
     private ItemTexture textures;
 
