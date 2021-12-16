@@ -34,9 +34,13 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.Element;
 import team.unnamed.uracle.TreeWriter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a sound event, a compound of {@link Sound}
@@ -83,10 +87,15 @@ public class SoundEvent implements Element.Part, Keyed, Examinable {
             @Nullable String subtitle,
             @Nullable List<Sound> sounds
     ) {
-        this.key = key;
+        this.key = requireNonNull(key, "key");
         this.replace = replace;
         this.subtitle = subtitle;
-        this.sounds = sounds;
+
+        if (sounds == null) {
+            this.sounds = null;
+        } else {
+            this.sounds = unmodifiableList(new ArrayList<>(sounds));
+        }
     }
 
     @Override
