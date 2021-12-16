@@ -115,17 +115,6 @@ public class TrueTypeFont implements Font {
     }
 
     @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("file", file),
-                ExaminableProperty.of("shift", shift),
-                ExaminableProperty.of("size", size),
-                ExaminableProperty.of("oversample", oversample),
-                ExaminableProperty.of("skip", skip)
-        );
-    }
-
-    @Override
     public void write(TreeWriter.Context context) {
         context.startObject();
         context.writeStringField("file", file.asString());
@@ -147,6 +136,17 @@ public class TrueTypeFont implements Font {
         context.endArray();
 
         context.endObject();
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("file", file),
+                ExaminableProperty.of("shift", shift),
+                ExaminableProperty.of("size", size),
+                ExaminableProperty.of("oversample", oversample),
+                ExaminableProperty.of("skip", skip)
+        );
     }
 
     @Override
