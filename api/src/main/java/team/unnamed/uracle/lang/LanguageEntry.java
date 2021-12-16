@@ -49,14 +49,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class LanguageEntry implements Element.Part, Keyed, Examinable {
-
-    /**
-     * The language JSON file location inside
-     * assets/&lt;namespace&gt;/lang, the resource
-     * location path also identifies this language
-     */
-    private final Key key;
+public class LanguageEntry implements Element.Part, Examinable {
 
     /**
      * The full name of this language, shown in the
@@ -77,26 +70,13 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
     private final boolean bidirectional;
 
     private LanguageEntry(
-            Key key,
             String name,
             String region,
             boolean bidirectional
     ) {
-        this.key = requireNonNull(key, "key");
         this.name = requireNonNull(name, "name");
         this.region = requireNonNull(region, "region");
         this.bidirectional = bidirectional;
-    }
-
-    /**
-     * Returns the resource location and identifier
-     * for this language
-     *
-     * @return The language resource location
-     */
-    @Override
-    public @NotNull Key key() {
-        return key;
     }
 
     /**
@@ -147,7 +127,6 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("name", name),
                 ExaminableProperty.of("region", region),
                 ExaminableProperty.of("bidirectional", bidirectional)
@@ -165,7 +144,6 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
         if (o == null || getClass() != o.getClass()) return false;
         LanguageEntry entry = (LanguageEntry) o;
         return bidirectional == entry.bidirectional
-                && key.equals(entry.key)
                 && name.equals(entry.name)
                 && region.equals(entry.region);
     }
@@ -173,7 +151,7 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
     @Override
     public int hashCode() {
         return Objects.hash(
-                key, name, region,
+                name, region,
                 bidirectional
         );
     }
@@ -181,20 +159,17 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
     /**
      * Creates a new Minecraft {@link LanguageEntry} instance
      *
-     * @param key The language resource location and
-     *                 identifier
      * @param name The language full name
      * @param region The language region or country
      * @param bidirectional True if read from right to left
      */
     public static LanguageEntry of(
-            Key key,
             String name,
             String region,
             boolean bidirectional
     ) {
         return new LanguageEntry(
-                key, name, region,
+                name, region,
                 bidirectional
         );
     }
@@ -216,17 +191,11 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
      */
     public static class Builder {
 
-        private Key key;
         private String name;
         private String region;
         private boolean bidirectional = false;
 
         private Builder() {
-        }
-
-        public Builder key(Key key) {
-            this.key = requireNonNull(key, "key");
-            return this;
         }
 
         public Builder name(String name) {
@@ -253,7 +222,7 @@ public class LanguageEntry implements Element.Part, Keyed, Examinable {
          */
         public LanguageEntry build() {
             return new LanguageEntry(
-                    key, name, region,
+                    name, region,
                     bidirectional
             );
         }

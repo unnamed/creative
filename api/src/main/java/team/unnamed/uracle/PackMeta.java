@@ -23,6 +23,7 @@
  */
 package team.unnamed.uracle;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -47,11 +48,11 @@ import static java.util.Objects.requireNonNull;
 public class PackMeta implements Element, Examinable {
 
     private final PackInfo pack;
-    @Unmodifiable private final Map<String, LanguageEntry> languages;
+    @Unmodifiable private final Map<Key, LanguageEntry> languages;
 
     private PackMeta(
             PackInfo pack,
-            Map<String, LanguageEntry> languages
+            Map<Key, LanguageEntry> languages
     ) {
         requireNonNull(languages, "languages");
         this.pack = requireNonNull(pack, "pack");
@@ -77,7 +78,7 @@ public class PackMeta implements Element, Examinable {
      *
      * @return The registered languages
      */
-    public @Unmodifiable Map<String, LanguageEntry> languages() {
+    public @Unmodifiable Map<Key, LanguageEntry> languages() {
         return languages;
     }
 
@@ -99,8 +100,8 @@ public class PackMeta implements Element, Examinable {
                 context.writeKey("language");
                 context.startObject();
 
-                for (Map.Entry<String, LanguageEntry> entry : languages.entrySet()) {
-                    context.writeKey(entry.getKey());
+                for (Map.Entry<Key, LanguageEntry> entry : languages.entrySet()) {
+                    context.writeKey(entry.getKey().asString());
                     context.writePart(entry.getValue());
                 }
 
@@ -147,7 +148,7 @@ public class PackMeta implements Element, Examinable {
      */
     public static PackMeta of(
             PackInfo info,
-            Map<String, LanguageEntry> languages
+            Map<Key, LanguageEntry> languages
     ) {
         return new PackMeta(info, languages);
     }
