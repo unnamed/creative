@@ -79,16 +79,25 @@ public class Texture implements Element, Keyed, Examinable {
      */
     @Nullable private final AnimationMeta animation;
 
+    /**
+     * The metadata for villager textures (entity/villager
+     * and entity/zombie_villager), contains additional
+     * effects to apply to the hat layer
+     */
+    @Nullable private final VillagerMeta villager;
+
     private Texture(
             Key key,
             Writable data,
             @Nullable TextureMeta meta,
-            @Nullable AnimationMeta animation
+            @Nullable AnimationMeta animation,
+            @Nullable VillagerMeta villager
     ) {
         this.key = requireNonNull(key, "key");
         this.data = requireNonNull(data, "data");
         this.meta = meta;
         this.animation = animation;
+        this.villager = villager;
     }
 
     /**
@@ -133,6 +142,16 @@ public class Texture implements Element, Keyed, Examinable {
     }
 
     /**
+     * Returns this texture villager metadata, or
+     * null if not set
+     *
+     * @return This texture villager metadata
+     */
+    public @Nullable VillagerMeta villager() {
+        return villager;
+    }
+
+    /**
      * Writes this texture information into the given
      * {@code writer}, may contain more than one file
      * when required
@@ -150,9 +169,10 @@ public class Texture implements Element, Keyed, Examinable {
 
         boolean hasMeta = meta != null;
         boolean hasAnimation = animation != null;
+        boolean hasVillager = villager != null;
 
         // write the metadata
-        if (hasMeta || hasAnimation) {
+        if (hasMeta || hasAnimation || hasVillager) {
             try (TreeWriter.Context context = writer.join(key, "textures", ".mcmeta")) {
                 context.startObject();
 
@@ -166,6 +186,11 @@ public class Texture implements Element, Keyed, Examinable {
                     context.writePart(animation);
                 }
 
+                if (hasVillager) {
+                    context.writeKey("villager");
+                    context.writePart(villager);
+                }
+
                 context.endObject();
             }
         }
@@ -177,7 +202,8 @@ public class Texture implements Element, Keyed, Examinable {
                 ExaminableProperty.of("key", key),
                 ExaminableProperty.of("data", data),
                 ExaminableProperty.of("meta", meta),
-                ExaminableProperty.of("animation", animation)
+                ExaminableProperty.of("animation", animation),
+                ExaminableProperty.of("villager", villager)
         );
     }
 
@@ -194,12 +220,13 @@ public class Texture implements Element, Keyed, Examinable {
         return key.equals(texture.key)
                 && data.equals(texture.data)
                 && Objects.equals(meta, texture.meta)
-                && Objects.equals(animation, texture.animation);
+                && Objects.equals(animation, texture.animation)
+                && Objects.equals(villager, texture.villager);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, data, meta, animation);
+        return Objects.hash(key, data, meta, animation, villager);
     }
 
     /**
@@ -218,9 +245,10 @@ public class Texture implements Element, Keyed, Examinable {
             Key key,
             Writable data,
             @Nullable TextureMeta meta,
-            @Nullable AnimationMeta animation
+            @Nullable AnimationMeta animation,
+            @Nullable VillagerMeta villager
     ) {
-        return new Texture(key, data, meta, animation);
+        return new Texture(key, data, meta, animation, villager);
     }
 
     /**
@@ -238,7 +266,7 @@ public class Texture implements Element, Keyed, Examinable {
             Key key,
             Writable data
     ) {
-        return new Texture(key, data, null, null);
+        return new Texture(key, data, null, null, null);
     }
 
     /**
@@ -261,6 +289,7 @@ public class Texture implements Element, Keyed, Examinable {
         private Writable data;
         private TextureMeta meta;
         private AnimationMeta animation;
+        private VillagerMeta villager;
 
         private Builder() {
         }
@@ -285,6 +314,11 @@ public class Texture implements Element, Keyed, Examinable {
             return this;
         }
 
+        public Builder villager(@Nullable VillagerMeta villager) {
+            this.villager = villager;
+            return this;
+        }
+
         /**
          * Finishes building the {@link Texture} instance,
          * this method may fail if values were not correctly
@@ -293,7 +327,7 @@ public class Texture implements Element, Keyed, Examinable {
          * @return The recently created texture
          */
         public Texture build() {
-            return new Texture(key, data, meta, animation);
+            return new Texture(key, data, meta, animation, villager);
         }
 
     }
