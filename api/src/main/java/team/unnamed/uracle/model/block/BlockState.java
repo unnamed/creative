@@ -21,63 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.model.item;
+package team.unnamed.uracle.model.block;
 
-import team.unnamed.uracle.Axis3D;
-import team.unnamed.uracle.CubeFace;
-import team.unnamed.uracle.Vector3Float;
-import team.unnamed.uracle.Vector4Int;
-
-import java.util.Map;
-
-public class ItemElement {
-
-    /**
-     * Start point of a cuboid. Values must be
-     * between -16 and 32.
-     */
-    private Vector3Float from;
-
-    /**
-     * Stop point of a cuboid. Values must be
-     * between -16 and 32.
-     */
-    private Vector3Float to;
-
-    private Rotation rotation;
-
-    private boolean shade;
-
-    /**
-     * Holds all the faces of the cuboid. If a face is
-     * left out, it does not render
-     */
-    private Map<CubeFace, Face> faces;
-
-    public static class Rotation {
-
-        private Vector3Float origin;
-
-        private Axis3D axis;
-
-        private float angle;
-
-        private boolean rescale;
-
-    }
-
-    public static class Face {
-
-        private Vector4Int uv;
-
-        private String texture;
-
-        private CubeFace cullFace;
-
-        private int rotation;
-
-        private boolean tint;
-
-    }
-
+public class BlockState {
 }

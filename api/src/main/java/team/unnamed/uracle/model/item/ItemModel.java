@@ -26,12 +26,14 @@ package team.unnamed.uracle.model.item;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.model.ModelDisplay;
-import team.unnamed.uracle.model.Model;
 
 import java.util.List;
 import java.util.Map;
 
-public class ItemModel implements Model {
+/**
+ *
+ */
+public class ItemModel {
 
     public static final Key ITEM_GENERATED = Key.key("item/generated");
     public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");

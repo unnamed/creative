@@ -23,44 +23,61 @@
  */
 package team.unnamed.uracle.model;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.Axis3D;
+import team.unnamed.uracle.CubeFace;
+import team.unnamed.uracle.Vector3Float;
+import team.unnamed.uracle.Vector4Int;
 
-import java.util.List;
 import java.util.Map;
 
-/**
- * Base interface for representing block and
- * item models
- *
- * @since 1.0.0
- */
-public interface Model extends Examinable {
+public class ModelElement {
 
     /**
-     * Returns the parent model of this
-     * model object
-     *
-     * @return The parent model location
+     * Start point of a cuboid. Values must be
+     * between -16 and 32.
      */
-    Key parent();
+    private Vector3Float from;
 
     /**
-     * Returns a map of the different places
-     * where the model can be displayed
-     *
-     * @return An unmodifiable map of displays
+     * Stop point of a cuboid. Values must be
+     * between -16 and 32.
      */
-    @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display();
+    private Vector3Float to;
+
+    private Rotation rotation;
+
+    private boolean shade;
 
     /**
-     * Returns an unmodifiable list containing all
-     * the model elements, which can only have cubic
-     * forms
-     *
-     * @return The model elements
+     * Holds all the faces of the cuboid. If a face is
+     * left out, it does not render
      */
-    @Unmodifiable List<ModelElement> elements();
+    private Map<CubeFace, Face> faces;
+
+    public static class Rotation {
+
+        private Vector3Float origin;
+
+        private Axis3D axis;
+
+        private float angle;
+
+        private boolean rescale;
+
+    }
+
+    public static class Face {
+
+        private Vector4Int uv;
+
+        private String texture;
+
+        private CubeFace cullFace;
+
+        private int rotation;
+
+        private boolean tint;
+
+    }
 
 }
