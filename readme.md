@@ -4,6 +4,7 @@ drop of Minecraft's power.
 
 ## Structure
 - [**api**](api) - The main resource-pack library, only represents Vanilla resource-packs
+- [**serializer-default**](serializer-default) - The default serializer implementation with zero dependencies
 
 Other resource-pack extensions may be created for some client
 modifications like OptiFine

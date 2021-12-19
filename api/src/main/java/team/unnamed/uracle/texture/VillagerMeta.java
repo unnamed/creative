@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -51,6 +52,14 @@ public class VillagerMeta implements Examinable {
         this.hat = hat;
     }
 
+    /**
+     * Determines whether the villager hat
+     * layer should render or not
+     */
+    public @Nullable String hat() {
+        return hat;
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
@@ -61,6 +70,19 @@ public class VillagerMeta implements Examinable {
     @Override
     public String toString() {
         return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VillagerMeta that = (VillagerMeta) o;
+        return Objects.equals(hat, that.hat);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hat);
     }
 
 }

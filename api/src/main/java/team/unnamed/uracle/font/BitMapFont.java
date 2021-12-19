@@ -27,12 +27,15 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -77,7 +80,7 @@ public class BitMapFont implements Font {
      * row is split into one equally sized character for each character
      * within one list element.
      */
-    private final List<String> characters;
+    @Unmodifiable private final List<String> characters;
 
     protected BitMapFont(
             Key file,
@@ -85,10 +88,11 @@ public class BitMapFont implements Font {
             int ascent,
             List<String> characters
     ) {
+        requireNonNull(characters, "characters");
         this.file = requireNonNull(file, "file");
         this.height = height;
         this.ascent = ascent;
-        this.characters = characters;
+        this.characters = unmodifiableList(new ArrayList<>(characters));
     }
 
     @Override
@@ -123,6 +127,16 @@ public class BitMapFont implements Font {
      */
     public int ascent() {
         return ascent;
+    }
+
+    /**
+     * Returns an unmodifiable list of the font
+     * characters
+     *
+     * @return The font characters
+     */
+    public @Unmodifiable List<String> characters() {
+        return characters;
     }
 
     @Override

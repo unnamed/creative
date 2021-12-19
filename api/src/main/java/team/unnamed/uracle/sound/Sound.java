@@ -43,13 +43,13 @@ import static java.util.Objects.requireNonNull;
  */
 public class Sound implements Examinable {
 
-    private static final float DEFAULT_VOLUME = 1.0F;
-    private static final float DEFAULT_PITCH = 1.0F;
-    private static final int DEFAULT_WEIGHT = 1;
-    private static final boolean DEFAULT_STREAM = false;
-    private static final int DEFAULT_ATTENUATION_DISTANCE = 16;
-    private static final boolean DEFAULT_PRELOAD = false;
-    private static final Type DEFAULT_TYPE = Type.SOUND;
+    public static final float DEFAULT_VOLUME = 1.0F;
+    public static final float DEFAULT_PITCH = 1.0F;
+    public static final int DEFAULT_WEIGHT = 1;
+    public static final boolean DEFAULT_STREAM = false;
+    public static final int DEFAULT_ATTENUATION_DISTANCE = 16;
+    public static final boolean DEFAULT_PRELOAD = false;
+    public static final Type DEFAULT_TYPE = Type.SOUND;
 
     /**
      * The path to this sound file, starting from
@@ -177,12 +177,22 @@ public class Sound implements Examinable {
     }
 
     /**
+     * Determines whether the sound should be
+     * streamed from its file
+     *
+     * @return True if sound is streamed
+     */
+    public boolean stream() {
+        return stream;
+    }
+
+    /**
      * Returns the distance to modify the sound
      * reduction rate
      *
      * @return The attenuation distance
      */
-    public float attenuationDistance() {
+    public int attenuationDistance() {
         return attenuationDistance;
     }
 
@@ -208,11 +218,27 @@ public class Sound implements Examinable {
     }
 
     /**
+     * Determines if the sound has all its properties
+     * with the default values
+     *
+     * @return True if all the properties are default
+     */
+    public boolean allDefault() {
+        return volume == DEFAULT_VOLUME
+                && pitch == DEFAULT_PITCH
+                && weight == DEFAULT_WEIGHT
+                && stream == DEFAULT_STREAM
+                && attenuationDistance == DEFAULT_ATTENUATION_DISTANCE
+                && preload == DEFAULT_PRELOAD
+                && type == DEFAULT_TYPE;
+    }
+
+    /**
      * Specifies the type of {@link Sound}
      *
      * @since 1.0.0
      */
-    enum Type {
+    public enum Type {
         /**
          * Causes the value of {@link Sound#name} to be
          * interpreted as the name of a file
