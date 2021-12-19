@@ -28,8 +28,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.stream.Stream;
 
@@ -40,7 +38,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public class VillagerMeta implements Element.Part, Examinable {
+public class VillagerMeta implements Examinable {
 
     /**
      * Determines whether the villager type's hat
@@ -51,15 +49,6 @@ public class VillagerMeta implements Element.Part, Examinable {
 
     protected VillagerMeta(@Nullable String hat) {
         this.hat = hat;
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        if (hat != null) {
-            context.writeStringField("hat", hat);
-        }
-        context.endObject();
     }
 
     @Override

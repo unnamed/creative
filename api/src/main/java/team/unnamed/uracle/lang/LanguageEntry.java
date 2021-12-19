@@ -23,14 +23,10 @@
  */
 package team.unnamed.uracle.lang;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -49,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class LanguageEntry implements Element.Part, Examinable {
+public class LanguageEntry implements Examinable {
 
     /**
      * The full name of this language, shown in the
@@ -106,22 +102,6 @@ public class LanguageEntry implements Element.Part, Examinable {
      */
     public boolean bidirectional() {
         return bidirectional;
-    }
-
-    /**
-     * Writes the language registration to an already created
-     * {@link TreeWriter.Context}, it must belong to a pack
-     * meta file
-     *
-     * @param context The context where to write the registration
-     */
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeStringField("name", name);
-        context.writeStringField("region", region);
-        context.writeBooleanField("bidirectional", bidirectional);
-        context.endObject();
     }
 
     @Override

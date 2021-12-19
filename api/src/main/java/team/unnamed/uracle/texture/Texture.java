@@ -30,12 +30,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.Writable;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -48,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Texture implements Element, Keyed, Examinable {
+public class Texture implements Keyed, Examinable {
 
     /**
      * The location of this texture data, the {@code data}
@@ -149,51 +145,6 @@ public class Texture implements Element, Keyed, Examinable {
      */
     public @Nullable VillagerMeta villager() {
         return villager;
-    }
-
-    /**
-     * Writes this texture information into the given
-     * {@code writer}, may contain more than one file
-     * when required
-     *
-     * @param writer The target tree writer
-     */
-    @Override
-    public void write(TreeWriter writer) {
-        // write the actual texture PNG image
-        try (TreeWriter.Context context = writer.join(key, "textures")) {
-            data.write(context);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Cannot write texture", e);
-        }
-
-        boolean hasMeta = meta != null;
-        boolean hasAnimation = animation != null;
-        boolean hasVillager = villager != null;
-
-        // write the metadata
-        if (hasMeta || hasAnimation || hasVillager) {
-            try (TreeWriter.Context context = writer.join(key, "textures", ".mcmeta")) {
-                context.startObject();
-
-                if (hasMeta) {
-                    context.writeKey("texture");
-                    context.writePart(meta);
-                }
-
-                if (hasAnimation) {
-                    context.writeKey("animation");
-                    context.writePart(animation);
-                }
-
-                if (hasVillager) {
-                    context.writeKey("villager");
-                    context.writePart(villager);
-                }
-
-                context.endObject();
-            }
-        }
     }
 
     @Override

@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class PackInfo implements Element.Part, Examinable {
+public class PackInfo implements Examinable {
 
     /**
      * Pack version. If this number does not match the current
@@ -85,14 +85,6 @@ public class PackInfo implements Element.Part, Examinable {
      */
     public String description() {
         return description;
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeIntField("format", format);
-        context.writeStringField("description", description);
-        context.endObject();
     }
 
     @Override

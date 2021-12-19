@@ -28,10 +28,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -44,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Sound implements Element.Part, Examinable {
+public class Sound implements Examinable {
 
     private static final float DEFAULT_VOLUME = 1.0F;
     private static final float DEFAULT_PITCH = 1.0F;
@@ -228,49 +225,6 @@ public class Sound implements Element.Part, Examinable {
          * sound event
          */
         EVENT
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        // in order to make some optimizations, we
-        // have to do this
-        if (
-                volume == DEFAULT_VOLUME
-                        && pitch == DEFAULT_PITCH
-                        && weight == DEFAULT_WEIGHT
-                        && stream == DEFAULT_STREAM
-                        && attenuationDistance == DEFAULT_ATTENUATION_DISTANCE
-                        && preload == DEFAULT_PRELOAD
-                        && type == DEFAULT_TYPE
-        ) {
-            // everything is default, just write the name
-            context.writeStringValue(name);
-        } else {
-            context.startObject();
-            context.writeStringField("name", name);
-            if (volume != DEFAULT_VOLUME) {
-                context.writeFloatField("volume", volume);
-            }
-            if (pitch != DEFAULT_PITCH) {
-                context.writeFloatField("pitch", pitch);
-            }
-            if (weight != DEFAULT_WEIGHT) {
-                context.writeIntField("weight", weight);
-            }
-            if (stream != DEFAULT_STREAM) {
-                context.writeBooleanField("stream", stream);
-            }
-            if (attenuationDistance != DEFAULT_ATTENUATION_DISTANCE) {
-                context.writeIntField("attenuation_distance", attenuationDistance);
-            }
-            if (preload != DEFAULT_PRELOAD) {
-                context.writeBooleanField("preload", preload);
-            }
-            if (type != DEFAULT_TYPE) {
-                context.writeStringField("type", type.name().toLowerCase(Locale.ROOT));
-            }
-            context.endObject();
-        }
     }
 
     @Override

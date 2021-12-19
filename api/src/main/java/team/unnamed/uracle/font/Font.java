@@ -25,7 +25,6 @@ package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import team.unnamed.uracle.Element;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-public interface Font extends Element.Part, Examinable {
+public interface Font extends Examinable {
 
     /**
      * Returns the type of this font, the font

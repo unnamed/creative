@@ -30,9 +30,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.Element;
 import team.unnamed.uracle.PackMeta;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language implements Element, Keyed, Examinable {
+public class Language implements Keyed, Examinable {
 
     /**
      * This language JSON file location inside
@@ -97,35 +95,6 @@ public class Language implements Element, Keyed, Examinable {
      */
     public @Unmodifiable Map<String, String> translations() {
         return translations;
-    }
-
-    /**
-     * Implementation of {@link Element#write(TreeWriter)}
-     * for {@link LanguageEntry} instances, languages are composed
-     * by two parts, the first part must be written into the
-     * pack meta file, and the second part has its own file.
-     *
-     * <p>Only the second part (which has its own file) is
-     * created and written by this method, registration must
-     * be done by calling {@link LanguageEntry#write(TreeWriter.Context)}</p>
-     *
-     * @param writer The target tree writer
-     */
-    @Override
-    public void write(TreeWriter writer) {
-        try (TreeWriter.Context context = writer.join(key, "lang")) {
-            // JSON object is formatted like
-            // {
-            //    "translation.key": "The actual translation"
-            // }
-            context.startObject();
-            for (Map.Entry<String, String> translation : translations.entrySet()) {
-                String key = translation.getKey();
-                String value = translation.getValue();
-                context.writeStringField(key, value);
-            }
-            context.endObject();
-        }
     }
 
     @Override

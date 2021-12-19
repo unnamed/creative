@@ -28,7 +28,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.TreeWriter;
 import team.unnamed.uracle.Vector2Float;
 
 import java.util.ArrayList;
@@ -112,30 +111,6 @@ public class TrueTypeFont implements Font {
 
     public @Unmodifiable List<String> skip() {
         return skip;
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeStringField("file", file.asString());
-
-        context.writeKey("shift");
-        context.startArray();
-        context.writeFloatValue(shift.x());
-        context.writeFloatValue(shift.y());
-        context.endArray();
-
-        context.writeFloatField("size", size);
-        context.writeFloatField("oversample", oversample);
-
-        context.writeKey("skip");
-        context.startArray();
-        for (String toSkip : skip) {
-            context.writeStringValue(toSkip);
-        }
-        context.endArray();
-
-        context.endObject();
     }
 
     @Override

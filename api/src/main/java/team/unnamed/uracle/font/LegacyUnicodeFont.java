@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -96,14 +95,6 @@ public class LegacyUnicodeFont implements Font {
                 ExaminableProperty.of("sizes", sizes),
                 ExaminableProperty.of("template", template)
         );
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeStringField("sizes", sizes.asString());
-        context.writeStringField("template", template.asString());
-        context.endObject();
     }
 
     @Override

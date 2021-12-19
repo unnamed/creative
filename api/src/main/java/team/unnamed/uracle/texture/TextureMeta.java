@@ -27,8 +27,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -42,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class TextureMeta implements Element.Part, Examinable {
+public class TextureMeta implements Examinable {
 
     /**
      * Causes the texture to blur when viewed
@@ -100,20 +98,6 @@ public class TextureMeta implements Element.Part, Examinable {
      */
     public int[] mipmaps() {
         return mipmaps;
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeBooleanField("blur", blur);
-        context.writeBooleanField("clamp", clamp);
-        context.writeKey("mipmaps");
-        context.startArray();
-        for (int mipmap : mipmaps) {
-            context.writeIntValue(mipmap);
-        }
-        context.endArray();
-        context.endObject();
     }
 
     @Override

@@ -29,8 +29,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +43,7 @@ import static java.util.Collections.unmodifiableList;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Element.Part, Examinable {
+public class SoundEvent implements Examinable {
 
     /**
      * True if the sounds listed in {@link SoundEvent#sounds}
@@ -95,32 +93,6 @@ public class SoundEvent implements Element.Part, Examinable {
 
     public @Nullable @Unmodifiable List<Sound> sounds() {
         return sounds;
-    }
-
-    /**
-     * Writes this sound event information into an
-     * existing {@link TreeWriter.Context}, that should
-     * be the {@code sounds.json} file
-     *
-     * @param context The target context, will not
-     *                close
-     */
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeBooleanField("replace", replace);
-        if (subtitle != null) {
-            context.writeStringField("subtitle", subtitle);
-        }
-        if (sounds != null) {
-            context.writeKey("sounds");
-            context.startArray();
-            for (Sound sound : sounds) {
-                context.writePart(sound);
-            }
-            context.endArray();
-        }
-        context.endObject();
     }
 
     @Override

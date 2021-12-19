@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -124,33 +123,6 @@ public class BitMapFont implements Font {
      */
     public int ascent() {
         return ascent;
-    }
-
-    /**
-     * Writes the bitmap font provider registration, it is
-     * part of the actual font
-     *
-     * @param context The target context, will not close
-     */
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeStringField("type", "bitmap");
-        context.writeStringField("file", file.toString());
-        if (height != DEFAULT_HEIGHT) {
-            // only write if height is not equal to
-            // the default height
-            context.writeIntField("height", height);
-        }
-        context.writeIntField("ascent", ascent);
-
-        context.writeKey("chars");
-        context.startArray();
-        for (String character : characters) {
-            context.writeStringValue(character);
-        }
-        context.endArray();
-        context.endObject();
     }
 
     @Override

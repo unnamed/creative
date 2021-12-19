@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class PackMeta implements Element, Examinable {
+public class PackMeta implements Examinable {
 
     private final PackInfo pack;
     @Unmodifiable private final Map<Key, LanguageEntry> languages;
@@ -80,35 +80,6 @@ public class PackMeta implements Element, Examinable {
      */
     public @Unmodifiable Map<Key, LanguageEntry> languages() {
         return languages;
-    }
-
-    /**
-     * Implementation of {@link Element#write} for the
-     * "pack.mcmeta" file, it writes a single file and
-     * its sub-components
-     *
-     * @param writer The target tree writer
-     */
-    @Override
-    public void write(TreeWriter writer) {
-        try (TreeWriter.Context context = writer.join("pack.mcmeta")) {
-            context.startObject();
-            context.writeKey("pack");
-            context.writePart(pack);
-
-            if (!languages.isEmpty()) {
-                context.writeKey("language");
-                context.startObject();
-
-                for (Map.Entry<Key, LanguageEntry> entry : languages.entrySet()) {
-                    context.writeKey(entry.getKey().asString());
-                    context.writePart(entry.getValue());
-                }
-
-                context.endObject();
-            }
-            context.endObject();
-        }
     }
 
     @Override

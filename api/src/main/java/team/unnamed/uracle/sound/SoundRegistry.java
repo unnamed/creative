@@ -32,8 +32,6 @@ import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  * Represents a registry of {@link SoundEvent}, or
  * "sounds.json" in the resource-pack
  */
-public class SoundRegistry implements Element, Examinable, Namespaced {
+public class SoundRegistry implements Examinable, Namespaced {
 
     @Subst(Key.MINECRAFT_NAMESPACE)
     private final String namespace;
@@ -73,19 +71,6 @@ public class SoundRegistry implements Element, Examinable, Namespaced {
 
     public @Unmodifiable Map<String, SoundEvent> sounds() {
         return sounds;
-    }
-
-    @Override
-    public void write(TreeWriter writer) {
-        try (TreeWriter.Context context
-                     = writer.join("assets/" + namespace + "/sounds.json")) {
-            context.startObject();
-            for (Map.Entry<String, SoundEvent> entry : sounds.entrySet()) {
-                context.writeKey(entry.getKey());
-                context.writePart(entry.getValue());
-            }
-            context.endObject();
-        }
     }
 
     @Override

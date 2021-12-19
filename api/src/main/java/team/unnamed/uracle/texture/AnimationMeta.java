@@ -27,8 +27,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.Element;
-import team.unnamed.uracle.TreeWriter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class AnimationMeta implements Element.Part, Examinable {
+public class AnimationMeta implements Examinable {
 
     /**
      * If true, Minecraft generates additional frames
@@ -144,36 +142,6 @@ public class AnimationMeta implements Element.Part, Examinable {
      */
     public List<Frame> frames() {
         return Collections.unmodifiableList(frames);
-    }
-
-    @Override
-    public void write(TreeWriter.Context context) {
-        context.startObject();
-        context.writeBooleanField("interpolate", interpolate);
-        context.writeIntField("width", width);
-        context.writeIntField("height", height);
-        context.writeIntField("frameTime", frameTime);
-        context.writeKey("frames");
-        context.startArray();
-        for (Frame frame : frames) {
-            int index = frame.index();
-            int time = frame.frameTime();
-
-            if (frameTime == time) {
-                // same as default frameTime, we can
-                // skip it
-                context.writeIntValue(index);
-            } else {
-                // specific frameTime, write as
-                // an object
-                context.startObject();
-                context.writeIntField("index", index);
-                context.writeIntField("time", time);
-                context.endObject();
-            }
-        }
-        context.endArray();
-        context.endObject();
     }
 
     @Override
