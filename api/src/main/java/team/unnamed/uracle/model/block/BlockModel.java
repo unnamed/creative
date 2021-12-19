@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.model.ModelDisplay;
-import team.unnamed.uracle.model.ModelElement;
+import team.unnamed.uracle.model.Element;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,14 +76,14 @@ public class BlockModel implements Model {
      * overrides the "elements" tag from the previous
      * model
      */
-    @Unmodifiable private final List<ModelElement> elements;
+    @Unmodifiable private final List<Element> elements;
 
     private BlockModel(
             Key parent,
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
             BlockTexture textures,
-            List<ModelElement> elements
+            List<Element> elements
     ) {
         requireNonNull(display, "display");
         requireNonNull(elements, "elements");
@@ -113,7 +113,7 @@ public class BlockModel implements Model {
     }
 
     @Override
-    public @Unmodifiable List<ModelElement> elements() {
+    public @Unmodifiable List<Element> elements() {
         return elements;
     }
 

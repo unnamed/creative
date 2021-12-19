@@ -21,46 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package team.unnamed.uracle.model;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.Axis3D;
+import team.unnamed.uracle.Vector3Float;
 
-import java.util.List;
-import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
 /**
- * Base interface for representing block and
- * item models
+ * Class for representing {@link Element}
+ * rotations in a single axis
  *
  * @since 1.0.0
  */
-public interface Model extends Examinable {
+public class ElementRotation implements Examinable {
 
-    /**
-     * Returns the parent model of this
-     * model object
-     *
-     * @return The parent model location
-     */
-    Key parent();
+    private final Vector3Float origin;
+    private final Axis3D axis;
+    private final float angle;
+    private final boolean rescale;
 
-    /**
-     * Returns a map of the different places
-     * where the model can be displayed
-     *
-     * @return An unmodifiable map of displays
-     */
-    @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display();
-
-    /**
-     * Returns an unmodifiable list containing all
-     * the model elements, which can only have cubic
-     * forms
-     *
-     * @return The model elements
-     */
-    @Unmodifiable List<Element> elements();
-
+    private ElementRotation(
+            Vector3Float origin,
+            Axis3D axis,
+            float angle,
+            boolean rescale
+    ) {
+        this.origin = requireNonNull(origin, "origin");
+        this.axis = requireNonNull(axis, "axis");
+        this.angle = angle;
+        this.rescale = rescale;
+    }
 }
