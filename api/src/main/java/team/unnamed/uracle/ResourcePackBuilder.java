@@ -89,4 +89,20 @@ public interface ResourcePackBuilder {
      */
     ResourcePackBuilder meta(PackMeta meta);
 
+    /**
+     * Writes a set of bytes to an arbitrary
+     * file, use it only when an implementation
+     * of a resource-pack part doesn't exist
+     *
+     * <p>In case a part doesn't exist and it
+     * is from Minecraft: Java Edition (Vanilla,
+     * no modifications), please open an issue
+     * on GitHub</p>
+     *
+     * @param path The file path
+     * @param data The written data
+     * @return This builder, for chaining
+     */
+    ResourcePackBuilder file(String path, Writable data);
+
 }
