@@ -24,7 +24,6 @@
 package team.unnamed.uracle.texture;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -44,15 +43,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Texture implements Keyed, Examinable {
-
-    /**
-     * The location of this texture data, the {@code data}
-     * property will be written there. Base path in this
-     * context is assets/&lt;namespace&gt;/textures, this
-     * path includes the file extension (.PNG)
-     */
-    private final Key key;
+public class Texture implements Examinable {
 
     /**
      * The actual PNG image of this texture, stored using
@@ -83,29 +74,15 @@ public class Texture implements Keyed, Examinable {
     @Nullable private final VillagerMeta villager;
 
     private Texture(
-            Key key,
             Writable data,
             @Nullable TextureMeta meta,
             @Nullable AnimationMeta animation,
             @Nullable VillagerMeta villager
     ) {
-        this.key = requireNonNull(key, "key");
         this.data = requireNonNull(data, "data");
         this.meta = meta;
         this.animation = animation;
         this.villager = villager;
-    }
-
-    /**
-     * Returns the resource location of this texture
-     * using assets/&lt;namespace&gt;/textures as base
-     * path
-     *
-     * @return This texture resource location (or key)
-     */
-    @Override
-    public @NotNull Key key() {
-        return key;
     }
 
     /**
@@ -150,7 +127,6 @@ public class Texture implements Keyed, Examinable {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("data", data),
                 ExaminableProperty.of("meta", meta),
                 ExaminableProperty.of("animation", animation),
@@ -168,8 +144,7 @@ public class Texture implements Keyed, Examinable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Texture texture = (Texture) o;
-        return key.equals(texture.key)
-                && data.equals(texture.data)
+        return data.equals(texture.data)
                 && Objects.equals(meta, texture.meta)
                 && Objects.equals(animation, texture.animation)
                 && Objects.equals(villager, texture.villager);
@@ -177,47 +152,37 @@ public class Texture implements Keyed, Examinable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, data, meta, animation, villager);
+        return Objects.hash(data, meta, animation, villager);
     }
 
     /**
      * Creates a new {@link Texture} instance using the
      * provided values
      *
-     * @param key The texture location using
-     *            assets/&lt;namespace&gt;/textures
-     *            as base path
      * @param data The PNG texture data
      * @param meta The optional texture meta
      * @param animation The optional animation meta
      * @return A new {@link Texture} instance
      */
     public static Texture of(
-            Key key,
             Writable data,
             @Nullable TextureMeta meta,
             @Nullable AnimationMeta animation,
             @Nullable VillagerMeta villager
     ) {
-        return new Texture(key, data, meta, animation, villager);
+        return new Texture(data, meta, animation, villager);
     }
 
     /**
      * Creates a new {@link Texture} instance without metadata,
      * using the provided values
      *
-     * @param key The texture location using
-     *            assets/&lt;namespace&gt;/textures
-     *            as base path
      * @param data The PNG texture data
      * @return A new {@link Texture} instance without
      * metadata
      */
-    public static Texture of(
-            Key key,
-            Writable data
-    ) {
-        return new Texture(key, data, null, null, null);
+    public static Texture of(Writable data) {
+        return new Texture(data, null, null, null);
     }
 
     /**
@@ -236,18 +201,12 @@ public class Texture implements Keyed, Examinable {
      */
     public static class Builder {
 
-        private Key key;
         private Writable data;
         private TextureMeta meta;
         private AnimationMeta animation;
         private VillagerMeta villager;
 
         private Builder() {
-        }
-
-        public Builder key(Key key) {
-            this.key = requireNonNull(key, "key");
-            return this;
         }
 
         public Builder data(Writable data) {
@@ -278,7 +237,7 @@ public class Texture implements Keyed, Examinable {
          * @return The recently created texture
          */
         public Texture build() {
-            return new Texture(key, data, meta, animation, villager);
+            return new Texture(data, meta, animation, villager);
         }
 
     }
