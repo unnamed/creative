@@ -56,6 +56,8 @@ import team.unnamed.uracle.Vector3Float;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Place where an item or block model is displayed. Holds its
  * rotation, translation and scale for the specified situation
@@ -89,9 +91,9 @@ public class ModelDisplay implements Examinable {
             Vector3Float translation,
             Vector3Float scale
     ) {
-        this.rotation = rotation;
-        this.translation = translation;
-        this.scale = scale;
+        this.rotation = requireNonNull(rotation, "rotation");
+        this.translation = requireNonNull(translation, "translation");
+        this.scale = requireNonNull(scale, "scale");
     }
 
     /**
@@ -159,12 +161,86 @@ public class ModelDisplay implements Examinable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModelDisplay that = (ModelDisplay) o;
-        return rotation.equals(that.rotation) && translation.equals(that.translation) && scale.equals(that.scale);
+        return rotation.equals(that.rotation)
+                && translation.equals(that.translation)
+                && scale.equals(that.scale);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(rotation, translation, scale);
+    }
+
+    /**
+     * Creates a new {@link ModelDisplay} instance from
+     * the given values
+     *
+     * @param rotation The display rotation
+     * @param translation The display translation [-80, 80]
+     * @param scale The display scale [0, 4]
+     * @return A new {@link ModelDisplay} instance
+     * @since 1.0.0
+     */
+    public static ModelDisplay of(
+            Vector3Float rotation,
+            Vector3Float translation,
+            Vector3Float scale
+    ) {
+        return new ModelDisplay(rotation, translation, scale);
+    }
+
+    /**
+     * Static factory method for instantiating our
+     * builder implementation, which eases the creation
+     * of {@link ModelDisplay} instances
+     *
+     * @return A new builder instance
+     * @since 1.0.0
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder implementation for creating {@link ModelDisplay}
+     * instances
+     *
+     * @since 1.0.0
+     */
+    public static class Builder {
+
+        private Vector3Float rotation = Vector3Float.ZERO;
+        private Vector3Float translation = Vector3Float.ZERO;
+        private Vector3Float scale = Vector3Float.ONE;
+
+        private Builder() {
+        }
+
+        public Builder rotation(Vector3Float rotation) {
+            this.rotation = requireNonNull(rotation, "rotation");
+            return this;
+        }
+
+        public Builder translation(Vector3Float translation) {
+            this.translation = requireNonNull(translation, "translation");
+            return this;
+        }
+
+        public Builder scale(Vector3Float scale) {
+            this.scale = requireNonNull(scale, "scale");
+            return this;
+        }
+
+        /**
+         * Finished building the {@link ModelDisplay} instance
+         * using the previously set values
+         *
+         * @return A new {@link ModelDisplay} instance
+         */
+        public ModelDisplay build() {
+            return new ModelDisplay(rotation, translation, scale);
+        }
+
     }
 
 }

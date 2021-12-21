@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package team.unnamed.uracle.model;
 
 import net.kyori.examination.Examinable;
@@ -44,9 +43,30 @@ import static java.util.Objects.requireNonNull;
  */
 public class ElementRotation implements Examinable {
 
+    /**
+     * The origin for the element rotation,
+     * also known as rotation pivot
+     */
     private final Vector3Float origin;
+
+    /**
+     * Determines the axis of the element
+     * rotation, because elements can only
+     * use rotation in a single axis
+     */
     private final Axis3D axis;
+
+    /**
+     * Specifies the actual rotation angle,
+     * must a multiple of 22.5 and exist in
+     * range of [-45.0, 45.0]
+     */
     private final float angle;
+
+    /**
+     * Specifies whether to scale the faces
+     * across the whole block
+     */
     private final boolean rescale;
 
     private ElementRotation(
@@ -61,18 +81,38 @@ public class ElementRotation implements Examinable {
         this.rescale = rescale;
     }
 
+    /**
+     * Returns the rotation origin, a.k.a.
+     * rotation pivot
+     *
+     * @return The rotation origin
+     */
     public Vector3Float origin() {
         return origin;
     }
 
+    /**
+     * Returns the rotation axis
+     *
+     * @return The rotation axis
+     */
     public Axis3D axis() {
         return axis;
     }
 
+    /**
+     * Returns the rotation value
+     *
+     * @return The rotation angle
+     */
     public float angle() {
         return angle;
     }
 
+    /**
+     * Returns true if faces will be
+     * scaled across the whole block
+     */
     public boolean rescale() {
         return rescale;
     }
@@ -106,6 +146,90 @@ public class ElementRotation implements Examinable {
     @Override
     public int hashCode() {
         return Objects.hash(origin, axis, angle, rescale);
+    }
+
+    /**
+     * Creates a new {@link ElementRotation} instance
+     * from the provided values
+     *
+     * @param origin The rotation origin or pivot
+     * @param axis The rotation axis
+     * @param angle The rotation angle (value)
+     * @param rescale Whether to rescale the faces
+     *                to the whole block
+     * @return A new {@link ElementRotation} instance
+     * @since 1.0.0
+     */
+    public static ElementRotation of(
+            Vector3Float origin,
+            Axis3D axis,
+            float angle,
+            boolean rescale
+    ) {
+        return new ElementRotation(
+                origin, axis, angle, rescale
+        );
+    }
+
+    /**
+     * Static factory method for instantiating our
+     * builder implementation
+     *
+     * @return A new builder for {@link ElementRotation}
+     * instances
+     * @since 1.0.0
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder implementation for creating
+     * {@link ElementRotation} instances
+     *
+     * @since 1.0.0
+     */
+    public static class Builder {
+
+        private Vector3Float origin = Vector3Float.ZERO;
+        private Axis3D axis = Axis3D.X;
+        private float angle = 0.0F;
+        private boolean rescale = false;
+
+        private Builder() {
+        }
+
+        public Builder origin(Vector3Float origin) {
+            this.origin = requireNonNull(origin, "origin");
+            return this;
+        }
+
+        public Builder axis(Axis3D axis) {
+            this.axis = requireNonNull(axis, "axis");
+            return this;
+        }
+
+        public Builder angle(float angle) {
+            this.angle = requireNonNull(angle, "angle");
+            return this;
+        }
+
+        public Builder rescale(boolean rescale) {
+            this.rescale = rescale;
+            return this;
+        }
+
+        /**
+         * Finishes building the {@link ElementRotation}
+         * instance, this method can be invoked multiple
+         * times, the builder is re-usable
+         *
+         * @return The element rotation
+         */
+        public ElementRotation build() {
+            return new ElementRotation(origin, axis, angle, rescale);
+        }
+
     }
 
 }

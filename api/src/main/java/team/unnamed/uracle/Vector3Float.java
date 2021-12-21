@@ -45,6 +45,12 @@ public final class Vector3Float implements Examinable {
      */
     public static final Vector3Float ZERO = new Vector3Float(0F, 0F, 0F);
 
+    /**
+     * Constant for {@link Vector3Float} value with
+     * abscissa, ordinate and aplicate of {@code 1} one.
+     */
+    public static final Vector3Float ONE = new Vector3Float(1F, 1F, 1F);
+
     private final float x;
     private final float y;
     private final float z;
