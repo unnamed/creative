@@ -24,12 +24,16 @@
 package team.unnamed.uracle.model;
 
 import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector3Float;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -87,6 +91,84 @@ public class Element implements Examinable {
         this.rotation = requireNonNull(rotation, "rotation");
         this.shade = shade;
         this.faces = unmodifiableMap(new HashMap<>(faces));
+    }
+
+    /**
+     * Returns the starting point of the
+     * element cuboid
+     *
+     * @return The cuboid origin
+     */
+    public Vector3Float from() {
+        return from;
+    }
+
+    /**
+     * Returns the stop point of the element
+     * cuboid
+     *
+     * @return The cuboid stop point
+     */
+    public Vector3Float to() {
+        return to;
+    }
+
+    /**
+     * Returns the element rotation, in
+     * a single axis
+     *
+     * @return The element rotation
+     */
+    public ElementRotation rotation() {
+        return rotation;
+    }
+
+    /**
+     * Determines whether to render shadows
+     * or not for this element
+     *
+     * @return True to render shadows
+     */
+    public boolean shade() {
+        return shade;
+    }
+
+    /**
+     * Returns an unmodifiable map of the
+     * element faces specifications
+     *
+     * @return The element faces
+     */
+    public @Unmodifiable Map<CubeFace, ElementFace> faces() {
+        return faces;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("from", from),
+                ExaminableProperty.of("to", to),
+                ExaminableProperty.of("rotation", rotation),
+                ExaminableProperty.of("shade", shade),
+                ExaminableProperty.of("faces", faces)
+        );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Element element = (Element) o;
+        return shade == element.shade
+                && from.equals(element.from)
+                && to.equals(element.to)
+                && rotation.equals(element.rotation)
+                && faces.equals(element.faces);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to, rotation, shade, faces);
     }
 
 }

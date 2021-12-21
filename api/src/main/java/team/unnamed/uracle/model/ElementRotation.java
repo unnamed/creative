@@ -25,8 +25,14 @@
 package team.unnamed.uracle.model;
 
 import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Axis3D;
 import team.unnamed.uracle.Vector3Float;
+
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -54,4 +60,52 @@ public class ElementRotation implements Examinable {
         this.angle = angle;
         this.rescale = rescale;
     }
+
+    public Vector3Float origin() {
+        return origin;
+    }
+
+    public Axis3D axis() {
+        return axis;
+    }
+
+    public float angle() {
+        return angle;
+    }
+
+    public boolean rescale() {
+        return rescale;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("origin", origin),
+                ExaminableProperty.of("axis", axis),
+                ExaminableProperty.of("angle", angle),
+                ExaminableProperty.of("rescale", rescale)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ElementRotation that = (ElementRotation) o;
+        return Float.compare(that.angle, angle) == 0
+                && rescale == that.rescale
+                && origin.equals(that.origin)
+                && axis == that.axis;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(origin, axis, angle, rescale);
+    }
+
 }

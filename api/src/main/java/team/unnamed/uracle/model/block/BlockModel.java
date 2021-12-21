@@ -33,15 +33,23 @@ import team.unnamed.uracle.model.ModelDisplay;
 import team.unnamed.uracle.model.Element;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents the object responsible for specifying
+ * a Minecraft block model
+ *
+ * @since 1.0.0
+ */
 public class BlockModel implements Model {
 
     public static final Key BUILTIN_GENERATED = Key.key("builtin/generated");
@@ -131,6 +139,83 @@ public class BlockModel implements Model {
     @Override
     public String toString() {
         return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BlockModel that = (BlockModel) o;
+        return ambientOcclusion == that.ambientOcclusion
+                && parent.equals(that.parent)
+                && display.equals(that.display)
+                && textures.equals(that.textures)
+                && elements.equals(that.elements);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parent, ambientOcclusion, display, textures, elements);
+    }
+
+    public static BlockModel of(
+            Key parent,
+            boolean ambientOcclusion,
+            Map<ModelDisplay.Type, ModelDisplay> display,
+            BlockTexture textures,
+            List<Element> elements
+    ) {
+        return new BlockModel(
+                parent, ambientOcclusion, display, textures, elements
+        );
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Key parent;
+        private boolean ambientOcclusion;
+        private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
+        private BlockTexture textures;
+        private List<Element> elements = Collections.emptyList();
+
+        protected Builder() {
+        }
+
+        public Builder parent(Key parent) {
+            this.parent = requireNonNull(parent, "parent");
+            return this;
+        }
+
+        public Builder ambientOcclusion(boolean ambientOcclusion) {
+            this.ambientOcclusion = ambientOcclusion;
+            return this;
+        }
+
+        public Builder display(Map<ModelDisplay.Type, ModelDisplay> display) {
+            this.display = requireNonNull(display, "display");
+            return this;
+        }
+
+        public Builder textures(BlockTexture textures) {
+            this.textures = requireNonNull(textures, "textures");
+            return this;
+        }
+
+        public Builder elements(List<Element> elements) {
+            this.elements = requireNonNull(elements, "elements");
+            return this;
+        }
+
+        public BlockModel build() {
+            return new BlockModel(
+                    parent, ambientOcclusion, display, textures, elements
+            );
+        }
+
     }
 
 }

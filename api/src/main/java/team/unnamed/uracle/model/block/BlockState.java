@@ -23,5 +23,20 @@
  */
 package team.unnamed.uracle.model.block;
 
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.List;
+
 public class BlockState {
+
+    
+
+    @Nullable @Unmodifiable
+    private final List<Case> multipart = null;
+
+    public static class Case {
+
+    }
+
 }

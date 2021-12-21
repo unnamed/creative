@@ -24,9 +24,16 @@
 
 package team.unnamed.uracle.model;
 
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector4Int;
+
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Defines the properties of a {@link CubeFace}
@@ -34,7 +41,7 @@ import team.unnamed.uracle.Vector4Int;
  *
  * @since 1.0.0
  */
-public class ElementFace {
+public class ElementFace implements Examinable {
 
     /**
      * Defines the area of the texture to
@@ -93,4 +100,89 @@ public class ElementFace {
         this.rotation = rotation;
         this.tintIndex = tintIndex;
     }
+
+    /**
+     * Returns the area of the texture to use,
+     * from 0 to 16
+     *
+     * @return The texture area to use
+     */
+    public @Nullable Vector4Int uv() {
+        return uv;
+    }
+
+    /**
+     * Returns this face's texture in variable
+     * form
+     *
+     * @return The face texture
+     */
+    public String texture() {
+        return texture;
+    }
+
+    /**
+     * Returns whether a face doesn't need to be
+     * rendered when a block is touching the
+     * specified face
+     *
+     * @return The element cull face
+     */
+    public @Nullable CubeFace cullFace() {
+        return cullFace;
+    }
+
+    /**
+     * Returns this face texture rotation
+     *
+     * @return The face texture rotation
+     */
+    public int rotation() {
+        return rotation;
+    }
+
+    /**
+     * Returns the element face tint index,
+     * which specifies whether to tint the
+     * element face
+     *
+     * @return The face tint index
+     */
+    public @Nullable Integer tintIndex() {
+        return tintIndex;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("uv", uv),
+                ExaminableProperty.of("texture", texture),
+                ExaminableProperty.of("cullFace", cullFace),
+                ExaminableProperty.of("rotation", rotation),
+                ExaminableProperty.of("tintIndex", tintIndex)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ElementFace that = (ElementFace) o;
+        return rotation == that.rotation
+                && Objects.equals(uv, that.uv)
+                && texture.equals(that.texture)
+                && cullFace == that.cullFace
+                && Objects.equals(tintIndex, that.tintIndex);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uv, texture, cullFace, rotation, tintIndex);
+    }
+
 }
