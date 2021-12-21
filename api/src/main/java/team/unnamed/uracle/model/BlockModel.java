@@ -21,16 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.model.block;
+package team.unnamed.uracle.model;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.model.Model;
-import team.unnamed.uracle.model.ModelDisplay;
-import team.unnamed.uracle.model.Element;
+import team.unnamed.uracle.model.block.BlockTexture;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +84,7 @@ public class BlockModel implements Model {
      */
     @Unmodifiable private final List<Element> elements;
 
-    private BlockModel(
+    protected BlockModel(
             Key parent,
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
@@ -156,22 +154,6 @@ public class BlockModel implements Model {
     @Override
     public int hashCode() {
         return Objects.hash(parent, ambientOcclusion, display, textures, elements);
-    }
-
-    public static BlockModel of(
-            Key parent,
-            boolean ambientOcclusion,
-            Map<ModelDisplay.Type, ModelDisplay> display,
-            BlockTexture textures,
-            List<Element> elements
-    ) {
-        return new BlockModel(
-                parent, ambientOcclusion, display, textures, elements
-        );
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

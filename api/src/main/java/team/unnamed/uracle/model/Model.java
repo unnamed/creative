@@ -26,6 +26,7 @@ package team.unnamed.uracle.model;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.model.block.BlockTexture;
 
 import java.util.List;
 import java.util.Map;
@@ -62,5 +63,21 @@ public interface Model extends Examinable {
      * @return The model elements
      */
     @Unmodifiable List<Element> elements();
+
+    static BlockModel block(
+            Key parent,
+            boolean ambientOcclusion,
+            Map<ModelDisplay.Type, ModelDisplay> display,
+            BlockTexture textures,
+            List<Element> elements
+    ) {
+        return new BlockModel(
+                parent, ambientOcclusion, display, textures, elements
+        );
+    }
+
+    static BlockModel.Builder block() {
+        return new BlockModel.Builder();
+    }
 
 }

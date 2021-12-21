@@ -30,6 +30,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.model.BlockModel;
 
 import java.util.HashMap;
 import java.util.Map;

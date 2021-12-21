@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector3Float;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -159,16 +160,62 @@ public class Element implements Examinable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Element element = (Element) o;
-        return shade == element.shade
-                && from.equals(element.from)
+        return from.equals(element.from)
                 && to.equals(element.to)
                 && rotation.equals(element.rotation)
+                && shade == element.shade
                 && faces.equals(element.faces);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(from, to, rotation, shade, faces);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Vector3Float from = Vector3Float.ZERO;
+        private Vector3Float to = Vector3Float.ONE;
+        private ElementRotation rotation = ElementRotation.DEFAULT;
+        private boolean shade = false;
+        private Map<CubeFace, ElementFace> faces = Collections.emptyMap();
+
+        private Builder() {
+        }
+
+        public Builder from(Vector3Float from) {
+            this.from = requireNonNull(from, "from");
+            return this;
+        }
+
+        public Builder to(Vector3Float to) {
+            this.to = requireNonNull(to, "to");
+            return this;
+        }
+
+        public Builder rotation(ElementRotation rotation) {
+            this.rotation = requireNonNull(rotation, "rotation");
+            return this;
+        }
+
+        public Builder shade(boolean shade) {
+            this.shade = shade;
+            return this;
+        }
+
+        public Builder faces(Map<CubeFace, ElementFace> faces) {
+            this.faces = requireNonNull(faces, "faces");
+            return this;
+        }
+
+        public Element build() {
+            return new Element(from, to, rotation, shade, faces);
+        }
+
     }
 
 }

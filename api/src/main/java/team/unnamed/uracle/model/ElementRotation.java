@@ -43,6 +43,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class ElementRotation implements Examinable {
 
+    public static final ElementRotation DEFAULT = ElementRotation.builder().build();
+
     /**
      * The origin for the element rotation,
      * also known as rotation pivot
@@ -192,6 +194,7 @@ public class ElementRotation implements Examinable {
     public static class Builder {
 
         private Vector3Float origin = Vector3Float.ZERO;
+        // default axis doesn't really matter since (default) rotation is zero
         private Axis3D axis = Axis3D.X;
         private float angle = 0.0F;
         private boolean rescale = false;
