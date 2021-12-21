@@ -24,17 +24,122 @@
 package team.unnamed.uracle.model.item;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.model.ItemModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-public class ItemTexture {
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 
-    private List<Key> layers;
+/**
+ * Object holding an {@link ItemModel}
+ * textures
+ *
+ * @since 1.0.0
+ */
+public class ItemTexture implements Examinable {
 
-    @Nullable private Key particle;
+    @Unmodifiable private final List<Key> layers;
+    @Nullable private final Key particle;
+    @Unmodifiable private final Map<String, Key> variables;
 
-    private Map<String, Key> variables;
+    private ItemTexture(
+            List<Key> layers,
+            @Nullable Key particle,
+            Map<String, Key> variables
+    ) {
+        requireNonNull(layers, "layers");
+        this.layers = unmodifiableList(new ArrayList<>(layers));
+        this.particle = particle;
+        this.variables = unmodifiableMap(new HashMap<>(variables));
+    }
+
+    public @Unmodifiable List<Key> layers() {
+        return layers;
+    }
+
+    public @Nullable Key particle() {
+        return particle;
+    }
+
+    public @Unmodifiable Map<String, Key> variables() {
+        return variables;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("layers", layers),
+                ExaminableProperty.of("particle", particle),
+                ExaminableProperty.of("variables", variables)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemTexture that = (ItemTexture) o;
+        return layers.equals(that.layers)
+                && Objects.equals(particle, that.particle)
+                && variables.equals(that.variables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(layers, particle, variables);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private List<Key> layers = Collections.emptyList();
+        private Key particle;
+        private Map<String, Key> variables = Collections.emptyMap();
+
+        private Builder() {
+        }
+
+        public Builder layers(List<Key> layers) {
+            this.layers = requireNonNull(layers, "layers");
+            return this;
+        }
+
+        public Builder particle(@Nullable Key particle) {
+            this.particle = particle;
+            return this;
+        }
+
+        public Builder variables(Map<String, Key> variables) {
+            this.variables = requireNonNull(variables, "variables");
+            return this;
+        }
+
+        public ItemTexture build() {
+            return new ItemTexture(layers, particle, variables);
+        }
+
+    }
 
 }

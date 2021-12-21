@@ -24,113 +24,61 @@
 package team.unnamed.uracle.model.item;
 
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+
+/**
+ * @since 1.0.0
+ */
 public class ItemOverride {
 
-    private Predicate predicate;
+    /**
+     * Holds the cases to determine whether an
+     * item model should be overridden
+     */
+    @Unmodifiable private final List<ItemPredicate> predicate;
 
-    private Key model;
+    /**
+     * Model key for the new item
+     */
+    private final Key model;
 
-    public static class Predicate {
+    private ItemOverride(
+            List<ItemPredicate> predicate,
+            Key model
+    ) {
+        requireNonNull(predicate, "predicate");
+        this.predicate = unmodifiableList(new ArrayList<>(predicate));
+        this.model = requireNonNull(model, "model");
+    }
 
-        // todo: change some values to booleans?
+    public @Unmodifiable List<ItemPredicate> predicate() {
+        return predicate;
+    }
 
-        /**
-         * Used on compasses to determine the current angle,
-         * expressed in a decimal value of less than one.
-         */
-        @Nullable private Float angle;
+    public Key model() {
+        return model;
+    }
 
-        /**
-         * Used on shields to determine if currently blocking.
-         * If 1, the player is blocking.
-         */
-        @Nullable private Float blocking;
-
-        /**
-         * Used on Elytra to determine if broken. If 1, the
-         * Elytra is broken.
-         */
-        @Nullable private Float broken;
-
-        /**
-         * Used on fishing rods to determine if the fishing rod
-         * has been cast. If 1, the fishing rod has been cast.
-         */
-        @Nullable private Float cast;
-
-        /**
-         * Used on ender pearls and chorus fruit to determine the
-         * remaining cooldown, expressed in a decimal value between
-         * 0 and 1.
-         */
-        @Nullable private Float cooldown;
-
-        /**
-         * Used on items with durability to determine the amount of
-         * damage, expressed in a decimal value between 0 and 1.
-         */
-        @Nullable private Float damage;
-
-        /**
-         * Used on items with durability to determine if it is damaged.
-         * If 1, the item is damaged. Note that if an item has the unbreakable
-         * tag, this may be 0 while the item has a non-zero "damage" tag.
-         */
-        @Nullable private Float damaged;
-
-        /**
-         * Determines the model used by left-handed players. It affects the
-         * item they see in inventories, along with the item players see them
-         * holding or wearing.
-         */
-        @Nullable private Float lefthanded;
-
-        /**
-         * Determines the amount a bow or crossbow has been pulled, expressed
-         * in a decimal value of less than one.
-         */
-        @Nullable private Float pull;
-
-        /**
-         * Used on bows and crossbows to determine if the bow is being pulled.
-         * If 1, the bow is currently being pulled.
-         */
-        @Nullable private Float pulling;
-
-        /**
-         * Used on crossbows to determine if they are charged with any projectile.
-         * If 1, the crossbow is charged.
-         */
-        @Nullable private Float charged;
-
-        /**
-         * Used on crossbows. If 1, the crossbow is charged with a firework rocket.
-         */
-        @Nullable private Float firework;
-
-        /**
-         * Used on the trident to determine if the trident is ready to be thrown
-         * by the player. If 1, the trident is ready for fire.
-         */
-        @Nullable private Float throwing;
-
-        /**
-         * Used on clocks to determine the current time, expressed in a decimal
-         * value of less than one.
-         */
-        @Nullable private Float time;
-
-        /**
-         * Used on any item and is compared to the tag.CustomModelData NBT,
-         * expressed in an integer value. The number is still internally converted
-         * to float, causing a precision loss for some numbers above 16 million. If
-         * the value read from the item data is greater than or equal to the value
-         * used for the predicate, the predicate is positive.
-         */
-        @Nullable private Integer customModelData;
-
+    /**
+     * Creates a new {@link ItemOverride} instance
+     * from the given values
+     *
+     * @param predicate The item override predicate
+     * @param model The new item model
+     * @return A new {@link ItemOverride} instance
+     * @since 1.0.0
+     */
+    public static ItemOverride of(
+            List<ItemPredicate> predicate,
+            Key model
+    ) {
+        return new ItemOverride(predicate, model);
     }
 
 }

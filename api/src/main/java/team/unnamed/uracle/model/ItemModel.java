@@ -21,7 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.model.item;
+
+/*
+ * This file is part of uracle, licensed under the MIT license
+ *
+ * Copyright (c) 2021 Unnamed Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package team.unnamed.uracle.model;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
@@ -29,11 +53,11 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.model.Element;
-import team.unnamed.uracle.model.Model;
-import team.unnamed.uracle.model.ModelDisplay;
+import team.unnamed.uracle.model.item.ItemOverride;
+import team.unnamed.uracle.model.item.ItemTexture;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -149,7 +173,7 @@ public class ItemModel implements Model  {
         return Stream.of(
                 ExaminableProperty.of("parent", parent),
                 ExaminableProperty.of("display", display),
-                ExaminableProperty.of("gui_light", guiLight),
+                ExaminableProperty.of("guiLight", guiLight),
                 ExaminableProperty.of("textures", textures),
                 ExaminableProperty.of("elements", elements),
                 ExaminableProperty.of("overrides", overrides)
@@ -177,6 +201,58 @@ public class ItemModel implements Model  {
     @Override
     public int hashCode() {
         return Objects.hash(parent, display, textures, guiLight, elements, overrides);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Key parent;
+        private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
+        private ItemTexture textures;
+        private GuiLight guiLight = GuiLight.SIDE;
+        private List<Element> elements = Collections.emptyList();
+        private List<ItemOverride> overrides = Collections.emptyList();
+
+        private Builder() {
+        }
+
+        public Builder parent(Key parent) {
+            this.parent = requireNonNull(parent, "parent");
+            return this;
+        }
+
+        public Builder display(Map<ModelDisplay.Type, ModelDisplay> display) {
+            this.display = requireNonNull(display, "display");
+            return this;
+        }
+
+        public Builder textures(ItemTexture textures) {
+            this.textures = requireNonNull(textures, "textures");
+            return this;
+        }
+
+        public Builder guiLight(GuiLight guiLight) {
+            this.guiLight = requireNonNull(guiLight, "guiLight");
+            return this;
+        }
+
+        public Builder elements(List<Element> elements) {
+            this.elements = requireNonNull(elements, "elements");
+            return this;
+        }
+
+        public Builder overrides(List<ItemOverride> overrides) {
+            this.overrides = requireNonNull(overrides, "overrides");
+            return this;
+        }
+
+        public ItemModel build() {
+            return new ItemModel(parent, display, textures, guiLight, elements, overrides);
+        }
+
     }
 
 }
