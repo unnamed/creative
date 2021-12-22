@@ -229,18 +229,6 @@ public class ItemModel implements Model  {
     }
 
     /**
-     * Static factory method for our builder implementation,
-     * which eases the instantiation of {@link ItemModel}
-     * objects
-     *
-     * @return A new {@link Builder} instance
-     * @since 1.0.0
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
      * Builder implementation for {@link ItemModel}
      * objects
      *
@@ -255,7 +243,7 @@ public class ItemModel implements Model  {
         private List<Element> elements = Collections.emptyList();
         private List<ItemOverride> overrides = Collections.emptyList();
 
-        private Builder() {
+        protected Builder() {
         }
 
         public Builder parent(Key parent) {

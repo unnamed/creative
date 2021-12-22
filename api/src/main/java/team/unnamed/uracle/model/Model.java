@@ -80,4 +80,15 @@ public interface Model extends Examinable {
         return new BlockModel.Builder();
     }
 
+    /**
+     * Static factory method for {@link ItemModel} builder
+     * implementation, which eases its instantiation
+     *
+     * @return A new {@link ItemModel.Builder} instance
+     * @since 1.0.0
+     */
+    static ItemModel.Builder item() {
+        return new ItemModel.Builder();
+    }
+
 }
