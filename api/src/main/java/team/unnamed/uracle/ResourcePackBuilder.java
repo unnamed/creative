@@ -26,6 +26,7 @@ package team.unnamed.uracle;
 import net.kyori.adventure.key.Key;
 import team.unnamed.uracle.font.Font;
 import team.unnamed.uracle.lang.Language;
+import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.sound.SoundRegistry;
 import team.unnamed.uracle.texture.Texture;
 
@@ -61,14 +62,14 @@ public interface ResourcePackBuilder {
     ResourcePackBuilder language(Key location, Language language);
 
     /**
-     * Writes a new texture into the specified
-     * namespaced location
+     * Writes the given {@code model} to
+     * the resource-pack at the specified
+     * {@code location}
      *
-     * @param location The texture location
-     * @param texture The written texture
+     * @param model The written model
      * @return This builder, for chaining
      */
-    ResourcePackBuilder texture(Key location, Texture texture);
+    ResourcePackBuilder model(Key location, Model model);
 
     /**
      * Sets the sound registry for a specific
@@ -79,6 +80,16 @@ public interface ResourcePackBuilder {
      * @return This builder, for chaining
      */
     ResourcePackBuilder sounds(String namespace, SoundRegistry registry);
+
+    /**
+     * Writes a new texture into the specified
+     * namespaced location
+     *
+     * @param location The texture location
+     * @param texture The written texture
+     * @return This builder, for chaining
+     */
+    ResourcePackBuilder texture(Key location, Texture texture);
 
     /**
      * Writes the resource-pack meta into
