@@ -24,18 +24,32 @@
 package team.unnamed.uracle.model.item;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Represents an item model override, which determines cases in
+ * which a different model should be used based on item tags. All
+ * cases are evaluated in order from top to bottom and last predicate
+ * that matches overrides.
+ *
+ * <p>Overrides are ignored if it has been already overridden once,
+ * for example this avoids recursion on overriding to the same model</p>
+ *
  * @since 1.0.0
  */
-public class ItemOverride {
+public class ItemOverride implements Examinable {
 
     /**
      * Holds the cases to determine whether an
@@ -44,7 +58,8 @@ public class ItemOverride {
     @Unmodifiable private final List<ItemPredicate> predicate;
 
     /**
-     * Model key for the new item
+     * Model key for the new item if the
+     * case is met
      */
     private final Key model;
 
@@ -57,12 +72,52 @@ public class ItemOverride {
         this.model = requireNonNull(model, "model");
     }
 
+    /**
+     * Returns an unmodifiable list of the cases
+     * where this item model override should be
+     * used
+     *
+     * @return The item override predicate
+     */
     public @Unmodifiable List<ItemPredicate> predicate() {
         return predicate;
     }
 
+    /**
+     * Returns the resource location of the new
+     * item model
+     *
+     * @return The item override model
+     */
     public Key model() {
         return model;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("predicate", predicate),
+                ExaminableProperty.of("model", model)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemOverride that = (ItemOverride) o;
+        return predicate.equals(that.predicate)
+                && model.equals(that.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(predicate, model);
     }
 
     /**

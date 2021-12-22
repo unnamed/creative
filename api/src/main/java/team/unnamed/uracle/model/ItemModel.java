@@ -74,7 +74,18 @@ import static java.util.Objects.requireNonNull;
  */
 public class ItemModel implements Model  {
 
+    /**
+     * An {@link ItemModel} can be set to extend this key to use
+     * a model that is created out of the specified icon
+     */
     public static final Key ITEM_GENERATED = Key.key("item/generated");
+
+    /**
+     * An {@link ItemModel} can be set to extend this key to load
+     * a model from an entity file. As you cannot specify the entity,
+     * this does not work for all items (only for chests, ender chests,
+     * mob heads, shields, banners and tridents)
+     */
     public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");
 
     /**
@@ -98,6 +109,10 @@ public class ItemModel implements Model  {
      */
     @Unmodifiable private final Map<ModelDisplay.Type, ModelDisplay> display;
 
+    /**
+     * Holds the textures that this item model instance
+     * uses
+     */
     private final ItemTexture textures;
 
     /**
@@ -107,6 +122,10 @@ public class ItemModel implements Model  {
      */
     @Nullable private final GuiLight guiLight;
 
+    /**
+     * Unmodifiable list that contains all the cubic
+     * elements for this model
+     */
     @Unmodifiable private final List<Element> elements;
 
     /**
@@ -146,7 +165,7 @@ public class ItemModel implements Model  {
         return display;
     }
 
-    public GuiLight guiLight() {
+    public @Nullable GuiLight guiLight() {
         return guiLight;
     }
 
@@ -163,6 +182,12 @@ public class ItemModel implements Model  {
         return overrides;
     }
 
+    /**
+     * Enum of possible "gui_light" property
+     * values
+     *
+     * @since 1.0.0
+     */
     public enum GuiLight {
         FRONT,
         SIDE
@@ -203,10 +228,24 @@ public class ItemModel implements Model  {
         return Objects.hash(parent, display, textures, guiLight, elements, overrides);
     }
 
+    /**
+     * Static factory method for our builder implementation,
+     * which eases the instantiation of {@link ItemModel}
+     * objects
+     *
+     * @return A new {@link Builder} instance
+     * @since 1.0.0
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /**
+     * Builder implementation for {@link ItemModel}
+     * objects
+     *
+     * @since 1.0.0
+     */
     public static class Builder {
 
         private Key parent;
@@ -234,8 +273,8 @@ public class ItemModel implements Model  {
             return this;
         }
 
-        public Builder guiLight(GuiLight guiLight) {
-            this.guiLight = requireNonNull(guiLight, "guiLight");
+        public Builder guiLight(@Nullable GuiLight guiLight) {
+            this.guiLight = guiLight;
             return this;
         }
 
@@ -249,6 +288,13 @@ public class ItemModel implements Model  {
             return this;
         }
 
+        /**
+         * Finishes the construction of a {@link ItemModel}
+         * instance by instantiating it with the previously
+         * set values
+         *
+         * @return A new {@link ItemModel} instance
+         */
         public ItemModel build() {
             return new ItemModel(parent, display, textures, guiLight, elements, overrides);
         }

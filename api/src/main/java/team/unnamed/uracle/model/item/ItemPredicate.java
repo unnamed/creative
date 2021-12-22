@@ -21,28 +21,86 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package team.unnamed.uracle.model.item;
 
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
+
 /**
+ * Represents an item predicate, used to know
+ * whether to override an item model or not
+ *
  * @since 1.0.0
  */
-public class ItemPredicate {
+public class ItemPredicate implements Examinable {
 
+    /**
+     * The item predicate field name
+     */
     private final String name;
+
+    /**
+     * The item predicate field value
+     */
     private final Object value;
 
     private ItemPredicate(String name, Object value) {
-        this.name = name;
-        this.value = value;
+        this.name = requireNonNull(name, "name");
+        this.value = requireNonNull(value, "value");
     }
 
+    /**
+     * Returns the name of this item predicate,
+     * e.g. "custom_model_data"
+     *
+     * @return The item predicate name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the value for this item predicate,
+     * e.g. 1, 0.5, etc.
+     *
+     * @return The item predicate value
+     */
     public Object value() {
         return value;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("name", name),
+                ExaminableProperty.of("value", value)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemPredicate that = (ItemPredicate) o;
+        return name.equals(that.name)
+                && value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value);
     }
 
     /**
@@ -162,6 +220,14 @@ public class ItemPredicate {
      */
     public static ItemPredicate customModelData(int data) {
         return new ItemPredicate("custom_model_data", data);
+    }
+
+    /**
+     * Creates a custom {@link ItemPredicate} instance with
+     * the provided name and value
+     */
+    public static ItemPredicate custom(String name, Object value) {
+        return new ItemPredicate(name, value);
     }
 
     private static ItemPredicate truePredicate(String name) {
