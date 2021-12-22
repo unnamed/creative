@@ -30,6 +30,17 @@ import team.unnamed.uracle.font.LegacyUnicodeFont;
 import team.unnamed.uracle.font.TrueTypeFont;
 import team.unnamed.uracle.lang.Language;
 import team.unnamed.uracle.lang.LanguageEntry;
+import team.unnamed.uracle.model.BlockModel;
+import team.unnamed.uracle.model.Element;
+import team.unnamed.uracle.model.ElementFace;
+import team.unnamed.uracle.model.ElementRotation;
+import team.unnamed.uracle.model.ItemModel;
+import team.unnamed.uracle.model.Model;
+import team.unnamed.uracle.model.ModelDisplay;
+import team.unnamed.uracle.model.block.BlockTexture;
+import team.unnamed.uracle.model.item.ItemOverride;
+import team.unnamed.uracle.model.item.ItemPredicate;
+import team.unnamed.uracle.model.item.ItemTexture;
 import team.unnamed.uracle.sound.Sound;
 import team.unnamed.uracle.sound.SoundEvent;
 import team.unnamed.uracle.sound.SoundRegistry;
@@ -149,6 +160,229 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
         return this;
     }
 
+    private void writeModelProperties(Model model) throws IOException {
+        // parent
+        writeStringField("parent", keyToString(model.parent()));
+
+        // display
+        writeKey("display");
+        startObject();
+        for (Map.Entry<ModelDisplay.Type, ModelDisplay> entry : model.display().entrySet()) {
+            ModelDisplay.Type type = entry.getKey();
+            ModelDisplay display = entry.getValue();
+
+            writeKey(type.name().toLowerCase(Locale.ROOT));
+            startObject();
+            writeVectorField("rotation", display.rotation());
+            writeVectorField("translation", display.translation());
+            writeVectorField("scale", display.scale());
+            endObject();
+        }
+        endObject();
+
+        // elements
+        writeKey("elements");
+        startArray();
+        for (Element element : model.elements()) {
+            writeVectorField("from", element.from());
+            writeVectorField("to", element.to());
+
+            // rotation
+            ElementRotation rotation = element.rotation();
+            writeKey("rotation");
+            startObject();
+            writeVectorField("origin", rotation.origin());
+            writeStringField("axis", rotation.axis().name().toLowerCase(Locale.ROOT));
+            writeFloatField("angle", rotation.angle());
+            if (rotation.rescale()) {
+                // only write if not equal to default value
+                writeBooleanField("rescale", rotation.rescale());
+            }
+            endObject();
+
+            if (!element.shade()) {
+                // only write if not equal to default value
+                writeBooleanField("shade", element.shade());
+            }
+
+            // faces
+            writeKey("faces");
+            startObject();
+            for (Map.Entry<CubeFace, ElementFace> entry : element.faces().entrySet()) {
+                CubeFace type = entry.getKey();
+                ElementFace face = entry.getValue();
+
+                writeKey(type.name().toLowerCase(Locale.ROOT));
+                startObject();
+                if (face.uv() != null) {
+                    // this is a pure function but IDE still warns me, I have already checked it!!!!!!!!!!!!!!!!!!!!!!!!
+                    writeVectorField("uv", face.uv());
+                }
+                writeStringField("texture", face.texture());
+                if (face.cullFace() != null) {
+                    writeStringField("cullface", face.cullFace().name().toLowerCase(Locale.ROOT));
+                }
+                if (face.rotation() != 0) {
+                    writeIntField("rotation", face.rotation());
+                }
+                if (face.tintIndex() != null) {
+                    writeIntField("tintindex", face.tintIndex());
+                }
+                endObject();
+            }
+            endObject();
+        }
+        endArray();
+    }
+
+    private void writeItemModel(ItemModel model) throws IOException {
+        startObject();
+        writeModelProperties(model);
+
+        // textures
+        ItemTexture textures = model.textures();
+        writeKey("textures");
+        startObject();
+        // ah yes, don't repeat yourself
+        if (textures.particle() != null) {
+            writeStringField("particle", keyToString(textures.particle()));
+        }
+        for (int i = 0; i < textures.layers().size(); i++) {
+            writeStringField("layer" + i, keyToString(textures.layers().get(i)));
+        }
+        for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
+            writeStringField(variable.getKey(), keyToString(variable.getValue()));
+        }
+        endObject();
+
+        if (model.guiLight() != ItemModel.GuiLight.SIDE) {
+            // only write if not default
+            writeStringField("gui_light", model.guiLight().name().toLowerCase(Locale.ROOT));
+        }
+
+        // overrides
+        writeKey("overrides");
+        startArray();
+        for (ItemOverride override : model.overrides()) {
+            startObject();
+            writeKey("predicate");
+            startObject();
+            for (ItemPredicate predicate : override.predicate()) {
+                writeStringField(predicate.name(), predicate.value().toString());
+            }
+            endObject();
+            writeStringField("model", keyToString(override.model()));
+            endObject();
+        }
+        endArray();
+        endObject();
+    }
+
+    private void writeBlockModel(BlockModel model) throws IOException {
+        startObject();
+        writeModelProperties(model);
+        if (!model.ambientOcclusion()) {
+            // only write if not default value
+            writeBooleanField("ambientocclusion", model.ambientOcclusion());
+        }
+
+        // textures
+        BlockTexture textures = model.textures();
+        writeKey("textures");
+        startObject();
+        if (textures.particle() != null) {
+            writeStringField("particle", keyToString(textures.particle()));
+        }
+        for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
+            writeStringField(
+                    variable.getKey(),
+                    keyToString(variable.getValue())
+            );
+        }
+        endObject();
+        endObject();
+    }
+
+    @Override
+    public ResourcePackBuilder model(Key location, Model model) {
+        String path = ASSETS + location.namespace() + "/models" + location.value();
+
+        try (Closeable ignored = output.useEntry(path)) {
+            if (model instanceof ItemModel) {
+                writeItemModel((ItemModel) model);
+            } else if (model instanceof BlockModel) {
+                writeBlockModel((BlockModel) model);
+            } else {
+                throw new IllegalArgumentException("Invalid model type");
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return this;
+    }
+
+    @Override
+    public ResourcePackBuilder sounds(String namespace, SoundRegistry registry) {
+        String path = ASSETS + namespace + "/sounds" + JSON_EXT;
+
+        try (Closeable ignored = output.useEntry(path)) {
+            startObject();
+            for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
+                SoundEvent event = entry.getValue();
+
+                writeKey(entry.getKey());
+                startObject();
+                writeBooleanField("replace", event.replace());
+                if (event.subtitle() != null) {
+                    writeStringField("subtitle", event.subtitle());
+                }
+                if (event.sounds() != null) {
+                    writeKey("sounds");
+                    startArray();
+                    for (Sound sound : event.sounds()) {
+                        // in order to make some optimizations, we
+                        // have to do this
+                        if (sound.allDefault()) {
+                            // everything is default, just write the name
+                            writeStringValue(sound.name());
+                        } else {
+                            startObject();
+                            writeStringField("name", sound.name());
+                            if (sound.volume() != Sound.DEFAULT_VOLUME) {
+                                writeFloatField("volume", sound.volume());
+                            }
+                            if (sound.pitch() != Sound.DEFAULT_PITCH) {
+                                writeFloatField("pitch", sound.pitch());
+                            }
+                            if (sound.weight() != Sound.DEFAULT_WEIGHT) {
+                                writeIntField("weight", sound.weight());
+                            }
+                            if (sound.stream() != Sound.DEFAULT_STREAM) {
+                                writeBooleanField("stream", sound.stream());
+                            }
+                            if (sound.attenuationDistance() != Sound.DEFAULT_ATTENUATION_DISTANCE) {
+                                writeIntField("attenuation_distance", sound.attenuationDistance());
+                            }
+                            if (sound.preload() != Sound.DEFAULT_PRELOAD) {
+                                writeBooleanField("preload", sound.preload());
+                            }
+                            if (sound.type() != Sound.DEFAULT_TYPE) {
+                                writeStringField("type", sound.type().name().toLowerCase(Locale.ROOT));
+                            }
+                            endObject();
+                        }
+                    }
+                    endArray();
+                }
+                endObject();
+            }
+            endObject();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return this;
+    }
+
     @Override
     public ResourcePackBuilder texture(Key location, Texture texture) {
 
@@ -241,68 +475,6 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
     }
 
     @Override
-    public ResourcePackBuilder sounds(String namespace, SoundRegistry registry) {
-        String path = ASSETS + namespace + "/sounds" + JSON_EXT;
-
-        try (Closeable ignored = output.useEntry(path)) {
-            startObject();
-            for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
-                SoundEvent event = entry.getValue();
-
-                writeKey(entry.getKey());
-                startObject();
-                writeBooleanField("replace", event.replace());
-                if (event.subtitle() != null) {
-                    writeStringField("subtitle", event.subtitle());
-                }
-                if (event.sounds() != null) {
-                    writeKey("sounds");
-                    startArray();
-                    for (Sound sound : event.sounds()) {
-                        // in order to make some optimizations, we
-                        // have to do this
-                        if (sound.allDefault()) {
-                            // everything is default, just write the name
-                            writeStringValue(sound.name());
-                        } else {
-                            startObject();
-                            writeStringField("name", sound.name());
-                            if (sound.volume() != Sound.DEFAULT_VOLUME) {
-                                writeFloatField("volume", sound.volume());
-                            }
-                            if (sound.pitch() != Sound.DEFAULT_PITCH) {
-                                writeFloatField("pitch", sound.pitch());
-                            }
-                            if (sound.weight() != Sound.DEFAULT_WEIGHT) {
-                                writeIntField("weight", sound.weight());
-                            }
-                            if (sound.stream() != Sound.DEFAULT_STREAM) {
-                                writeBooleanField("stream", sound.stream());
-                            }
-                            if (sound.attenuationDistance() != Sound.DEFAULT_ATTENUATION_DISTANCE) {
-                                writeIntField("attenuation_distance", sound.attenuationDistance());
-                            }
-                            if (sound.preload() != Sound.DEFAULT_PRELOAD) {
-                                writeBooleanField("preload", sound.preload());
-                            }
-                            if (sound.type() != Sound.DEFAULT_TYPE) {
-                                writeStringField("type", sound.type().name().toLowerCase(Locale.ROOT));
-                            }
-                            endObject();
-                        }
-                    }
-                    endArray();
-                }
-                endObject();
-            }
-            endObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return this;
-    }
-
-    @Override
     public ResourcePackBuilder meta(PackMeta meta) {
         try (Closeable ignored = output.useEntry("pack.mcmeta")) {
             startObject();
@@ -346,6 +518,16 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
             throw new UncheckedIOException(e);
         }
         return this;
+    }
+
+    private String keyToString(Key key) {
+        // very small resource-pack optimization, omits
+        // the "minecraft" namespace if key is using it
+        if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            return key.value();
+        } else {
+            return key.asString();
+        }
     }
 
     // utility methods to write json
@@ -402,6 +584,30 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
     private void writeBooleanField(String name, boolean value) throws IOException {
         writeKey(name);
         output.write(encode(Boolean.toString(value)));
+    }
+
+    private void writeVectorField(String name, Vector3Float vector) throws IOException {
+        writeKey(name);
+        output.write('[');
+        output.write(encode(Float.toString(vector.x())));
+        output.write(',');
+        output.write(encode(Float.toString(vector.y())));
+        output.write(',');
+        output.write(encode(Float.toString(vector.z())));
+        output.write(']');
+    }
+
+    private void writeVectorField(String name, Vector4Int vector) throws IOException {
+        writeKey(name);
+        output.write('[');
+        output.write(encode(Integer.toString(vector.x())));
+        output.write(',');
+        output.write(encode(Integer.toString(vector.y())));
+        output.write(',');
+        output.write(encode(Integer.toString(vector.x2())));
+        output.write(',');
+        output.write(encode(Integer.toString(vector.y2())));
+        output.write(']');
     }
 
     private byte[] encode(String str) {
