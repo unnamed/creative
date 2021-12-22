@@ -12,7 +12,7 @@ modifications like OptiFine
 ## Features
 - Add new fonts (bitmap, legacy unicode, ttf)
 - Add new languages
-- Add new models (~~items~~, blocks, ~~block states~~)
+- Add new models (items, blocks, ~~block states~~)
 - Add new sounds
 - Add new textures (supporting animations)
 
