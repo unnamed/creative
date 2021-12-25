@@ -127,4 +127,77 @@ public class SoundEvent implements Examinable {
         return Objects.hash(replace, subtitle, sounds);
     }
 
+    /**
+     * Creates a new {@link SoundEvent} from the
+     * given values
+     *
+     * @param replace True to replace default sounds
+     * @param subtitle The sound event subtitle
+     * @param sounds The sound event sounds
+     * @return A new {@link SoundEvent} instance
+     * @since 1.0.0
+     */
+    public static SoundEvent of(
+            boolean replace,
+            @Nullable String subtitle,
+            @Nullable List<Sound> sounds
+    ) {
+        return new SoundEvent(replace, subtitle, sounds);
+    }
+
+    /**
+     * Creates a new {@link Builder} instance,
+     * it eases the creation of {@link SoundEvent}
+     * objects
+     *
+     * @return A new {@link Builder} instance
+     * @since 1.0.0
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder implementation for ease the
+     * construction of {@link SoundEvent}
+     * instances
+     *
+     * @since 1.0.0
+     */
+    public static class Builder {
+
+        private boolean replace;
+        private String subtitle;
+        private List<Sound> sounds;
+
+        private Builder() {
+        }
+
+        public Builder replace(boolean replace) {
+            this.replace = replace;
+            return this;
+        }
+
+        public Builder subtitle(@Nullable String subtitle) {
+            this.subtitle = subtitle;
+            return this;
+        }
+
+        public Builder sounds(@Nullable List<Sound> sounds) {
+            this.sounds = sounds;
+            return this;
+        }
+
+        /**
+         * Finishes building the {@link SoundEvent} instance
+         * using the previously set values
+         *
+         * @return A new {@link SoundEvent instance}
+         */
+        public SoundEvent build() {
+            return new SoundEvent(replace, subtitle, sounds);
+        }
+
+    }
+
 }

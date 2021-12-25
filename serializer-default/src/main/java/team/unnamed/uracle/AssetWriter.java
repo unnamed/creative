@@ -25,6 +25,7 @@ package team.unnamed.uracle;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -36,9 +37,12 @@ import java.nio.charset.StandardCharsets;
  * for writing assets, its main features are the
  * JSON helpers
  */
-class AssetWriter extends FilterOutputStream {
+@VisibleForTesting
+public class AssetWriter extends FilterOutputStream {
 
     private final TreeOutputStream tree;
+
+    private boolean postValue = false;
 
     public AssetWriter(TreeOutputStream tree) {
         super(tree);
@@ -52,6 +56,7 @@ class AssetWriter extends FilterOutputStream {
 
     public AssetWriter endObject() {
         write('}');
+        postValue();
         return this;
     }
 
@@ -62,10 +67,12 @@ class AssetWriter extends FilterOutputStream {
 
     public AssetWriter endArray() {
         write(']');
+        postValue();
         return this;
     }
 
     public AssetWriter key(String key) {
+        preValue();
         write('"');
         write(encode(escape(key)));
         write('"');
@@ -91,6 +98,8 @@ class AssetWriter extends FilterOutputStream {
             // written literally as its toString() value
             write(encode(String.valueOf(object)));
         }
+
+        postValue();
         return this;
     }
 
@@ -125,7 +134,18 @@ class AssetWriter extends FilterOutputStream {
         }
     }
 
-    private String keyToString(Key key) {
+    private void preValue() {
+        if (postValue) {
+            write(',');
+            postValue = false;
+        }
+    }
+
+    private void postValue() {
+        postValue = true;
+    }
+
+    private static String keyToString(Key key) {
         // very small resource-pack optimization, omits
         // the "minecraft" namespace if key is using it
         if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
@@ -135,11 +155,11 @@ class AssetWriter extends FilterOutputStream {
         }
     }
 
-    private byte[] encode(String string) {
+    private static byte[] encode(String string) {
         return string.getBytes(StandardCharsets.UTF_8);
     }
 
-    private String escape(String str) {
+    private static String escape(String str) {
         StringBuilder builder = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);

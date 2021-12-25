@@ -107,4 +107,17 @@ public class PackInfo implements Examinable {
         return Objects.hash(format, description);
     }
 
+    /**
+     * Creates a new {@link PackInfo} instance from
+     * the given values
+     *
+     * @param format The pack format
+     * @param description The pack description
+     * @return A new {@link PackInfo} instance
+     * @since 1.0.0
+     */
+    public static PackInfo of(int format, String description) {
+        return new PackInfo(format, description);
+    }
+
 }

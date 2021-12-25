@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.lang.LanguageEntry;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -116,12 +117,25 @@ public class PackMeta implements Examinable {
      * @param info The resource-pack information
      * @param languages The registered languages
      * @return A new pack meta instance
+     * @since 1.0.0
      */
     public static PackMeta of(
             PackInfo info,
             Map<Key, LanguageEntry> languages
     ) {
         return new PackMeta(info, languages);
+    }
+
+    /**
+     * Creates a new {@link PackMeta} instance
+     * from the given {@link PackInfo} instance
+     *
+     * @param info The resource-pack information
+     * @return A new pack meta instance
+     * @since 1.0.0
+     */
+    public static PackMeta of(PackInfo info) {
+        return new PackMeta(info, Collections.emptyMap());
     }
 
 }

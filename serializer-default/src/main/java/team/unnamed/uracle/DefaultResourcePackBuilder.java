@@ -312,8 +312,12 @@ public class DefaultResourcePackBuilder
             for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
                 SoundEvent event = entry.getValue();
 
-                writer.key(entry.getKey()).startObject()
-                        .key("replace").value(event.replace());
+                writer.key(entry.getKey()).startObject();
+
+                if (event.replace()) {
+                    // only write if not default (false)
+                    writer.key("replace").value(event.replace());
+                }
 
                 if (event.subtitle() != null) {
                     writer.key("subtitle").value(event.subtitle());

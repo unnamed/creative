@@ -23,13 +23,9 @@
  */
 package team.unnamed.uracle.sound;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Namespaced;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.intellij.lang.annotations.Pattern;
-import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -45,28 +41,13 @@ import static java.util.Objects.requireNonNull;
  * Represents a registry of {@link SoundEvent}, or
  * "sounds.json" in the resource-pack
  */
-public class SoundRegistry implements Examinable, Namespaced {
+public class SoundRegistry implements Examinable {
 
-    @Subst(Key.MINECRAFT_NAMESPACE)
-    private final String namespace;
     private final Map<String, SoundEvent> sounds;
 
-    private SoundRegistry(
-            @Subst(Key.MINECRAFT_NAMESPACE) String namespace,
-            Map<String, SoundEvent> sounds
-    ) {
+    private SoundRegistry(Map<String, SoundEvent> sounds) {
         requireNonNull(sounds, "sounds");
-        this.namespace = requireNonNull(namespace, "namespace");
         this.sounds = unmodifiableMap(new HashMap<>(sounds));
-
-        // let Key check if namespace is valid
-        Key.key(namespace, "dummy");
-    }
-
-    @Override
-    @Pattern("[a-z0-9_\\-.]+")
-    public @NotNull String namespace() {
-        return namespace;
     }
 
     public @Unmodifiable Map<String, SoundEvent> sounds() {
@@ -76,7 +57,6 @@ public class SoundRegistry implements Examinable, Namespaced {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("namespace", namespace),
                 ExaminableProperty.of("sounds", sounds)
         );
     }
@@ -91,34 +71,17 @@ public class SoundRegistry implements Examinable, Namespaced {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SoundRegistry that = (SoundRegistry) o;
-        return namespace.equals(that.namespace)
-                && sounds.equals(that.sounds);
+        return sounds.equals(that.sounds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(namespace, sounds);
+        return Objects.hash(sounds);
     }
 
     /**
      * Creates a new registry from the given
-     * properties
-     *
-     * @param namespace The registry namespace
-     * @param sounds The registered sounds
-     * @return A new sound registry instance
-     */
-    public static SoundRegistry of(
-            String namespace,
-            Map<String, SoundEvent> sounds
-    ) {
-        return new SoundRegistry(namespace, sounds);
-    }
-
-    /**
-     * Creates a new registry from the given
-     * sounds, using the default minecraft
-     * namespace ({@link Key#MINECRAFT_NAMESPACE})
+     * sounds
      *
      * @param sounds The registered sounds
      * @return A new sound registry instance
@@ -126,7 +89,7 @@ public class SoundRegistry implements Examinable, Namespaced {
     public static SoundRegistry of(
             Map<String, SoundEvent> sounds
     ) {
-        return new SoundRegistry(Key.MINECRAFT_NAMESPACE, sounds);
+        return new SoundRegistry(sounds);
     }
 
 }

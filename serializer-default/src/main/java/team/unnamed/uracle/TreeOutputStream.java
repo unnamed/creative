@@ -25,6 +25,7 @@ package team.unnamed.uracle;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.Closeable;
 import java.io.File;
@@ -46,7 +47,8 @@ import java.util.zip.ZipOutputStream;
  *
  * @author yusshu (Andre Roldan)
  */
-abstract class TreeOutputStream
+@VisibleForTesting
+public abstract class TreeOutputStream
         extends OutputStream {
 
     protected final AssetWriter assetWriter = new AssetWriter(this);
