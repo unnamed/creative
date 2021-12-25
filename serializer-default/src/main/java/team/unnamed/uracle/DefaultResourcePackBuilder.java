@@ -31,6 +31,7 @@ import team.unnamed.uracle.font.TrueTypeFont;
 import team.unnamed.uracle.lang.Language;
 import team.unnamed.uracle.lang.LanguageEntry;
 import team.unnamed.uracle.model.BlockModel;
+import team.unnamed.uracle.model.BlockState;
 import team.unnamed.uracle.model.Element;
 import team.unnamed.uracle.model.ElementFace;
 import team.unnamed.uracle.model.ElementRotation;
@@ -49,10 +50,8 @@ import team.unnamed.uracle.texture.Texture;
 import team.unnamed.uracle.texture.TextureMeta;
 import team.unnamed.uracle.texture.VillagerMeta;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,7 +61,8 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public class DefaultResourcePackBuilder implements ResourcePackBuilder {
+public class DefaultResourcePackBuilder
+        implements ResourcePackBuilder {
 
     private static final String ASSETS = "assets/";
     private static final String JSON_EXT = ".json";
@@ -75,68 +75,67 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
         this.output = output;
     }
 
-    private void bitMapFont(BitMapFont font) throws IOException {
-        writeStringField("type", "bitmap");
-        writeStringField("file", font.file().asString());
+    private void bitMapFont(BitMapFont font, AssetWriter writer) {
+        writer
+            .key("type").value("bitmap")
+            .key("file").value(font.file());
 
         if (font.height() != BitMapFont.DEFAULT_HEIGHT) {
-            // only write if height is not equal to
-            // the default height
-            writeIntField("height", font.height());
+            // only write if height is not equal to the default height
+            writer.key("height").value(font.height());
         }
-        writeIntField("ascent", font.ascent());
 
-        writeKey("chars");
-        startArray();
+        writer
+            .key("ascent").value(font.ascent())
+            .key("chars").startArray();
+
         for (String character : font.characters()) {
-            writeStringValue(character);
+            writer.value(character);
         }
-        endArray();
+
+        writer.endArray();
     }
 
-    private void legacyUnicodeFont(LegacyUnicodeFont font) throws IOException {
-        writeStringField("sizes", font.sizes().asString());
-        writeStringField("template", font.template().asString());
+    private void legacyUnicodeFont(LegacyUnicodeFont font, AssetWriter writer) {
+        writer
+            .key("sizes").value(font.sizes())
+            .key("template").value(font.template());
     }
 
-    private void ttfFont(TrueTypeFont font) throws IOException {
-        writeStringField("file", font.file().asString());
+    private void ttfFont(TrueTypeFont font, AssetWriter writer) {
+        writer
+            .key("file").value(font.file())
+            .key("shift").startArray()
+                .value(font.shift().x())
+                .value(font.shift().y())
+            .endArray()
+            .key("size").value(font.size())
+            .key("oversample").value(font.oversample())
+            .key("skip").startArray();
 
-        writeKey("shift");
-        startArray();
-        writeFloatValue(font.shift().x());
-        writeFloatValue(font.shift().y());
-        endArray();
-
-        writeFloatField("size", font.size());
-        writeFloatField("oversample", font.oversample());
-
-        writeKey("skip");
-        startArray();
         for (String toSkip : font.skip()) {
-            writeStringValue(toSkip);
+            writer.value(toSkip);
         }
-        endArray();
+
+        writer.endArray();
     }
 
     @Override
     public ResourcePackBuilder font(Key location, Font font) {
-        try (Closeable ignored = output.useEntry(location.toString())) {
-            startObject();
+        try (AssetWriter writer = output.useEntry(location.toString())) {
+            writer.startObject();
             switch (font.type()) {
                 case BITMAP:
-                    bitMapFont((BitMapFont) font);
+                    bitMapFont((BitMapFont) font, writer);
                     break;
                 case LEGACY_UNICODE:
-                    legacyUnicodeFont((LegacyUnicodeFont) font);
+                    legacyUnicodeFont((LegacyUnicodeFont) font, writer);
                     break;
                 case TTF:
-                    ttfFont((TrueTypeFont) font);
+                    ttfFont((TrueTypeFont) font, writer);
                     break;
             }
-            endObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            writer.endObject();
         }
         return this;
     }
@@ -145,179 +144,162 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
     public ResourcePackBuilder language(Key location, Language language) {
         // create the JSON file path (assets/<namespace>/lang/file.json)
         String path = ASSETS + location.namespace() + "/lang/" + location.value() + JSON_EXT;
-        try (Closeable ignored = output.useEntry(path)) {
-            startObject();
+        try (AssetWriter writer = output.useEntry(path)) {
+            writer.startObject();
             for (Map.Entry<String, String> entry : language.translations().entrySet()) {
-                writeStringField(
-                        entry.getKey(),
-                        entry.getValue()
-                );
+                writer.key(entry.getKey()).value(entry.getValue());
             }
-            endObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            writer.endObject();
         }
         return this;
     }
 
-    private void writeModelProperties(Model model) throws IOException {
+    private void writeModelProperties(Model model, AssetWriter writer) {
         // parent
-        writeStringField("parent", keyToString(model.parent()));
+        writer.key("parent").value(model.parent());
 
         // display
-        writeKey("display");
-        startObject();
+        writer.key("display").startObject();
         for (Map.Entry<ModelDisplay.Type, ModelDisplay> entry : model.display().entrySet()) {
             ModelDisplay.Type type = entry.getKey();
             ModelDisplay display = entry.getValue();
 
-            writeKey(type.name().toLowerCase(Locale.ROOT));
-            startObject();
-            writeVectorField("rotation", display.rotation());
-            writeVectorField("translation", display.translation());
-            writeVectorField("scale", display.scale());
-            endObject();
+            writer.key(type.name().toLowerCase(Locale.ROOT)).startObject()
+                    .key("rotation").value(display.rotation())
+                    .key("translation").value(display.translation())
+                    .key("scale").value(display.scale())
+                .endObject();
         }
-        endObject();
+        writer.endObject();
 
         // elements
-        writeKey("elements");
-        startArray();
+        writer.key("elements").startArray();
         for (Element element : model.elements()) {
-            writeVectorField("from", element.from());
-            writeVectorField("to", element.to());
-
-            // rotation
             ElementRotation rotation = element.rotation();
-            writeKey("rotation");
-            startObject();
-            writeVectorField("origin", rotation.origin());
-            writeStringField("axis", rotation.axis().name().toLowerCase(Locale.ROOT));
-            writeFloatField("angle", rotation.angle());
+
+            writer
+                .key("from").value(element.from())
+                .key("to").value(element.to())
+                .key("rotation").startObject()
+                    .key("origin").value(rotation.origin())
+                    .key("axis").value(rotation.axis().name().toLowerCase(Locale.ROOT))
+                    .key("angle").value(rotation.angle());
+
             if (rotation.rescale()) {
                 // only write if not equal to default value
-                writeBooleanField("rescale", rotation.rescale());
+                writer.key("rescale").value(rotation.rescale());
             }
-            endObject();
+            writer.endObject();
 
             if (!element.shade()) {
                 // only write if not equal to default value
-                writeBooleanField("shade", element.shade());
+                writer.key("shade").value(element.shade());
             }
 
             // faces
-            writeKey("faces");
-            startObject();
+            writer.key("faces").startObject();
             for (Map.Entry<CubeFace, ElementFace> entry : element.faces().entrySet()) {
                 CubeFace type = entry.getKey();
                 ElementFace face = entry.getValue();
 
-                writeKey(type.name().toLowerCase(Locale.ROOT));
-                startObject();
+                writer.key(type.name().toLowerCase(Locale.ROOT)).startObject();
                 if (face.uv() != null) {
                     // this is a pure function but IDE still warns me, I have already checked it!!!!!!!!!!!!!!!!!!!!!!!!
-                    writeVectorField("uv", face.uv());
+                    writer.key("uv").value(face.uv());
                 }
-                writeStringField("texture", face.texture());
+                writer.key("texture").value(face.texture());
                 if (face.cullFace() != null) {
-                    writeStringField("cullface", face.cullFace().name().toLowerCase(Locale.ROOT));
+                    writer.key("cullface").value(face.cullFace().name().toLowerCase(Locale.ROOT));
                 }
                 if (face.rotation() != 0) {
-                    writeIntField("rotation", face.rotation());
+                    writer.key("rotation").value(face.rotation());
                 }
                 if (face.tintIndex() != null) {
-                    writeIntField("tintindex", face.tintIndex());
+                    writer.key("tintindex").value(face.tintIndex());
                 }
-                endObject();
+                writer.endObject();
             }
-            endObject();
+            writer.endObject();
         }
-        endArray();
+        writer.endArray();
     }
 
-    private void writeItemModel(ItemModel model) throws IOException {
-        startObject();
-        writeModelProperties(model);
+    private void writeItemModel(ItemModel model, AssetWriter writer) {
+        writer.startObject();
+        writeModelProperties(model, writer);
 
         // textures
         ItemTexture textures = model.textures();
-        writeKey("textures");
-        startObject();
+        writer.key("textures").startObject();
         // ah yes, don't repeat yourself
         if (textures.particle() != null) {
-            writeStringField("particle", keyToString(textures.particle()));
+            writer.key("particle").value(textures.particle());
         }
         for (int i = 0; i < textures.layers().size(); i++) {
-            writeStringField("layer" + i, keyToString(textures.layers().get(i)));
+            writer.key("layer" + i).value(textures.layers().get(i));
         }
         for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
-            writeStringField(variable.getKey(), keyToString(variable.getValue()));
+            writer.key(variable.getKey()).value(variable.getValue());
         }
-        endObject();
+        writer.endObject();
 
         if (model.guiLight() != ItemModel.GuiLight.SIDE) {
             // only write if not default
-            writeStringField("gui_light", model.guiLight().name().toLowerCase(Locale.ROOT));
+            writer.key("gui_light").value(model.guiLight().name().toLowerCase(Locale.ROOT));
         }
 
         // overrides
-        writeKey("overrides");
-        startArray();
+        writer.key("overrides").startArray();
         for (ItemOverride override : model.overrides()) {
-            startObject();
-            writeKey("predicate");
-            startObject();
+            writer.startObject()
+                .key("predicate").startObject();
             for (ItemPredicate predicate : override.predicate()) {
-                writeStringField(predicate.name(), predicate.value().toString());
+                writer.key(predicate.name()).value(predicate.value());
             }
-            endObject();
-            writeStringField("model", keyToString(override.model()));
-            endObject();
+            writer.endObject()
+                .key("model").value(override.model())
+                .endObject();
         }
-        endArray();
-        endObject();
+        writer.endArray().endObject();
     }
 
-    private void writeBlockModel(BlockModel model) throws IOException {
-        startObject();
-        writeModelProperties(model);
+    private void writeBlockModel(BlockModel model, AssetWriter writer) {
+        writer.startObject();
+        writeModelProperties(model, writer);
         if (!model.ambientOcclusion()) {
             // only write if not default value
-            writeBooleanField("ambientocclusion", model.ambientOcclusion());
+            writer.key("ambientocclusion").value(model.ambientOcclusion());
         }
 
         // textures
         BlockTexture textures = model.textures();
-        writeKey("textures");
-        startObject();
+        writer.key("textures").startObject();
         if (textures.particle() != null) {
-            writeStringField("particle", keyToString(textures.particle()));
+            writer.key("particle").value(textures.particle());
         }
         for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
-            writeStringField(
-                    variable.getKey(),
-                    keyToString(variable.getValue())
-            );
+            writer.key(variable.getKey()).value(variable.getValue());
         }
-        endObject();
-        endObject();
+        writer.endObject().endObject();
     }
 
     @Override
     public ResourcePackBuilder model(Key location, Model model) {
         String path = ASSETS + location.namespace() + "/models" + location.value();
-
-        try (Closeable ignored = output.useEntry(path)) {
+        try (AssetWriter writer = output.useEntry(path)) {
             if (model instanceof ItemModel) {
-                writeItemModel((ItemModel) model);
+                writeItemModel((ItemModel) model, writer);
             } else if (model instanceof BlockModel) {
-                writeBlockModel((BlockModel) model);
+                writeBlockModel((BlockModel) model, writer);
             } else {
                 throw new IllegalArgumentException("Invalid model type");
             }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
+        return this;
+    }
+
+    @Override
+    public ResourcePackBuilder blockState(Key location, BlockState blockState) {
         return this;
     }
 
@@ -325,60 +307,57 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
     public ResourcePackBuilder sounds(String namespace, SoundRegistry registry) {
         String path = ASSETS + namespace + "/sounds" + JSON_EXT;
 
-        try (Closeable ignored = output.useEntry(path)) {
-            startObject();
+        try (AssetWriter writer = output.useEntry(path)) {
+            writer.startObject();
             for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
                 SoundEvent event = entry.getValue();
 
-                writeKey(entry.getKey());
-                startObject();
-                writeBooleanField("replace", event.replace());
+                writer.key(entry.getKey()).startObject()
+                        .key("replace").value(event.replace());
+
                 if (event.subtitle() != null) {
-                    writeStringField("subtitle", event.subtitle());
+                    writer.key("subtitle").value(event.subtitle());
                 }
                 if (event.sounds() != null) {
-                    writeKey("sounds");
-                    startArray();
+                    writer.key("sounds").startArray();
                     for (Sound sound : event.sounds()) {
                         // in order to make some optimizations, we
                         // have to do this
                         if (sound.allDefault()) {
                             // everything is default, just write the name
-                            writeStringValue(sound.name());
+                            writer.value(sound.name());
                         } else {
-                            startObject();
-                            writeStringField("name", sound.name());
+                            writer.startObject()
+                                .key("name").value(sound.name());
                             if (sound.volume() != Sound.DEFAULT_VOLUME) {
-                                writeFloatField("volume", sound.volume());
+                                writer.key("volume").value(sound.volume());
                             }
                             if (sound.pitch() != Sound.DEFAULT_PITCH) {
-                                writeFloatField("pitch", sound.pitch());
+                                writer.key("pitch").value(sound.pitch());
                             }
                             if (sound.weight() != Sound.DEFAULT_WEIGHT) {
-                                writeIntField("weight", sound.weight());
+                                writer.key("weight").value(sound.weight());
                             }
                             if (sound.stream() != Sound.DEFAULT_STREAM) {
-                                writeBooleanField("stream", sound.stream());
+                                writer.key("stream").value(sound.stream());
                             }
                             if (sound.attenuationDistance() != Sound.DEFAULT_ATTENUATION_DISTANCE) {
-                                writeIntField("attenuation_distance", sound.attenuationDistance());
+                                writer.key("attenuation_distance").value(sound.attenuationDistance());
                             }
                             if (sound.preload() != Sound.DEFAULT_PRELOAD) {
-                                writeBooleanField("preload", sound.preload());
+                                writer.key("preload").value(sound.preload());
                             }
                             if (sound.type() != Sound.DEFAULT_TYPE) {
-                                writeStringField("type", sound.type().name().toLowerCase(Locale.ROOT));
+                                writer.key("type").value(sound.type().name().toLowerCase(Locale.ROOT));
                             }
-                            endObject();
+                            writer.endObject();
                         }
                     }
-                    endArray();
+                    writer.endArray();
                 }
-                endObject();
+                writer.endObject();
             }
-            endObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            writer.endObject();
         }
         return this;
     }
@@ -389,8 +368,8 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
         String path = ASSETS + location.namespace() + "/textures/" + location.value() + PNG_EXT;
 
         // write the actual texture PNG image
-        try (Closeable ignored = output.useEntry(path)) {
-            texture.data().write(output);
+        try (AssetWriter writer = output.useEntry(path)) {
+            texture.data().write(writer);
         } catch (IOException e) {
             throw new UncheckedIOException("Cannot write texture", e);
         }
@@ -403,230 +382,109 @@ public class DefaultResourcePackBuilder implements ResourcePackBuilder {
         boolean hasAnimation = animation != null;
         boolean hasVillager = villager != null;
 
-        // write the metadata
-        if (hasMeta || hasAnimation || hasVillager) {
-            try (Closeable ignored = output.useEntry(path + MCMETA_EXT)) {
-                startObject();
+        if (!hasMeta && !hasAnimation && !hasVillager) {
+            // no metadata to write
+            return this;
+        }
 
-                if (hasMeta) {
-                    writeKey("texture");
-                    startObject();
-                    writeBooleanField("blur", meta.blur());
-                    writeBooleanField("clamp", meta.clamp());
-                    writeKey("mipmaps");
-                    startArray();
-                    for (int mipmap : meta.mipmaps()) {
-                        writeIntValue(mipmap);
-                    }
-                    endArray();
-                    endObject();
+        try (AssetWriter writer = output.useEntry(path + MCMETA_EXT)) {
+            writer.startObject();
+
+            if (hasMeta) {
+                writer.key("texture").startObject()
+                    .key("blur").value(meta.blur())
+                    .key("clamp").value(meta.clamp())
+                    .key("mipmaps").startArray();
+                for (int mipmap : meta.mipmaps()) {
+                    writer.value(mipmap);
                 }
-
-                if (hasAnimation) {
-                    int frameTime = animation.frameTime();
-
-                    writeKey("animation");
-                    startObject();
-                    writeBooleanField("interpolate", animation.interpolate());
-                    writeIntField("width", animation.width());
-                    writeIntField("height", animation.height());
-                    writeIntField("frameTime", frameTime);
-                    writeKey("frames");
-                    startArray();
-
-                    for (AnimationMeta.Frame frame : animation.frames()) {
-                        int index = frame.index();
-                        int time = frame.frameTime();
-
-                        if (frameTime == time) {
-                            // same as default frameTime, we can
-                            // skip it
-                            writeIntValue(index);
-                        } else {
-                            // specific frameTime, write as
-                            // an object
-                            startObject();
-                            writeIntField("index", index);
-                            writeIntField("time", time);
-                            endObject();
-                        }
-                    }
-
-                    endArray();
-                    endObject();
-                }
-
-                if (hasVillager) {
-                    String hat = villager.hat();
-                    writeKey("villager");
-                    startObject();
-                    if (hat != null) {
-                        writeStringField("hat", hat);
-                    }
-                    endObject();
-                }
-
-                endObject();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                writer.endArray().endObject();
             }
+
+            if (hasAnimation) {
+                int frameTime = animation.frameTime();
+
+                writer.key("animation").startObject()
+                    .key("interpolate").value(animation.interpolate())
+                    .key("width").value(animation.width())
+                    .key("height").value(animation.height())
+                    .key("frametime").value(frameTime)
+                    .key("frames").startArray();
+
+                for (AnimationMeta.Frame frame : animation.frames()) {
+                    int index = frame.index();
+                    int time = frame.frameTime();
+
+                    if (frameTime == time) {
+                        // same as default frameTime, we can skip it
+                        writer.value(index);
+                    } else {
+                        // specific frameTime, write as an object
+                        writer.startObject()
+                            .key("index").value(index)
+                            .key("time").value(time)
+                            .endObject();
+                    }
+                }
+
+                writer.endArray().endObject();
+            }
+
+            if (hasVillager) {
+                String hat = villager.hat();
+                writer.key("villager").startObject();
+                if (hat != null) {
+                    writer.key("hat").value(hat);
+                }
+                writer.endObject();
+            }
+
+            writer.endObject();
         }
         return this;
     }
 
     @Override
     public ResourcePackBuilder meta(PackMeta meta) {
-        try (Closeable ignored = output.useEntry("pack.mcmeta")) {
-            startObject();
-            writeKey("pack");
-            startObject();
-            writeIntField("format", meta.pack().format());
-            writeStringField("description", meta.pack().description());
-            endObject();
+        // write pack.mcmeta file
+        try (AssetWriter writer = output.useEntry("pack.mcmeta")) {
+            // {
+            //   "pack": { "format": ?, "description": "?" }
+            writer.startObject()
+                .key("pack").startObject()
+                    .key("format").value(meta.pack().format())
+                    .key("description").value(meta.pack().description())
+                .endObject();
 
             if (!meta.languages().isEmpty()) {
-                writeKey("language");
-                startObject();
+                // "language": {
+                writer.key("language").startObject();
 
                 for (Map.Entry<Key, LanguageEntry> entry : meta.languages().entrySet()) {
-                    writeKey(entry.getKey().asString());
-
                     LanguageEntry language = entry.getValue();
-                    startObject();
-                    writeStringField("name", language.name());
-                    writeStringField("region", language.region());
-                    writeBooleanField("bidirectional", language.bidirectional());
-                    endObject();
+                    // "?": { "name": ?, "region": ?, "bidirectional": ? }
+                    writer.key(entry.getKey().asString()).startObject()
+                        .key("name").value(language.name())
+                        .key("region").value(language.region())
+                        .key("bidirectional").value(language.bidirectional())
+                        .endObject();
                 }
 
-                endObject();
+                writer.endObject();
             }
-            endObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            writer.endObject();
         }
         return this;
     }
 
     @Override
     public ResourcePackBuilder file(String path, Writable data) {
-        try {
-            output.useEntry(path);
-            data.write(output);
-            output.closeEntry();
+        try (AssetWriter writer = output.useEntry(path)) {
+            data.write(writer);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
         return this;
-    }
-
-    private String keyToString(Key key) {
-        // very small resource-pack optimization, omits
-        // the "minecraft" namespace if key is using it
-        if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
-            return key.value();
-        } else {
-            return key.asString();
-        }
-    }
-
-    // utility methods to write json
-    private void startObject() throws IOException {
-        output.write('{');
-    }
-
-    private void endObject() throws IOException {
-        output.write('}');
-    }
-
-    private void startArray() throws IOException {
-        output.write('[');
-    }
-
-    private void endArray() throws IOException {
-        output.write(']');
-    }
-
-    private void writeStringValue(String string) throws IOException {
-        output.write('"');
-        output.write(encode(escape(string)));
-        output.write('"');
-    }
-
-    private void writeKey(String key) throws IOException {
-        writeStringValue(key);
-        output.write(':');
-    }
-
-    private void writeIntField(String name, int value) throws IOException {
-        writeKey(name);
-        writeIntValue(value);
-    }
-
-    private void writeFloatValue(float value) throws IOException {
-        output.write(encode(Float.toString(value)));
-    }
-
-    private void writeIntValue(int value) throws IOException {
-        output.write(encode(Integer.toString(value)));
-    }
-
-    private void writeFloatField(String name, float value) throws IOException {
-        writeKey(name);
-        output.write(encode(Float.toString(value)));
-    }
-
-    private void writeStringField(String name, String value) throws IOException {
-        writeKey(name);
-        writeStringValue(value);
-    }
-
-    private void writeBooleanField(String name, boolean value) throws IOException {
-        writeKey(name);
-        output.write(encode(Boolean.toString(value)));
-    }
-
-    private void writeVectorField(String name, Vector3Float vector) throws IOException {
-        writeKey(name);
-        output.write('[');
-        output.write(encode(Float.toString(vector.x())));
-        output.write(',');
-        output.write(encode(Float.toString(vector.y())));
-        output.write(',');
-        output.write(encode(Float.toString(vector.z())));
-        output.write(']');
-    }
-
-    private void writeVectorField(String name, Vector4Int vector) throws IOException {
-        writeKey(name);
-        output.write('[');
-        output.write(encode(Integer.toString(vector.x())));
-        output.write(',');
-        output.write(encode(Integer.toString(vector.y())));
-        output.write(',');
-        output.write(encode(Integer.toString(vector.x2())));
-        output.write(',');
-        output.write(encode(Integer.toString(vector.y2())));
-        output.write(']');
-    }
-
-    private byte[] encode(String str) {
-        return str.getBytes(StandardCharsets.UTF_8);
-    }
-
-    private String escape(String str) {
-        StringBuilder builder = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == '"') {
-                builder.append('\\').append(c);
-            } else if (c == '\n') {
-                builder.append("\\n");
-            } else {
-                builder.append(c);
-            }
-        }
-        return builder.toString();
     }
 
 }
