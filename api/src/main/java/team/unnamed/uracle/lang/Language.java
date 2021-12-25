@@ -50,20 +50,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class Language implements Keyed, Examinable {
 
-    /**
-     * This language JSON file location inside
-     * assets/&lt;namespace&gt;/lang
-     */
     private final Key key;
-
-    /**
-     * Map containing all the translations for this language,
-     * where the key is the translation key (yeah) and the
-     * value is the actual translation, in example, there could
-     * be a translation for the Stone block
-     *
-     * <p>"block.minecraft.stone" -> "Stone"</p>
-     */
     @Unmodifiable private final Map<String, String> translations;
 
     public Language(
@@ -78,7 +65,8 @@ public class Language implements Keyed, Examinable {
     }
 
     /**
-     * Returns the resource location of this language
+     * Returns the language JSON file location inside
+     * assets/&lt;namespace&gt;/lang
      *
      * @return The language resource location
      */
@@ -88,8 +76,12 @@ public class Language implements Keyed, Examinable {
     }
 
     /**
-     * Returns an unmodifiable map of the language
-     * translations
+     * Returns an unmodifiable map containing all the translations for this
+     * language, where the key is the translation key (yeah) and the value is
+     * the actual translation, in example, there could be a translation for the
+     * Stone block
+     *
+     * <p>"block.minecraft.stone" -> "Stone"</p>
      *
      * @return The language translations
      */

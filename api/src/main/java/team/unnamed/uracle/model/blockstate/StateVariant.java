@@ -33,39 +33,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class StateVariant implements Examinable {
 
-    /**
-     * Specifies the new model location (resource location)
-     */
     private final Key model;
-
-    /**
-     * Rotation of the model on the x-axis in increments of
-     * 90 degrees
-     */
     private final int x;
-
-    /**
-     * Rotation of the model on the y-axis in increments of
-     * 90 degrees
-     */
     private final int y;
-
-    /**
-     * Can be true or false (default). Locks the rotation of
-     * the texture of a block, if set to true. This way the
-     * texture does not rotate with the block when using the
-     * x and y-tags above
-     */
     private final boolean uvLock;
-
-    /**
-     * Sets the probability of the model for being used in the game,
-     * defaults to 1 (=100%).
-     *
-     * <p>If more than one model is used for the same variant, the
-     * probability is calculated by dividing the individual model's
-     * weight by the sum of the weights of all models</p>
-     */
     private final int weight;
 
     private StateVariant(
@@ -81,4 +52,61 @@ public class StateVariant implements Examinable {
         this.uvLock = uvLock;
         this.weight = weight;
     }
+
+    /**
+     * Returns the {@link Key} instance which specifies
+     * the new model location (resource location)
+     *
+     * @return The model resource location
+     */
+    public Key model() {
+        return model;
+    }
+
+    /**
+     * Returns the rotation of the model on the x-axis in
+     * increments of 90 degrees
+     *
+     * @return The model rotation in the X axis
+     */
+    public int x() {
+        return x;
+    }
+
+    /**
+     * Returns the rotation of the model on the y-axis in
+     * increments of 90 degrees
+     *
+     * @return The model rotation in the Y axis
+     */
+    public int y() {
+        return y;
+    }
+
+    /**
+     * Can be true or false (default). Locks the rotation of
+     * the texture of a block, if set to true. This way the
+     * texture does not rotate with the block when using the
+     * x and y-tags above
+     *
+     * @return True if the model texture is locked
+     */
+    public boolean uvLock() {
+        return uvLock;
+    }
+
+    /**
+     * Sets the probability of the model for being used in the game,
+     * defaults to 1 (=100%).
+     *
+     * <p>If more than one model is used for the same variant, the
+     * probability is calculated by dividing the individual model's
+     * weight by the sum of the weights of all models</p>
+     *
+     * @return This state variant weight
+     */
+    public int weight() {
+        return weight;
+    }
+
 }

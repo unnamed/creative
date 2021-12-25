@@ -41,21 +41,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class LegacyUnicodeFont implements Font {
 
-    /**
-     * The resource location inside assets/&lt;namespace&gt;/font
-     * describing a binary file describing the horizontal start and
-     * end positions for each character from 0 to 15. The file extension
-     * of the target file should be .bin
-     */
     private final Key sizes;
-
-    /**
-     * The resource location inside assets/&lt;namespace&gt;/textures
-     * that leads to the texture files that should be used for this
-     * provider. The game replaces %s from the value of this tag with
-     * the first two characters of the hex code of the replaced characters,
-     * so a single provider of this type can point into multiple texture files.
-     */
     private final Key template;
 
     protected LegacyUnicodeFont(Key sizes, Key template) {
@@ -69,19 +55,23 @@ public class LegacyUnicodeFont implements Font {
     }
 
     /**
-     * Returns the location of the file that describes
-     * the horizontal start and end positions for each
-     * character
+     * Returns the resource location inside assets/&lt;namespace&gt;/font
+     * describing a binary file describing the horizontal start and
+     * end positions for each character from 0 to 15. The file extension
+     * of the target file should be .bin
      *
-     * @return The sizes file location
+     * @return The font character sizes
      */
     public Key sizes() {
         return sizes;
     }
 
     /**
-     * Returns the location of the file that describes
-     * the character textures
+     * Returns the resource location inside assets/&lt;namespace&gt;/textures
+     * that leads to the texture files that should be used for this provider.
+     * The game replaces %s from the value of this tag with the first two characters
+     * of the hex code of the replaced characters, so a single provider of this type
+     * can point into multiple texture files.
      *
      * @return The template file location
      */

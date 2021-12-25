@@ -46,31 +46,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class TrueTypeFont implements Font {
 
-    /**
-     * The resource location of the TrueType font file within
-     * assets/&lt;namespace&gt;/font
-     */
     private final Key file;
-
-    /**
-     * The distance by which the characters of this provider are
-     * shifted. X: Left shift, Y: Downwards shift
-     */
     private final Vector2Float shift;
-
-    /**
-     * Font size to render at
-     */
     private final float size;
-
-    /**
-     * Resolution to render at
-     */
     private final float oversample;
-
-    /**
-     * List of strings to exclude
-     */
     @Unmodifiable private final List<String> skip;
 
     protected TrueTypeFont(
@@ -93,22 +72,50 @@ public class TrueTypeFont implements Font {
         return Type.TTF;
     }
 
+    /**
+     * Returns the resource location of the TrueType font
+     * file within assets/&lt;namespace&gt;/font
+     *
+     * @return The True Type Font file location
+     */
     public Key file() {
         return file;
     }
 
+    /**
+     * Returns the distance by which the characters of this
+     * provider are shifted. X: Left shift, Y: Downwards shift
+     *
+     * @return The characters shift
+     */
     public Vector2Float shift() {
         return shift;
     }
 
+    /**
+     * Returns the font size to render at
+     *
+     * @return The font size
+     */
     public float size() {
         return size;
     }
 
+    /**
+     * Returns the resolution to render at
+     *
+     * @return The font resolution
+     */
     public float oversample() {
         return oversample;
     }
 
+    /**
+     * Returns an unmodifiable list of strings
+     * to exclude
+     *
+     * @return The excluded characters
+     */
     public @Unmodifiable List<String> skip() {
         return skip;
     }

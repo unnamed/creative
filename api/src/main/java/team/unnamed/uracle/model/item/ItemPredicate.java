@@ -41,14 +41,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ItemPredicate implements Examinable {
 
-    /**
-     * The item predicate field name
-     */
     private final String name;
-
-    /**
-     * The item predicate field value
-     */
     private final Object value;
 
     private ItemPredicate(String name, Object value) {

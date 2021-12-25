@@ -52,34 +52,9 @@ public class BitMapFont implements Font {
      */
     public static final int DEFAULT_HEIGHT = 8;
 
-    /**
-     * The texture location of this bitmap font, must
-     * be a PNG image
-     */
     private final Key file;
-
-    /**
-     * Optional. The height of the character, measured in pixels.
-     * Can be negative. This tag is separate from the area used
-     * in the source texture and just rescales the displayed
-     * result
-     */
     private final int height;
-
-    /**
-     * The ascent of the character, measured in pixels. This value
-     * adds a vertical shift to the displayed result.
-     */
     private final int ascent;
-
-    /**
-     * A list of strings containing the characters replaced by this
-     * provider, as well as their order within the texture. All elements
-     * must describe the same number of characters. The texture is split
-     * into one equally sized row for each element of this list. Each
-     * row is split into one equally sized character for each character
-     * within one list element.
-     */
     @Unmodifiable private final List<String> characters;
 
     protected BitMapFont(
@@ -102,7 +77,7 @@ public class BitMapFont implements Font {
 
     /**
      * Returns the texture location of this
-     * bitmap font
+     * bitmap font, must be a PNG image
      *
      * @return The font texture
      */
@@ -111,7 +86,10 @@ public class BitMapFont implements Font {
     }
 
     /**
-     * Returns the font characters height
+     * Returns the height of the character, measured in pixels.
+     * Can be negative. This tag is separate from the area used
+     * in the source texture and just rescales the displayed
+     * result
      *
      * @return The font characters height
      */
@@ -120,8 +98,9 @@ public class BitMapFont implements Font {
     }
 
     /**
-     * Returns the font characters ascent, this
-     * value as a vertical shift to the fonts
+     * Returns the font characters ascent, measured in
+     * pixels, this value as a vertical shift to displayed
+     * result
      *
      * @return The font characters ascent
      */
@@ -130,8 +109,12 @@ public class BitMapFont implements Font {
     }
 
     /**
-     * Returns an unmodifiable list of the font
-     * characters
+     * Returns a list of strings containing the characters replaced by
+     * this provider, as well as their order within the texture. All
+     * elements must describe the same number of characters. The texture
+     * is split into one equally sized row for each element of this list.
+     * Each row is split into one equally sized character for each character
+     * within one list element.
      *
      * @return The font characters
      */

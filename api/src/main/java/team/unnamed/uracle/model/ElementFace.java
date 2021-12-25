@@ -44,48 +44,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class ElementFace implements Examinable {
 
-    /**
-     * Defines the area of the texture to
-     * use according to the scheme [x1, y1, x2, y2]
-     *
-     * <p>The texture behavior is inconsistent if
-     * UV extends below 0 or above 16. If the numbers
-     * of x1 and x2 are swapped the texture flips</p>
-     *
-     * <p>UV is optional, and if not supplied it automatically
-     * generates based on the element's position.</p>
-     */
-    @Nullable
-    private final Vector4Int uv;
-
-    /**
-     * Specifies the face texture in form of the
-     * texture variable prepended with a "#"
-     */
+    @Nullable private final Vector4Int uv;
     private final String texture;
-
-    /**
-     * Specifies whether a face does not need to be rendered
-     * when there is a block touching it in the specified
-     * position. It also determines the side of the block to
-     * use the light level from for lighting the face
-     */
     @Nullable private final CubeFace cullFace;
-
-    /**
-     * Rotates the texture by the specified number of degrees.
-     * Can be 0, 90, 180, or 270. Rotation does not affect which
-     * part of the texture is used. Instead, it amounts to permutation
-     * of the selected texture vertexes (selected implicitly, or
-     * explicitly though uv)
-     */
     private final int rotation;
-
-    /**
-     * Determines whether to tint the texture using a hardcoded tint
-     * index. The default is not using tints (-1 for blocks, unset for
-     * items), and for item elements, any number caused it to use tint
-     */
     @Nullable private final Integer tintIndex;
 
     private ElementFace(
@@ -103,8 +65,15 @@ public class ElementFace implements Examinable {
     }
 
     /**
-     * Returns the area of the texture to use,
-     * from 0 to 16
+     * Returns the area of the texture to
+     * use according to the scheme [x1, y1, x2, y2]
+     *
+     * <p>The texture behavior is inconsistent if
+     * UV extends below 0 or above 16. If the numbers
+     * of x1 and x2 are swapped the texture flips</p>
+     *
+     * <p>UV is optional, and if not supplied it automatically
+     * generates based on the element's position.</p>
      *
      * @return The texture area to use
      */
@@ -114,7 +83,7 @@ public class ElementFace implements Examinable {
 
     /**
      * Returns this face's texture in variable
-     * form
+     * form prepended with a "#"
      *
      * @return The face texture
      */
@@ -123,9 +92,10 @@ public class ElementFace implements Examinable {
     }
 
     /**
-     * Returns whether a face doesn't need to be
-     * rendered when a block is touching the
-     * specified face
+     * Returns whether a face does not need to be rendered
+     * when there is a block touching it in the specified
+     * position. It also determines the side of the block to
+     * use the light level from for lighting the face
      *
      * @return The element cull face
      */
@@ -134,7 +104,14 @@ public class ElementFace implements Examinable {
     }
 
     /**
-     * Returns this face texture rotation
+     * Returns this face texture rotation, it rotates the texture
+     * by the specified number of degrees. Can be 0, 90, 180, or
+     * 270.
+     *
+     * <p>Rotation does not affect which part of the texture is
+     * used. Instead, it amounts to permutation of the selected
+     * texture vertexes (selected implicitly, or explicitly though
+     * uv)</p>
      *
      * @return The face texture rotation
      */
@@ -143,9 +120,11 @@ public class ElementFace implements Examinable {
     }
 
     /**
-     * Returns the element face tint index,
-     * which specifies whether to tint the
-     * element face
+     * Determines whether to tint the texture using a hardcoded tint
+     * index.
+     *
+     * <p>The default is not using tints (-1 for blocks, unset for
+     * items), and for item elements, any number caused it to use tint</p>
      *
      * @return The face tint index
      */

@@ -48,35 +48,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class Element implements Examinable {
 
-    /**
-     * Start point of a cuboid. Values must be
-     * between -16 and 32.
-     */
     private final Vector3Float from;
-
-    /**
-     * Stop point of a cuboid. Values must be
-     * between -16 and 32.
-     */
     private final Vector3Float to;
-
-    /**
-     * Defines the element rotation in a single
-     * axis (it is not possible to use rotation
-     * in multiple axis)
-     */
     private final ElementRotation rotation;
-
-    /**
-     * Determines whether shadows are rendered
-     * for this element
-     */
     private final boolean shade;
-
-    /**
-     * Holds all the faces of the cuboid. If a face is
-     * left out, it does not render
-     */
     @Unmodifiable private final Map<CubeFace, ElementFace> faces;
 
     private Element(
@@ -96,7 +71,8 @@ public class Element implements Examinable {
 
     /**
      * Returns the starting point of the
-     * element cuboid
+     * element cuboid. Values must be
+     * between -16 and 32
      *
      * @return The cuboid origin
      */
@@ -106,7 +82,8 @@ public class Element implements Examinable {
 
     /**
      * Returns the stop point of the element
-     * cuboid
+     * cuboid. Values must be between -16 and
+     * 32
      *
      * @return The cuboid stop point
      */
@@ -115,8 +92,9 @@ public class Element implements Examinable {
     }
 
     /**
-     * Returns the element rotation, in
-     * a single axis
+     * Returns the element rotation in a single
+     * axis (it is not possible to use rotation
+     * in multiple axis)
      *
      * @return The element rotation
      */
@@ -136,7 +114,8 @@ public class Element implements Examinable {
 
     /**
      * Returns an unmodifiable map of the
-     * element faces specifications
+     * element faces specifications. If a
+     * face is left out, it does not render
      *
      * @return The element faces
      */

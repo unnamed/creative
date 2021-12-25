@@ -51,16 +51,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ItemOverride implements Examinable {
 
-    /**
-     * Holds the cases to determine whether an
-     * item model should be overridden
-     */
     @Unmodifiable private final List<ItemPredicate> predicate;
-
-    /**
-     * Model key for the new item if the
-     * case is met
-     */
     private final Key model;
 
     private ItemOverride(
@@ -85,7 +76,7 @@ public class ItemOverride implements Examinable {
 
     /**
      * Returns the resource location of the new
-     * item model
+     * item model if the case is met
      *
      * @return The item override model
      */

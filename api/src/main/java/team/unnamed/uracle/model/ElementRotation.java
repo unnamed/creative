@@ -45,30 +45,9 @@ public class ElementRotation implements Examinable {
 
     public static final ElementRotation DEFAULT = ElementRotation.builder().build();
 
-    /**
-     * The origin for the element rotation,
-     * also known as rotation pivot
-     */
     private final Vector3Float origin;
-
-    /**
-     * Determines the axis of the element
-     * rotation, because elements can only
-     * use rotation in a single axis
-     */
     private final Axis3D axis;
-
-    /**
-     * Specifies the actual rotation angle,
-     * must a multiple of 22.5 and exist in
-     * range of [-45.0, 45.0]
-     */
     private final float angle;
-
-    /**
-     * Specifies whether to scale the faces
-     * across the whole block
-     */
     private final boolean rescale;
 
     private ElementRotation(
@@ -94,7 +73,9 @@ public class ElementRotation implements Examinable {
     }
 
     /**
-     * Returns the rotation axis
+     * Returns the axis of the element
+     * rotation, because elements can only
+     * use rotation in a single axis
      *
      * @return The rotation axis
      */
@@ -103,7 +84,9 @@ public class ElementRotation implements Examinable {
     }
 
     /**
-     * Returns the rotation value
+     * Returns the actual rotation angle,
+     * must a multiple of 22.5 and exist in
+     * range of [-45.0, 45.0]
      *
      * @return The rotation angle
      */

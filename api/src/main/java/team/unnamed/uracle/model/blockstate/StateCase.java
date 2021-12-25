@@ -84,10 +84,6 @@ public class StateCase implements Examinable {
      */
     public static class Filter implements Examinable {
 
-        /**
-         * Unmodifiable map containing the internal
-         * set of rules to match a block by its state
-         */
         @Unmodifiable private final Map<String, String> state;
 
         private Filter(Map<String, String> state) {
@@ -96,8 +92,8 @@ public class StateCase implements Examinable {
         }
 
         /**
-         * Returns an unmodifiable map of the filtering
-         * rules
+         * Returns an unmodifiable map containing the internal
+         * set of rules to match a block by its state
          *
          * @return The required state
          */

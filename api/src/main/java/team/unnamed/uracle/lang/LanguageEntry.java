@@ -47,22 +47,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class LanguageEntry implements Examinable {
 
-    /**
-     * The full name of this language, shown in the
-     * default client Minecraft language menu
-     */
     private final String name;
-
-    /**
-     * The country or region name, shown in the default
-     * Minecraft client language menu
-     */
     private final String region;
-
-    /**
-     * If true, the language reads right
-     * to left
-     */
     private final boolean bidirectional;
 
     private LanguageEntry(
@@ -86,7 +72,9 @@ public class LanguageEntry implements Examinable {
     }
 
     /**
-     * Returns the region or country of this language
+     * Returns the region or country of this language,
+     * shown in the default Minecraft client language
+     * menu
      *
      * @return The language region or country
      */

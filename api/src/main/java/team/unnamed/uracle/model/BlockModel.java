@@ -52,36 +52,10 @@ public class BlockModel implements Model {
 
     public static final Key BUILTIN_GENERATED = Key.key("builtin/generated");
 
-    /**
-     * Reference to the parent block model
-     * resource location
-     */
     private final Key parent;
-
-    /**
-     * Determines whether to use ambient occlusion
-     * or not for this block
-     */
     private final boolean ambientOcclusion;
-
-    /**
-     * Holds the different places where block models
-     * can be displayed
-     */
     private final Map<ModelDisplay.Type, ModelDisplay> display;
-
-    /**
-     * Holds the textures of the model
-     */
     private final BlockTexture textures;
-
-    /**
-     * Contains all the elements of the model. They
-     * can only have cubic forms. If both "parent"
-     * and "elements" are set, the "elements" tag
-     * overrides the "elements" tag from the previous
-     * model
-     */
     @Unmodifiable private final List<Element> elements;
 
     protected BlockModel(
@@ -100,24 +74,56 @@ public class BlockModel implements Model {
         this.elements = unmodifiableList(new ArrayList<>(elements));
     }
 
+    /**
+     * Returns the reference to the parent
+     * block model resource location
+     *
+     * @return The parent block model location
+     */
     @Override
     public Key parent() {
         return parent;
     }
 
+    /**
+     * Returns the boolean that determines whether
+     * to use ambient occlusion or not for this block
+     *
+     * @return True to use ambient occlusion
+     */
     public boolean ambientOcclusion() {
         return ambientOcclusion;
     }
 
+    /**
+     * Returns an unmodifiable map that holds the different
+     * places where block models can be displayed
+     *
+     * @return The display specifications for the model
+     */
     @Override
     public @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display() {
         return display;
     }
 
+    /**
+     * Returns this model textures
+     *
+     * @return This block model textures
+     */
     public BlockTexture textures() {
         return textures;
     }
 
+    /**
+     * Returns an unmodifiable list that contains
+     * all the elements of the model. They can only
+     * have cubic forms. If both "parent" and "elements"
+     * are set, the "elements" tag overrides the
+     * "elements" tag from the previous model
+     *
+     * @return The model elements
+     */
     @Override
     public @Unmodifiable List<Element> elements() {
         return elements;

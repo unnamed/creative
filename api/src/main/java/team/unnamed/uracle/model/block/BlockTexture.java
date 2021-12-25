@@ -49,20 +49,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class BlockTexture implements Examinable {
 
-    /**
-     * What texture to load particles from. This
-     * texture is used if you are in a nether portal.
-     * Also used for water and lava's still textures.
-     *
-     * <p>All breaking particles from non-model blocks
-     * are hard-coded</p>
-     */
     @Nullable private final Key particle;
-
-    /**
-     * Map of texture variable definitions and texture
-     * assignations
-     */
     @Unmodifiable private final Map<String, Key> variables;
 
     private BlockTexture(
@@ -75,8 +62,12 @@ public class BlockTexture implements Examinable {
     }
 
     /**
-     * Returns the texture location for the
-     * block particles
+     * Returns what texture to load particles from. This
+     * texture is used if you are in a nether portal.
+     * Also used for water and lava's still textures.
+     *
+     * <p>All breaking particles from non-model blocks
+     * are hard-coded</p>
      *
      * @return The particle location
      */
