@@ -24,6 +24,7 @@
 package team.unnamed.uracle;
 
 import net.kyori.adventure.key.Key;
+import org.intellij.lang.annotations.Subst;
 import team.unnamed.uracle.font.BitMapFont;
 import team.unnamed.uracle.font.Font;
 import team.unnamed.uracle.font.LegacyUnicodeFont;
@@ -304,7 +305,13 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder sounds(String namespace, SoundRegistry registry) {
+    public ResourcePackBuilder sounds(
+            @Subst(Key.MINECRAFT_NAMESPACE) String namespace,
+            SoundRegistry registry
+    ) {
+        // let Key validate the namespace
+        Key.key(namespace, "dummy");
+
         String path = ASSETS + namespace + "/sounds" + JSON_EXT;
 
         try (AssetWriter writer = output.useEntry(path)) {
