@@ -51,68 +51,13 @@ public class Sound implements Examinable {
     public static final boolean DEFAULT_PRELOAD = false;
     public static final Type DEFAULT_TYPE = Type.SOUND;
 
-    /**
-     * The path to this sound file, starting from
-     * assets/&lt;namespace&gt;/sounds folder.
-     * Doesn't include the file extension (.ogg)
-     *
-     * <p>May instead be the name of another sound
-     * event, according to value of {@code type}</p>
-     */
     private final String name;
-
-    /**
-     * The volume for playing this sound. Value
-     * is a decimal between zero and one
-     */
     private final float volume;
-
-    /**
-     * Plays the pitch at the specified value
-     */
     private final float pitch;
-
-    /**
-     * The chance that this sound is selected to play
-     * when this sound event is triggered. An example:
-     * putting 2 in for the value would be like placing
-     * in the name twice
-     */
     private final int weight;
-
-    /**
-     * True if this sound should be streamed from its file.
-     * It is recommended that this is set to "true" for sounds
-     * that have a duration longer than a few seconds to avoid
-     * lag. Used for all sounds in the "music" and "record"
-     * categories (except Note Block sounds), as (almost) all the
-     * sounds that belong to those categories are over a minute-
-     * long. Setting this to false allows many more instances of
-     * the sound to be run at the same time while setting it to
-     * true only allows 4 instances (of that type) to be run at
-     * the same time.
-     */
     private final boolean stream;
-
-    /**
-     * Modify sound reduction rate based on distance. Used by
-     * portals, beacons, and conduits
-     */
     private final int attenuationDistance;
-
-    /**
-     * True if this sound should be loaded when loading the pack
-     * instead of when the sound is played. Used by the underwater
-     * ambience
-     */
     private final boolean preload;
-
-    /**
-     * Specifies how the {@link Sound#name} value should
-     * be interpreted
-     *
-     * @see Type
-     */
     private final Type type;
 
     private Sound(
@@ -136,8 +81,14 @@ public class Sound implements Examinable {
     }
 
     /**
-     * Returns the name of this sound, which can be
-     * a file path or another sound event name
+     * Returns the path to this sound file, starting
+     * from assets/&lt;namespace&gt;/sounds folder or
+     * another sound name
+     *
+     * <p>Doesn't include the file extension (.ogg)</p>
+     *
+     * <p>May instead be the name of another sound
+     * event, according to value of {@code type}</p>
      *
      * @return The sound name
      */
@@ -146,8 +97,8 @@ public class Sound implements Examinable {
     }
 
     /**
-     * Returns the sound volume, its value is between
-     * 0.0 and 1.0
+     * Returns the volume for playing this sound.
+     * Value is a decimal between zero and one
      *
      * @return The sound volume
      */
@@ -166,9 +117,11 @@ public class Sound implements Examinable {
     }
 
     /**
-     * Returns the sound weight, which makes it
-     * more possible to be selected when a sound
-     * event is fired
+     * Returns the chance that this sound is selected to
+     * play when this sound event is triggered
+     *
+     * <p>An example: putting 2 in for the value would be
+     * like placing in the name twice</p>
      *
      * @return The sound weight
      */
@@ -177,31 +130,46 @@ public class Sound implements Examinable {
     }
 
     /**
-     * Determines whether the sound should be
-     * streamed from its file
+     * Returns true if this sound should be streamed from its file.
+     * It is recommended that this is set to "true" for sounds
+     * that have a duration longer than a few seconds to avoid
+     * lag
      *
-     * @return True if sound is streamed
+     * <p>It is used for all sounds in the "music" and "record"
+     * categories (except Note Block sounds), as (almost) all the
+     * sounds that belong to those categories are over a minute-
+     * long</p>
+     *
+     * <p>Setting this to false allows many more instances of
+     * the sound to be run at the same time while setting it to
+     * true only allows 4 instances (of that type) to be run at
+     * the same time</p>
+     *
+     * @return True if this sound is streamed from its file
      */
     public boolean stream() {
         return stream;
     }
 
     /**
-     * Returns the distance to modify the sound
-     * reduction rate
+     * Returns the attenuation distance, which modifies the
+     * sound reduction rate based on distance
      *
-     * @return The attenuation distance
+     * <p>It is used by portals, beacons, and conduits</p>
+     *
+     * @return The sound attenuation distance
      */
     public int attenuationDistance() {
         return attenuationDistance;
     }
 
     /**
-     * Determines whether the sound should be loaded
-     * when the resource-pack is loaded, or when the
-     * sound is played
+     * Determines whether this sound should be loaded when
+     * loading the pack instead of when the sound is played
      *
-     * @return True if preload
+     * <p>It is used by the underwater ambience</p>
+     *
+     * @return True to preload
      */
     public boolean preload() {
         return preload;
