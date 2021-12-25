@@ -41,11 +41,6 @@ import java.util.stream.Stream;
  */
 public class VillagerMeta implements Examinable {
 
-    /**
-     * Determines whether the villager type's hat
-     * layer should still render (default (null)) or not
-     * ("full")
-     */
     @Nullable private final String hat;
 
     protected VillagerMeta(@Nullable String hat) {
@@ -53,8 +48,8 @@ public class VillagerMeta implements Examinable {
     }
 
     /**
-     * Determines whether the villager hat
-     * layer should render or not
+     * Determines whether the villager hat layer should
+     * still render (default (null) or not ("full")
      */
     public @Nullable String hat() {
         return hat;

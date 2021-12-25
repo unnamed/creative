@@ -42,22 +42,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class TextureMeta implements Examinable {
 
-    /**
-     * Causes the texture to blur when viewed
-     * from close up
-     */
     private final boolean blur;
-
-    /**
-     * Causes the texture to stretch instead of
-     * tiling in cases where it otherwise would,
-     * such as on the shadow
-     */
     private final boolean clamp;
-
-    /**
-     * Custom mipmap values for the texture
-     */
     private final int[] mipmaps;
 
     private TextureMeta(
@@ -81,8 +67,9 @@ public class TextureMeta implements Examinable {
     }
 
     /**
-     * Determines whether the texture is stretched instead of
-     * tiled
+     * Determines whether the texture should be stretched
+     * instead of tiled in cases where it otherwise would,
+     * such as on the shadow
      *
      * @return True to clamp
      */

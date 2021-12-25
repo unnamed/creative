@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.texture;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -45,32 +44,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class Texture implements Examinable {
 
-    /**
-     * The actual PNG image of this texture, stored using
-     * a {@link Writable} instance, to avoid maintaining
-     * it loaded
-     */
     private final Writable data;
-
-    /**
-     * The (general) texture meta-data, all textures can
-     * have this metadata. It is then written to a '.mcmeta'
-     * file in the same texture folder
-     */
     @Nullable private final TextureMeta meta;
-
-    /**
-     * The animated texture meta-data, only applicable for
-     * animatable textures. It is then written to a '.mcmeta'
-     * file in the same texture folder
-     */
     @Nullable private final AnimationMeta animation;
-
-    /**
-     * The metadata for villager textures (entity/villager
-     * and entity/zombie_villager), contains additional
-     * effects to apply to the hat layer
-     */
     @Nullable private final VillagerMeta villager;
 
     private Texture(
@@ -86,7 +62,9 @@ public class Texture implements Examinable {
     }
 
     /**
-     * Returns the actual PNG data of this texture
+     * Returns the actual PNG image of this texture, stored
+     * using a {@link Writable} instance, to avoid maintaining
+     * it loaded
      *
      * @return This texture's PNG data
      */
@@ -95,8 +73,9 @@ public class Texture implements Examinable {
     }
 
     /**
-     * Returns this texture general metadata, or
-     * null if not set
+     * Returns the (general) texture meta-data, all textures
+     * can have this metadata. It is then written to a '.mcmeta'
+     * file in the same texture folder
      *
      * @return This texture metadata
      */
@@ -105,8 +84,9 @@ public class Texture implements Examinable {
     }
 
     /**
-     * Returns this texture animation metadata, or
-     * null if not set
+     * Returns the animated texture meta-data, only applicable
+     * for animatable textures. It is then written to a '.mcmeta'
+     * file in the same texture folder
      *
      * @return This texture animation metadata
      */
@@ -115,8 +95,9 @@ public class Texture implements Examinable {
     }
 
     /**
-     * Returns this texture villager metadata, or
-     * null if not set
+     * Returns the metadata for villager textures (entity/villager
+     * and entity/zombie_villager), contains additional effects to
+     * apply to the hat layer
      *
      * @return This texture villager metadata
      */

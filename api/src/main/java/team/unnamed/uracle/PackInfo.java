@@ -41,22 +41,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class PackInfo implements Examinable {
 
-    /**
-     * Pack version. If this number does not match the current
-     * required number, the resource pack displays an error and
-     * requires additional confirmation to load the pack
-     *
-     * <p>There are format versions assigned to specific Minecraft
-     * client versions, e.g.: 7 for Minecraft 1.17 and 1.17.1, 8
-     * for Minecraft 1.18 and 1.18.1</p>
-     */
     private final int format;
-
-    /**
-     * Pack description. Text shown below the pack name in the resource
-     * pack menu. The text is shown on two lines. If the text is too long
-     * it is truncated.
-     */
     private final String description;
 
     public PackInfo(
@@ -68,9 +53,15 @@ public class PackInfo implements Examinable {
     }
 
     /**
-     * Gets the resource-pack format number
+     * Returns the pack version. If this number does not match the
+     * current required number, the resource pack displays an error
+     * and requires additional confirmation to load the pack
      *
-     * @return The format number
+     * <p>There are format versions assigned to specific Minecraft
+     * client versions, e.g.: 7 for Minecraft 1.17 and 1.17.1, 8
+     * for Minecraft 1.18 and 1.18.1</p>
+     *
+     * @return The resource pack format number
      * @since 1.0.0
      */
     public int format() {
@@ -78,9 +69,11 @@ public class PackInfo implements Examinable {
     }
 
     /**
-     * Gets the resource-pack description string
+     * Returns the pack description. Text shown below the pack name in
+     * the resource pack menu. The text is shown on two lines. If the
+     * text is too long it is truncated
      *
-     * @return The description
+     * @return The resource-pack description
      * @since 1.0.0
      */
     public String description() {

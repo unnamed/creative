@@ -45,26 +45,8 @@ import static java.util.Collections.unmodifiableList;
  */
 public class SoundEvent implements Examinable {
 
-    /**
-     * True if the sounds listed in {@link SoundEvent#sounds}
-     * should replace the sounds listed in the default
-     * sounds.json for this sound event. False if the
-     * sounds listed should be added to the list of
-     * default sounds
-     */
     private final boolean replace;
-
-    /**
-     * Translated as the subtitle of the sound if
-     * "Show Subtitles" is enabled in-game, optional
-     */
     @Nullable private final String subtitle;
-
-    /**
-     * The sounds this sound event uses, one of the
-     * listed sounds is randomly selected to play when
-     * this sound event is triggered, optional
-     */
     @Nullable @Unmodifiable
     private final List<Sound> sounds;
 
@@ -83,14 +65,35 @@ public class SoundEvent implements Examinable {
         }
     }
 
+    /**
+     * Returns true if the sounds listed in {@link SoundEvent#sounds}
+     * should replace the sounds listed in the default
+     * sounds.json for this sound event. False if the
+     * sounds listed should be added to the list of
+     * default sounds
+     *
+     * @return True to replace default sounds.json sounds
+     */
     public boolean replace() {
         return replace;
     }
 
+    /**
+     * Returns the sound event subtitle, which is translated as the
+     * subtitle of the sound if Show Subtitles" is enabled in-game
+     *
+     * @return The sound subtitle
+     */
     public @Nullable String subtitle() {
         return subtitle;
     }
 
+    /**
+     * The sounds this sound event uses, one of the listed sounds
+     * is randomly selected to play when this sound event is triggered
+     *
+     * @return An unmodifiable list of the sound that this event uses
+     */
     public @Nullable @Unmodifiable List<Sound> sounds() {
         return sounds;
     }

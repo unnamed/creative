@@ -45,37 +45,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class AnimationMeta implements Examinable {
 
-    /**
-     * If true, Minecraft generates additional frames
-     * between frames with a frame time greater than 1
-     * between them
-     */
     private final boolean interpolate;
-
-    /**
-     * The width of the tile, as a direct ratio rather than
-     * in pixels. Can be used by resource packs to have frames
-     * that are not perfect squares.
-     */
     private final int width;
-
-    /**
-     * The height of the tile as a ratio rather than in pixels.
-     * Can be used by resource packs to have frames that are not
-     * perfect squares.
-     */
     private final int height;
-
-    /**
-     * Sets the default time for each frame in increments of one
-     * game tick
-     */
     private final int frameTime;
-
-    /**
-     * Contains a list of frames. Defaults to displaying all the
-     * frames from top to bottom.
-     */
     private final List<Frame> frames;
 
     private AnimationMeta(
@@ -106,7 +79,9 @@ public class AnimationMeta implements Examinable {
     }
 
     /**
-     * Returns the width of the tile, as a ratio
+     * Returns the width of the tile, as a direct ratio
+     * rather than in pixels. Can be used by resource
+     * packs to have frames that are not perfect squares
      *
      * @return The tile width
      */
@@ -115,7 +90,9 @@ public class AnimationMeta implements Examinable {
     }
 
     /**
-     * Returns the height of the tile, as a ratio
+     * Returns the height of the tile as a ratio rather than
+     * in pixels. Can be used by resource packs to have frames
+     * that are not perfect squares
      *
      * @return The tile height
      */
