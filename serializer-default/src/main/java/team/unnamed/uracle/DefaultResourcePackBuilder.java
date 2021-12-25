@@ -40,6 +40,8 @@ import team.unnamed.uracle.model.ItemModel;
 import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.model.ModelDisplay;
 import team.unnamed.uracle.model.block.BlockTexture;
+import team.unnamed.uracle.model.blockstate.StateCase;
+import team.unnamed.uracle.model.blockstate.StateVariant;
 import team.unnamed.uracle.model.item.ItemOverride;
 import team.unnamed.uracle.model.item.ItemPredicate;
 import team.unnamed.uracle.model.item.ItemTexture;
@@ -53,6 +55,7 @@ import team.unnamed.uracle.texture.VillagerMeta;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -286,7 +289,7 @@ public class DefaultResourcePackBuilder
 
     @Override
     public ResourcePackBuilder model(Key location, Model model) {
-        String path = ASSETS + location.namespace() + "/models" + location.value();
+        String path = ASSETS + location.namespace() + "/models" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
             if (model instanceof ItemModel) {
                 writeItemModel((ItemModel) model, writer);
@@ -299,8 +302,90 @@ public class DefaultResourcePackBuilder
         return this;
     }
 
+    private void writeVariant(StateVariant variant, AssetWriter writer, boolean writeWeight) {
+        writer
+            .startObject()
+            .key("model").value(variant.model())
+            .key("x").value(variant.x())
+            .key("y").value(variant.y())
+            .key("uvlock").value(variant.uvLock());
+        if (writeWeight) {
+            writer.key("weight").value(variant.weight());
+        }
+        writer.endObject();
+    }
+
+    private void writeVariant(List<StateVariant> variant, AssetWriter writer) {
+        if (variant.size() == 1) {
+            // single variant, write as an object
+            // without the weight
+            writeVariant(variant.get(0), writer, false);
+        } else {
+            // multiple variants, write everything
+            writer.startArray();
+            for (StateVariant v : variant) {
+                writeVariant(v, writer, true);
+            }
+            writer.endArray();
+        }
+    }
+
     @Override
-    public ResourcePackBuilder blockState(Key location, BlockState blockState) {
+    public ResourcePackBuilder blockState(Key location, BlockState state) {
+        String path = ASSETS + location.namespace() + "/blockstates" + location.value() + JSON_EXT;
+        try (AssetWriter writer = output.useEntry(path)) {
+            writer.startObject();
+            Map<String, List<StateVariant>> variants = state.variants();
+            List<StateCase> multipart = state.multipart();
+
+            // write "variants" part if not empty
+            if (!variants.isEmpty()) {
+                writer.key("variants").startObject();
+                for (Map.Entry<String, List<StateVariant>> entry : variants.entrySet()) {
+                    writer.key(entry.getKey());
+                    writeVariant(entry.getValue(), writer);
+                }
+                writer.endObject();
+            }
+
+            // write "multipart" part if not empty
+            if (!multipart.isEmpty()) {
+                writer.key("multipart").startArray();
+                for (StateCase stateCase : multipart) {
+                    writer.startObject()
+                        .key("when")
+                        .startObject();
+
+                    StateCase.When when = stateCase.when();
+                    List<StateCase.Filter> filters = when.or();
+
+                    if (!filters.isEmpty()) {
+                        // write "OR" cases if not empty
+                        writer.key("or").startArray();
+                        for (StateCase.Filter filter : filters) {
+                            writer.startObject();
+                            for (Map.Entry<String, String> condition : filter.state().entrySet()) {
+                                writer.key(condition.getKey()).value(condition.getValue());
+                            }
+                            writer.endObject();
+                        }
+                        writer.endArray();
+                    }
+
+                    for (Map.Entry<String, String> condition : when.state().entrySet()) {
+                        writer.key(condition.getKey()).value(condition.getValue());
+                    }
+                    writer.endObject();
+
+                    writer.key("apply");
+                    writeVariant(stateCase.apply(), writer);
+                    writer.endObject();
+                }
+                writer.endArray();
+            }
+
+            writer.endObject();
+        }
         return this;
     }
 
