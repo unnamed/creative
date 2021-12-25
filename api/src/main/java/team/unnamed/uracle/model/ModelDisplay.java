@@ -66,24 +66,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class ModelDisplay implements Examinable {
 
-    /**
-     * Specifies the rotation of the model
-     */
     private final Vector3Float rotation;
-
-    /**
-     * Specifies the position of the model.
-     * If the value is greater than 80, it
-     * is displayed as 80. If the value is
-     * less than -80, it is displayed as -80.
-     */
     private final Vector3Float translation;
-
-    /**
-     * Specifies the scale of the mode. If
-     * the value is greater than 4, it is
-     * displayed as 4.
-     */
     private final Vector3Float scale;
 
     private ModelDisplay(
@@ -107,8 +91,10 @@ public class ModelDisplay implements Examinable {
     }
 
     /**
-     * Returns the translation values for
-     * this model display
+     * Returns the position of the model.
+     * If the value is greater than 80, it
+     * is displayed as 80. If the value is
+     * less than -80, it is displayed as -80
      *
      * @return The model display translation
      */
@@ -117,8 +103,9 @@ public class ModelDisplay implements Examinable {
     }
 
     /**
-     * Returns the scale values for this
-     * model display
+     * Returns the scale of the mode. If
+     * the value is greater than 4, it is
+     * displayed as 4
      *
      * @return The model display scale
      */
