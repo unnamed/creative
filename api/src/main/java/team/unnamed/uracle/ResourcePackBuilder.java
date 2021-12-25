@@ -26,6 +26,7 @@ package team.unnamed.uracle;
 import net.kyori.adventure.key.Key;
 import team.unnamed.uracle.font.Font;
 import team.unnamed.uracle.lang.Language;
+import team.unnamed.uracle.model.BlockState;
 import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.sound.SoundRegistry;
 import team.unnamed.uracle.texture.Texture;
@@ -70,6 +71,17 @@ public interface ResourcePackBuilder {
      * @return This builder, for chaining
      */
     ResourcePackBuilder model(Key location, Model model);
+
+    /**
+     * Writes the given {@code blockState} to
+     * the resource-pack at the specified
+     * {@code location
+     * }
+     * @param location The block state location
+     * @param blockState The block state info
+     * @return This builder, for chaining
+     */
+    ResourcePackBuilder blockState(Key location, BlockState blockState);
 
     /**
      * Sets the sound registry for a specific
