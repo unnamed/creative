@@ -101,6 +101,10 @@ public final class Vector4Int implements Examinable {
         return y2;
     }
 
+    public int[] toArray() {
+        return new int[] { x, y, x2, y2 };
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(

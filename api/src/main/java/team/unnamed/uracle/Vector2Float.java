@@ -73,6 +73,10 @@ public final class Vector2Float implements Examinable {
         return y;
     }
 
+    public float[] toArray() {
+        return new float[] { x, y };
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(

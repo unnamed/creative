@@ -91,6 +91,10 @@ public final class Vector3Float implements Examinable {
         return z;
     }
 
+    public float[] toArray() {
+        return new float[] { x, y, z };
+    }
+
     /**
      * Returns the component at a specific {@link Axis3D},
      * fails if axis is invalid
