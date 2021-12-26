@@ -583,4 +583,8 @@ public class DefaultResourcePackBuilder
         return this;
     }
 
+    @Override
+    public boolean exists(String path) {
+        return output.has(path);
+    }
 }

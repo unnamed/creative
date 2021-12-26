@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -74,6 +76,15 @@ public abstract class TreeOutputStream
     public abstract void finish() throws IOException;
 
     /**
+     * Determines if there is a file at the specified
+     * path
+     *
+     * @param path The file path
+     * @return True if there is a file there
+     */
+    public abstract boolean has(String path);
+
+    /**
      * Implementation of {@link TreeOutputStream} for a
      * virtual file tree using the ZIP file format. This
      * class just wraps a {@link ZipOutputStream}
@@ -82,6 +93,7 @@ public abstract class TreeOutputStream
             extends TreeOutputStream {
 
         private final ZipOutputStream delegate;
+        private final Set<String> names = new HashSet<>();
 
         private ZipTreeOutputStream(ZipOutputStream delegate) {
             this.delegate = delegate;
@@ -94,6 +106,7 @@ public abstract class TreeOutputStream
             entry.setTime(0L);
             try {
                 delegate.putNextEntry(entry);
+                names.add(name);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
@@ -113,7 +126,7 @@ public abstract class TreeOutputStream
         }
 
         @Override
-        public void write(byte@NotNull[] bytes) throws IOException {
+        public void write(byte @NotNull [] bytes) throws IOException {
             delegate.write(bytes);
         }
 
@@ -136,6 +149,11 @@ public abstract class TreeOutputStream
         public void close() throws IOException {
             delegate.close();
         }
+
+        @Override
+        public boolean has(String path) {
+            return names.contains(path);
+        }
         //#endregion
 
     }
@@ -155,6 +173,7 @@ public abstract class TreeOutputStream
     private static class FileTreeOutputStream
             extends TreeOutputStream {
 
+        private final Set<String> names = new HashSet<>();
         private final File root;
         @Nullable private OutputStream entry;
 
@@ -182,6 +201,7 @@ public abstract class TreeOutputStream
                                 " entry file");
                     }
                 }
+                names.add(name);
                 this.entry = new FileOutputStream(file);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
@@ -218,19 +238,24 @@ public abstract class TreeOutputStream
 
         //#region write delegations
         @Override
-        public void write(byte@NotNull[] bytes, int off, int len)
+        public void write(byte @NotNull [] bytes, int off, int len)
                 throws IOException {
             checkOpenEntry().write(bytes, off, len);
         }
 
         @Override
-        public void write(byte@NotNull[] bytes) throws IOException {
+        public void write(byte @NotNull [] bytes) throws IOException {
             checkOpenEntry().write(bytes);
         }
 
         @Override
         public void write(int i) throws IOException {
             checkOpenEntry().write(i);
+        }
+
+        @Override
+        public boolean has(String path) {
+            return names.contains(path);
         }
         //#endregion
 
