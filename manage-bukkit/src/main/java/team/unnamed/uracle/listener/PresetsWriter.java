@@ -3,20 +3,28 @@ package team.unnamed.uracle.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import team.unnamed.uracle.UraclePlugin;
+import team.unnamed.uracle.ResourcePackBuilder;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
+import team.unnamed.uracle.export.Streams;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class PresetsWriter implements Listener {
 
-    private final UraclePlugin plugin;
+    private final File overridesFolder;
+    private final File optionalsFolder;
 
-    public PresetsWriter(UraclePlugin plugin) {
-        this.plugin = plugin;
+    public PresetsWriter(
+            File overridesFolder,
+            File optionalsFolder
+    ) {
+        this.overridesFolder = overridesFolder;
+        this.optionalsFolder = optionalsFolder;
     }
 
-    private void writeRecursively(ResourcePackGenerateEvent event, File folder, String path) {
+    private void writeRecursively(ResourcePackBuilder builder, File folder, String path) {
         File[] children = folder.listFiles();
         if (children == null) {
             // should never happen since
@@ -30,28 +38,32 @@ public class PresetsWriter implements Listener {
 
             if (child.isFile()) {
                 if (!event.has(localPath)) {
-                    event.write(localPath, Writeable.ofFile(child));
+                    builder.file(localPath, output -> {
+                        try (InputStream input = new FileInputStream(child)) {
+                            Streams.pipe(input, output);
+                        }
+                    });
                 }
             } else {
-                writeRecursively(event, child, localPath);
+                writeRecursively(builder, child, localPath);
             }
         }
     }
 
     private void writeIfExists(ResourcePackGenerateEvent event, File folder) {
         if (folder.exists()) {
-            writeRecursively(event, folder, "");
+            writeRecursively(event.builder(), folder, "");
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void writeOverrides(ResourcePackGenerateEvent event) {
-        writeIfExists(event, plugin.getOverridesFolder());
+        writeIfExists(event, overridesFolder);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void writeOptionals(ResourcePackGenerateEvent event) {
-        writeIfExists(event, plugin.getOptionalsFolder());
+        writeIfExists(event, optionalsFolder);
     }
 
 }

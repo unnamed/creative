@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import team.unnamed.uracle.Uracle;
-import team.unnamed.uracle.UracleProvider;
 import team.unnamed.uracle.UraclePlugin;
-import team.unnamed.uracle.resourcepack.ResourcePack;
+import team.unnamed.uracle.pack.ResourcePack;
+import team.unnamed.uracle.resourcepack.ResourcePackSender;
 
 import java.util.List;
 
@@ -30,20 +30,20 @@ public class ResourcePackApplyListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        ResourcePack pack = plugin.getPack();
+        ResourcePack pack = uracle.getPack();
 
         if (pack == null) {
             // there is not a resource pack set
             return;
         }
 
-        uracle.getSender().send(player, pack);
+        ResourcePackSender.send(player, pack);
     }
 
     @EventHandler
     public void onStatus(PlayerResourcePackStatusEvent event) {
         Player player = event.getPlayer();
-        ResourcePack pack = plugin.getPack();
+        ResourcePack pack = uracle.getPack();
         PlayerResourcePackStatusEvent.Status status = event.getStatus();
 
         if (pack == null) {
@@ -55,7 +55,7 @@ public class ResourcePackApplyListener implements Listener {
             case SUCCESSFULLY_LOADED: {
                 // successfully loaded, mark player
                 // as resource-pack-ed
-                UracleProvider.setHasResourcePack(player);
+                uracle.players().setHasPack(player.getUniqueId(), true);
                 // remove retry metadata
                 player.removeMetadata(RETRIES_KEY, plugin);
                 break;
@@ -79,7 +79,7 @@ public class ResourcePackApplyListener implements Listener {
                 if (retries < RETRIES) {
                     // retry download
                     setRetries(player, retries + 1);
-                    uracle.getSender().send(player, pack);
+                    ResourcePackSender.send(player, pack);
                 } else if (pack.required()) {
                     // max retries exceeded, pack is required
                     // kick player

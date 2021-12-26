@@ -9,7 +9,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import team.unnamed.uracle.Uracle;
 import team.unnamed.uracle.UraclePlugin;
-import team.unnamed.uracle.resourcepack.ResourcePack;
+import team.unnamed.uracle.pack.ResourcePack;
+import team.unnamed.uracle.resourcepack.ResourcePackSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +54,8 @@ public class UracleCommand implements CommandExecutor, TabCompleter {
                 // these messages are important because UX
                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "Reloading...");
                 long start = System.currentTimeMillis();
-                plugin.loadConfiguration();
+                plugin.loadInfo();
+                uracle.fireGenerate();
                 long time = System.currentTimeMillis() / start;
                 sender.sendMessage(String.format(
                         "%sSuccessfully reloaded configuration in %.2f second(s)",
@@ -64,7 +66,7 @@ public class UracleCommand implements CommandExecutor, TabCompleter {
             }
 
             case "apply": {
-                ResourcePack pack = plugin.getPack();
+                ResourcePack pack = uracle.getPack();
 
                 if (pack == null) {
                     // no resource pack to apply
@@ -76,7 +78,7 @@ public class UracleCommand implements CommandExecutor, TabCompleter {
                 if (args.length == 1) {
                     // no more arguments, select everyone
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        uracle.getSender().send(player, pack);
+                        ResourcePackSender.send(player, pack);
                         count++;
                     }
                 } else {
@@ -84,7 +86,7 @@ public class UracleCommand implements CommandExecutor, TabCompleter {
                     for (int i = 1; i < args.length; i++) {
                         Player player = Bukkit.getPlayerExact(args[i]);
                         if (player != null) {
-                            uracle.getSender().send(player, pack);
+                            ResourcePackSender.send(player, pack);
                             count++;
                         }
                     }
