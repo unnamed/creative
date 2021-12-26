@@ -93,6 +93,13 @@ public class AssetWriter extends FilterOutputStream {
             write('"');
             write(encode(escape(object.toString())));
             write('"');
+        } else if (object instanceof Iterable) {
+            // array-like value
+            startArray();
+            for (Object e : ((Iterable<?>) object)) {
+                value(e);
+            }
+            return endArray();
         } else {
             // other objects (numbers, booleans) are
             // written literally as its toString() value

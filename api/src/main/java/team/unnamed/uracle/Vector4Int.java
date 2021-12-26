@@ -28,6 +28,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -40,7 +42,8 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public final class Vector4Int implements Examinable {
+public final class Vector4Int
+        implements Examinable, Iterable<Integer> {
 
     /**
      * Constant for {@link Vector2Float} value with
@@ -103,6 +106,12 @@ public final class Vector4Int implements Examinable {
 
     public int[] toArray() {
         return new int[] { x, y, x2, y2 };
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Integer> iterator() {
+        return Arrays.asList(x, y, x2, y2).iterator();
     }
 
     @Override
