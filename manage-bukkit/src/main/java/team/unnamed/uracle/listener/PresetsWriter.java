@@ -37,7 +37,7 @@ public class PresetsWriter implements Listener {
             String localPath = path + File.separator + name;
 
             if (child.isFile()) {
-                if (!event.has(localPath)) {
+                if (!builder.exists(localPath)) {
                     builder.file(localPath, output -> {
                         try (InputStream input = new FileInputStream(child)) {
                             Streams.pipe(input, output);

@@ -128,4 +128,13 @@ public interface ResourcePackBuilder {
      */
     ResourcePackBuilder file(String path, Writable data);
 
+    /**
+     * Determines if there is an existent file
+     * at the specified path
+     *
+     * @param path The file path
+     * @return True if a file exists there
+     */
+    boolean exists(String path);
+
 }
