@@ -2,7 +2,7 @@ package team.unnamed.uracle.resourcepack;
 
 /**
  * Represents the object responsible for providing
- * {@link ResourcePack} from simple {@link UrlAndHash}
+ * {@link ResourcePack} from simple {@link ResourcePackLocation}
  *
  * <p>Implementations may take necessary properties
  * from other sources like configurations</p>
@@ -21,6 +21,6 @@ public interface ResourcePackProvider {
      * @param location The resource pack location
      * @return The resource pack
      */
-    ResourcePack of(UrlAndHash location);
+    ResourcePack of(ResourcePackLocation location);
 
 }

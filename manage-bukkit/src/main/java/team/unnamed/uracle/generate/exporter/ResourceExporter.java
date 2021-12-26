@@ -2,7 +2,7 @@ package team.unnamed.uracle.generate.exporter;
 
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.generate.TreeWriteable;
-import team.unnamed.uracle.resourcepack.UrlAndHash;
+import team.unnamed.uracle.resourcepack.ResourcePackLocation;
 
 import java.io.IOException;
 
@@ -16,6 +16,6 @@ public interface ResourceExporter {
      * given {@code writer}
      */
     @Nullable
-    UrlAndHash export(TreeWriteable writer) throws IOException;
+    ResourcePackLocation export(TreeWriteable writer) throws IOException;
 
 }

@@ -5,7 +5,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
-import team.unnamed.uracle.generate.Writeable;
 
 import java.io.File;
 

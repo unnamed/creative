@@ -15,13 +15,12 @@ import team.unnamed.uracle.command.UracleCommand;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.generate.exporter.ResourceExporter;
 import team.unnamed.uracle.generate.exporter.ResourceExporterFactory;
-import team.unnamed.uracle.generate.Writeable;
 import team.unnamed.uracle.listener.PackMetaWriter;
 import team.unnamed.uracle.listener.PresetsWriter;
 import team.unnamed.uracle.listener.ResourcePackApplyListener;
 import team.unnamed.uracle.resourcepack.ResourcePack;
+import team.unnamed.uracle.resourcepack.ResourcePackApplication;
 import team.unnamed.uracle.resourcepack.UrlAndHash;
-import team.unnamed.uracle.resourcepack.PackMeta;
 import team.unnamed.uracle.util.Texts;
 
 import java.io.File;
@@ -30,7 +29,9 @@ import java.util.logging.Level;
 
 public class UraclePlugin extends JavaPlugin {
 
-    private PackMeta metadata;
+    @Nullable private PackInfo info;
+    @Nullable private ResourcePackApplication application;
+
     private ResourceExporter exporter;
     private ResourcePack pack;
 
@@ -43,52 +44,59 @@ public class UraclePlugin extends JavaPlugin {
         ConfigurationSection config = getConfig();
 
         // load 'metadata'
-        if (config.contains("metadata")) {
-            File iconFile = new File(getDataFolder(), "pack.png");
-            metadata = new PackMeta(
-                    config.getInt("metadata.format", 7),
-                    Texts.colorize(Texts.escapeForJson(config.getString("metadata.description"))),
-                    iconFile.exists() ? Writeable.ofFile(iconFile) : null
-            );
-        } else {
-            metadata = null;
+        {
+            if (config.contains("metadata")) {
+                info = PackInfo.of(
+                        config.getInt("metadata.format", 7),
+                        Texts.colorize(config.getString("metadata.description"))
+                );
+            } else {
+                info = null;
+            }
         }
 
         // load 'exporter'
-        String exporterSource = config.getString("generation");
+        {
+            String exporterSource = config.getString("generation");
 
-        try {
-            exporter = ResourceExporterFactory.of(exporterSource);
-        } catch (IOException e) {
-            getLogger().log(
-                    Level.SEVERE,
-                    "Cannot create exporter from string '" + exporterSource + "'",
-                    e
-            );
+            try {
+                exporter = ResourceExporterFactory.of(exporterSource);
+            } catch (IOException e) {
+                getLogger().log(
+                        Level.SEVERE,
+                        "Cannot create exporter from string '" + exporterSource + "'",
+                        e
+                );
+            }
         }
 
         // load 'application'
-        boolean required = config.getBoolean("application.force", false);
-        String prompt = config.getString("application.prompt", null);
+        {
+            boolean required = config.getBoolean("application.force", false);
+            String prompt = config.getString("application.prompt", null);
 
-        if (prompt != null) {
-            // colorize and translate to JSON
-            prompt = ChatColor.translateAlternateColorCodes('&', prompt);
-            prompt = ComponentSerializer.toString(TextComponent.fromLegacyText(prompt));
+            if (prompt != null) {
+                // colorize and translate to JSON
+                prompt = ChatColor.translateAlternateColorCodes('&', prompt);
+                prompt = ComponentSerializer.toString(TextComponent.fromLegacyText(prompt));
+            }
+
+            application = ResourcePackApplication.of(required, prompt);
         }
 
         if (exporter != null) {
             try {
                 getLogger().info("Exporting resource-pack...");
-                UrlAndHash location = exporter.export(ResourcePackGenerateEvent::call);
+                UrlAndHash location = exporter.export(output ->
+                        ResourcePackGenerateEvent.call(new DefaultResourcePackBuilder(output)));
                 if (location != null) {
                     getLogger().info("Uploaded resource-pack to " + location.getUrl());
 
                     pack = new ResourcePack(
                             location.getUrl(),
                             location.getHash(),
-                            required,
-                            prompt
+                            application.required(),
+                            application.prompt()
                     );
                 }
             } catch (IOException e) {
@@ -109,7 +117,7 @@ public class UraclePlugin extends JavaPlugin {
 
         if (!configFile.exists()) {
             saveResource("config.yml", true);
-            saveResource("pack.png", false);
+            // saveResource("pack.png", false);
 
             // create our folders
             optionalsFolder.mkdirs();
@@ -155,8 +163,8 @@ public class UraclePlugin extends JavaPlugin {
     }
 
     @Nullable
-    public PackMeta getMetadata() {
-        return metadata;
+    public PackInfo getInfo() {
+        return info;
     }
 
     @Nullable

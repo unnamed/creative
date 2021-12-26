@@ -80,16 +80,16 @@ public final class ReflectiveResourcePackSender
                 // 'required' and 'prompt' fields not supported
                 SET_RESOURCE_PACK_METHOD.invoke(
                         handle,
-                        pack.getUrl(),
-                        pack.getHash()
+                        pack.url(),
+                        pack.hash()
                 );
             } else {
-                String prompt = pack.getPrompt();
+                String prompt = pack.prompt();
                 SET_RESOURCE_PACK_METHOD.invoke(
                         handle,
-                        pack.getUrl(),
-                        pack.getHash(),
-                        pack.isRequired(),
+                        pack.url(),
+                        pack.hash(),
+                        pack.required(),
                         prompt == null ? null : DESERIALIZE_COMPONENT_METHOD.invoke(null, prompt)
                 );
             }

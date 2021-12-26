@@ -25,7 +25,6 @@ package team.unnamed.uracle;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -37,7 +36,6 @@ import java.nio.charset.StandardCharsets;
  * for writing assets, its main features are the
  * JSON helpers
  */
-@VisibleForTesting
 public class AssetWriter extends FilterOutputStream {
 
     private final TreeOutputStream tree;

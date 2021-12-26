@@ -1,10 +1,10 @@
 package team.unnamed.uracle.generate.exporter;
 
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.TreeOutputStream;
 import team.unnamed.uracle.generate.TreeWriteable;
 import team.unnamed.uracle.generate.Streams;
-import team.unnamed.uracle.generate.TreeOutputStream;
-import team.unnamed.uracle.resourcepack.UrlAndHash;
+import team.unnamed.uracle.resourcepack.ResourcePackLocation;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,7 +42,7 @@ public class MCPacksHttpExporter implements ResourceExporter {
 
     @Override
     @NotNull
-    public UrlAndHash export(TreeWriteable writer) throws IOException {
+    public ResourcePackLocation export(TreeWriteable writer) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -103,7 +103,7 @@ public class MCPacksHttpExporter implements ResourceExporter {
         // execute request and close, no response expected
         connection.getInputStream().close();
 
-        return new UrlAndHash(
+        return ResourcePackLocation.of(
                 DOWNLOAD_URL_TEMPLATE.replace("%HASH%", hashString),
                 hashString
         );

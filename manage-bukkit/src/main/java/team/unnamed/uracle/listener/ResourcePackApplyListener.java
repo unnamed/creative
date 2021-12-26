@@ -63,7 +63,7 @@ public class ResourcePackApplyListener implements Listener {
 
             case DECLINED: {
                 // player declined resource pack
-                if (pack.isRequired()) {
+                if (pack.required()) {
                     // kick player since resource-pack
                     // must be accepted
                     player.kickPlayer(plugin.getMessage("declined"));
@@ -80,7 +80,7 @@ public class ResourcePackApplyListener implements Listener {
                     // retry download
                     setRetries(player, retries + 1);
                     uracle.getSender().send(player, pack);
-                } else if (pack.isRequired()) {
+                } else if (pack.required()) {
                     // max retries exceeded, pack is required
                     // kick player
                     player.kickPlayer(plugin.getMessage("failed"));

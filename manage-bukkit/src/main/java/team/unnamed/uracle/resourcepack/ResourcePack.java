@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author yusshu (Andre Roldan)
  */
-public final class ResourcePack {
+public final class ResourcePack
+        implements ResourcePackLocation, ResourcePackApplication {
 
     private final String url;
     private final String hash;
@@ -32,7 +33,8 @@ public final class ResourcePack {
      * Returns the URL sent to players to download the
      * server resource-pack
      */
-    public String getUrl() {
+    @Override
+    public String url() {
         return url;
     }
 
@@ -40,7 +42,8 @@ public final class ResourcePack {
      * Returns the SHA-1 hash of the server resource-pack
      * contents
      */
-    public String getHash() {
+    @Override
+    public String hash() {
         return hash;
     }
 
@@ -53,7 +56,8 @@ public final class ResourcePack {
      *
      * @return True if this resource pack is required
      */
-    public boolean isRequired() {
+    @Override
+    public boolean required() {
         return required;
     }
 
@@ -66,7 +70,8 @@ public final class ResourcePack {
      * @return The JSON representation of the resource
      * pack prompt
      */
-    public @Nullable String getPrompt() {
+    @Override
+    public @Nullable String prompt() {
         return prompt;
     }
 
@@ -78,10 +83,10 @@ public final class ResourcePack {
      * @return A copy of this resource-pack, with the new,
      * provided location
      */
-    public ResourcePack withLocation(UrlAndHash location) {
+    public ResourcePack withLocation(ResourcePackLocation location) {
         return new ResourcePack(
-                location.getUrl(),
-                location.getHash(),
+                location.url(),
+                location.hash(),
                 required,
                 prompt
         );

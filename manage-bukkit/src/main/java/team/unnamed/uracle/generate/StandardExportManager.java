@@ -3,8 +3,8 @@ package team.unnamed.uracle.generate;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.generate.exporter.ResourceExporter;
 import team.unnamed.uracle.resourcepack.ResourcePack;
+import team.unnamed.uracle.resourcepack.ResourcePackLocation;
 import team.unnamed.uracle.resourcepack.ResourcePackProvider;
-import team.unnamed.uracle.resourcepack.UrlAndHash;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class StandardExportManager implements ExportManager {
     @Override
     public void exportAndUpdate() throws IOException {
         // export
-        UrlAndHash location = exporter.export(contentWriter);
+        ResourcePackLocation location = exporter.export(contentWriter);
 
         if (location == null) {
             // not exported to a remote location, make

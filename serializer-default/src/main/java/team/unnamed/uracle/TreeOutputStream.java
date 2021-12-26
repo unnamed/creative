@@ -25,9 +25,7 @@ package team.unnamed.uracle;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.VisibleForTesting;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,7 +45,6 @@ import java.util.zip.ZipOutputStream;
  *
  * @author yusshu (Andre Roldan)
  */
-@VisibleForTesting
 public abstract class TreeOutputStream
         extends OutputStream {
 

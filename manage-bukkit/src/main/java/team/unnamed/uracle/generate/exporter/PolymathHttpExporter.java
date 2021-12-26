@@ -4,10 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.TreeOutputStream;
 import team.unnamed.uracle.generate.TreeWriteable;
 import team.unnamed.uracle.generate.Streams;
-import team.unnamed.uracle.generate.TreeOutputStream;
-import team.unnamed.uracle.resourcepack.UrlAndHash;
+import team.unnamed.uracle.resourcepack.ResourcePackLocation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,9 +36,7 @@ public class PolymathHttpExporter implements ResourceExporter {
     }
 
     @Override
-    public @Nullable UrlAndHash export(
-            TreeWriteable writer
-    ) throws IOException {
+    public @Nullable ResourcePackLocation export(TreeWriteable writer) throws IOException {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -101,7 +99,7 @@ public class PolymathHttpExporter implements ResourceExporter {
                         + json.get("error").getAsString());
             }
 
-            return new UrlAndHash(
+            return ResourcePackLocation.of(
                     json.get("url").getAsString(),
                     json.get("sha1").getAsString()
             );
