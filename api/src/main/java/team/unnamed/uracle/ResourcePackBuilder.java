@@ -169,6 +169,24 @@ public interface ResourcePackBuilder {
     ResourcePackBuilder file(String path, Writable data);
 
     /**
+     * Writes the given string data encoded using
+     * UTF-8 to a file at the specified path, use
+     * it only when an implementation of a resource-pack
+     * part doesn't exist
+     *
+     * <p>In case a part doesn't exist and it
+     * is from Minecraft: Java Edition (Vanilla,
+     * no modifications), please open an issue
+     * on GitHub</p>
+     *
+     * @param path The file path
+     * @param data The written string
+     * @return This builder, for chaining
+     * @since 1.0.0
+     */
+    ResourcePackBuilder string(String path, String data);
+
+    /**
      * Determines if there is an existent file
      * at the specified path
      *

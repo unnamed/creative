@@ -55,6 +55,7 @@ import team.unnamed.uracle.texture.VillagerMeta;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -574,11 +575,36 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
+    public ResourcePackBuilder endPoem(String endPoem) {
+        return string(
+                ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/end.txt",
+                endPoem
+        );
+    }
+
+    @Override
+    public ResourcePackBuilder splashes(String splashes) {
+        return string(
+                ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/splashes.txt",
+                splashes
+        );
+    }
+
+    @Override
     public ResourcePackBuilder file(String path, Writable data) {
         try (AssetWriter writer = output.useEntry(path)) {
             data.write(writer);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+        return this;
+    }
+
+    @Override
+    public ResourcePackBuilder string(String path, String data) {
+        byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
+        try (AssetWriter writer = output.useEntry(path)) {
+            writer.write(bytes);
         }
         return this;
     }

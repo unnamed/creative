@@ -32,6 +32,8 @@ import java.io.OutputStream;
  * class is util for representing assets that
  * can be exported anytime, without necessarily
  * loading them
+ *
+ * @since 1.0.0
  */
 @FunctionalInterface
 public interface Writable {
@@ -46,6 +48,7 @@ public interface Writable {
      *
      * @param output The target output stream
      * @throws IOException If write fails
+     * @since 1.0.0
      */
     void write(OutputStream output) throws IOException;
 
