@@ -16,7 +16,6 @@ import team.unnamed.uracle.pack.ResourcePackApplication;
 import team.unnamed.uracle.pack.ResourcePackLocation;
 import team.unnamed.uracle.player.PlayerManager;
 import team.unnamed.uracle.resourcepack.ResourcePackSender;
-import team.unnamed.uracle.util.Texts;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -77,6 +76,7 @@ public class BukkitUracle implements Uracle {
 
     @Override
     public void fireGenerate() {
+        loadConfiguration();
         if (exporter != null) {
             try {
                 plugin.getLogger().info("Exporting resource-pack...");
@@ -97,7 +97,7 @@ public class BukkitUracle implements Uracle {
         }
     }
 
-    public void loadConfiguration() {
+    private void loadConfiguration() {
         ConfigurationSection config = plugin.getConfig();
 
         // load 'exporter'
