@@ -23,8 +23,6 @@
  */
 package team.unnamed.uracle.lang;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -48,31 +46,15 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language implements Keyed, Examinable {
+public class Language implements Examinable {
 
-    private final Key key;
     @Unmodifiable private final Map<String, String> translations;
 
-    public Language(
-            Key key,
-            Map<String, String> translations
-    ) {
+    public Language(Map<String, String> translations) {
         requireNonNull(translations, "translations");
-        this.key = requireNonNull(key, "key");
         // create a copy and wrap into a unmodifiable map to
         // avoid modifications
         this.translations = unmodifiableMap(new HashMap<>(translations));
-    }
-
-    /**
-     * Returns the language JSON file location inside
-     * assets/&lt;namespace&gt;/lang
-     *
-     * @return The language resource location
-     */
-    @Override
-    public @NotNull Key key() {
-        return key;
     }
 
     /**
@@ -92,7 +74,6 @@ public class Language implements Keyed, Examinable {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("translations", translations)
         );
     }
@@ -107,13 +88,12 @@ public class Language implements Keyed, Examinable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Language language = (Language) o;
-        return key.equals(language.key)
-                && translations.equals(language.translations);
+        return translations.equals(language.translations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, translations);
+        return Objects.hash(translations);
     }
 
 }
