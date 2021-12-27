@@ -50,7 +50,7 @@ public class Language implements Examinable {
 
     @Unmodifiable private final Map<String, String> translations;
 
-    public Language(Map<String, String> translations) {
+    private Language(Map<String, String> translations) {
         requireNonNull(translations, "translations");
         // create a copy and wrap into a unmodifiable map to
         // avoid modifications
@@ -94,6 +94,18 @@ public class Language implements Examinable {
     @Override
     public int hashCode() {
         return Objects.hash(translations);
+    }
+
+    /**
+     * Creates a new {@link Language} object which holds
+     * the given translations in a Map
+     *
+     * @param translations The language translations
+     * @return The language
+     * @since 1.0.0
+     */
+    public static Language of(Map<String, String> translations) {
+        return new Language(translations);
     }
 
 }
