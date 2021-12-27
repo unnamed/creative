@@ -49,6 +49,7 @@ public interface ResourcePackBuilder {
      * @param location The font location
      * @param font The written font
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder font(Key location, Font font);
 
@@ -59,6 +60,7 @@ public interface ResourcePackBuilder {
      * @param location The language location
      * @param language The written language
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder language(Key location, Language language);
 
@@ -69,17 +71,19 @@ public interface ResourcePackBuilder {
      *
      * @param model The written model
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder model(Key location, Model model);
 
     /**
      * Writes the given {@code blockState} to
      * the resource-pack at the specified
-     * {@code location
-     * }
+     * {@code location}
+     *
      * @param location The block state location
      * @param blockState The block state info
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder blockState(Key location, BlockState blockState);
 
@@ -90,6 +94,7 @@ public interface ResourcePackBuilder {
      * @param namespace The sound registry namespace
      * @param registry The sound registry
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder sounds(String namespace, SoundRegistry registry);
 
@@ -100,6 +105,7 @@ public interface ResourcePackBuilder {
      * @param location The texture location
      * @param texture The written texture
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder texture(Key location, Texture texture);
 
@@ -109,6 +115,7 @@ public interface ResourcePackBuilder {
      *
      * @param meta The resource-pack metadata
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder meta(PackMeta meta);
 
@@ -125,6 +132,7 @@ public interface ResourcePackBuilder {
      * @param path The file path
      * @param data The written data
      * @return This builder, for chaining
+     * @since 1.0.0
      */
     ResourcePackBuilder file(String path, Writable data);
 
@@ -134,6 +142,7 @@ public interface ResourcePackBuilder {
      *
      * @param path The file path
      * @return True if a file exists there
+     * @since 1.0.0
      */
     boolean exists(String path);
 
