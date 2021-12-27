@@ -120,6 +120,38 @@ public interface ResourcePackBuilder {
     ResourcePackBuilder meta(PackMeta meta);
 
     /**
+     * Writes the end poem text, located at
+     * assets/minecraft/texts/end.txt. Can be
+     * formatted using legacy formatting codes
+     *
+     * <p>"PLAYERNAME" is replaced by the viewer
+     * player name</p>
+     *
+     * <p>After the contents of the end poem are
+     * shown, the credits are shown</p>
+     *
+     * @param endPoem The end poem string, can
+     *                contain line breaks
+     * @return This builder, for chaining
+     * @since 1.0.0
+     */
+    ResourcePackBuilder endPoem(String endPoem);
+
+    /**
+     * Writes the splashes text file, located
+     * at assets/minecraft/texts/splashes.txt
+     *
+     * <p>Contains lines of text separated using
+     * line breaks to determine the splashes to
+     * display in-game</p>
+     *
+     * @param splashes The new splashes
+     * @return This builder, for chaining
+     * @since 1.0.0
+     */
+    ResourcePackBuilder splashes(String splashes);
+
+    /**
      * Writes a set of bytes to an arbitrary
      * file, use it only when an implementation
      * of a resource-pack part doesn't exist
