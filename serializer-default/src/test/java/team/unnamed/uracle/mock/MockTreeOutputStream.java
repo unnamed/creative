@@ -67,4 +67,8 @@ public class MockTreeOutputStream extends TreeOutputStream {
         return output.toString();
     }
 
+    @Override
+    public boolean has(String path) {
+        return false;
+    }
 }
