@@ -25,6 +25,12 @@ package team.unnamed.uracle.model.blockstate;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -107,6 +113,85 @@ public class StateVariant implements Examinable {
      */
     public int weight() {
         return weight;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("model", model),
+                ExaminableProperty.of("x", x),
+                ExaminableProperty.of("y", y),
+                ExaminableProperty.of("uvlock", uvLock),
+                ExaminableProperty.of("weight", weight)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StateVariant that = (StateVariant) o;
+        return x == that.x
+                && y == that.y
+                && uvLock == that.uvLock
+                && weight == that.weight
+                && model.equals(that.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(model, x, y, uvLock, weight);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Key model;
+        private int x;
+        private int y;
+        private boolean uvLock;
+        private int weight = 1;
+
+        private Builder() {
+        }
+
+        public Builder model(Key model) {
+            this.model = requireNonNull(model, "model");
+            return this;
+        }
+
+        public Builder x(int x) {
+            this.x = x;
+            return this;
+        }
+
+        public Builder y(int y) {
+            this.y = y;
+            return this;
+        }
+
+        public Builder uvLock(boolean uvLock) {
+            this.uvLock = uvLock;
+            return this;
+        }
+
+        public Builder weight(int weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        public StateVariant build() {
+            return new StateVariant(model, x, y, uvLock, weight);
+        }
+
     }
 
 }

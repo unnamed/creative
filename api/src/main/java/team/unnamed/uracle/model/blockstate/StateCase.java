@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -77,6 +78,25 @@ public class StateCase implements Examinable {
         );
     }
 
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StateCase stateCase = (StateCase) o;
+        return when.equals(stateCase.when)
+                && apply.equals(stateCase.apply);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(when, apply);
+    }
+
     /**
      * Represents a filter for {@link StateCase},
      * only contains a set of rules that filter
@@ -115,6 +135,31 @@ public class StateCase implements Examinable {
             return examine(StringExaminer.simpleEscaping());
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Filter filter = (Filter) o;
+            return state.equals(filter.state);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(state);
+        }
+
+        /**
+         * Creates a new filter from the given
+         * rules
+         *
+         * @param state The filter rules
+         * @return A new filter instance
+         * @since 1.0.0
+         */
+        public static Filter of(Map<String, String> state) {
+            return new Filter(state);
+        }
+
     }
 
     /**
@@ -138,6 +183,46 @@ public class StateCase implements Examinable {
 
         public @Unmodifiable List<Filter> or() {
             return or;
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("or", or),
+                    ExaminableProperty.of("state", state())
+            );
+        }
+
+        @Override
+        public String toString() {
+            return examine(StringExaminer.simpleEscaping());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            When when = (When) o;
+            return or.equals(when.or);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), or);
+        }
+
+        /**
+         * Creates a new {@link When} case from the
+         * given values
+         *
+         * @param or Extra cases to match
+         * @param state The states
+         * @return A new case instance
+         * @since 1.0.0
+         */
+        public static When of(List<Filter> or, Map<String, String> state) {
+            return new When(or, state);
         }
 
     }
