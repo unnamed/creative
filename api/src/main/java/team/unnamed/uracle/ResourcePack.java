@@ -33,6 +33,7 @@ import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.sound.SoundRegistry;
 import team.unnamed.uracle.texture.Texture;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -190,6 +191,122 @@ public class ResourcePack {
      */
     public @Unmodifiable Map<String, Writable> extra() {
         return extra;
+    }
+
+    /**
+     * Creates a new instance of our builder
+     * implementation
+     *
+     * @return Returns a new resource pack builder
+     * @since 1.0.0
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private PackMeta meta;
+        private Writable icon;
+        private Map<Key, FontRegistry> fonts;
+        private Map<Key, Language> languages;
+        private Map<Key, Model> models;
+        private Map<Key, BlockState> blockStates;
+        private Map<String, SoundRegistry> sounds;
+        private Map<Key, Texture> textures;
+        private Map<String, Writable> extra;
+
+        private Builder() {
+        }
+
+        public Builder meta(PackMeta meta) {
+            this.meta = requireNonNull(meta, "meta");
+            return this;
+        }
+
+        public Builder icon(@Nullable Writable icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        public Builder fonts(Map<Key, FontRegistry> fonts) {
+            requireNonNull(fonts, "fonts");
+            this.fonts = mapWithAll(this.fonts, fonts);
+            return this;
+        }
+
+        public Builder font(Key key, FontRegistry font) {
+            requireNonNull(key, "key");
+            requireNonNull(font, "font");
+            this.fonts = mapWith(this.fonts, key, font);
+            return this;
+        }
+
+        public Builder languages(Map<Key, Language> languages) {
+            requireNonNull(languages, "languages");
+            this.languages = mapWithAll(this.languages, languages);
+            return this;
+        }
+
+        public Builder models(Map<Key, Model> models) {
+            requireNonNull(models, "models");
+            this.models = mapWithAll(this.models, models);
+            return this;
+        }
+
+        public Builder blockStates(Map<Key, BlockState> blockStates) {
+            requireNonNull(blockStates, "blockStates");
+            this.blockStates = mapWithAll(this.blockStates, blockStates);
+            return this;
+        }
+
+        public Builder sounds(Map<String, SoundRegistry> sounds) {
+            requireNonNull(sounds, "sounds");
+            this.sounds = mapWithAll(this.sounds, sounds);
+            return this;
+        }
+
+        public Builder textures(Map<Key, Texture> textures) {
+            requireNonNull(textures, "textures");
+            this.textures = mapWithAll(this.textures, textures);
+            return this;
+        }
+
+        public Builder extra(Map<String, Writable> extra) {
+            requireNonNull(extra, "extra");
+            this.extra = mapWithAll(this.extra, extra);
+            return this;
+        }
+
+        public ResourcePack build() {
+            return new ResourcePack(
+                    meta, icon,
+                    fonts,
+                    languages,
+                    models,
+                    blockStates,
+                    sounds,
+                    textures,
+                    extra
+            );
+        }
+
+        private <K, V> Map<K, V> mapWith(Map<K, V> map, K key, V value) {
+            if (map == null) {
+                map = new HashMap<>();
+            }
+            map.put(key, value);
+            return map;
+        }
+
+        private <K ,V> Map<K, V> mapWithAll(Map<K, V> map, Map<K, V> add) {
+            if (map == null) {
+                map = new HashMap<>();
+            }
+            map.putAll(add);
+            return map;
+        }
+
     }
 
 }
