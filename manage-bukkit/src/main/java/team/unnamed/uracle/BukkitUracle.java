@@ -81,7 +81,7 @@ public class BukkitUracle implements Uracle {
             try {
                 plugin.getLogger().info("Exporting resource-pack...");
                 ResourcePackLocation location = exporter.export(output ->
-                        ResourcePackGenerateEvent.call(new SerializingResourcePackBuilder(output)));
+                        ResourcePackGenerateEvent.call(new DefaultResourcePackWriter(output)));
                 if (location != null) {
                     plugin.getLogger().info("Uploaded resource-pack to " + location.url());
 

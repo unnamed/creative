@@ -3,20 +3,20 @@ package team.unnamed.uracle.event;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import team.unnamed.uracle.ResourcePack;
+import team.unnamed.uracle.ResourcePackWriter;
 
 public class ResourcePackGenerateEvent extends Event {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    private final ResourcePack.Builder builder;
+    private final ResourcePackWriter writer;
 
-    public ResourcePackGenerateEvent(ResourcePack.Builder builder) {
-        this.builder = builder;
+    public ResourcePackGenerateEvent(ResourcePackWriter writer) {
+        this.writer = writer;
     }
 
-    public ResourcePack.Builder builder() {
-        return builder;
+    public ResourcePackWriter writer() {
+        return writer;
     }
 
     @Override
@@ -28,9 +28,9 @@ public class ResourcePackGenerateEvent extends Event {
         return HANDLER_LIST;
     }
 
-    public static void call(ResourcePack.Builder builder) {
+    public static void call(ResourcePackWriter writer) {
         Bukkit.getPluginManager()
-                .callEvent(new ResourcePackGenerateEvent(builder));
+                .callEvent(new ResourcePackGenerateEvent(writer));
     }
 
 }

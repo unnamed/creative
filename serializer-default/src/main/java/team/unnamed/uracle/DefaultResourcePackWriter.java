@@ -61,14 +61,14 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * A {@link ResourcePack.Builder} implementation
+ * A {@link ResourcePackWriter} implementation
  * that outputs the information to a delegated
  * {@link TreeOutputStream}.
  *
  * @since 1.0.0
  */
-public class SerializingResourcePackBuilder
-        implements ResourcePack.Builder {
+public class DefaultResourcePackWriter
+        implements ResourcePackWriter {
 
     private static final String ASSETS = "assets/";
     private static final String JSON_EXT = ".json";
@@ -77,7 +77,7 @@ public class SerializingResourcePackBuilder
 
     private final TreeOutputStream output;
 
-    public SerializingResourcePackBuilder(TreeOutputStream output) {
+    public DefaultResourcePackWriter(TreeOutputStream output) {
         this.output = output;
     }
 
@@ -127,7 +127,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder font(Key location, Font font) {
+    public ResourcePackWriter font(Key location, Font font) {
         try (AssetWriter writer = output.useEntry(location.toString())) {
             writer.startObject();
             if (font instanceof BitMapFont) {
@@ -143,7 +143,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder language(Key location, Language language) {
+    public ResourcePackWriter language(Key location, Language language) {
         // create the JSON file path (assets/<namespace>/lang/file.json)
         String path = ASSETS + location.namespace() + "/lang/" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
@@ -286,7 +286,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder model(Key location, Model model) {
+    public ResourcePackWriter model(Key location, Model model) {
         String path = ASSETS + location.namespace() + "/models" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
             if (model instanceof ItemModel) {
@@ -329,7 +329,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder blockState(Key location, BlockState state) {
+    public ResourcePackWriter blockState(Key location, BlockState state) {
         String path = ASSETS + location.namespace() + "/blockstates" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
             writer.startObject();
@@ -388,7 +388,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder sounds(
+    public ResourcePackWriter sounds(
             @Subst(Key.MINECRAFT_NAMESPACE) String namespace,
             SoundRegistry registry
     ) {
@@ -457,7 +457,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder texture(Key location, Texture texture) {
+    public ResourcePackWriter texture(Key location, Texture texture) {
 
         String path = ASSETS + location.namespace() + "/textures/" + location.value() + PNG_EXT;
 
@@ -539,7 +539,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder meta(PackMeta meta) {
+    public ResourcePackWriter meta(PackMeta meta) {
         // write pack.mcmeta file
         try (AssetWriter writer = output.useEntry("pack.mcmeta")) {
             // {
@@ -572,7 +572,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder endPoem(String endPoem) {
+    public ResourcePackWriter endPoem(String endPoem) {
         return string(
                 ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/end.txt",
                 endPoem
@@ -580,7 +580,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder splashes(String splashes) {
+    public ResourcePackWriter splashes(String splashes) {
         return string(
                 ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/splashes.txt",
                 splashes
@@ -588,7 +588,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder file(String path, Writable data) {
+    public ResourcePackWriter file(String path, Writable data) {
         try (AssetWriter writer = output.useEntry(path)) {
             data.write(writer);
         } catch (IOException e) {
@@ -598,7 +598,7 @@ public class SerializingResourcePackBuilder
     }
 
     @Override
-    public ResourcePack.Builder string(String path, String data) {
+    public ResourcePackWriter string(String path, String data) {
         byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
         try (AssetWriter writer = output.useEntry(path)) {
             writer.write(bytes);
@@ -609,13 +609,6 @@ public class SerializingResourcePackBuilder
     @Override
     public boolean exists(String path) {
         return output.has(path);
-    }
-
-    @Override
-    public ResourcePack build() {
-        // a builder that does not support building,
-        // epic.
-        throw new UnsupportedOperationException();
     }
 
 }

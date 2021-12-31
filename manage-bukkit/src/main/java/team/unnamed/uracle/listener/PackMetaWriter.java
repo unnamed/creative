@@ -20,7 +20,7 @@ public class PackMetaWriter implements Listener {
         PackInfo info = plugin.getInfo();
 
         if (info != null) {
-            event.builder()
+            event.writer()
                 .meta(PackMeta.of(info));
         }
     }

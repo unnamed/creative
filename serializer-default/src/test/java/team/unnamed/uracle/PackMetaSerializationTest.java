@@ -39,7 +39,7 @@ public class PackMetaSerializationTest {
     @DisplayName("Test that PackInfo is correctly serialized")
     public void test_serialize_info() {
         MockTreeOutputStream stream = new MockTreeOutputStream();
-        ResourcePackBuilder builder = new SerializingResourcePackBuilder(stream);
+        ResourcePackWriter builder = new DefaultResourcePackWriter(stream);
 
         PackInfo info = PackInfo.of(7, "Hello world");
         builder.meta(PackMeta.of(info));
@@ -60,7 +60,7 @@ public class PackMetaSerializationTest {
     @DisplayName("Test that PackInfo and LanguageEntry's are correctly serialized")
     public void test_serialize_meta() {
         MockTreeOutputStream stream = new MockTreeOutputStream();
-        ResourcePackBuilder builder = new SerializingResourcePackBuilder(stream);
+        ResourcePackWriter builder = new DefaultResourcePackWriter(stream);
 
         PackInfo info = PackInfo.of(7, "Hello world");
         Map<Key, LanguageEntry> languages = new HashMap<Key, LanguageEntry>() {{
