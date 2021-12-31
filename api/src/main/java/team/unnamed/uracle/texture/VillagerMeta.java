@@ -43,7 +43,7 @@ public class VillagerMeta implements Examinable {
 
     @Nullable private final String hat;
 
-    protected VillagerMeta(@Nullable String hat) {
+    private VillagerMeta(@Nullable String hat) {
         this.hat = hat;
     }
 
@@ -78,6 +78,18 @@ public class VillagerMeta implements Examinable {
     @Override
     public int hashCode() {
         return Objects.hash(hat);
+    }
+
+    /**
+     * Creates a new {@link VillagerMeta} instance
+     * from the given values
+     *
+     * @param hat Hat mode
+     * @return A new instance of {@link VillagerMeta}
+     * @since 1.0.0
+     */
+    public static VillagerMeta of(@Nullable String hat) {
+        return new VillagerMeta(hat);
     }
 
 }
