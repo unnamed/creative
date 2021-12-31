@@ -12,7 +12,6 @@ repositories {
 
 dependencies {
     api(project(":api"))
-    api(project(":serializer-default"))
     api(project(":manage-api"))
 
     implementation("org.jetbrains:annotations:21.0.0")

@@ -3,7 +3,6 @@ package team.unnamed.uracle.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import team.unnamed.uracle.ResourcePackWriter;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.export.Streams;
 

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle;
+package team.unnamed.uracle.serialize;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

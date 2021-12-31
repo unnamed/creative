@@ -28,12 +28,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.uracle.mock.MockTreeOutputStream;
+import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 import team.unnamed.uracle.sound.Sound;
 import team.unnamed.uracle.sound.SoundEvent;
 import team.unnamed.uracle.sound.SoundRegistry;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class SoundSerializationTest {
@@ -42,7 +42,7 @@ public class SoundSerializationTest {
     @DisplayName("Test if SoundRegistry serialization works")
     public void test() {
         MockTreeOutputStream stream = new MockTreeOutputStream();
-        ResourcePackWriter builder = new DefaultResourcePackWriter(stream);
+        ResourcePackWriter builder = new DefaultResourcePackSerializer(stream);
 
         SoundRegistry registry = SoundRegistry.of(new HashMap<String, SoundEvent>() {{
             put("entity.enderman.stare", SoundEvent.builder()

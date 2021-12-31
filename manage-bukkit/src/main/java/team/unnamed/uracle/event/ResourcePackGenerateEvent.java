@@ -3,7 +3,6 @@ package team.unnamed.uracle.event;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import team.unnamed.uracle.ResourcePackWriter;
 
 public class ResourcePackGenerateEvent extends Event {
 

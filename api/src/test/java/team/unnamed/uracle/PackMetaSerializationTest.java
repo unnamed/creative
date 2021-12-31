@@ -29,6 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.uracle.lang.LanguageEntry;
 import team.unnamed.uracle.mock.MockTreeOutputStream;
+import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class PackMetaSerializationTest {
     @DisplayName("Test that PackInfo is correctly serialized")
     public void test_serialize_info() {
         MockTreeOutputStream stream = new MockTreeOutputStream();
-        ResourcePackWriter builder = new DefaultResourcePackWriter(stream);
+        ResourcePackWriter builder = new DefaultResourcePackSerializer(stream);
 
         PackInfo info = PackInfo.of(7, "Hello world");
         builder.meta(PackMeta.of(info));
@@ -60,7 +61,7 @@ public class PackMetaSerializationTest {
     @DisplayName("Test that PackInfo and LanguageEntry's are correctly serialized")
     public void test_serialize_meta() {
         MockTreeOutputStream stream = new MockTreeOutputStream();
-        ResourcePackWriter builder = new DefaultResourcePackWriter(stream);
+        ResourcePackWriter builder = new DefaultResourcePackSerializer(stream);
 
         PackInfo info = PackInfo.of(7, "Hello world");
         Map<Key, LanguageEntry> languages = new HashMap<Key, LanguageEntry>() {{

@@ -1,7 +1,7 @@
 /*
  * This file is part of uracle, licensed under the MIT license
  *
- * Copyright (c) 2021-2022 Unnamed Team
+ * Copyright (c) 2021 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.export;
+package team.unnamed.uracle.serialize;
 
-import team.unnamed.uracle.serialize.TreeOutputStream;
+import team.unnamed.uracle.ResourcePack;
 
-public interface ResourcePackWriter {
+/**
+ * Responsible for serializing {@link ResourcePack}
+ * instances and writing them into a specific {@code T}
+ * type
+ *
+ * @param <T> The output type
+ * @since 1.0.0
+ */
+@FunctionalInterface
+public interface ResourcePackSerializer<T> {
 
-    void write(TreeOutputStream output);
+    /**
+     * Serializes the given {@link ResourcePack} instance
+     * into the specified {@code T} output
+     *
+     * @param resourcePack The serialized resource pack
+     * @param output The target output
+     */
+    void serialize(ResourcePack resourcePack, T output);
 
 }

@@ -21,10 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle;
+package team.unnamed.uracle.serialize;
 
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
+import team.unnamed.uracle.CubeFace;
+import team.unnamed.uracle.PackMeta;
+import team.unnamed.uracle.ResourcePack;
+import team.unnamed.uracle.Writable;
 import team.unnamed.uracle.font.BitMapFont;
 import team.unnamed.uracle.font.Font;
 import team.unnamed.uracle.font.LegacyUnicodeFont;
@@ -67,18 +71,20 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public class DefaultResourcePackWriter
-        implements ResourcePackWriter {
+public class DefaultResourcePackSerializer
+        implements ResourcePackSerializer<TreeOutputStream> {
 
     private static final String ASSETS = "assets/";
     private static final String JSON_EXT = ".json";
     private static final String PNG_EXT = ".png";
     private static final String MCMETA_EXT = ".mcmeta";
 
-    private final TreeOutputStream output;
+    @Override
+    public void serialize(
+            ResourcePack resourcePack,
+            TreeOutputStream output
+    ) {
 
-    public DefaultResourcePackWriter(TreeOutputStream output) {
-        this.output = output;
     }
 
     private void bitMapFont(BitMapFont font, AssetWriter writer) {

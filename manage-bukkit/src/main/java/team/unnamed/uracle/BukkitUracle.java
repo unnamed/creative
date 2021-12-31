@@ -16,6 +16,7 @@ import team.unnamed.uracle.pack.ResourcePackApplication;
 import team.unnamed.uracle.pack.ResourcePackLocation;
 import team.unnamed.uracle.player.PlayerManager;
 import team.unnamed.uracle.resourcepack.ResourcePackSender;
+import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -81,7 +82,7 @@ public class BukkitUracle implements Uracle {
             try {
                 plugin.getLogger().info("Exporting resource-pack...");
                 ResourcePackLocation location = exporter.export(output ->
-                        ResourcePackGenerateEvent.call(new DefaultResourcePackWriter(output)));
+                        ResourcePackGenerateEvent.call(new DefaultResourcePackSerializer(output)));
                 if (location != null) {
                     plugin.getLogger().info("Uploaded resource-pack to " + location.url());
 
