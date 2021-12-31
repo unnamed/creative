@@ -30,12 +30,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
 
 /**
  * Represents a sound event, a compound of {@link Sound}
@@ -47,22 +48,17 @@ public class SoundEvent implements Examinable {
 
     private final boolean replace;
     @Nullable private final String subtitle;
-    @Nullable @Unmodifiable
-    private final List<Sound> sounds;
+    @Unmodifiable private final List<Sound> sounds;
 
     private SoundEvent(
             boolean replace,
             @Nullable String subtitle,
-            @Nullable List<Sound> sounds
+            List<Sound> sounds
     ) {
+        requireNonNull(sounds, "sounds");
         this.replace = replace;
         this.subtitle = subtitle;
-
-        if (sounds == null) {
-            this.sounds = null;
-        } else {
-            this.sounds = unmodifiableList(new ArrayList<>(sounds));
-        }
+        this.sounds = immutableListOf(sounds);
     }
 
     /**
@@ -94,7 +90,7 @@ public class SoundEvent implements Examinable {
      *
      * @return An unmodifiable list of the sound that this event uses
      */
-    public @Nullable @Unmodifiable List<Sound> sounds() {
+    public @Unmodifiable List<Sound> sounds() {
         return sounds;
     }
 
@@ -168,7 +164,7 @@ public class SoundEvent implements Examinable {
 
         private boolean replace;
         private String subtitle;
-        private List<Sound> sounds;
+        private List<Sound> sounds = Collections.emptyList();
 
         private Builder() {
         }
@@ -183,8 +179,8 @@ public class SoundEvent implements Examinable {
             return this;
         }
 
-        public Builder sounds(@Nullable List<Sound> sounds) {
-            this.sounds = sounds;
+        public Builder sounds(List<Sound> sounds) {
+            this.sounds = requireNonNull(sounds, "sounds");
             return this;
         }
 

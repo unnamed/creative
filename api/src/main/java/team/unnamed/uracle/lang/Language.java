@@ -30,13 +30,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.PackMeta;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a set of translations for a specific
@@ -52,9 +51,7 @@ public class Language implements Examinable {
 
     private Language(Map<String, String> translations) {
         requireNonNull(translations, "translations");
-        // create a copy and wrap into a unmodifiable map to
-        // avoid modifications
-        this.translations = unmodifiableMap(new HashMap<>(translations));
+        this.translations = immutableMapOf(translations);
     }
 
     /**

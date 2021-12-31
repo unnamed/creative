@@ -38,26 +38,6 @@ import java.util.List;
 public interface Font extends Examinable {
 
     /**
-     * Returns the type of this font, the font
-     * contents depend on it
-     *
-     * @return The font type
-     */
-    Type type();
-
-    /**
-     * Enum of all possible font provider
-     * types
-     *
-     * @since 1.0.0
-     */
-    enum Type {
-        BITMAP,
-        LEGACY_UNICODE,
-        TTF
-    }
-
-    /**
      * Creates a new bit-map font from the provided values
      *
      * @param file The bit-map texture location in PNG format
@@ -98,9 +78,21 @@ public interface Font extends Examinable {
      * @param template Location of the file that specifies
      *                 the character textures
      * @return A new {@link LegacyUnicodeFont} font
+     * @since 1.0.0
      */
     static LegacyUnicodeFont legacyUnicode(Key sizes, Key template) {
         return new LegacyUnicodeFont(sizes, template);
+    }
+
+    /**
+     * Static factory method for {@link TrueTypeFont}
+     * builder implementation
+     *
+     * @return A new builder for {@link TrueTypeFont} instances
+     * @since 1.0.0
+     */
+    static TrueTypeFont.Builder trueType() {
+        return new TrueTypeFont.Builder();
     }
 
 }

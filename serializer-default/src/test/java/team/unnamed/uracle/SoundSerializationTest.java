@@ -41,7 +41,7 @@ public class SoundSerializationTest {
     @DisplayName("Test if SoundRegistry serialization works")
     public void test() {
         MockTreeOutputStream stream = new MockTreeOutputStream();
-        ResourcePackBuilder builder = new DefaultResourcePackBuilder(stream);
+        ResourcePackBuilder builder = new SerializingResourcePackBuilder(stream);
 
         SoundRegistry registry = SoundRegistry.of(new HashMap<String, SoundEvent>() {{
             put("entity.enderman.stare", SoundEvent.builder()

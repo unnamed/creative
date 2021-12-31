@@ -51,9 +51,10 @@ public class TextureMeta implements Examinable {
             boolean clamp,
             int[] mipmaps
     ) {
+        requireNonNull(mipmaps, "mipmaps");
         this.blur = blur;
         this.clamp = clamp;
-        this.mipmaps = requireNonNull(mipmaps, "mipmaps");
+        this.mipmaps = mipmaps.clone();
     }
 
     /**

@@ -32,13 +32,12 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.BlockModel;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a {@link BlockModel} textures
@@ -58,7 +57,7 @@ public class BlockTexture implements Examinable {
     ) {
         requireNonNull(variables, "variables");
         this.particle = particle;
-        this.variables = unmodifiableMap(new HashMap<>(variables));
+        this.variables = immutableMapOf(variables);
     }
 
     /**
@@ -122,10 +121,9 @@ public class BlockTexture implements Examinable {
      * @return A new {@link BlockTexture} instance
      */
     public static BlockTexture of(
-            Key particle,
+            @Nullable Key particle,
             Map<String, Key> variables
     ) {
-        requireNonNull(particle, "particle");
         return new BlockTexture(particle, variables);
     }
 

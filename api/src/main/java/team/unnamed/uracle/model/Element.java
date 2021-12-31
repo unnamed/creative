@@ -31,13 +31,12 @@ import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector3Float;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a {@link Model} cubic element,
@@ -61,12 +60,15 @@ public class Element implements Examinable {
             boolean shade,
             Map<CubeFace, ElementFace> faces
     ) {
+        requireNonNull(from, "from");
+        requireNonNull(to, "to");
+        requireNonNull(rotation, "rotation");
         requireNonNull(faces, "faces");
-        this.from = requireNonNull(from, "from");
-        this.to = requireNonNull(to, "to");
-        this.rotation = requireNonNull(rotation, "rotation");
+        this.from = from;
+        this.to = to;
+        this.rotation = rotation;
         this.shade = shade;
-        this.faces = unmodifiableMap(new HashMap<>(faces));
+        this.faces = immutableMapOf(faces);
     }
 
     /**

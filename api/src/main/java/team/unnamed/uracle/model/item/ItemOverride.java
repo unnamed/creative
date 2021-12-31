@@ -30,13 +30,12 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
 
 /**
  * Represents an item model override, which determines cases in
@@ -59,8 +58,9 @@ public class ItemOverride implements Examinable {
             Key model
     ) {
         requireNonNull(predicate, "predicate");
-        this.predicate = unmodifiableList(new ArrayList<>(predicate));
-        this.model = requireNonNull(model, "model");
+        requireNonNull(model, "model");
+        this.predicate = immutableListOf(predicate);
+        this.model = model;
     }
 
     /**

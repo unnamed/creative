@@ -32,13 +32,12 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.lang.LanguageEntry;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Class representing the "pack.mcmeta" file of
@@ -55,11 +54,10 @@ public class PackMeta implements Examinable {
             PackInfo pack,
             Map<Key, LanguageEntry> languages
     ) {
+        requireNonNull(pack, "pack");
         requireNonNull(languages, "languages");
-        this.pack = requireNonNull(pack, "pack");
-        // create a copy and wrap into an unmodifiable
-        // map to avoid mutation
-        this.languages = unmodifiableMap(new HashMap<>(languages));
+        this.pack = pack;
+        this.languages = immutableMapOf(languages);
     }
 
     /**

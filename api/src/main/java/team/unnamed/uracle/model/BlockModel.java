@@ -30,17 +30,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents the object responsible for specifying
@@ -65,13 +63,15 @@ public class BlockModel implements Model {
             BlockTexture textures,
             List<Element> elements
     ) {
+        requireNonNull(parent, "parent");
         requireNonNull(display, "display");
+        requireNonNull(textures, "textures");
         requireNonNull(elements, "elements");
-        this.parent = requireNonNull(parent, "parent");
+        this.parent = parent;
         this.ambientOcclusion = ambientOcclusion;
-        this.display = unmodifiableMap(new HashMap<>(display));
-        this.textures = requireNonNull(textures, "textures");
-        this.elements = unmodifiableList(new ArrayList<>(elements));
+        this.display = immutableMapOf(display);
+        this.textures = textures;
+        this.elements = immutableListOf(elements);
     }
 
     /**

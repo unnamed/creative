@@ -56,15 +56,15 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.item.ItemOverride;
 import team.unnamed.uracle.model.item.ItemTexture;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents the object responsible for specifying
@@ -103,14 +103,17 @@ public class ItemModel implements Model  {
             List<Element> elements,
             List<ItemOverride> overrides
     ) {
+        requireNonNull(parent, "parent");
+        requireNonNull(display, "display");
+        requireNonNull(textures, "textures");
         requireNonNull(elements, "elements");
         requireNonNull(overrides, "overrides");
-        this.parent = requireNonNull(parent, "parent");
-        this.display = requireNonNull(display, "display");
-        this.textures = requireNonNull(textures, "textures");
+        this.parent = parent;
+        this.display = immutableMapOf(display);
+        this.textures = textures;
         this.guiLight = guiLight;
-        this.elements = unmodifiableList(new ArrayList<>(elements));
-        this.overrides = unmodifiableList(new ArrayList<>(overrides));
+        this.elements = immutableListOf(elements);
+        this.overrides = immutableListOf(overrides);
     }
 
     /**

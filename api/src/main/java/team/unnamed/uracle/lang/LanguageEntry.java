@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  * the type .json in the folder assets/&lt;namespace&gt;/lang.
  * Each file either replaces information from a file of the
  * same name in the default or a lower pack, or it creates a
- * new language as defined by pack.mcmeta. </p>
+ * new language as defined by pack.mcmeta</p>
  *
  * @since 1.0.0
  */
@@ -136,10 +136,7 @@ public class LanguageEntry implements Examinable {
             String region,
             boolean bidirectional
     ) {
-        return new LanguageEntry(
-                name, region,
-                bidirectional
-        );
+        return new LanguageEntry(name, region, bidirectional);
     }
 
     /**
@@ -189,10 +186,7 @@ public class LanguageEntry implements Examinable {
          * @return The recently created language
          */
         public LanguageEntry build() {
-            return new LanguageEntry(
-                    name, region,
-                    bidirectional
-            );
+            return new LanguageEntry(name, region, bidirectional);
         }
 
     }

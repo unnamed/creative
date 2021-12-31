@@ -3,7 +3,7 @@ package team.unnamed.uracle.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import team.unnamed.uracle.ResourcePackBuilder;
+import team.unnamed.uracle.ResourcePack;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 import team.unnamed.uracle.export.Streams;
 
@@ -24,7 +24,7 @@ public class PresetsWriter implements Listener {
         this.optionalsFolder = optionalsFolder;
     }
 
-    private void writeRecursively(ResourcePackBuilder builder, File folder, String path) {
+    private void writeRecursively(ResourcePack.Builder builder, File folder, String path) {
         File[] children = folder.listFiles();
         if (children == null) {
             // should never happen since

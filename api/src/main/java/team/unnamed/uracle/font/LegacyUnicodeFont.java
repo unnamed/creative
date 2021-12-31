@@ -49,11 +49,6 @@ public class LegacyUnicodeFont implements Font {
         this.template = requireNonNull(template, "template");
     }
 
-    @Override
-    public Type type() {
-        return Type.LEGACY_UNICODE;
-    }
-
     /**
      * Returns the resource location inside assets/&lt;namespace&gt;/font
      * describing a binary file describing the horizontal start and

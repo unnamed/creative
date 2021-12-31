@@ -31,17 +31,15 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.blockstate.StateCase;
 import team.unnamed.uracle.model.blockstate.StateVariant;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * There are several variants of some blocks (like doors, which can be
@@ -58,7 +56,6 @@ import static java.util.Objects.requireNonNull;
 public class BlockState implements Examinable {
 
     @Unmodifiable private final Map<String, List<StateVariant>> variants;
-
     @Unmodifiable private final List<StateCase> multipart;
 
     private BlockState(
@@ -67,8 +64,8 @@ public class BlockState implements Examinable {
     ) {
         requireNonNull(variants, "variants");
         requireNonNull(multipart, "multipart");
-        this.variants = unmodifiableMap(new HashMap<>(variants));
-        this.multipart = unmodifiableList(new ArrayList<>(multipart));
+        this.variants = immutableMapOf(variants);
+        this.multipart = immutableListOf(multipart);
     }
 
     public @Unmodifiable Map<String, List<StateVariant>> variants() {

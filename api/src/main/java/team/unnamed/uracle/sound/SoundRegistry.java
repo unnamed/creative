@@ -29,13 +29,12 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a registry of {@link SoundEvent}, or
@@ -47,7 +46,7 @@ public class SoundRegistry implements Examinable {
 
     private SoundRegistry(Map<String, SoundEvent> sounds) {
         requireNonNull(sounds, "sounds");
-        this.sounds = unmodifiableMap(new HashMap<>(sounds));
+        this.sounds = immutableMapOf(sounds);
     }
 
     public @Unmodifiable Map<String, SoundEvent> sounds() {

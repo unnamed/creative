@@ -61,13 +61,14 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The default {@link ResourcePackBuilder} implementation
- * that outputs the information to a delegated {@link TreeOutputStream}.
+ * A {@link ResourcePack.Builder} implementation
+ * that outputs the information to a delegated
+ * {@link TreeOutputStream}.
  *
  * @since 1.0.0
  */
-public class DefaultResourcePackBuilder
-        implements ResourcePackBuilder {
+public class SerializingResourcePackBuilder
+        implements ResourcePack.Builder {
 
     private static final String ASSETS = "assets/";
     private static final String JSON_EXT = ".json";
@@ -76,7 +77,7 @@ public class DefaultResourcePackBuilder
 
     private final TreeOutputStream output;
 
-    public DefaultResourcePackBuilder(TreeOutputStream output) {
+    public SerializingResourcePackBuilder(TreeOutputStream output) {
         this.output = output;
     }
 
@@ -126,19 +127,15 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder font(Key location, Font font) {
+    public ResourcePack.Builder font(Key location, Font font) {
         try (AssetWriter writer = output.useEntry(location.toString())) {
             writer.startObject();
-            switch (font.type()) {
-                case BITMAP:
-                    bitMapFont((BitMapFont) font, writer);
-                    break;
-                case LEGACY_UNICODE:
-                    legacyUnicodeFont((LegacyUnicodeFont) font, writer);
-                    break;
-                case TTF:
-                    ttfFont((TrueTypeFont) font, writer);
-                    break;
+            if (font instanceof BitMapFont) {
+                bitMapFont((BitMapFont) font, writer);
+            } else if (font instanceof LegacyUnicodeFont) {
+                legacyUnicodeFont((LegacyUnicodeFont) font, writer);
+            } else {
+                ttfFont((TrueTypeFont) font, writer);
             }
             writer.endObject();
         }
@@ -146,7 +143,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder language(Key location, Language language) {
+    public ResourcePack.Builder language(Key location, Language language) {
         // create the JSON file path (assets/<namespace>/lang/file.json)
         String path = ASSETS + location.namespace() + "/lang/" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
@@ -289,7 +286,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder model(Key location, Model model) {
+    public ResourcePack.Builder model(Key location, Model model) {
         String path = ASSETS + location.namespace() + "/models" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
             if (model instanceof ItemModel) {
@@ -332,7 +329,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder blockState(Key location, BlockState state) {
+    public ResourcePack.Builder blockState(Key location, BlockState state) {
         String path = ASSETS + location.namespace() + "/blockstates" + location.value() + JSON_EXT;
         try (AssetWriter writer = output.useEntry(path)) {
             writer.startObject();
@@ -391,7 +388,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder sounds(
+    public ResourcePack.Builder sounds(
             @Subst(Key.MINECRAFT_NAMESPACE) String namespace,
             SoundRegistry registry
     ) {
@@ -460,7 +457,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder texture(Key location, Texture texture) {
+    public ResourcePack.Builder texture(Key location, Texture texture) {
 
         String path = ASSETS + location.namespace() + "/textures/" + location.value() + PNG_EXT;
 
@@ -542,7 +539,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder meta(PackMeta meta) {
+    public ResourcePack.Builder meta(PackMeta meta) {
         // write pack.mcmeta file
         try (AssetWriter writer = output.useEntry("pack.mcmeta")) {
             // {
@@ -575,7 +572,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder endPoem(String endPoem) {
+    public ResourcePack.Builder endPoem(String endPoem) {
         return string(
                 ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/end.txt",
                 endPoem
@@ -583,7 +580,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder splashes(String splashes) {
+    public ResourcePack.Builder splashes(String splashes) {
         return string(
                 ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/splashes.txt",
                 splashes
@@ -591,7 +588,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder file(String path, Writable data) {
+    public ResourcePack.Builder file(String path, Writable data) {
         try (AssetWriter writer = output.useEntry(path)) {
             data.write(writer);
         } catch (IOException e) {
@@ -601,7 +598,7 @@ public class DefaultResourcePackBuilder
     }
 
     @Override
-    public ResourcePackBuilder string(String path, String data) {
+    public ResourcePack.Builder string(String path, String data) {
         byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
         try (AssetWriter writer = output.useEntry(path)) {
             writer.write(bytes);
@@ -613,4 +610,12 @@ public class DefaultResourcePackBuilder
     public boolean exists(String path) {
         return output.has(path);
     }
+
+    @Override
+    public ResourcePack build() {
+        // a builder that does not support building,
+        // epic.
+        throw new UnsupportedOperationException();
+    }
+
 }

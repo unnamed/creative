@@ -30,13 +30,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.Vector2Float;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
 
 /**
  * A {@link Font} implementation that uses fonts
@@ -59,17 +59,14 @@ public class TrueTypeFont implements Font {
             float oversample,
             List<String> skip
     ) {
+        requireNonNull(file, "file");
+        requireNonNull(shift, "shift");
         requireNonNull(skip, "skip");
-        this.file = requireNonNull(file, "file");
-        this.shift = requireNonNull(shift, "shift");
+        this.file = file;
+        this.shift = shift;
         this.size = size;
         this.oversample = oversample;
-        this.skip = unmodifiableList(new ArrayList<>(skip));
-    }
-
-    @Override
-    public Type type() {
-        return Type.TTF;
+        this.skip = immutableListOf(skip);
     }
 
     /**
@@ -151,6 +148,61 @@ public class TrueTypeFont implements Font {
     @Override
     public int hashCode() {
         return Objects.hash(file, shift, size, oversample, skip);
+    }
+
+    /**
+     * Mutable and fluent-style builder for {@link TrueTypeFont}
+     * instances
+     *
+     * @since 1.0.0
+     */
+    public static class Builder {
+
+        private Key file;
+        private Vector2Float shift = Vector2Float.ZERO;
+        private float size;
+        private float oversample;
+        private List<String> skip = Collections.emptyList();
+
+        protected Builder() {
+        }
+
+        public Builder file(Key file) {
+            this.file = requireNonNull(file, "file");
+            return this;
+        }
+
+        public Builder shift(Vector2Float shift) {
+            this.shift = requireNonNull(shift, "shift");
+            return this;
+        }
+
+        public Builder size(float size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder oversample(float oversample) {
+            this.oversample = oversample;
+            return this;
+        }
+
+        public Builder skip(List<String> skip) {
+            this.skip = requireNonNull(skip, "skip");
+            return this;
+        }
+
+        /**
+         * Finishes building the {@link TrueTypeFont} instance,
+         * this method may fail if values were not correctly
+         * provided
+         *
+         * @return The recently created font
+         */
+        public TrueTypeFont build() {
+            return new TrueTypeFont(file, shift, size, oversample, skip);
+        }
+
     }
 
 }

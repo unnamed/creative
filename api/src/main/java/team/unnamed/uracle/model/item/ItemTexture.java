@@ -32,17 +32,15 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.ItemModel;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Object holding an {@link ItemModel} textures,
@@ -63,9 +61,10 @@ public class ItemTexture implements Examinable {
             Map<String, Key> variables
     ) {
         requireNonNull(layers, "layers");
-        this.layers = unmodifiableList(new ArrayList<>(layers));
+        requireNonNull(variables, "variables");
+        this.layers = immutableListOf(layers);
         this.particle = particle;
-        this.variables = unmodifiableMap(new HashMap<>(variables));
+        this.variables = immutableMapOf(variables);
     }
 
     /**

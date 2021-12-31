@@ -29,13 +29,13 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
+import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Can be used instead of direct {@link StateVariant} to
@@ -55,8 +55,10 @@ public class StateCase implements Examinable {
             When when,
             List<StateVariant> apply
     ) {
+        requireNonNull(when, "when");
+        requireNonNull(apply, "apply");
         this.when = when;
-        this.apply = apply;
+        this.apply = immutableListOf(apply);
     }
 
     public When when() {
@@ -88,7 +90,7 @@ public class StateCase implements Examinable {
 
         private Filter(Map<String, String> state) {
             requireNonNull(state, "state");
-            this.state = unmodifiableMap(new HashMap<>(state));
+            this.state = immutableMapOf(state);
         }
 
         /**
@@ -130,7 +132,8 @@ public class StateCase implements Examinable {
                 Map<String, String> state
         ) {
             super(state);
-            this.or = or;
+            requireNonNull(or, "or");
+            this.or = immutableListOf(or);
         }
 
         public @Unmodifiable List<Filter> or() {

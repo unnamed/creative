@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
 
 /**
  * Block and item textures support animation by placing each
@@ -63,8 +64,7 @@ public class AnimationMeta implements Examinable {
         this.width = width;
         this.height = height;
         this.frameTime = frameTime;
-        // create a copy to avoid modifications
-        this.frames = new ArrayList<>(frames);
+        this.frames = immutableListOf(frames);
     }
 
     /**
@@ -291,7 +291,7 @@ public class AnimationMeta implements Examinable {
         private int width;
         private int height;
         private int frameTime;
-        private List<Frame> frames;
+        private List<Frame> frames = Collections.emptyList();
 
         private Builder() {
         }
@@ -317,25 +317,8 @@ public class AnimationMeta implements Examinable {
         }
 
         public Builder frames(List<Frame> frames) {
-            requireNonNull(frames, "frames");
-            // copy the list in case we need to modify
-            // it on frame(int) or frame(int, int)
-            this.frames = new ArrayList<>(frames);
+            this.frames = requireNonNull(frames, "frames");
             return this;
-        }
-
-        public Builder frame(int index, int frameTime) {
-            if (frames == null) {
-                // create frames if null
-                frames = new ArrayList<>();
-            }
-            frames.add(new Frame(index, frameTime));
-            return this;
-        }
-
-        public Builder frame(int index) {
-            // use default frame time
-            return frame(index, this.frameTime);
         }
 
         /**
@@ -346,11 +329,6 @@ public class AnimationMeta implements Examinable {
          * @return The recently created animation meta
          */
         public AnimationMeta build() {
-            // frames can be initially null, in that
-            // case we use an empty list instead
-            if (frames == null) {
-                frames = Collections.emptyList();
-            }
             return new AnimationMeta(
                     interpolate,
                     width,

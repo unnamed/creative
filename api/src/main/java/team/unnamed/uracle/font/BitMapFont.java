@@ -29,14 +29,13 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
 
 /**
  * Represents a bitmap font (font that uses a set of
@@ -63,16 +62,12 @@ public class BitMapFont implements Font {
             int ascent,
             List<String> characters
     ) {
+        requireNonNull(file, "file");
         requireNonNull(characters, "characters");
-        this.file = requireNonNull(file, "file");
+        this.file = file;
         this.height = height;
         this.ascent = ascent;
-        this.characters = unmodifiableList(new ArrayList<>(characters));
-    }
-
-    @Override
-    public Type type() {
-        return Type.BITMAP;
+        this.characters = immutableListOf(characters);
     }
 
     /**
@@ -125,7 +120,6 @@ public class BitMapFont implements Font {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("type", "bitmap"),
                 ExaminableProperty.of("height", height),
                 ExaminableProperty.of("ascent", ascent),
                 ExaminableProperty.of("file", file),
@@ -195,7 +189,7 @@ public class BitMapFont implements Font {
          * this method may fail if values were not correctly
          * provided
          *
-         * @return The recently created language
+         * @return The recently created font
          */
         public BitMapFont build() {
             return new BitMapFont(file, height, ascent, characters);
