@@ -412,7 +412,7 @@ public class DefaultResourcePackWriter
                 if (event.subtitle() != null) {
                     writer.key("subtitle").value(event.subtitle());
                 }
-                if (event.sounds() != null) {
+                if (!event.sounds().isEmpty()) {
                     writer.key("sounds").startArray();
                     for (Sound sound : event.sounds()) {
                         // in order to make some optimizations, we

@@ -32,6 +32,7 @@ import team.unnamed.uracle.sound.Sound;
 import team.unnamed.uracle.sound.SoundEvent;
 import team.unnamed.uracle.sound.SoundRegistry;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -45,12 +46,16 @@ public class SoundSerializationTest {
 
         SoundRegistry registry = SoundRegistry.of(new HashMap<String, SoundEvent>() {{
             put("entity.enderman.stare", SoundEvent.builder()
-                    .sounds(Collections.singletonList(
+                    .sounds(Arrays.asList(
                             Sound.builder()
                                     .nameSound(Key.key("minecraft:idk"))
                                     .stream(true)
                                     .volume(0.5F)
                                     .pitch(2)
+                                    .build(),
+                            Sound.builder()
+                                    .nameEvent("entity.enderman.stare")
+                                    .volume(0.5F)
                                     .build()
                     ))
                     .build());
@@ -77,6 +82,11 @@ public class SoundSerializationTest {
                                         "\"volume\":0.5," +
                                         "\"pitch\":2.0," +
                                         "\"stream\":true" +
+                                    "}," +
+                                    "{" +
+                                        "\"name\":\"entity.enderman.stare\"," +
+                                        "\"volume\":0.5," +
+                                        "\"type\":\"event\"" +
                                     "}" +
                                 "]"+
                             "}" +

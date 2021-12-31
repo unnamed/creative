@@ -48,6 +48,7 @@ public class AssetWriter extends FilterOutputStream {
     }
 
     public AssetWriter startObject() {
+        preValue();
         write('{');
         return this;
     }
@@ -59,6 +60,7 @@ public class AssetWriter extends FilterOutputStream {
     }
 
     public AssetWriter startArray() {
+        preValue();
         write('[');
         return this;
     }
