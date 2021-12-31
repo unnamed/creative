@@ -47,6 +47,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author yusshu (Andre Roldan)
  */
+@Deprecated // todo: replace by FileTree
 public abstract class TreeOutputStream
         extends OutputStream {
 

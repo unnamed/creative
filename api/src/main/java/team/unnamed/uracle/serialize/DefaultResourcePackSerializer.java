@@ -31,6 +31,7 @@ import team.unnamed.uracle.ResourcePack;
 import team.unnamed.uracle.Writable;
 import team.unnamed.uracle.font.BitMapFont;
 import team.unnamed.uracle.font.Font;
+import team.unnamed.uracle.font.FontRegistry;
 import team.unnamed.uracle.font.LegacyUnicodeFont;
 import team.unnamed.uracle.font.TrueTypeFont;
 import team.unnamed.uracle.lang.Language;
@@ -59,20 +60,12 @@ import team.unnamed.uracle.texture.VillagerMeta;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * A {@link ResourcePackWriter} implementation
- * that outputs the information to a delegated
- * {@link TreeOutputStream}.
- *
- * @since 1.0.0
- */
 public class DefaultResourcePackSerializer
-        implements ResourcePackSerializer<TreeOutputStream> {
+        implements ResourcePackSerializer {
 
     private static final String ASSETS = "assets/";
     private static final String JSON_EXT = ".json";
@@ -82,12 +75,68 @@ public class DefaultResourcePackSerializer
     @Override
     public void serialize(
             ResourcePack resourcePack,
-            TreeOutputStream output
+            FileTree tree
     ) {
+        // write metadata
+        meta(tree, resourcePack.meta());
 
+        // write icon
+        Writable icon = resourcePack.icon();
+        if (icon != null) {
+            tree.write("pack.png", icon);
+        }
+
+        // write fonts
+        for (Map.Entry<Key, FontRegistry> entry : resourcePack.fonts().entrySet()) {
+            font(tree, entry.getKey(), entry.getValue());
+        }
+
+        // write languages
+        for (Map.Entry<Key, Language> entry : resourcePack.languages().entrySet()) {
+            language(tree, entry.getKey(), entry.getValue());
+        }
+
+        // write models
+        for (Map.Entry<Key, Model> entry : resourcePack.models().entrySet()) {
+            model(tree, entry.getKey(), entry.getValue());
+        }
     }
 
-    private void bitMapFont(BitMapFont font, AssetWriter writer) {
+    //#region Pack Metadata Serialization Region
+    private static void meta(FileTree tree, PackMeta meta) {
+        // write pack.mcmeta file
+        try (AssetWriter writer = tree.open("pack.mcmeta")) {
+            // {
+            //   "pack": { "format": ?, "description": "?" }
+            writer.startObject()
+                    .key("pack").startObject()
+                    .key("format").value(meta.pack().format())
+                    .key("description").value(meta.pack().description())
+                    .endObject();
+
+            if (!meta.languages().isEmpty()) {
+                // "language": {
+                writer.key("language").startObject();
+
+                for (Map.Entry<Key, LanguageEntry> entry : meta.languages().entrySet()) {
+                    LanguageEntry language = entry.getValue();
+                    // "?": { "name": ?, "region": ?, "bidirectional": ? }
+                    writer.key(entry.getKey().asString()).startObject()
+                            .key("name").value(language.name())
+                            .key("region").value(language.region())
+                            .key("bidirectional").value(language.bidirectional())
+                            .endObject();
+                }
+
+                writer.endObject();
+            }
+            writer.endObject();
+        }
+    }
+    //#endregion
+
+    //#region Font Serialization Region
+    private static void bitMapFont(AssetWriter writer, BitMapFont font) {
         writer
             .key("type").value("bitmap")
             .key("file").value(font.file());
@@ -108,13 +157,13 @@ public class DefaultResourcePackSerializer
         writer.endArray();
     }
 
-    private void legacyUnicodeFont(LegacyUnicodeFont font, AssetWriter writer) {
+    private static void legacyUnicodeFont(AssetWriter writer, LegacyUnicodeFont font) {
         writer
             .key("sizes").value(font.sizes())
             .key("template").value(font.template());
     }
 
-    private void ttfFont(TrueTypeFont font, AssetWriter writer) {
+    private static void ttfFont(AssetWriter writer, TrueTypeFont font) {
         writer
             .key("file").value(font.file())
             .key("shift").startArray()
@@ -128,41 +177,55 @@ public class DefaultResourcePackSerializer
         for (String toSkip : font.skip()) {
             writer.value(toSkip);
         }
-
         writer.endArray();
     }
 
-    @Override
-    public ResourcePackWriter font(Key location, Font font) {
-        try (AssetWriter writer = output.useEntry(location.toString())) {
-            writer.startObject();
-            if (font instanceof BitMapFont) {
-                bitMapFont((BitMapFont) font, writer);
-            } else if (font instanceof LegacyUnicodeFont) {
-                legacyUnicodeFont((LegacyUnicodeFont) font, writer);
-            } else {
-                ttfFont((TrueTypeFont) font, writer);
-            }
-            writer.endObject();
-        }
-        return this;
-    }
+    private static void font(FileTree tree, Key location, FontRegistry font) {
 
-    @Override
-    public ResourcePackWriter language(Key location, Language language) {
+        // e.g.: assets/minecraft/font/default
+        String path = ASSETS + location.namespace() + "/font/" + location.value();
+
+        try (AssetWriter writer = tree.open(path)) {
+            writer.startObject()
+                .key("providers")
+                .startArray();
+
+            // write providers
+            for (Font provider : font.providers()) {
+                writer.startObject();
+                if (provider instanceof BitMapFont) {
+                    bitMapFont(writer, (BitMapFont) provider);
+                } else if (provider instanceof LegacyUnicodeFont) {
+                    legacyUnicodeFont(writer, (LegacyUnicodeFont) provider);
+                } else {
+                    ttfFont(writer, (TrueTypeFont) provider);
+                }
+                writer.endObject();
+            }
+
+            writer
+                .endArray()
+                .endObject();
+        }
+    }
+    //#endregion
+
+    //#region Language Serialization Region
+    private static void language(FileTree tree, Key location, Language language) {
         // create the JSON file path (assets/<namespace>/lang/file.json)
         String path = ASSETS + location.namespace() + "/lang/" + location.value() + JSON_EXT;
-        try (AssetWriter writer = output.useEntry(path)) {
+        try (AssetWriter writer = tree.open(path)) {
             writer.startObject();
             for (Map.Entry<String, String> entry : language.translations().entrySet()) {
                 writer.key(entry.getKey()).value(entry.getValue());
             }
             writer.endObject();
         }
-        return this;
     }
+    //#endregion
 
-    private void writeModelProperties(Model model, AssetWriter writer) {
+    //#region Model Serialization Region
+    private static void writeModelProperties(Model model, AssetWriter writer) {
         // parent
         writer.key("parent").value(model.parent());
 
@@ -232,7 +295,7 @@ public class DefaultResourcePackSerializer
         writer.endArray();
     }
 
-    private void writeItemModel(ItemModel model, AssetWriter writer) {
+    private static void writeItemModel(ItemModel model, AssetWriter writer) {
         writer.startObject();
         writeModelProperties(model, writer);
 
@@ -271,7 +334,7 @@ public class DefaultResourcePackSerializer
         writer.endArray().endObject();
     }
 
-    private void writeBlockModel(BlockModel model, AssetWriter writer) {
+    private static void writeBlockModel(BlockModel model, AssetWriter writer) {
         writer.startObject();
         writeModelProperties(model, writer);
         if (!model.ambientOcclusion()) {
@@ -291,10 +354,9 @@ public class DefaultResourcePackSerializer
         writer.endObject().endObject();
     }
 
-    @Override
-    public ResourcePackWriter model(Key location, Model model) {
+    private static void model(FileTree tree, Key location, Model model) {
         String path = ASSETS + location.namespace() + "/models" + location.value() + JSON_EXT;
-        try (AssetWriter writer = output.useEntry(path)) {
+        try (AssetWriter writer = tree.open(path)) {
             if (model instanceof ItemModel) {
                 writeItemModel((ItemModel) model, writer);
             } else if (model instanceof BlockModel) {
@@ -303,10 +365,11 @@ public class DefaultResourcePackSerializer
                 throw new IllegalArgumentException("Invalid model type");
             }
         }
-        return this;
     }
+    //#endregion
 
-    private void writeVariant(StateVariant variant, AssetWriter writer, boolean writeWeight) {
+    //#region Block State Serialization Region
+    private static void writeVariant(StateVariant variant, AssetWriter writer, boolean writeWeight) {
         writer
             .startObject()
             .key("model").value(variant.model())
@@ -319,7 +382,7 @@ public class DefaultResourcePackSerializer
         writer.endObject();
     }
 
-    private void writeVariant(List<StateVariant> variant, AssetWriter writer) {
+    private static void writeVariant(List<StateVariant> variant, AssetWriter writer) {
         if (variant.size() == 1) {
             // single variant, write as an object
             // without the weight
@@ -334,10 +397,9 @@ public class DefaultResourcePackSerializer
         }
     }
 
-    @Override
-    public ResourcePackWriter blockState(Key location, BlockState state) {
-        String path = ASSETS + location.namespace() + "/blockstates" + location.value() + JSON_EXT;
-        try (AssetWriter writer = output.useEntry(path)) {
+    private static void blockState(FileTree tree, Key location, BlockState state) {
+        String path = ASSETS + location.namespace() + "/blockstates/" + location.value() + JSON_EXT;
+        try (AssetWriter writer = tree.open(path)) {
             writer.startObject();
             Map<String, List<StateVariant>> variants = state.variants();
             List<StateCase> multipart = state.multipart();
@@ -390,11 +452,12 @@ public class DefaultResourcePackSerializer
 
             writer.endObject();
         }
-        return this;
     }
+    //#endregion
 
-    @Override
-    public ResourcePackWriter sounds(
+    //#region Sound Serialization Region
+    private static void sounds(
+            FileTree tree,
             @Subst(Key.MINECRAFT_NAMESPACE) String namespace,
             SoundRegistry registry
     ) {
@@ -403,7 +466,7 @@ public class DefaultResourcePackSerializer
 
         String path = ASSETS + namespace + "/sounds" + JSON_EXT;
 
-        try (AssetWriter writer = output.useEntry(path)) {
+        try (AssetWriter writer = tree.open(path)) {
             writer.startObject();
             for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
                 SoundEvent event = entry.getValue();
@@ -459,16 +522,16 @@ public class DefaultResourcePackSerializer
             }
             writer.endObject();
         }
-        return this;
     }
+    //#endregion
 
-    @Override
-    public ResourcePackWriter texture(Key location, Texture texture) {
+    //#region Texture Serialization Region
+    private static void texture(FileTree tree, Key location, Texture texture) {
 
         String path = ASSETS + location.namespace() + "/textures/" + location.value() + PNG_EXT;
 
         // write the actual texture PNG image
-        try (AssetWriter writer = output.useEntry(path)) {
+        try (AssetWriter writer = tree.open(path)) {
             texture.data().write(writer);
         } catch (IOException e) {
             throw new UncheckedIOException("Cannot write texture", e);
@@ -484,10 +547,10 @@ public class DefaultResourcePackSerializer
 
         if (!hasMeta && !hasAnimation && !hasVillager) {
             // no metadata to write
-            return this;
+            return;
         }
 
-        try (AssetWriter writer = output.useEntry(path + MCMETA_EXT)) {
+        try (AssetWriter writer = tree.open(path + MCMETA_EXT)) {
             writer.startObject();
 
             if (hasMeta) {
@@ -541,80 +604,7 @@ public class DefaultResourcePackSerializer
 
             writer.endObject();
         }
-        return this;
     }
-
-    @Override
-    public ResourcePackWriter meta(PackMeta meta) {
-        // write pack.mcmeta file
-        try (AssetWriter writer = output.useEntry("pack.mcmeta")) {
-            // {
-            //   "pack": { "format": ?, "description": "?" }
-            writer.startObject()
-                .key("pack").startObject()
-                    .key("format").value(meta.pack().format())
-                    .key("description").value(meta.pack().description())
-                .endObject();
-
-            if (!meta.languages().isEmpty()) {
-                // "language": {
-                writer.key("language").startObject();
-
-                for (Map.Entry<Key, LanguageEntry> entry : meta.languages().entrySet()) {
-                    LanguageEntry language = entry.getValue();
-                    // "?": { "name": ?, "region": ?, "bidirectional": ? }
-                    writer.key(entry.getKey().asString()).startObject()
-                        .key("name").value(language.name())
-                        .key("region").value(language.region())
-                        .key("bidirectional").value(language.bidirectional())
-                        .endObject();
-                }
-
-                writer.endObject();
-            }
-            writer.endObject();
-        }
-        return this;
-    }
-
-    @Override
-    public ResourcePackWriter endPoem(String endPoem) {
-        return string(
-                ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/end.txt",
-                endPoem
-        );
-    }
-
-    @Override
-    public ResourcePackWriter splashes(String splashes) {
-        return string(
-                ASSETS + Key.MINECRAFT_NAMESPACE + "/texts/splashes.txt",
-                splashes
-        );
-    }
-
-    @Override
-    public ResourcePackWriter file(String path, Writable data) {
-        try (AssetWriter writer = output.useEntry(path)) {
-            data.write(writer);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return this;
-    }
-
-    @Override
-    public ResourcePackWriter string(String path, String data) {
-        byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
-        try (AssetWriter writer = output.useEntry(path)) {
-            writer.write(bytes);
-        }
-        return this;
-    }
-
-    @Override
-    public boolean exists(String path) {
-        return output.has(path);
-    }
+    //#endregion
 
 }
