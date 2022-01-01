@@ -95,7 +95,7 @@ public class VillagerMeta implements Examinable {
     }
 
     public enum Hat {
-        NONE,
+        NONE, // default
         PARTIAL,
         FULL
     }
