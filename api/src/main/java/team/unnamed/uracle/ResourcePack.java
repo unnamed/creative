@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.font.FontRegistry;
 import team.unnamed.uracle.lang.Language;
-import team.unnamed.uracle.model.BlockState;
+import team.unnamed.uracle.blockstate.BlockState;
 import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.sound.SoundRegistry;
 import team.unnamed.uracle.texture.Texture;

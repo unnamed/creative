@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.model.blockstate;
+package team.unnamed.uracle.blockstate;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;

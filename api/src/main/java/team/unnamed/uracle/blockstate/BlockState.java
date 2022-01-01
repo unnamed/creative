@@ -21,15 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.model;
+package team.unnamed.uracle.blockstate;
 
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.model.blockstate.StateCase;
-import team.unnamed.uracle.model.blockstate.StateVariant;
 import team.unnamed.uracle.serialize.AssetWriter;
 import team.unnamed.uracle.serialize.SerializableResource;
 
