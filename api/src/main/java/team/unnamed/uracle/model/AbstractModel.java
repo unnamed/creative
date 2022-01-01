@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.model;
 
-import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Locale;
@@ -48,61 +47,15 @@ abstract class AbstractModel
             ModelDisplay.Type type = entry.getKey();
             ModelDisplay display = entry.getValue();
 
-            writer.key(type.name().toLowerCase(Locale.ROOT)).startObject()
-                    .key("rotation").value(display.rotation())
-                    .key("translation").value(display.translation())
-                    .key("scale").value(display.scale())
-                    .endObject();
+            writer.key(type.name().toLowerCase(Locale.ROOT));
+            display.serialize(writer);
         }
         writer.endObject();
 
         // elements
         writer.key("elements").startArray();
         for (Element element : elements()) {
-            ElementRotation rotation = element.rotation();
-
-            writer
-                    .key("from").value(element.from())
-                    .key("to").value(element.to())
-                    .key("rotation").startObject()
-                    .key("origin").value(rotation.origin())
-                    .key("axis").value(rotation.axis().name().toLowerCase(Locale.ROOT))
-                    .key("angle").value(rotation.angle());
-
-            if (rotation.rescale()) {
-                // only write if not equal to default value
-                writer.key("rescale").value(rotation.rescale());
-            }
-            writer.endObject();
-
-            if (!element.shade()) {
-                // only write if not equal to default value
-                writer.key("shade").value(element.shade());
-            }
-
-            // faces
-            writer.key("faces").startObject();
-            for (Map.Entry<CubeFace, ElementFace> entry : element.faces().entrySet()) {
-                CubeFace type = entry.getKey();
-                ElementFace face = entry.getValue();
-
-                writer.key(type.name().toLowerCase(Locale.ROOT)).startObject();
-                if (face.uv() != null) {
-                    writer.key("uv").value(face.uv());
-                }
-                writer.key("texture").value(face.texture());
-                if (face.cullFace() != null) {
-                    writer.key("cullface").value(face.cullFace().name().toLowerCase(Locale.ROOT));
-                }
-                if (face.rotation() != 0) {
-                    writer.key("rotation").value(face.rotation());
-                }
-                if (face.tintIndex() != null) {
-                    writer.key("tintindex").value(face.tintIndex());
-                }
-                writer.endObject();
-            }
-            writer.endObject();
+            element.serialize(writer);
         }
         writer.endArray();
 

@@ -30,7 +30,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector4Int;
+import team.unnamed.uracle.serialize.AssetWriter;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -130,6 +132,24 @@ public class ElementFace implements Examinable {
      */
     public @Nullable Integer tintIndex() {
         return tintIndex;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject();
+        if (uv != null) {
+            writer.key("uv").value(uv);
+        }
+        writer.key("texture").value(texture);
+        if (cullFace != null) {
+            writer.key("cullface").value(cullFace.name().toLowerCase(Locale.ROOT));
+        }
+        if (rotation != 0) {
+            writer.key("rotation").value(rotation);
+        }
+        if (tintIndex != null) {
+            writer.key("tintindex").value(tintIndex);
+        }
+        writer.endObject();
     }
 
     @Override

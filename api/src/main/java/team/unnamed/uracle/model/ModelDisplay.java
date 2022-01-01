@@ -52,6 +52,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Vector3Float;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -127,6 +128,14 @@ public class ModelDisplay implements Examinable {
         HEAD,
         GROUND,
         FIXED
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("rotation").value(rotation)
+                .key("translation").value(translation)
+                .key("scale").value(scale)
+                .endObject();
     }
 
     @Override

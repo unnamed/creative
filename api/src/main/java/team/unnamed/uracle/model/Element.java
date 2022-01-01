@@ -29,8 +29,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector3Float;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -123,6 +125,39 @@ public class Element implements Examinable {
      */
     public @Unmodifiable Map<CubeFace, ElementFace> faces() {
         return faces;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer
+                .startObject()
+                .key("from").value(from)
+                .key("to").value(to)
+                .key("rotation").startObject()
+                .key("origin").value(rotation.origin())
+                .key("axis").value(rotation.axis().name().toLowerCase(Locale.ROOT))
+                .key("angle").value(rotation.angle());
+
+        if (rotation.rescale()) {
+            // only write if not equal to default value
+            writer.key("rescale").value(rotation.rescale());
+        }
+        writer.endObject();
+
+        if (!shade) {
+            // only write if not equal to default value
+            writer.key("shade").value(shade);
+        }
+
+        // faces
+        writer.key("faces").startObject();
+        for (Map.Entry<CubeFace, ElementFace> entry : faces.entrySet()) {
+            CubeFace type = entry.getKey();
+            ElementFace face = entry.getValue();
+
+            writer.key(type.name().toLowerCase(Locale.ROOT));
+            face.serialize(writer);
+        }
+        writer.endObject();
     }
 
     @Override
