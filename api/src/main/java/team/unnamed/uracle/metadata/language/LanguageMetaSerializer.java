@@ -50,9 +50,14 @@ final class LanguageMetaSerializer
             // "?": { "name": ?, "region": ?, "bidirectional": ? }
             writer.key(entry.getKey().asString()).startObject()
                     .key("name").value(language.name())
-                    .key("region").value(language.region())
-                    .key("bidirectional").value(language.bidirectional())
-                    .endObject();
+                    .key("region").value(language.region());
+
+            if (language.bidirectional()) {
+                // only write if not default
+                writer.key("bidirectional").value(language.bidirectional());
+            }
+
+            writer.endObject();
         }
 
         writer.endObject();
