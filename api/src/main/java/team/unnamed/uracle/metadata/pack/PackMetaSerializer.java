@@ -21,42 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata.animation;
+package team.unnamed.uracle.metadata.pack;
 
 import team.unnamed.uracle.metadata.MetadataPart;
 import team.unnamed.uracle.serialize.AssetWriter;
 
-final class AnimationMetaSerializer
-        implements MetadataPart.Serializer<AnimationMeta> {
+final class PackMetaSerializer
+        implements MetadataPart.Serializer<PackMeta> {
 
     @Override
-    public void serialize(AssetWriter writer, AnimationMeta part) {
-        int frameTime = part.frameTime();
-
-        writer.key("animation").startObject()
-                .key("interpolate").value(part.interpolate())
-                .key("width").value(part.width())
-                .key("height").value(part.height())
-                .key("frametime").value(frameTime)
-                .key("frames").startArray();
-
-        for (AnimationFrame frame : part.frames()) {
-            int index = frame.index();
-            int time = frame.frameTime();
-
-            if (frameTime == time || frameTime == AnimationFrame.DELEGATE_FRAME_TIME) {
-                // same as default frameTime, we can skip it
-                writer.value(index);
-            } else {
-                // specific frameTime, write as an object
-                writer.startObject()
-                        .key("index").value(index)
-                        .key("time").value(time)
-                        .endObject();
-            }
-        }
-
-        writer.endArray().endObject();
+    public void serialize(AssetWriter writer, PackMeta part) {
+        writer.key("pack").startObject()
+                .key("format").value(part.format())
+                .key("description").value(part.description())
+                .endObject();
     }
 
 }

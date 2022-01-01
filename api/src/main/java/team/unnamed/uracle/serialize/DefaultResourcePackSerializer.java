@@ -75,7 +75,6 @@ public class DefaultResourcePackSerializer
             FileTree tree
     ) {
         // write metadata
-        meta(tree, resourcePack.meta());
 
         // write icon
         Writable icon = resourcePack.icon();
@@ -98,22 +97,6 @@ public class DefaultResourcePackSerializer
             model(tree, entry.getKey(), entry.getValue());
         }
     }
-
-    //#region Pack Metadata Serialization Region
-    private static void meta(FileTree tree, PackMeta meta) {
-        // write pack.mcmeta file
-        try (AssetWriter writer = tree.open("pack.mcmeta")) {
-            // {
-            //   "pack": { "format": ?, "description": "?" }
-            writer.startObject()
-                    .key("pack").startObject()
-                    .key("format").value(meta.pack().format())
-                    .key("description").value(meta.pack().description())
-                    .endObject();
-            writer.endObject();
-        }
-    }
-    //#endregion
 
     //#region Font Serialization Region
     private static void bitMapFont(AssetWriter writer, BitMapFont font) {

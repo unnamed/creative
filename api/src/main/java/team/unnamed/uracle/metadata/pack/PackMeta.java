@@ -41,6 +41,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class PackMeta implements MetadataPart {
 
+    private static final Serializer<PackMeta> SERIALIZER
+            = new PackMetaSerializer();
+
     private final int format;
     private final String description;
 
@@ -118,6 +121,18 @@ public class PackMeta implements MetadataPart {
      */
     public static PackMeta of(int format, String description) {
         return new PackMeta(format, description);
+    }
+
+
+    /**
+     * Returns the {@link Serializer} implementation for
+     * this {@link MetadataPart} implementation
+     *
+     * @return The serializer implementation for pack meta
+     * @since 1.0.0
+     */
+    public static Serializer<PackMeta> serializer() {
+        return SERIALIZER;
     }
 
 }
