@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.BlockModel;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -82,6 +83,17 @@ public class BlockTexture implements Examinable {
      */
     public @Unmodifiable Map<String, Key> variables() {
         return variables;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject();
+        if (particle != null) {
+            writer.key("particle").value(particle);
+        }
+        for (Map.Entry<String, Key> variable : variables.entrySet()) {
+            writer.key(variable.getKey()).value(variable.getValue());
+        }
+        writer.endObject();
     }
 
     @Override

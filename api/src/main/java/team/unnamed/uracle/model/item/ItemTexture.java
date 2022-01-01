@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.ItemModel;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -107,6 +108,21 @@ public class ItemTexture implements Examinable {
      */
     public @Unmodifiable Map<String, Key> variables() {
         return variables;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject();
+        // ah yes, don't repeat yourself
+        if (particle != null) {
+            writer.key("particle").value(particle);
+        }
+        for (int i = 0; i < layers.size(); i++) {
+            writer.key("layer" + i).value(layers.get(i));
+        }
+        for (Map.Entry<String, Key> variable : variables.entrySet()) {
+            writer.key(variable.getKey()).value(variable.getValue());
+        }
+        writer.endObject();
     }
 
     @Override

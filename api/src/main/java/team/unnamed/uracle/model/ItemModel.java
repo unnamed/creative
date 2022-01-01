@@ -216,18 +216,8 @@ public class ItemModel extends AbstractModel implements Model  {
     @Override
     protected void serializeOwnProperties(AssetWriter writer) {
         // textures
-        writer.key("textures").startObject();
-        // ah yes, don't repeat yourself
-        if (textures.particle() != null) {
-            writer.key("particle").value(textures.particle());
-        }
-        for (int i = 0; i < textures.layers().size(); i++) {
-            writer.key("layer" + i).value(textures.layers().get(i));
-        }
-        for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
-            writer.key(variable.getKey()).value(variable.getValue());
-        }
-        writer.endObject();
+        writer.key("textures");
+        textures.serialize(writer);
 
         if (guiLight != ItemModel.GuiLight.SIDE) {
             // only write if not default
@@ -237,14 +227,7 @@ public class ItemModel extends AbstractModel implements Model  {
         // overrides
         writer.key("overrides").startArray();
         for (ItemOverride override : overrides) {
-            writer.startObject()
-                    .key("predicate").startObject();
-            for (ItemPredicate predicate : override.predicate()) {
-                writer.key(predicate.name()).value(predicate.value());
-            }
-            writer.endObject()
-                    .key("model").value(override.model())
-                    .endObject();
+            override.serialize(writer);
         }
         writer.endArray();
     }

@@ -16,7 +16,6 @@ import team.unnamed.uracle.pack.ResourcePackApplication;
 import team.unnamed.uracle.pack.ResourcePackLocation;
 import team.unnamed.uracle.player.PlayerManager;
 import team.unnamed.uracle.resourcepack.ResourcePackSender;
-import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 
 import java.io.IOException;
 import java.util.logging.Level;

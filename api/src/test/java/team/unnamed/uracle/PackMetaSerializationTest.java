@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
 import team.unnamed.uracle.metadata.PackMeta;
 import team.unnamed.uracle.mock.MockTreeOutputStream;
-import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 
 import java.util.HashMap;
 import java.util.Map;

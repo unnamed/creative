@@ -29,6 +29,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.List;
 import java.util.Objects;
@@ -82,6 +83,17 @@ public class ItemOverride implements Examinable {
      */
     public Key model() {
         return model;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("predicate").startObject();
+        for (ItemPredicate predicate : predicate()) {
+            writer.key(predicate.name()).value(predicate.value());
+        }
+        writer.endObject()
+                .key("model").value(model)
+                .endObject();
     }
 
     @Override

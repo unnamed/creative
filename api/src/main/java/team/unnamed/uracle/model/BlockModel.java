@@ -137,14 +137,8 @@ public class BlockModel extends AbstractModel implements Model {
             writer.key("ambientocclusion").value(ambientOcclusion);
         }
 
-        writer.key("textures").startObject();
-        if (textures.particle() != null) {
-            writer.key("particle").value(textures.particle());
-        }
-        for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
-            writer.key(variable.getKey()).value(variable.getValue());
-        }
-        writer.endObject();
+        writer.key("textures");
+        textures.serialize(writer);
     }
 
     @Override
