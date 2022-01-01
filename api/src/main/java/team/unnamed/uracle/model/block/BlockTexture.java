@@ -24,7 +24,6 @@
 package team.unnamed.uracle.model.block;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +47,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class BlockTexture implements SerializableResource, Examinable {
+public class BlockTexture implements SerializableResource {
 
     @Nullable private final Key particle;
     @Unmodifiable private final Map<String, Key> variables;

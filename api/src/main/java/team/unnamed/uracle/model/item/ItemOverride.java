@@ -24,7 +24,6 @@
 package team.unnamed.uracle.model.item;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +49,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class ItemOverride implements SerializableResource, Examinable {
+public class ItemOverride implements SerializableResource {
 
     @Unmodifiable private final List<ItemPredicate> predicate;
     private final Key model;

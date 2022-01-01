@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.sound;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +45,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements SerializableResource, Examinable {
+public class SoundEvent implements SerializableResource {
 
     private final boolean replace;
     @Nullable private final String subtitle;

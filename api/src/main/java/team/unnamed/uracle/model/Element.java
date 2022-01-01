@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.model;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -48,7 +47,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Element implements SerializableResource, Examinable {
+public class Element implements SerializableResource {
 
     private final Vector3Float from;
     private final Vector3Float to;

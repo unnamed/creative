@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.model;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ElementRotation implements SerializableResource, Examinable {
+public class ElementRotation implements SerializableResource {
 
     public static final ElementRotation DEFAULT = ElementRotation.builder().build();
 

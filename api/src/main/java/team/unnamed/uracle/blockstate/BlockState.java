@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.blockstate;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +52,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class BlockState implements SerializableResource, Examinable {
+public class BlockState implements SerializableResource {
 
     @Unmodifiable private final Map<String, List<StateVariant>> variants;
     @Unmodifiable private final List<StateCase> multipart;

@@ -47,7 +47,6 @@
  */
 package team.unnamed.uracle.model;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +65,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ModelDisplay implements SerializableResource, Examinable {
+public class ModelDisplay implements SerializableResource {
 
     private final Vector3Float rotation;
     private final Vector3Float translation;

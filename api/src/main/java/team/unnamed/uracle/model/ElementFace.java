@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.model;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ElementFace implements SerializableResource, Examinable {
+public class ElementFace implements SerializableResource {
 
     @Nullable private final Vector4Int uv;
     private final String texture;

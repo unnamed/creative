@@ -24,7 +24,6 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +52,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class FontRegistry implements SerializableResource, Examinable {
+public class FontRegistry implements SerializableResource {
 
     public static final Key MINECRAFT_DEFAULT = Key.key("minecraft:default");
     public static final Key MINECRAFT_ALT = Key.key("minecraft:alt");

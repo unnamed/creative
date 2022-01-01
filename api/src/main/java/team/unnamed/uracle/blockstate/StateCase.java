@@ -49,7 +49,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class StateCase implements SerializableResource, Examinable {
+public class StateCase implements SerializableResource {
 
     private final When when;
     @Unmodifiable private final List<StateVariant> apply;

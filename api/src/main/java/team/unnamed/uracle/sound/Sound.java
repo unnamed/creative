@@ -24,7 +24,6 @@
 package team.unnamed.uracle.sound;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Sound implements SerializableResource, Examinable {
+public class Sound implements SerializableResource {
 
     public static final float DEFAULT_VOLUME = 1.0F;
     public static final float DEFAULT_PITCH = 1.0F;

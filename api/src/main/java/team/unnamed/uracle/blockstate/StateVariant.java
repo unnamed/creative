@@ -24,7 +24,6 @@
 package team.unnamed.uracle.blockstate;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @since 1.0.0
  */
-public class StateVariant implements SerializableResource, Examinable {
+public class StateVariant implements SerializableResource {
 
     private final Key model;
     private final int x;

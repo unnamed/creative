@@ -23,7 +23,9 @@
  */
 package team.unnamed.uracle.serialize;
 
-public interface SerializableResource {
+import net.kyori.examination.Examinable;
+
+public interface SerializableResource extends Examinable {
 
     void serialize(AssetWriter writer);
 

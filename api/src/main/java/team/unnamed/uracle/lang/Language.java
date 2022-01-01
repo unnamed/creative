@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.lang;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +47,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Language implements SerializableResource, Examinable {
+public class Language implements SerializableResource {
 
     @Unmodifiable private final Map<String, String> translations;
 
