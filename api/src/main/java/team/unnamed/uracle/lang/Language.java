@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.metadata.language.LanguageMeta;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -67,6 +68,14 @@ public class Language implements Examinable {
      */
     public @Unmodifiable Map<String, String> translations() {
         return translations;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject();
+        for (Map.Entry<String, String> entry : translations.entrySet()) {
+            writer.key(entry.getKey()).value(entry.getValue());
+        }
+        writer.endObject();
     }
 
     @Override

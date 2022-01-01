@@ -114,11 +114,7 @@ public class DefaultResourcePackSerializer
         // create the JSON file path (assets/<namespace>/lang/file.json)
         String path = ASSETS + location.namespace() + "/lang/" + location.value() + JSON_EXT;
         try (AssetWriter writer = tree.open(path)) {
-            writer.startObject();
-            for (Map.Entry<String, String> entry : language.translations().entrySet()) {
-                writer.key(entry.getKey()).value(entry.getValue());
-            }
-            writer.endObject();
+
         }
     }
     //#endregion
