@@ -28,7 +28,9 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.serialize.AssetWriter;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -219,6 +221,40 @@ public class Sound implements Examinable {
          * sound event
          */
         EVENT
+    }
+
+    public void serialize(AssetWriter writer) {
+        // in order to make some optimizations,
+        // we have to do this
+        if (allDefault()) {
+            // everything is default, just write the name
+            writer.value(name);
+        } else {
+            writer.startObject()
+                    .key("name").value(name);
+            if (volume != DEFAULT_VOLUME) {
+                writer.key("volume").value(volume);
+            }
+            if (pitch != DEFAULT_PITCH) {
+                writer.key("pitch").value(pitch);
+            }
+            if (weight != DEFAULT_WEIGHT) {
+                writer.key("weight").value(weight);
+            }
+            if (stream != DEFAULT_STREAM) {
+                writer.key("stream").value(stream);
+            }
+            if (attenuationDistance() != DEFAULT_ATTENUATION_DISTANCE) {
+                writer.key("attenuation_distance").value(attenuationDistance);
+            }
+            if (preload != DEFAULT_PRELOAD) {
+                writer.key("preload").value(preload);
+            }
+            if (type != Sound.DEFAULT_TYPE) {
+                writer.key("type").value(type.name().toLowerCase(Locale.ROOT));
+            }
+            writer.endObject();
+        }
     }
 
     @Override

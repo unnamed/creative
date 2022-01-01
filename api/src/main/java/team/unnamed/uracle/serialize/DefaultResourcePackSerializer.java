@@ -362,60 +362,7 @@ public class DefaultResourcePackSerializer
         String path = ASSETS + namespace + "/sounds" + JSON_EXT;
 
         try (AssetWriter writer = tree.open(path)) {
-            writer.startObject();
-            for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
-                SoundEvent event = entry.getValue();
 
-                writer.key(entry.getKey()).startObject();
-
-                if (event.replace()) {
-                    // only write if not default (false)
-                    writer.key("replace").value(event.replace());
-                }
-
-                if (event.subtitle() != null) {
-                    writer.key("subtitle").value(event.subtitle());
-                }
-                if (!event.sounds().isEmpty()) {
-                    writer.key("sounds").startArray();
-                    for (Sound sound : event.sounds()) {
-                        // in order to make some optimizations, we
-                        // have to do this
-                        if (sound.allDefault()) {
-                            // everything is default, just write the name
-                            writer.value(sound.name());
-                        } else {
-                            writer.startObject()
-                                .key("name").value(sound.name());
-                            if (sound.volume() != Sound.DEFAULT_VOLUME) {
-                                writer.key("volume").value(sound.volume());
-                            }
-                            if (sound.pitch() != Sound.DEFAULT_PITCH) {
-                                writer.key("pitch").value(sound.pitch());
-                            }
-                            if (sound.weight() != Sound.DEFAULT_WEIGHT) {
-                                writer.key("weight").value(sound.weight());
-                            }
-                            if (sound.stream() != Sound.DEFAULT_STREAM) {
-                                writer.key("stream").value(sound.stream());
-                            }
-                            if (sound.attenuationDistance() != Sound.DEFAULT_ATTENUATION_DISTANCE) {
-                                writer.key("attenuation_distance").value(sound.attenuationDistance());
-                            }
-                            if (sound.preload() != Sound.DEFAULT_PRELOAD) {
-                                writer.key("preload").value(sound.preload());
-                            }
-                            if (sound.type() != Sound.DEFAULT_TYPE) {
-                                writer.key("type").value(sound.type().name().toLowerCase(Locale.ROOT));
-                            }
-                            writer.endObject();
-                        }
-                    }
-                    writer.endArray();
-                }
-                writer.endObject();
-            }
-            writer.endObject();
         }
     }
     //#endregion

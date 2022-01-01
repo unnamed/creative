@@ -28,6 +28,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -51,6 +52,16 @@ public class SoundRegistry implements Examinable {
 
     public @Unmodifiable Map<String, SoundEvent> sounds() {
         return sounds;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject();
+        for (Map.Entry<String, SoundEvent> entry : sounds.entrySet()) {
+            SoundEvent event = entry.getValue();
+            writer.key(entry.getKey());
+            event.serialize(writer);
+        }
+        writer.endObject();
     }
 
     @Override

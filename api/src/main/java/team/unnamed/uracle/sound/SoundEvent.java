@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -92,6 +93,27 @@ public class SoundEvent implements Examinable {
      */
     public @Unmodifiable List<Sound> sounds() {
         return sounds;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject();
+
+        if (replace) {
+            // only write if not default (false)
+            writer.key("replace").value(replace);
+        }
+
+        if (subtitle != null) {
+            writer.key("subtitle").value(subtitle);
+        }
+        if (!sounds.isEmpty()) {
+            writer.key("sounds").startArray();
+            for (Sound sound : sounds) {
+                sound.serialize(writer);
+            }
+            writer.endArray();
+        }
+        writer.endObject();
     }
 
     @Override
