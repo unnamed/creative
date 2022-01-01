@@ -49,7 +49,7 @@ public class Sound implements Examinable {
     public static final boolean DEFAULT_STREAM = false;
     public static final int DEFAULT_ATTENUATION_DISTANCE = 16;
     public static final boolean DEFAULT_PRELOAD = false;
-    public static final Type DEFAULT_TYPE = Type.SOUND;
+    public static final Type DEFAULT_TYPE = Type.FILE;
 
     private final String name;
     private final float volume;
@@ -211,7 +211,7 @@ public class Sound implements Examinable {
          * Causes the value of {@link Sound#name} to be
          * interpreted as the name of a file
          */
-        SOUND,
+        FILE,
 
         /**
          * Causes the value of {@link Sound#name} to be
@@ -265,7 +265,7 @@ public class Sound implements Examinable {
 
     /**
      * Creates a new {@link Sound} from the given
-     * properties, using {@link Type#SOUND} as
+     * properties, using {@link Type#FILE} as
      * sound type
      *
      * @param path The sound file path
@@ -280,7 +280,7 @@ public class Sound implements Examinable {
     ) {
         return new Sound(
                 path.asString(), volume, pitch, weight, stream,
-                attenuationDistance, preload, Type.SOUND
+                attenuationDistance, preload, Type.FILE
         );
     }
 
@@ -336,7 +336,7 @@ public class Sound implements Examinable {
 
         public Builder nameSound(Key key) {
             this.name = key.asString();
-            this.type = Type.SOUND;
+            this.type = Type.FILE;
             return this;
         }
 
