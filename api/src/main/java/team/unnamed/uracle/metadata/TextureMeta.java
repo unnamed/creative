@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.texture;
+package team.unnamed.uracle.metadata;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.texture.Texture;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class TextureMeta implements Examinable {
+public class TextureMeta implements MetadataPart {
 
     private final boolean blur;
     private final boolean clamp;

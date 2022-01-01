@@ -53,10 +53,10 @@ import team.unnamed.uracle.model.item.ItemTexture;
 import team.unnamed.uracle.sound.Sound;
 import team.unnamed.uracle.sound.SoundEvent;
 import team.unnamed.uracle.sound.SoundRegistry;
-import team.unnamed.uracle.texture.AnimationMeta;
+import team.unnamed.uracle.metadata.AnimationMeta;
 import team.unnamed.uracle.texture.Texture;
-import team.unnamed.uracle.texture.TextureMeta;
-import team.unnamed.uracle.texture.VillagerMeta;
+import team.unnamed.uracle.metadata.TextureMeta;
+import team.unnamed.uracle.metadata.VillagerMeta;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

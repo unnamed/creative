@@ -29,6 +29,9 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.Writable;
+import team.unnamed.uracle.metadata.AnimationMeta;
+import team.unnamed.uracle.metadata.TextureMeta;
+import team.unnamed.uracle.metadata.VillagerMeta;
 
 import java.util.Objects;
 import java.util.stream.Stream;

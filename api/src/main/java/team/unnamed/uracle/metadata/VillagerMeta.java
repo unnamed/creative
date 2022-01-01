@@ -21,13 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.texture;
+package team.unnamed.uracle.metadata;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -41,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class VillagerMeta implements Examinable {
+public class VillagerMeta implements MetadataPart {
 
     private final Hat hat;
 

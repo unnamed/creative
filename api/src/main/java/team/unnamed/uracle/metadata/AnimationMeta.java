@@ -21,14 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.texture;
+package team.unnamed.uracle.metadata;
 
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +43,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class AnimationMeta implements Examinable {
+public class AnimationMeta implements MetadataPart {
 
     private final boolean interpolate;
     private final int width;
