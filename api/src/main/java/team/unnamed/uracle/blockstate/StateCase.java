@@ -28,6 +28,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class StateCase implements Examinable {
+public class StateCase implements SerializableResource, Examinable {
 
     private final When when;
     @Unmodifiable private final List<StateVariant> apply;
@@ -68,6 +70,36 @@ public class StateCase implements Examinable {
 
     public @Unmodifiable List<StateVariant> apply() {
         return apply;
+    }
+
+    @Override
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("when")
+                .startObject();
+
+        List<StateCase.Filter> filters = when.or();
+
+        if (!filters.isEmpty()) {
+            // write "OR" cases if not empty
+            writer.key("or").startArray();
+            for (StateCase.Filter filter : filters) {
+                writer.startObject();
+                for (Map.Entry<String, String> condition : filter.state().entrySet()) {
+                    writer.key(condition.getKey()).value(condition.getValue());
+                }
+                writer.endObject();
+            }
+            writer.endArray();
+        }
+
+        for (Map.Entry<String, String> condition : when.state().entrySet()) {
+            writer.key(condition.getKey()).value(condition.getValue());
+        }
+        writer.endObject();
+
+        writer.key("apply").value(apply);
+        writer.endObject();
     }
 
     @Override

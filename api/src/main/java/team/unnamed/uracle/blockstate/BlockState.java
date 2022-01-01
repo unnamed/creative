@@ -76,29 +76,16 @@ public class BlockState implements SerializableResource, Examinable {
         return multipart;
     }
 
-    private static void writeVariant(StateVariant variant, AssetWriter writer, boolean writeWeight) {
-        writer
-                .startObject()
-                .key("model").value(variant.model())
-                .key("x").value(variant.x())
-                .key("y").value(variant.y())
-                .key("uvlock").value(variant.uvLock());
-        if (writeWeight) {
-            writer.key("weight").value(variant.weight());
-        }
-        writer.endObject();
-    }
-
     private static void writeVariant(List<StateVariant> variant, AssetWriter writer) {
         if (variant.size() == 1) {
             // single variant, write as an object
             // without the weight
-            writeVariant(variant.get(0), writer, false);
+            variant.get(0).serialize(writer);
         } else {
             // multiple variants, write everything
             writer.startArray();
             for (StateVariant v : variant) {
-                writeVariant(v, writer, true);
+                v.serialize(writer);
             }
             writer.endArray();
         }
@@ -123,34 +110,7 @@ public class BlockState implements SerializableResource, Examinable {
         if (!multipart.isEmpty()) {
             writer.key("multipart").startArray();
             for (StateCase stateCase : multipart) {
-                writer.startObject()
-                        .key("when")
-                        .startObject();
-
-                StateCase.When when = stateCase.when();
-                List<StateCase.Filter> filters = when.or();
-
-                if (!filters.isEmpty()) {
-                    // write "OR" cases if not empty
-                    writer.key("or").startArray();
-                    for (StateCase.Filter filter : filters) {
-                        writer.startObject();
-                        for (Map.Entry<String, String> condition : filter.state().entrySet()) {
-                            writer.key(condition.getKey()).value(condition.getValue());
-                        }
-                        writer.endObject();
-                    }
-                    writer.endArray();
-                }
-
-                for (Map.Entry<String, String> condition : when.state().entrySet()) {
-                    writer.key(condition.getKey()).value(condition.getValue());
-                }
-                writer.endObject();
-
-                writer.key("apply");
-                writeVariant(stateCase.apply(), writer);
-                writer.endObject();
+                stateCase.serialize(writer);
             }
             writer.endArray();
         }

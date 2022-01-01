@@ -28,6 +28,8 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -37,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @since 1.0.0
  */
-public class StateVariant implements Examinable {
+public class StateVariant implements SerializableResource, Examinable {
 
     private final Key model;
     private final int x;
@@ -113,6 +115,20 @@ public class StateVariant implements Examinable {
      */
     public int weight() {
         return weight;
+    }
+
+    @Override
+    public void serialize(AssetWriter writer) {
+        writer
+                .startObject()
+                .key("model").value(model)
+                .key("x").value(x)
+                .key("y").value(y)
+                .key("uvlock").value(uvLock);
+        if (weight != 1) {
+            writer.key("weight").value(weight);
+        }
+        writer.endObject();
     }
 
     @Override
