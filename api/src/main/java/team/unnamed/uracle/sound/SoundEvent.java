@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Examinable {
+public class SoundEvent implements SerializableResource, Examinable {
 
     private final boolean replace;
     @Nullable private final String subtitle;
@@ -95,6 +96,7 @@ public class SoundEvent implements Examinable {
         return sounds;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject();
 

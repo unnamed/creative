@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector3Float;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -47,7 +48,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Element implements Examinable {
+public class Element implements SerializableResource, Examinable {
 
     private final Vector3Float from;
     private final Vector3Float to;
@@ -127,21 +128,15 @@ public class Element implements Examinable {
         return faces;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer
                 .startObject()
                 .key("from").value(from)
                 .key("to").value(to)
-                .key("rotation").startObject()
-                .key("origin").value(rotation.origin())
-                .key("axis").value(rotation.axis().name().toLowerCase(Locale.ROOT))
-                .key("angle").value(rotation.angle());
+                .key("rotation");
 
-        if (rotation.rescale()) {
-            // only write if not equal to default value
-            writer.key("rescale").value(rotation.rescale());
-        }
-        writer.endObject();
+        rotation.serialize(writer);
 
         if (!shade) {
             // only write if not equal to default value

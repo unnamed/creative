@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.BlockModel;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +48,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class BlockTexture implements Examinable {
+public class BlockTexture implements SerializableResource, Examinable {
 
     @Nullable private final Key particle;
     @Unmodifiable private final Map<String, Key> variables;
@@ -85,6 +86,7 @@ public class BlockTexture implements Examinable {
         return variables;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject();
         if (particle != null) {

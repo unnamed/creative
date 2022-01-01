@@ -29,7 +29,10 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Axis3D;
 import team.unnamed.uracle.Vector3Float;
+import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -41,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ElementRotation implements Examinable {
+public class ElementRotation implements SerializableResource, Examinable {
 
     public static final ElementRotation DEFAULT = ElementRotation.builder().build();
 
@@ -100,6 +103,20 @@ public class ElementRotation implements Examinable {
      */
     public boolean rescale() {
         return rescale;
+    }
+
+    @Override
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("origin").value(origin)
+                .key("axis").value(axis.name().toLowerCase(Locale.ROOT))
+                .key("angle").value(angle);
+
+        if (rescale) {
+            // only write if not equal to default value
+            writer.key("rescale").value(rescale);
+        }
+        writer.endObject();
     }
 
     @Override

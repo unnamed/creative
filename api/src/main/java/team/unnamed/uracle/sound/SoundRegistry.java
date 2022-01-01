@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Map;
 import java.util.Objects;
@@ -40,8 +41,10 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 /**
  * Represents a registry of {@link SoundEvent}, or
  * "sounds.json" in the resource-pack
+ *
+ * @since 1.0.0
  */
-public class SoundRegistry implements Examinable {
+public class SoundRegistry implements SerializableResource, Examinable {
 
     private final Map<String, SoundEvent> sounds;
 
@@ -54,6 +57,7 @@ public class SoundRegistry implements Examinable {
         return sounds;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject();
         for (Map.Entry<String, SoundEvent> entry : sounds.entrySet()) {

@@ -29,6 +29,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -43,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Sound implements Examinable {
+public class Sound implements SerializableResource, Examinable {
 
     public static final float DEFAULT_VOLUME = 1.0F;
     public static final float DEFAULT_PITCH = 1.0F;
@@ -223,6 +224,7 @@ public class Sound implements Examinable {
         EVENT
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         // in order to make some optimizations,
         // we have to do this

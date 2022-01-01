@@ -53,6 +53,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.Vector3Float;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -65,7 +66,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ModelDisplay implements Examinable {
+public class ModelDisplay implements SerializableResource, Examinable {
 
     private final Vector3Float rotation;
     private final Vector3Float translation;
@@ -130,6 +131,7 @@ public class ModelDisplay implements Examinable {
         FIXED
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject()
                 .key("rotation").value(rotation)

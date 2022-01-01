@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.metadata.language.LanguageMeta;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +48,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Language implements Examinable {
+public class Language implements SerializableResource, Examinable {
 
     @Unmodifiable private final Map<String, String> translations;
 
@@ -70,6 +71,7 @@ public class Language implements Examinable {
         return translations;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject();
         for (Map.Entry<String, String> entry : translations.entrySet()) {

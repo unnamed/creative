@@ -75,6 +75,7 @@ public class LegacyUnicodeFont implements Font {
         return template;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject()
                 .key("sizes").value(sizes)

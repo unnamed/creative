@@ -118,6 +118,7 @@ public class BitMapFont implements Font {
         return characters;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject()
                 .key("type").value("bitmap")

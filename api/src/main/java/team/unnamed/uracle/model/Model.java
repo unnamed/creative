@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public interface Model extends Examinable {
+public interface Model extends SerializableResource, Examinable {
 
     /**
      * Returns the parent model of this
@@ -65,8 +66,6 @@ public interface Model extends Examinable {
      * @return The model elements
      */
     @Unmodifiable List<Element> elements();
-
-    void serialize(AssetWriter writer);
 
     static BlockModel block(
             @Nullable Key parent,

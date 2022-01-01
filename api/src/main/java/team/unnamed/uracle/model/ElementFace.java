@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.Vector4Int;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -44,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ElementFace implements Examinable {
+public class ElementFace implements SerializableResource, Examinable {
 
     @Nullable private final Vector4Int uv;
     private final String texture;
@@ -134,6 +135,7 @@ public class ElementFace implements Examinable {
         return tintIndex;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject();
         if (uv != null) {

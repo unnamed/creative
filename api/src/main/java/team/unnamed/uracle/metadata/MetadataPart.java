@@ -24,7 +24,7 @@
 package team.unnamed.uracle.metadata;
 
 import net.kyori.examination.Examinable;
-import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 /**
  * Represents a resource-pack resource metadata
@@ -34,14 +34,5 @@ import team.unnamed.uracle.serialize.AssetWriter;
  *
  * @since 1.0.0
  */
-public interface MetadataPart extends Examinable {
-
-    /**
-     * Serializes this {@link MetadataPart} instance
-     * using the given {@link AssetWriter}
-     *
-     * @param writer The asset writer
-     */
-    void serialize(AssetWriter writer);
-
+public interface MetadataPart extends SerializableResource, Examinable {
 }

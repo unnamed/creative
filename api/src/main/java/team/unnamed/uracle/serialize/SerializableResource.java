@@ -21,12 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle;
+package team.unnamed.uracle.serialize;
 
-import team.unnamed.uracle.metadata.MetadataPart;
+public interface SerializableResource {
 
-public interface Resource {
-
-    <T extends MetadataPart> T meta(String name);
+    void serialize(AssetWriter writer);
 
 }

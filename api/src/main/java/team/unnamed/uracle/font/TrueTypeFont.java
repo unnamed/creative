@@ -118,6 +118,7 @@ public class TrueTypeFont implements Font {
         return skip;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject()
                 .key("file").value(file)

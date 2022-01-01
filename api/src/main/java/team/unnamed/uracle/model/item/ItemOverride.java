@@ -30,6 +30,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +50,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class ItemOverride implements Examinable {
+public class ItemOverride implements SerializableResource, Examinable {
 
     @Unmodifiable private final List<ItemPredicate> predicate;
     private final Key model;
@@ -85,6 +86,7 @@ public class ItemOverride implements Examinable {
         return model;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject()
                 .key("predicate").startObject();

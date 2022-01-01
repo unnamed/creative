@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.ItemModel;
 import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class ItemTexture implements Examinable {
+public class ItemTexture implements SerializableResource, Examinable {
 
     @Unmodifiable private final List<Key> layers;
     @Nullable private final Key particle;
@@ -110,6 +111,7 @@ public class ItemTexture implements Examinable {
         return variables;
     }
 
+    @Override
     public void serialize(AssetWriter writer) {
         writer.startObject();
         // ah yes, don't repeat yourself
