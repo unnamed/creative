@@ -28,7 +28,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.metadata.LanguageMeta;
+import team.unnamed.uracle.metadata.language.LanguageMeta;
+import team.unnamed.uracle.metadata.language.LanguageEntry;
 
 import java.util.Map;
 import java.util.Objects;

@@ -27,7 +27,7 @@ import net.kyori.adventure.key.Key;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import team.unnamed.uracle.lang.LanguageEntry;
+import team.unnamed.uracle.metadata.language.LanguageEntry;
 import team.unnamed.uracle.metadata.PackMeta;
 import team.unnamed.uracle.mock.MockTreeOutputStream;
 import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;

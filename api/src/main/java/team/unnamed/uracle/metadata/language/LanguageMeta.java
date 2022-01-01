@@ -1,7 +1,7 @@
 /*
  * This file is part of uracle, licensed under the MIT license
  *
- * Copyright (c) 2021 Unnamed Team
+ * Copyright (c) 2021-2022 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata;
+package team.unnamed.uracle.metadata.language;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.lang.LanguageEntry;
+import team.unnamed.uracle.metadata.MetadataPart;
 
 import java.util.Map;
 import java.util.Objects;

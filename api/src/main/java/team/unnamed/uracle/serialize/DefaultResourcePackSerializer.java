@@ -34,8 +34,7 @@ import team.unnamed.uracle.font.FontRegistry;
 import team.unnamed.uracle.font.LegacyUnicodeFont;
 import team.unnamed.uracle.font.TrueTypeFont;
 import team.unnamed.uracle.lang.Language;
-import team.unnamed.uracle.lang.LanguageEntry;
-import team.unnamed.uracle.metadata.animation.AnimationFrame;
+import team.unnamed.uracle.metadata.language.LanguageEntry;
 import team.unnamed.uracle.model.BlockModel;
 import team.unnamed.uracle.model.BlockState;
 import team.unnamed.uracle.model.Element;
@@ -53,7 +52,6 @@ import team.unnamed.uracle.model.item.ItemTexture;
 import team.unnamed.uracle.sound.Sound;
 import team.unnamed.uracle.sound.SoundEvent;
 import team.unnamed.uracle.sound.SoundRegistry;
-import team.unnamed.uracle.metadata.animation.AnimationMeta;
 import team.unnamed.uracle.metadata.TextureMeta;
 import team.unnamed.uracle.metadata.VillagerMeta;
 
