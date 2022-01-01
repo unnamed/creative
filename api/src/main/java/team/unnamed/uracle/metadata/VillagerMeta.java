@@ -26,7 +26,9 @@ package team.unnamed.uracle.metadata;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.serialize.AssetWriter;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -40,6 +42,9 @@ import static java.util.Objects.requireNonNull;
  * @since 1.0.0
  */
 public class VillagerMeta implements MetadataPart {
+
+    private static final MetadataPart.Serializer<VillagerMeta> SERIALIZER
+            = new VillagerMeta.Serializer();
 
     private final Hat hat;
 
@@ -92,10 +97,35 @@ public class VillagerMeta implements MetadataPart {
         return new VillagerMeta(hat);
     }
 
+    public static MetadataPart.Serializer<VillagerMeta> serializer() {
+        return SERIALIZER;
+    }
+
     public enum Hat {
         NONE, // default
         PARTIAL,
         FULL
+    }
+
+    private static class Serializer
+            implements MetadataPart.Serializer<VillagerMeta> {
+
+        @Override
+        public void serialize(AssetWriter writer, VillagerMeta part) {
+
+            VillagerMeta.Hat hat = part.hat();
+
+            if (hat == Hat.NONE) {
+                // do not write if default value
+                // (NONE)
+                return;
+            }
+
+            writer.key("villager").startObject()
+                .key("hat").value(hat.name().toLowerCase(Locale.ROOT))
+                .endObject();
+        }
+
     }
 
 }

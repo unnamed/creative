@@ -512,16 +512,6 @@ public class DefaultResourcePackSerializer
 
         try (AssetWriter writer = tree.open(path + MCMETA_EXT)) {
             writer.startObject();
-
-            if (hasVillager) {
-                VillagerMeta.Hat hat = villager.hat();
-                writer.key("villager").startObject();
-                if (hat != null) {
-                    writer.key("hat").value(hat.name().toLowerCase(Locale.ROOT));
-                }
-                writer.endObject();
-            }
-
             writer.endObject();
         }
     }
