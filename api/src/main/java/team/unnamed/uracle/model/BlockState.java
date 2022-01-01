@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.blockstate.StateCase;
 import team.unnamed.uracle.model.blockstate.StateVariant;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,6 +75,87 @@ public class BlockState implements Examinable {
 
     public @Unmodifiable List<StateCase> multipart() {
         return multipart;
+    }
+
+    private static void writeVariant(StateVariant variant, AssetWriter writer, boolean writeWeight) {
+        writer
+                .startObject()
+                .key("model").value(variant.model())
+                .key("x").value(variant.x())
+                .key("y").value(variant.y())
+                .key("uvlock").value(variant.uvLock());
+        if (writeWeight) {
+            writer.key("weight").value(variant.weight());
+        }
+        writer.endObject();
+    }
+
+    private static void writeVariant(List<StateVariant> variant, AssetWriter writer) {
+        if (variant.size() == 1) {
+            // single variant, write as an object
+            // without the weight
+            writeVariant(variant.get(0), writer, false);
+        } else {
+            // multiple variants, write everything
+            writer.startArray();
+            for (StateVariant v : variant) {
+                writeVariant(v, writer, true);
+            }
+            writer.endArray();
+        }
+    }
+
+    public void serialize(AssetWriter writer) {
+
+        writer.startObject();
+
+        // write "variants" part if not empty
+        if (!variants.isEmpty()) {
+            writer.key("variants").startObject();
+            for (Map.Entry<String, List<StateVariant>> entry : variants.entrySet()) {
+                writer.key(entry.getKey());
+                writeVariant(entry.getValue(), writer);
+            }
+            writer.endObject();
+        }
+
+        // write "multipart" part if not empty
+        if (!multipart.isEmpty()) {
+            writer.key("multipart").startArray();
+            for (StateCase stateCase : multipart) {
+                writer.startObject()
+                        .key("when")
+                        .startObject();
+
+                StateCase.When when = stateCase.when();
+                List<StateCase.Filter> filters = when.or();
+
+                if (!filters.isEmpty()) {
+                    // write "OR" cases if not empty
+                    writer.key("or").startArray();
+                    for (StateCase.Filter filter : filters) {
+                        writer.startObject();
+                        for (Map.Entry<String, String> condition : filter.state().entrySet()) {
+                            writer.key(condition.getKey()).value(condition.getValue());
+                        }
+                        writer.endObject();
+                    }
+                    writer.endArray();
+                }
+
+                for (Map.Entry<String, String> condition : when.state().entrySet()) {
+                    writer.key(condition.getKey()).value(condition.getValue());
+                }
+                writer.endObject();
+
+                writer.key("apply");
+                writeVariant(stateCase.apply(), writer);
+                writer.endObject();
+            }
+            writer.endArray();
+        }
+
+        writer.endObject();
     }
 
     @Override

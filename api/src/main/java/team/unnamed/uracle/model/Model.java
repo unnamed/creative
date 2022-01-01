@@ -27,6 +27,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,8 @@ public interface Model extends Examinable {
      * @return The model elements
      */
     @Unmodifiable List<Element> elements();
+
+    void serialize(AssetWriter writer);
 
     static BlockModel block(
             Key parent,

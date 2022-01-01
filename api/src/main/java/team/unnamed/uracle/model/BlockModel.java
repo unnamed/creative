@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class BlockModel implements Model {
+public class BlockModel extends AbstractModel implements Model {
 
     public static final Key BUILTIN_GENERATED = Key.key("builtin/generated");
 
@@ -127,6 +128,23 @@ public class BlockModel implements Model {
     @Override
     public @Unmodifiable List<Element> elements() {
         return elements;
+    }
+
+    @Override
+    protected void serializeOwnProperties(AssetWriter writer) {
+        if (!ambientOcclusion) {
+            // only write if not default value
+            writer.key("ambientocclusion").value(ambientOcclusion);
+        }
+
+        writer.key("textures").startObject();
+        if (textures.particle() != null) {
+            writer.key("particle").value(textures.particle());
+        }
+        for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
+            writer.key(variable.getKey()).value(variable.getValue());
+        }
+        writer.endObject();
     }
 
     @Override

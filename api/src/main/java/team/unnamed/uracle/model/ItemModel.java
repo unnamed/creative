@@ -54,10 +54,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.item.ItemOverride;
+import team.unnamed.uracle.model.item.ItemPredicate;
 import team.unnamed.uracle.model.item.ItemTexture;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -72,7 +75,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class ItemModel implements Model  {
+public class ItemModel extends AbstractModel implements Model  {
 
     /**
      * An {@link ItemModel} can be set to extend this key to use
@@ -208,6 +211,42 @@ public class ItemModel implements Model  {
     public enum GuiLight {
         FRONT,
         SIDE
+    }
+
+    @Override
+    protected void serializeOwnProperties(AssetWriter writer) {
+        // textures
+        writer.key("textures").startObject();
+        // ah yes, don't repeat yourself
+        if (textures.particle() != null) {
+            writer.key("particle").value(textures.particle());
+        }
+        for (int i = 0; i < textures.layers().size(); i++) {
+            writer.key("layer" + i).value(textures.layers().get(i));
+        }
+        for (Map.Entry<String, Key> variable : textures.variables().entrySet()) {
+            writer.key(variable.getKey()).value(variable.getValue());
+        }
+        writer.endObject();
+
+        if (guiLight != ItemModel.GuiLight.SIDE) {
+            // only write if not default
+            writer.key("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
+        }
+
+        // overrides
+        writer.key("overrides").startArray();
+        for (ItemOverride override : overrides) {
+            writer.startObject()
+                    .key("predicate").startObject();
+            for (ItemPredicate predicate : override.predicate()) {
+                writer.key(predicate.name()).value(predicate.value());
+            }
+            writer.endObject()
+                    .key("model").value(override.model())
+                    .endObject();
+        }
+        writer.endArray();
     }
 
     @Override
