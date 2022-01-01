@@ -29,6 +29,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +73,20 @@ public class FontRegistry implements Examinable {
      */
     public @Unmodifiable List<Font> providers() {
         return providers;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("providers").startArray();
+
+        // write providers
+        for (Font provider : providers) {
+            provider.serialize(writer);
+        }
+
+        writer
+                .endArray()
+                .endObject();
     }
 
     @Override

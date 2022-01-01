@@ -98,76 +98,13 @@ public class DefaultResourcePackSerializer
     }
 
     //#region Font Serialization Region
-    private static void bitMapFont(AssetWriter writer, BitMapFont font) {
-        writer
-            .key("type").value("bitmap")
-            .key("file").value(font.file());
-
-        if (font.height() != BitMapFont.DEFAULT_HEIGHT) {
-            // only write if height is not equal to the default height
-            writer.key("height").value(font.height());
-        }
-
-        writer
-            .key("ascent").value(font.ascent())
-            .key("chars").startArray();
-
-        for (String character : font.characters()) {
-            writer.value(character);
-        }
-
-        writer.endArray();
-    }
-
-    private static void legacyUnicodeFont(AssetWriter writer, LegacyUnicodeFont font) {
-        writer
-            .key("sizes").value(font.sizes())
-            .key("template").value(font.template());
-    }
-
-    private static void ttfFont(AssetWriter writer, TrueTypeFont font) {
-        writer
-            .key("file").value(font.file())
-            .key("shift").startArray()
-                .value(font.shift().x())
-                .value(font.shift().y())
-            .endArray()
-            .key("size").value(font.size())
-            .key("oversample").value(font.oversample())
-            .key("skip").startArray();
-
-        for (String toSkip : font.skip()) {
-            writer.value(toSkip);
-        }
-        writer.endArray();
-    }
-
     private static void font(FileTree tree, Key location, FontRegistry font) {
 
         // e.g.: assets/minecraft/font/default
         String path = ASSETS + location.namespace() + "/font/" + location.value();
 
         try (AssetWriter writer = tree.open(path)) {
-            writer.startObject()
-                .key("providers")
-                .startArray();
 
-            // write providers
-            for (Font provider : font.providers()) {
-                writer.startObject();
-                if (provider instanceof BitMapFont) {
-                    bitMapFont(writer, (BitMapFont) provider);
-                } else if (provider instanceof LegacyUnicodeFont) {
-                    legacyUnicodeFont(writer, (LegacyUnicodeFont) provider);
-                } else {
-                    ttfFont(writer, (TrueTypeFont) provider);
-                }
-                writer.endObject();
-            }
-
-            writer
-                .endArray()
-                .endObject();
         }
     }
     //#endregion

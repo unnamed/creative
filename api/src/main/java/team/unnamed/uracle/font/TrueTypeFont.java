@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.Vector2Float;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -115,6 +116,19 @@ public class TrueTypeFont implements Font {
      */
     public @Unmodifiable List<String> skip() {
         return skip;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("file").value(file)
+                .key("shift").startArray()
+                .value(shift.x())
+                .value(shift.y())
+                .endArray()
+                .key("size").value(size)
+                .key("oversample").value(oversample)
+                .key("skip").value(skip)
+                .endObject();
     }
 
     @Override

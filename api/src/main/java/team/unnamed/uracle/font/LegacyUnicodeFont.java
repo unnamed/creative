@@ -27,6 +27,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -72,6 +73,13 @@ public class LegacyUnicodeFont implements Font {
      */
     public Key template() {
         return template;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("sizes").value(sizes)
+                .key("template").value(template)
+                .endObject();
     }
 
     @Override

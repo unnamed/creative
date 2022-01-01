@@ -28,6 +28,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -115,6 +116,21 @@ public class BitMapFont implements Font {
      */
     public @Unmodifiable List<String> characters() {
         return characters;
+    }
+
+    public void serialize(AssetWriter writer) {
+        writer.startObject()
+                .key("type").value("bitmap")
+                .key("file").value(file);
+
+        if (height != BitMapFont.DEFAULT_HEIGHT) {
+            // only write if height is not equal to the default height
+            writer.key("height").value(height);
+        }
+
+        writer.key("ascent").value(ascent)
+                .key("chars").value(characters)
+                .endObject();
     }
 
     @Override
