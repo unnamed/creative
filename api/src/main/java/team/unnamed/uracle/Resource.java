@@ -21,13 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata;
+package team.unnamed.uracle;
 
-import net.kyori.examination.Examinable;
+import team.unnamed.uracle.metadata.MetadataPart;
 
-public interface MetadataPart extends Examinable {
+public interface Resource {
 
-    interface Serializer<T extends MetadataPart> {
-    }
+    <T extends MetadataPart> T meta(String name);
 
 }

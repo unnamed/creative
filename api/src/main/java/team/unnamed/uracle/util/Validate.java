@@ -1,7 +1,7 @@
 /*
  * This file is part of uracle, licensed under the MIT license
  *
- * Copyright (c) 2021 Unnamed Team
+ * Copyright (c) 2021-2022 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata;
+package team.unnamed.uracle.util;
 
-public interface MetadataPartSerializer<T extends MetadataPart> {
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+
+@ApiStatus.Internal
+public final class Validate {
+
+    private Validate() {
+    }
+
+    @Contract("null, _ -> fail")
+    public static String requireNonEmpty(String string, String message) {
+        if (string == null) {
+            throw new NullPointerException(message);
+        } else if (string.isEmpty()) {
+            throw new EmptyStringException(message);
+        } else {
+            return string;
+        }
+    }
+
+    private static class EmptyStringException extends IllegalArgumentException {
+
+        EmptyStringException(String message) {
+            super(message);
+        }
+
+    }
+
 }

@@ -47,7 +47,6 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  */
 public class ResourcePack {
 
-    private final PackMeta meta;
     @Nullable private final Writable icon;
 
     private final Map<Key, FontRegistry> fonts;
@@ -55,11 +54,9 @@ public class ResourcePack {
     private final Map<Key, Model> models;
     private final Map<Key, BlockState> blockStates;
     private final Map<String, SoundRegistry> sounds;
-    private final Map<Key, Texture> textures;
     private final Map<String, Writable> extra;
 
     private ResourcePack(
-            PackMeta meta,
             @Nullable Writable icon,
 
             Map<Key, FontRegistry> fonts,
@@ -67,7 +64,6 @@ public class ResourcePack {
             Map<Key, Model> models,
             Map<Key, BlockState> blockStates,
             Map<String, SoundRegistry> sounds,
-            Map<Key, Texture> textures,
             Map<String, Writable> extra
     ) {
         requireNonNull(meta, "meta");

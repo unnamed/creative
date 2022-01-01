@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
+import static team.unnamed.uracle.util.Validate.requireNonEmpty;
 
 /**
  * Object representing a Minecraft's Resource Pack language
@@ -56,8 +56,8 @@ public class LanguageEntry implements Examinable {
             String region,
             boolean bidirectional
     ) {
-        this.name = requireNonNull(name, "name");
-        this.region = requireNonNull(region, "region");
+        this.name = requireNonEmpty(name, "name");
+        this.region = requireNonEmpty(region, "region");
         this.bidirectional = bidirectional;
     }
 
@@ -164,12 +164,12 @@ public class LanguageEntry implements Examinable {
         }
 
         public Builder name(String name) {
-            this.name = requireNonNull(name, "name");
+            this.name = requireNonEmpty(name, "name");
             return this;
         }
 
         public Builder region(String region) {
-            this.region = requireNonNull(region, "region");
+            this.region = requireNonEmpty(region, "region");
             return this;
         }
 
