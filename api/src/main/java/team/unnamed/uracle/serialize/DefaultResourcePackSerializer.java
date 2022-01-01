@@ -537,14 +537,12 @@ public class DefaultResourcePackSerializer
         }
 
         TextureMeta meta = texture.meta();
-        AnimationMeta animation = texture.animation();
         VillagerMeta villager = texture.villager();
 
         boolean hasMeta = meta != null;
-        boolean hasAnimation = animation != null;
         boolean hasVillager = villager != null;
 
-        if (!hasMeta && !hasAnimation && !hasVillager) {
+        if (!hasMeta && !hasVillager) {
             // no metadata to write
             return;
         }
@@ -560,35 +558,6 @@ public class DefaultResourcePackSerializer
                 for (int mipmap : meta.mipmaps()) {
                     writer.value(mipmap);
                 }
-                writer.endArray().endObject();
-            }
-
-            if (hasAnimation) {
-                int frameTime = animation.frameTime();
-
-                writer.key("animation").startObject()
-                    .key("interpolate").value(animation.interpolate())
-                    .key("width").value(animation.width())
-                    .key("height").value(animation.height())
-                    .key("frametime").value(frameTime)
-                    .key("frames").startArray();
-
-                for (AnimationFrame frame : animation.frames()) {
-                    int index = frame.index();
-                    int time = frame.frameTime();
-
-                    if (frameTime == time) {
-                        // same as default frameTime, we can skip it
-                        writer.value(index);
-                    } else {
-                        // specific frameTime, write as an object
-                        writer.startObject()
-                            .key("index").value(index)
-                            .key("time").value(time)
-                            .endObject();
-                    }
-                }
-
                 writer.endArray().endObject();
             }
 

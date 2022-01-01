@@ -192,6 +192,17 @@ public class AnimationMeta implements MetadataPart {
     }
 
     /**
+     * Returns the {@link Serializer} implementation for
+     * this {@link MetadataPart} implementation
+     *
+     * @return The serializer implementation for animation meta
+     * @since 1.0.0
+     */
+    public static Serializer<AnimationMeta> serializer() {
+        return AnimationMetaSerializer.INSTANCE;
+    }
+
+    /**
      * Mutable and fluent-style builder for {@link AnimationMeta}
      * and {@link AnimationFrame} instances
      *
