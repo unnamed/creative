@@ -15,7 +15,7 @@ import team.unnamed.uracle.export.Streams;
 import team.unnamed.uracle.listener.PackMetaWriter;
 import team.unnamed.uracle.listener.PresetsWriter;
 import team.unnamed.uracle.listener.ResourcePackApplyListener;
-import team.unnamed.uracle.metadata.PackInfo;
+import team.unnamed.uracle.metadata.PackMeta;
 import team.unnamed.uracle.util.Texts;
 
 import java.io.File;
@@ -26,7 +26,7 @@ import java.io.OutputStream;
 
 public class UraclePlugin extends JavaPlugin {
 
-    @Nullable private PackInfo info;
+    @Nullable private PackMeta info;
     private Uracle service;
 
     @Override
@@ -92,7 +92,7 @@ public class UraclePlugin extends JavaPlugin {
 
         // load 'metadata'
         if (config.contains("metadata")) {
-            info = PackInfo.of(
+            info = PackMeta.of(
                     config.getInt("metadata.format", 7),
                     Texts.colorize(config.getString("metadata.description"))
             );
@@ -102,7 +102,7 @@ public class UraclePlugin extends JavaPlugin {
     }
 
     @Nullable
-    public PackInfo getInfo() {
+    public PackMeta getInfo() {
         return info;
     }
 

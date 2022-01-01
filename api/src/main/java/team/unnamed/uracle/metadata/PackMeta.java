@@ -38,12 +38,12 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class PackInfo implements MetadataPart {
+public class PackMeta implements MetadataPart {
 
     private final int format;
     private final String description;
 
-    public PackInfo(
+    private PackMeta(
             int format,
             String description
     ) {
@@ -96,9 +96,9 @@ public class PackInfo implements MetadataPart {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PackInfo packInfo = (PackInfo) o;
-        return format == packInfo.format
-                && description.equals(packInfo.description);
+        PackMeta packMeta = (PackMeta) o;
+        return format == packMeta.format
+                && description.equals(packMeta.description);
     }
 
     @Override
@@ -107,16 +107,16 @@ public class PackInfo implements MetadataPart {
     }
 
     /**
-     * Creates a new {@link PackInfo} instance from
+     * Creates a new {@link PackMeta} instance from
      * the given values
      *
      * @param format The pack format
      * @param description The pack description
-     * @return A new {@link PackInfo} instance
+     * @return A new {@link PackMeta} instance
      * @since 1.0.0
      */
-    public static PackInfo of(int format, String description) {
-        return new PackInfo(format, description);
+    public static PackMeta of(int format, String description) {
+        return new PackMeta(format, description);
     }
 
 }

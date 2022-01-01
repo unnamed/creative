@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.uracle.lang.LanguageEntry;
-import team.unnamed.uracle.metadata.PackInfo;
+import team.unnamed.uracle.metadata.PackMeta;
 import team.unnamed.uracle.mock.MockTreeOutputStream;
 import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 
@@ -43,7 +43,7 @@ public class PackMetaSerializationTest {
         MockTreeOutputStream stream = new MockTreeOutputStream();
         ResourcePackWriter builder = new DefaultResourcePackSerializer(stream);
 
-        PackInfo info = PackInfo.of(7, "Hello world");
+        PackMeta info = PackMeta.of(7, "Hello world");
         builder.meta(PackMeta.of(info));
 
         Assertions.assertEquals(
@@ -64,7 +64,7 @@ public class PackMetaSerializationTest {
         MockTreeOutputStream stream = new MockTreeOutputStream();
         ResourcePackWriter builder = new DefaultResourcePackSerializer(stream);
 
-        PackInfo info = PackInfo.of(7, "Hello world");
+        PackMeta info = PackMeta.of(7, "Hello world");
         Map<Key, LanguageEntry> languages = new HashMap<Key, LanguageEntry>() {{
             put(Key.key("uracle:es_test"), LanguageEntry.builder()
                     .name("Test Language")

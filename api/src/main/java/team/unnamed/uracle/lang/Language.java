@@ -28,7 +28,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.PackMeta;
+import team.unnamed.uracle.metadata.LanguageMeta;
 
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +40,7 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 /**
  * Represents a set of translations for a specific
  * language. Custom language additions require a
- * {@link LanguageEntry} being added to the {@link PackMeta}
+ * {@link LanguageEntry} being added to the {@link LanguageMeta}
  * instance of the resource pack
  *
  * @since 1.0.0

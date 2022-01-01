@@ -26,7 +26,6 @@ package team.unnamed.uracle.serialize;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
 import team.unnamed.uracle.CubeFace;
-import team.unnamed.uracle.PackMeta;
 import team.unnamed.uracle.ResourcePack;
 import team.unnamed.uracle.Writable;
 import team.unnamed.uracle.font.BitMapFont;
