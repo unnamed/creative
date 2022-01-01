@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata;
+package team.unnamed.uracle.metadata.texture;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.texture.Texture;
+import team.unnamed.uracle.metadata.MetadataPart;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -35,8 +35,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents {@link Texture} meta-information that is applicable
- * for any texture type
+ * Represents meta-data applicable to textures
  *
  * @since 1.0.0
  */
@@ -121,7 +120,7 @@ public class TextureMeta implements MetadataPart {
 
     /**
      * Creates a new {@link TextureMeta} instance to
-     * be applied to a {@link Texture}
+     * be applied to a texture
      *
      * @param blur To make the texture blur
      * @param clamp To stretch the texture
