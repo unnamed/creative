@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.uracle.lang.LanguageEntry;
+import team.unnamed.uracle.metadata.PackInfo;
 import team.unnamed.uracle.mock.MockTreeOutputStream;
 import team.unnamed.uracle.serialize.DefaultResourcePackSerializer;
 

@@ -15,6 +15,7 @@ import team.unnamed.uracle.export.Streams;
 import team.unnamed.uracle.listener.PackMetaWriter;
 import team.unnamed.uracle.listener.PresetsWriter;
 import team.unnamed.uracle.listener.ResourcePackApplyListener;
+import team.unnamed.uracle.metadata.PackInfo;
 import team.unnamed.uracle.util.Texts;
 
 import java.io.File;

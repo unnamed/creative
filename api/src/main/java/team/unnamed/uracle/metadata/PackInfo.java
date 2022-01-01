@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle;
+package team.unnamed.uracle.metadata;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class PackInfo implements Examinable {
+public class PackInfo implements MetadataPart {
 
     private final int format;
     private final String description;
