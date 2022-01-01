@@ -45,6 +45,9 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  */
 public class LanguageMeta implements MetadataPart {
 
+    private static final Serializer<LanguageMeta> SERIALIZER
+            = new LanguageMetaSerializer();
+
     @Unmodifiable private final Map<Key, LanguageEntry> languages;
 
     private LanguageMeta(Map<Key, LanguageEntry> languages) {
@@ -97,6 +100,17 @@ public class LanguageMeta implements MetadataPart {
      */
     public static LanguageMeta of(Map<Key, LanguageEntry> languages) {
         return new LanguageMeta(languages);
+    }
+
+    /**
+     * Returns the {@link Serializer} implementation for
+     * this {@link MetadataPart} implementation
+     *
+     * @return The serializer implementation for language meta
+     * @since 1.0.0
+     */
+    public static Serializer<LanguageMeta> serializer() {
+        return SERIALIZER;
     }
 
 }

@@ -45,6 +45,9 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  */
 public class AnimationMeta implements MetadataPart {
 
+    private static final Serializer<AnimationMeta> SERIALIZER
+            = new AnimationMetaSerializer();
+
     private final boolean interpolate;
     private final int width;
     private final int height;
@@ -199,7 +202,7 @@ public class AnimationMeta implements MetadataPart {
      * @since 1.0.0
      */
     public static Serializer<AnimationMeta> serializer() {
-        return AnimationMetaSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     /**

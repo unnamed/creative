@@ -21,46 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata.animation;
+package team.unnamed.uracle.metadata.language;
 
+import net.kyori.adventure.key.Key;
 import team.unnamed.uracle.metadata.MetadataPart;
 import team.unnamed.uracle.serialize.AssetWriter;
 
-/**
- * Serializer implementation for {@link AnimationMeta}
- * instances, internal!
- */
-final class AnimationMetaSerializer
-        implements MetadataPart.Serializer<AnimationMeta> {
+import java.util.Map;
+
+final class LanguageMetaSerializer
+        implements MetadataPart.Serializer<LanguageMeta> {
 
     @Override
-    public void serialize(AssetWriter writer, AnimationMeta part) {
-        int frameTime = part.frameTime();
+    public void serialize(AssetWriter writer, LanguageMeta part) {
 
-        writer.key("animation").startObject()
-                .key("interpolate").value(part.interpolate())
-                .key("width").value(part.width())
-                .key("height").value(part.height())
-                .key("frametime").value(frameTime)
-                .key("frames").startArray();
+        Map<Key, LanguageEntry> languages = part.languages();
 
-        for (AnimationFrame frame : part.frames()) {
-            int index = frame.index();
-            int time = frame.frameTime();
-
-            if (frameTime == time || frameTime == AnimationFrame.DELEGATE_FRAME_TIME) {
-                // same as default frameTime, we can skip it
-                writer.value(index);
-            } else {
-                // specific frameTime, write as an object
-                writer.startObject()
-                        .key("index").value(index)
-                        .key("time").value(time)
-                        .endObject();
-            }
+        if (languages.isEmpty()) {
+            // do not write anything if no
+            // languages were registered
+            return;
         }
 
-        writer.endArray().endObject();
+        writer.key("language").startObject();
+
+        for (Map.Entry<Key, LanguageEntry> entry : languages.entrySet()) {
+            LanguageEntry language = entry.getValue();
+            // "?": { "name": ?, "region": ?, "bidirectional": ? }
+            writer.key(entry.getKey().asString()).startObject()
+                    .key("name").value(language.name())
+                    .key("region").value(language.region())
+                    .key("bidirectional").value(language.bidirectional())
+                    .endObject();
+        }
+
+        writer.endObject();
     }
 
 }

@@ -110,23 +110,6 @@ public class DefaultResourcePackSerializer
                     .key("format").value(meta.pack().format())
                     .key("description").value(meta.pack().description())
                     .endObject();
-
-            if (!meta.languages().isEmpty()) {
-                // "language": {
-                writer.key("language").startObject();
-
-                for (Map.Entry<Key, LanguageEntry> entry : meta.languages().entrySet()) {
-                    LanguageEntry language = entry.getValue();
-                    // "?": { "name": ?, "region": ?, "bidirectional": ? }
-                    writer.key(entry.getKey().asString()).startObject()
-                            .key("name").value(language.name())
-                            .key("region").value(language.region())
-                            .key("bidirectional").value(language.bidirectional())
-                            .endObject();
-                }
-
-                writer.endObject();
-            }
             writer.endObject();
         }
     }
