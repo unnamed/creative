@@ -2,7 +2,7 @@ package team.unnamed.uracle.listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import team.unnamed.uracle.metadata.PackMeta;
+import team.unnamed.uracle.metadata.pack.PackMeta;
 import team.unnamed.uracle.UraclePlugin;
 import team.unnamed.uracle.event.ResourcePackGenerateEvent;
 
