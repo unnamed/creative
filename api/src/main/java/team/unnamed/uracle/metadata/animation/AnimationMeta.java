@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata;
+package team.unnamed.uracle.metadata.animation;
 
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.metadata.MetadataPart;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,14 +49,14 @@ public class AnimationMeta implements MetadataPart {
     private final int width;
     private final int height;
     private final int frameTime;
-    private final List<Frame> frames;
+    private final List<AnimationFrame> frames;
 
     private AnimationMeta(
             boolean interpolate,
             int width,
             int height,
             int frameTime,
-            List<Frame> frames
+            List<AnimationFrame> frames
     ) {
         requireNonNull(frames, "frames");
         this.interpolate = interpolate;
@@ -101,7 +101,7 @@ public class AnimationMeta implements MetadataPart {
 
     /**
      * The global frame time for all frames, it can
-     * be overwritten by specific {@link Frame} elements
+     * be overwritten by specific {@link AnimationFrame} elements
      *
      * @return The fallback frame-time for frames that
      * don't specify one
@@ -112,11 +112,11 @@ public class AnimationMeta implements MetadataPart {
 
     /**
      * Returns an unmodifiable list of the animation
-     * {@link Frame} frames
+     * {@link AnimationFrame} frames
      *
      * @return The animation frames
      */
-    public List<Frame> frames() {
+    public List<AnimationFrame> frames() {
         return Collections.unmodifiableList(frames);
     }
 
@@ -169,7 +169,7 @@ public class AnimationMeta implements MetadataPart {
             int width,
             int height,
             int frameTime,
-            List<Frame> frames
+            List<AnimationFrame> frames
     ) {
         return new AnimationMeta(
                 interpolate,
@@ -184,103 +184,16 @@ public class AnimationMeta implements MetadataPart {
      * Returns a new instance of our builder implementation
      * used to build {@link AnimationMeta} instances
      *
-     * @return A new fresh builder instance
+     * @return A new builder instance
+     * @since 1.0.0
      */
     public static Builder builder() {
         return new Builder();
     }
 
     /**
-     * Represents a texture animation frame, includes the
-     * index of the frame and its specific but optional
-     * frame-time, it will use {@link AnimationMeta#frameTime()}
-     * if it is not specified
-     *
-     * @since 1.0.0
-     */
-    public static class Frame implements Examinable {
-
-        /**
-         * A number corresponding to position of a frame from the
-         * top, with the top frame being 0.
-         */
-        private final int index;
-
-        /**
-         * The time in ticks to show this frame, uses
-         * {@link AnimationMeta#frameTime()} when it is
-         * not specified
-         */
-        private final int frameTime;
-
-        /**
-         * Instantiated via {@link AnimationMeta.Builder#frame},
-         * not by the end-user
-         */
-        private Frame(int index, int frameTime) {
-            this.index = index;
-            this.frameTime = frameTime;
-        }
-
-        /**
-         * Returns the animation frame index
-         *
-         * @return The frame index
-         */
-        public int index() {
-            return index;
-        }
-
-        /**
-         * Returns the animation frame time
-         *
-         * @return The frame time in ticks
-         */
-        public int frameTime() {
-            return frameTime;
-        }
-
-        @Override
-        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-            return Stream.of(
-                    ExaminableProperty.of("index", index),
-                    ExaminableProperty.of("frameTime", frameTime)
-            );
-        }
-
-        @Override
-        public String toString() {
-            return examine(StringExaminer.simpleEscaping());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Frame frame = (Frame) o;
-            return index == frame.index
-                    && frameTime == frame.frameTime;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(index, frameTime);
-        }
-
-        /**
-         * Creates a new frame using the given index and
-         * frameTime
-         */
-        public static Frame of(int index, int frameTime) {
-            return new Frame(index, frameTime);
-        }
-
-    }
-
-    /**
      * Mutable and fluent-style builder for {@link AnimationMeta}
-     * and {@link Frame} instances, since animation meta has a lot
-     * of parameters and frame depends on meta, we must use this
+     * and {@link AnimationFrame} instances
      *
      * @since 1.0.0
      */
@@ -290,7 +203,7 @@ public class AnimationMeta implements MetadataPart {
         private int width;
         private int height;
         private int frameTime;
-        private List<Frame> frames = Collections.emptyList();
+        private List<AnimationFrame> frames = Collections.emptyList();
 
         private Builder() {
         }
@@ -315,7 +228,7 @@ public class AnimationMeta implements MetadataPart {
             return this;
         }
 
-        public Builder frames(List<Frame> frames) {
+        public Builder frames(List<AnimationFrame> frames) {
             this.frames = requireNonNull(frames, "frames");
             return this;
         }
