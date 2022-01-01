@@ -513,17 +513,6 @@ public class DefaultResourcePackSerializer
         try (AssetWriter writer = tree.open(path + MCMETA_EXT)) {
             writer.startObject();
 
-            if (hasMeta) {
-                writer.key("texture").startObject()
-                    .key("blur").value(meta.blur())
-                    .key("clamp").value(meta.clamp())
-                    .key("mipmaps").startArray();
-                for (int mipmap : meta.mipmaps()) {
-                    writer.value(mipmap);
-                }
-                writer.endArray().endObject();
-            }
-
             if (hasVillager) {
                 VillagerMeta.Hat hat = villager.hat();
                 writer.key("villager").startObject();

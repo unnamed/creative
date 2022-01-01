@@ -38,6 +38,9 @@ import java.util.stream.Stream;
  */
 public class TextureMeta implements MetadataPart {
 
+    private static final Serializer<TextureMeta> SERIALIZER
+            = new TextureMetaSerializer();
+
     private final boolean blur;
     private final boolean clamp;
 
@@ -110,6 +113,17 @@ public class TextureMeta implements MetadataPart {
             boolean clamp
     ) {
         return new TextureMeta(blur, clamp);
+    }
+
+    /**
+     * Returns the {@link Serializer} implementation for
+     * this {@link MetadataPart} implementation
+     *
+     * @return The serializer implementation for texture meta
+     * @since 1.0.0
+     */
+    public static Serializer<TextureMeta> serializer() {
+        return SERIALIZER;
     }
 
 }

@@ -123,7 +123,6 @@ public class PackMeta implements MetadataPart {
         return new PackMeta(format, description);
     }
 
-
     /**
      * Returns the {@link Serializer} implementation for
      * this {@link MetadataPart} implementation
