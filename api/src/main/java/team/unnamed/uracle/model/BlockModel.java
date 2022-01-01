@@ -27,6 +27,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
 import team.unnamed.uracle.serialize.AssetWriter;
@@ -53,20 +54,19 @@ public class BlockModel extends AbstractModel implements Model {
 
     public static final boolean DEFAULT_AMBIENT_OCCLUSION = true;
 
-    private final Key parent;
+    @Nullable private final Key parent;
     private final boolean ambientOcclusion;
     private final Map<ModelDisplay.Type, ModelDisplay> display;
     private final BlockTexture textures;
     @Unmodifiable private final List<Element> elements;
 
     protected BlockModel(
-            Key parent,
+            @Nullable Key parent,
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
             BlockTexture textures,
             List<Element> elements
     ) {
-        requireNonNull(parent, "parent");
         requireNonNull(display, "display");
         requireNonNull(textures, "textures");
         requireNonNull(elements, "elements");
@@ -84,7 +84,7 @@ public class BlockModel extends AbstractModel implements Model {
      * @return The parent block model location
      */
     @Override
-    public Key parent() {
+    public @Nullable Key parent() {
         return parent;
     }
 
@@ -165,7 +165,7 @@ public class BlockModel extends AbstractModel implements Model {
         if (o == null || getClass() != o.getClass()) return false;
         BlockModel that = (BlockModel) o;
         return ambientOcclusion == that.ambientOcclusion
-                && parent.equals(that.parent)
+                && Objects.equals(parent, that.parent)
                 && display.equals(that.display)
                 && textures.equals(that.textures)
                 && elements.equals(that.elements);
@@ -187,8 +187,8 @@ public class BlockModel extends AbstractModel implements Model {
         protected Builder() {
         }
 
-        public Builder parent(Key parent) {
-            this.parent = requireNonNull(parent, "parent");
+        public Builder parent(@Nullable Key parent) {
+            this.parent = parent;
             return this;
         }
 

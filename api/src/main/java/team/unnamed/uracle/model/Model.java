@@ -25,6 +25,7 @@ package team.unnamed.uracle.model;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
 import team.unnamed.uracle.serialize.AssetWriter;
@@ -46,7 +47,7 @@ public interface Model extends Examinable {
      *
      * @return The parent model location
      */
-    Key parent();
+    @Nullable Key parent();
 
     /**
      * Returns a map of the different places
@@ -68,7 +69,7 @@ public interface Model extends Examinable {
     void serialize(AssetWriter writer);
 
     static BlockModel block(
-            Key parent,
+            @Nullable Key parent,
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
             BlockTexture textures,
