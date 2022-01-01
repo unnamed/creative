@@ -28,11 +28,7 @@ import org.intellij.lang.annotations.Subst;
 import team.unnamed.uracle.CubeFace;
 import team.unnamed.uracle.ResourcePack;
 import team.unnamed.uracle.Writable;
-import team.unnamed.uracle.font.BitMapFont;
-import team.unnamed.uracle.font.Font;
 import team.unnamed.uracle.font.FontRegistry;
-import team.unnamed.uracle.font.LegacyUnicodeFont;
-import team.unnamed.uracle.font.TrueTypeFont;
 import team.unnamed.uracle.lang.Language;
 import team.unnamed.uracle.model.BlockModel;
 import team.unnamed.uracle.model.BlockState;
@@ -48,10 +44,8 @@ import team.unnamed.uracle.model.blockstate.StateVariant;
 import team.unnamed.uracle.model.item.ItemOverride;
 import team.unnamed.uracle.model.item.ItemPredicate;
 import team.unnamed.uracle.model.item.ItemTexture;
-import team.unnamed.uracle.sound.Sound;
-import team.unnamed.uracle.sound.SoundEvent;
 import team.unnamed.uracle.sound.SoundRegistry;
-import team.unnamed.uracle.metadata.texture.TextureMeta;
+import team.unnamed.uracle.metadata.TextureMeta;
 import team.unnamed.uracle.metadata.VillagerMeta;
 
 import java.io.IOException;
@@ -345,53 +339,6 @@ public class DefaultResourcePackSerializer
                 writer.endArray();
             }
 
-            writer.endObject();
-        }
-    }
-    //#endregion
-
-    //#region Sound Serialization Region
-    private static void sounds(
-            FileTree tree,
-            @Subst(Key.MINECRAFT_NAMESPACE) String namespace,
-            SoundRegistry registry
-    ) {
-        // let Key validate the namespace
-        Key.key(namespace, "dummy");
-
-        String path = ASSETS + namespace + "/sounds" + JSON_EXT;
-
-        try (AssetWriter writer = tree.open(path)) {
-
-        }
-    }
-    //#endregion
-
-    //#region Texture Serialization Region
-    private static void texture(FileTree tree, Key location, Texture texture) {
-
-        String path = ASSETS + location.namespace() + "/textures/" + location.value() + PNG_EXT;
-
-        // write the actual texture PNG image
-        try (AssetWriter writer = tree.open(path)) {
-            texture.data().write(writer);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Cannot write texture", e);
-        }
-
-        TextureMeta meta = texture.meta();
-        VillagerMeta villager = texture.villager();
-
-        boolean hasMeta = meta != null;
-        boolean hasVillager = villager != null;
-
-        if (!hasMeta && !hasVillager) {
-            // no metadata to write
-            return;
-        }
-
-        try (AssetWriter writer = tree.open(path + MCMETA_EXT)) {
-            writer.startObject();
             writer.endObject();
         }
     }

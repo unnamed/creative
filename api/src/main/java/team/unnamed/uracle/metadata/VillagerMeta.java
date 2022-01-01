@@ -43,9 +43,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class VillagerMeta implements MetadataPart {
 
-    private static final MetadataPart.Serializer<VillagerMeta> SERIALIZER
-            = new VillagerMeta.Serializer();
-
     private final Hat hat;
 
     private VillagerMeta(Hat hat) {
@@ -58,6 +55,16 @@ public class VillagerMeta implements MetadataPart {
      */
     public Hat hat() {
         return hat;
+    }
+
+    @Override
+    public void serialize(AssetWriter writer) {
+        writer.key("villager").startObject();
+        if (hat != Hat.NONE) {
+            // only write if not default value
+            writer.key("hat").value(hat.name().toLowerCase(Locale.ROOT));
+        }
+        writer.endObject();
     }
 
     @Override
@@ -97,35 +104,10 @@ public class VillagerMeta implements MetadataPart {
         return new VillagerMeta(hat);
     }
 
-    public static MetadataPart.Serializer<VillagerMeta> serializer() {
-        return SERIALIZER;
-    }
-
     public enum Hat {
         NONE, // default
         PARTIAL,
         FULL
-    }
-
-    private static class Serializer
-            implements MetadataPart.Serializer<VillagerMeta> {
-
-        @Override
-        public void serialize(AssetWriter writer, VillagerMeta part) {
-
-            VillagerMeta.Hat hat = part.hat();
-
-            if (hat == Hat.NONE) {
-                // do not write if default value
-                // (NONE)
-                return;
-            }
-
-            writer.key("villager").startObject()
-                .key("hat").value(hat.name().toLowerCase(Locale.ROOT))
-                .endObject();
-        }
-
     }
 
 }

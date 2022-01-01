@@ -37,23 +37,11 @@ import team.unnamed.uracle.serialize.AssetWriter;
 public interface MetadataPart extends Examinable {
 
     /**
-     * Responsible for serializing {@link MetadataPart}
-     * instances into a resource-pack file (JSON)
+     * Serializes this {@link MetadataPart} instance
+     * using the given {@link AssetWriter}
      *
-     * @param <T> The metadata part type
-     * @since 1.0.0
+     * @param writer The asset writer
      */
-    interface Serializer<T extends MetadataPart> {
-
-        /**
-         * Serializes a {@link MetadataPart} instance
-         * using the given {@link AssetWriter}
-         *
-         * @param writer The asset writer
-         * @param part The metadata part to serialize
-         */
-        void serialize(AssetWriter writer, T part);
-
-    }
+    void serialize(AssetWriter writer);
 
 }

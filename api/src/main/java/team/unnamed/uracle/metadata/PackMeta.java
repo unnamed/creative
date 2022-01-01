@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata.pack;
+package team.unnamed.uracle.metadata;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.metadata.MetadataPart;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -40,9 +40,6 @@ import static java.util.Objects.requireNonNull;
  * @since 1.0.0
  */
 public class PackMeta implements MetadataPart {
-
-    private static final Serializer<PackMeta> SERIALIZER
-            = new PackMetaSerializer();
 
     private final int format;
     private final String description;
@@ -84,6 +81,14 @@ public class PackMeta implements MetadataPart {
     }
 
     @Override
+    public void serialize(AssetWriter writer) {
+        writer.key("pack").startObject()
+                .key("format").value(format)
+                .key("description").value(description)
+                .endObject();
+    }
+
+    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("format", format),
@@ -121,17 +126,6 @@ public class PackMeta implements MetadataPart {
      */
     public static PackMeta of(int format, String description) {
         return new PackMeta(format, description);
-    }
-
-    /**
-     * Returns the {@link Serializer} implementation for
-     * this {@link MetadataPart} implementation
-     *
-     * @return The serializer implementation for pack meta
-     * @since 1.0.0
-     */
-    public static Serializer<PackMeta> serializer() {
-        return SERIALIZER;
     }
 
 }

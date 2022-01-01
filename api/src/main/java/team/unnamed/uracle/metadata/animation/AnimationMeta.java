@@ -27,6 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.metadata.MetadataPart;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,9 +45,6 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  * @since 1.0.0
  */
 public class AnimationMeta implements MetadataPart {
-
-    private static final Serializer<AnimationMeta> SERIALIZER
-            = new AnimationMetaSerializer();
 
     private final boolean interpolate;
     private final int width;
@@ -124,6 +122,35 @@ public class AnimationMeta implements MetadataPart {
     }
 
     @Override
+    public void serialize(AssetWriter writer) {
+
+        writer.key("animation").startObject()
+                .key("interpolate").value(interpolate)
+                .key("width").value(width)
+                .key("height").value(height)
+                .key("frametime").value(frameTime)
+                .key("frames").startArray();
+
+        for (AnimationFrame frame : frames) {
+            int index = frame.index();
+            int time = frame.frameTime();
+
+            if (frameTime == time || frameTime == AnimationFrame.DELEGATE_FRAME_TIME) {
+                // same as default frameTime, we can skip it
+                writer.value(index);
+            } else {
+                // specific frameTime, write as an object
+                writer.startObject()
+                        .key("index").value(index)
+                        .key("time").value(time)
+                        .endObject();
+            }
+        }
+
+        writer.endArray().endObject();
+    }
+
+    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("interpolate", interpolate),
@@ -192,17 +219,6 @@ public class AnimationMeta implements MetadataPart {
      */
     public static Builder builder() {
         return new Builder();
-    }
-
-    /**
-     * Returns the {@link Serializer} implementation for
-     * this {@link MetadataPart} implementation
-     *
-     * @return The serializer implementation for animation meta
-     * @since 1.0.0
-     */
-    public static Serializer<AnimationMeta> serializer() {
-        return SERIALIZER;
     }
 
     /**

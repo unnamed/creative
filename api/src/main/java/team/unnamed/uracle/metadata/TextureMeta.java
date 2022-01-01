@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.metadata.texture;
+package team.unnamed.uracle.metadata;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.metadata.MetadataPart;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -37,9 +37,6 @@ import java.util.stream.Stream;
  * @since 1.0.0
  */
 public class TextureMeta implements MetadataPart {
-
-    private static final Serializer<TextureMeta> SERIALIZER
-            = new TextureMetaSerializer();
 
     private final boolean blur;
     private final boolean clamp;
@@ -71,6 +68,14 @@ public class TextureMeta implements MetadataPart {
      */
     public boolean clamp() {
         return clamp;
+    }
+
+    @Override
+    public void serialize(AssetWriter writer) {
+        writer.key("texture").startObject()
+                .key("blur").value(blur)
+                .key("clamp").value(clamp)
+                .endObject();
     }
 
     @Override
@@ -113,17 +118,6 @@ public class TextureMeta implements MetadataPart {
             boolean clamp
     ) {
         return new TextureMeta(blur, clamp);
-    }
-
-    /**
-     * Returns the {@link Serializer} implementation for
-     * this {@link MetadataPart} implementation
-     *
-     * @return The serializer implementation for texture meta
-     * @since 1.0.0
-     */
-    public static Serializer<TextureMeta> serializer() {
-        return SERIALIZER;
     }
 
 }

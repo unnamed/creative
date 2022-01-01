@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.metadata.MetadataPart;
+import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -45,9 +46,6 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  */
 public class LanguageMeta implements MetadataPart {
 
-    private static final Serializer<LanguageMeta> SERIALIZER
-            = new LanguageMetaSerializer();
-
     @Unmodifiable private final Map<Key, LanguageEntry> languages;
 
     private LanguageMeta(Map<Key, LanguageEntry> languages) {
@@ -63,6 +61,26 @@ public class LanguageMeta implements MetadataPart {
      */
     public @Unmodifiable Map<Key, LanguageEntry> languages() {
         return languages;
+    }
+
+    @Override
+    public void serialize(AssetWriter writer) {
+
+        if (languages.isEmpty()) {
+            // do not write anything if no
+            // languages were registered
+            return;
+        }
+
+        writer.key("language").startObject();
+
+        for (Map.Entry<Key, LanguageEntry> entry : languages.entrySet()) {
+            LanguageEntry language = entry.getValue();
+            writer.key(entry.getKey().asString());
+            language.serialize(writer);
+        }
+
+        writer.endObject();
     }
 
     @Override
@@ -100,17 +118,6 @@ public class LanguageMeta implements MetadataPart {
      */
     public static LanguageMeta of(Map<Key, LanguageEntry> languages) {
         return new LanguageMeta(languages);
-    }
-
-    /**
-     * Returns the {@link Serializer} implementation for
-     * this {@link MetadataPart} implementation
-     *
-     * @return The serializer implementation for language meta
-     * @since 1.0.0
-     */
-    public static Serializer<LanguageMeta> serializer() {
-        return SERIALIZER;
     }
 
 }
