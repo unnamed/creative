@@ -51,6 +51,8 @@ public class BlockModel extends AbstractModel implements Model {
 
     public static final Key BUILTIN_GENERATED = Key.key("builtin/generated");
 
+    public static final boolean DEFAULT_AMBIENT_OCCLUSION = true;
+
     private final Key parent;
     private final boolean ambientOcclusion;
     private final Map<ModelDisplay.Type, ModelDisplay> display;
@@ -132,7 +134,7 @@ public class BlockModel extends AbstractModel implements Model {
 
     @Override
     protected void serializeOwnProperties(AssetWriter writer) {
-        if (!ambientOcclusion) {
+        if (ambientOcclusion != DEFAULT_AMBIENT_OCCLUSION) {
             // only write if not default value
             writer.key("ambientocclusion").value(ambientOcclusion);
         }
@@ -177,7 +179,7 @@ public class BlockModel extends AbstractModel implements Model {
     public static class Builder {
 
         private Key parent;
-        private boolean ambientOcclusion;
+        private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
         private BlockTexture textures;
         private List<Element> elements = Collections.emptyList();
