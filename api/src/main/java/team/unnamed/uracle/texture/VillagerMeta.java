@@ -32,6 +32,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Villager textures (from entity/villager and entity/zombie_villager)
  * support a .MCMETA file containing additional effects to apply to the
@@ -41,17 +43,17 @@ import java.util.stream.Stream;
  */
 public class VillagerMeta implements Examinable {
 
-    @Nullable private final String hat;
+    private final Hat hat;
 
-    private VillagerMeta(@Nullable String hat) {
-        this.hat = hat;
+    private VillagerMeta(Hat hat) {
+        this.hat = requireNonNull(hat, "hat");
     }
 
     /**
-     * Determines whether the villager hat layer should
-     * still render (default (null) or not ("full")
+     * Determines how the villager hat should render
+     * ("none", "partial", "full")
      */
-    public @Nullable String hat() {
+    public Hat hat() {
         return hat;
     }
 
@@ -88,8 +90,14 @@ public class VillagerMeta implements Examinable {
      * @return A new instance of {@link VillagerMeta}
      * @since 1.0.0
      */
-    public static VillagerMeta of(@Nullable String hat) {
+    public static VillagerMeta of(Hat hat) {
         return new VillagerMeta(hat);
+    }
+
+    public enum Hat {
+        NONE,
+        PARTIAL,
+        FULL
     }
 
 }

@@ -594,10 +594,10 @@ public class DefaultResourcePackSerializer
             }
 
             if (hasVillager) {
-                String hat = villager.hat();
+                VillagerMeta.Hat hat = villager.hat();
                 writer.key("villager").startObject();
                 if (hat != null) {
-                    writer.key("hat").value(hat);
+                    writer.key("hat").value(hat.name().toLowerCase(Locale.ROOT));
                 }
                 writer.endObject();
             }
