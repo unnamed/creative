@@ -100,6 +100,9 @@ public class AssetWriter extends FilterOutputStream {
                 value(e);
             }
             return endArray();
+        } else if (object instanceof SerializableResource) {
+            ((SerializableResource) object).serialize(this);
+            return this;
         } else {
             // other objects (numbers, booleans) are
             // written literally as its toString() value
