@@ -24,10 +24,36 @@
 package team.unnamed.uracle.metadata;
 
 import net.kyori.examination.Examinable;
+import team.unnamed.uracle.serialize.AssetWriter;
 
+/**
+ * Represents a resource-pack resource metadata
+ * part. Every resource-pack resource can have
+ * metadata, metadata is compound by multiple
+ * metadata parts
+ *
+ * @since 1.0.0
+ */
 public interface MetadataPart extends Examinable {
 
+    /**
+     * Responsible for serializing {@link MetadataPart}
+     * instances into a resource-pack file (JSON)
+     *
+     * @param <T> The metadata part type
+     * @since 1.0.0
+     */
     interface Serializer<T extends MetadataPart> {
+
+        /**
+         * Serializes a {@link MetadataPart} instance
+         * using the given {@link AssetWriter}
+         *
+         * @param writer The asset writer
+         * @param part The metadata part to serialize
+         */
+        void serialize(AssetWriter writer, T part);
+
     }
 
 }
