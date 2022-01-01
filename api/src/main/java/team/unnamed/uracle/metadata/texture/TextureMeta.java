@@ -28,11 +28,8 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.metadata.MetadataPart;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Represents meta-data applicable to textures
@@ -43,17 +40,13 @@ public class TextureMeta implements MetadataPart {
 
     private final boolean blur;
     private final boolean clamp;
-    private final int[] mipmaps;
 
     private TextureMeta(
             boolean blur,
-            boolean clamp,
-            int[] mipmaps
+            boolean clamp
     ) {
-        requireNonNull(mipmaps, "mipmaps");
         this.blur = blur;
         this.clamp = clamp;
-        this.mipmaps = mipmaps.clone();
     }
 
     /**
@@ -77,22 +70,11 @@ public class TextureMeta implements MetadataPart {
         return clamp;
     }
 
-    /**
-     * Returns custom mipmap values for this
-     * texture
-     *
-     * @return The custom mipmaps
-     */
-    public int[] mipmaps() {
-        return mipmaps;
-    }
-
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("blur", blur),
-                ExaminableProperty.of("clamp", clamp),
-                ExaminableProperty.of("mipmaps", mipmaps)
+                ExaminableProperty.of("clamp", clamp)
         );
     }
 
@@ -107,15 +89,12 @@ public class TextureMeta implements MetadataPart {
         if (o == null || getClass() != o.getClass()) return false;
         TextureMeta that = (TextureMeta) o;
         return blur == that.blur
-                && clamp == that.clamp
-                && Arrays.equals(mipmaps, that.mipmaps);
+                && clamp == that.clamp;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(blur, clamp);
-        result = 31 * result + Arrays.hashCode(mipmaps);
-        return result;
+        return Objects.hash(blur, clamp);
     }
 
     /**
@@ -124,15 +103,13 @@ public class TextureMeta implements MetadataPart {
      *
      * @param blur To make the texture blur
      * @param clamp To stretch the texture
-     * @param mipmaps Custom texture mipmaps
      * @return A new texture metadata instance
      */
     public static TextureMeta of(
             boolean blur,
-            boolean clamp,
-            int[] mipmaps
+            boolean clamp
     ) {
-        return new TextureMeta(blur, clamp, mipmaps);
+        return new TextureMeta(blur, clamp);
     }
 
 }
