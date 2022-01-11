@@ -31,7 +31,6 @@ import team.unnamed.uracle.lang.Language;
 import team.unnamed.uracle.blockstate.BlockState;
 import team.unnamed.uracle.model.Model;
 import team.unnamed.uracle.sound.SoundRegistry;
-import team.unnamed.uracle.texture.Texture;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -202,22 +201,15 @@ public class ResourcePack {
 
     public static class Builder {
 
-        private PackMeta meta;
         private Writable icon;
         private Map<Key, FontRegistry> fonts;
         private Map<Key, Language> languages;
         private Map<Key, Model> models;
         private Map<Key, BlockState> blockStates;
         private Map<String, SoundRegistry> sounds;
-        private Map<Key, Texture> textures;
         private Map<String, Writable> extra;
 
         private Builder() {
-        }
-
-        public Builder meta(PackMeta meta) {
-            this.meta = requireNonNull(meta, "meta");
-            return this;
         }
 
         public Builder icon(@Nullable Writable icon) {
@@ -244,6 +236,13 @@ public class ResourcePack {
             return this;
         }
 
+        public Builder language(Key key, Language language) {
+            requireNonNull(key, "key");
+            requireNonNull(language, "language");
+            this.languages = mapWith(this.languages, key, language);
+            return this;
+        }
+
         public Builder models(Map<Key, Model> models) {
             requireNonNull(models, "models");
             this.models = mapWithAll(this.models, models);
@@ -259,12 +258,6 @@ public class ResourcePack {
         public Builder sounds(Map<String, SoundRegistry> sounds) {
             requireNonNull(sounds, "sounds");
             this.sounds = mapWithAll(this.sounds, sounds);
-            return this;
-        }
-
-        public Builder textures(Map<Key, Texture> textures) {
-            requireNonNull(textures, "textures");
-            this.textures = mapWithAll(this.textures, textures);
             return this;
         }
 

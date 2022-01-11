@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 
@@ -36,15 +37,16 @@ import java.nio.charset.StandardCharsets;
  * for writing assets, its main features are the
  * JSON helpers
  */
-public class AssetWriter extends FilterOutputStream {
+public abstract class AssetWriter
+        extends FilterOutputStream {
 
-    private final TreeOutputStream tree;
+    private final OutputStream output;
 
     private boolean postValue = false;
 
-    public AssetWriter(TreeOutputStream tree) {
-        super(tree);
-        this.tree = tree;
+    public AssetWriter(OutputStream output) {
+        super(output);
+        this.output = output;
     }
 
     public AssetWriter startObject() {
@@ -116,7 +118,7 @@ public class AssetWriter extends FilterOutputStream {
     @Override
     public void write(int b) {
         try {
-            tree.write(b);
+            output.write(b);
         } catch (IOException e) {
             // just let it be unchecked
             throw new UncheckedIOException(e);
@@ -126,7 +128,7 @@ public class AssetWriter extends FilterOutputStream {
     @Override
     public void write(byte @NotNull [] b) {
         try {
-            tree.write(b);
+            output.write(b);
         } catch (IOException e) {
             // just let it be unchecked
             throw new UncheckedIOException(e);
@@ -134,15 +136,7 @@ public class AssetWriter extends FilterOutputStream {
     }
 
     @Override
-    public void close() {
-        // does not close underlying output stream,
-        // but closes the file entry
-        try {
-            tree.closeEntry();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    public abstract void close();
 
     private void preValue() {
         if (postValue) {

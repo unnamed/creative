@@ -24,7 +24,6 @@
 package team.unnamed.uracle.export;
 
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.serialize.TreeOutputStream;
 import team.unnamed.uracle.pack.ResourcePackLocation;
 
 import java.io.IOException;

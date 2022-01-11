@@ -23,8 +23,6 @@
  */
 package team.unnamed.uracle.export;
 
-import team.unnamed.uracle.serialize.TreeOutputStream;
-
 public interface ResourcePackWriter {
 
     void write(TreeOutputStream output);
