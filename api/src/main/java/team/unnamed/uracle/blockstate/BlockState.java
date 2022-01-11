@@ -24,11 +24,12 @@
 package team.unnamed.uracle.blockstate;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.file.AssetWriter;
-import team.unnamed.uracle.file.KeyedFileResource;
+import team.unnamed.uracle.file.FileResource;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class BlockState implements KeyedFileResource {
+public class BlockState implements Keyed, FileResource {
 
     private final Key key;
     private final Map<String, List<StateVariant>> variants;

@@ -24,13 +24,14 @@
 package team.unnamed.uracle.sound;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Namespaced;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.file.AssetWriter;
-import team.unnamed.uracle.file.NamespacedFileResource;
+import team.unnamed.uracle.file.FileResource;
 import team.unnamed.uracle.util.Keys;
 
 import java.util.Map;
@@ -45,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class SoundRegistry implements NamespacedFileResource {
+public class SoundRegistry implements Namespaced, FileResource {
 
     @Subst(Key.MINECRAFT_NAMESPACE)
     private final String namespace;

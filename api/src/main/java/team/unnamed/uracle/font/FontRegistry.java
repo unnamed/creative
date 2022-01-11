@@ -24,11 +24,12 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.file.AssetWriter;
-import team.unnamed.uracle.file.KeyedFileResource;
+import team.unnamed.uracle.file.FileResource;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +51,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class FontRegistry implements KeyedFileResource {
+public class FontRegistry implements Keyed, FileResource {
 
     public static final Key MINECRAFT_DEFAULT = Key.key("minecraft:default");
     public static final Key MINECRAFT_ALT = Key.key("minecraft:alt");

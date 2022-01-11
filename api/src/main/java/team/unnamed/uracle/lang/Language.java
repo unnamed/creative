@@ -24,13 +24,14 @@
 package team.unnamed.uracle.lang;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.uracle.file.FileResource;
 import team.unnamed.uracle.metadata.language.LanguageMeta;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
 import team.unnamed.uracle.file.AssetWriter;
-import team.unnamed.uracle.file.KeyedFileResource;
 
 import java.util.Map;
 import java.util.Objects;
@@ -46,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language implements KeyedFileResource {
+public class Language implements Keyed, FileResource {
 
     private final Key key;
     private final Map<String, String> translations;

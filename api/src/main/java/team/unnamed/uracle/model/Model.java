@@ -24,10 +24,11 @@
 package team.unnamed.uracle.model;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.file.FileResource;
 import team.unnamed.uracle.model.block.BlockTexture;
-import team.unnamed.uracle.file.KeyedFileResource;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public interface Model extends KeyedFileResource {
+public interface Model extends Keyed, FileResource {
 
     /**
      * Returns the parent model of this
