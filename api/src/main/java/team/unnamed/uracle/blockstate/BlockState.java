@@ -75,21 +75,6 @@ public class BlockState implements SerializableResource {
         return multipart;
     }
 
-    private static void writeVariant(List<StateVariant> variant, AssetWriter writer) {
-        if (variant.size() == 1) {
-            // single variant, write as an object
-            // without the weight
-            variant.get(0).serialize(writer);
-        } else {
-            // multiple variants, write everything
-            writer.startArray();
-            for (StateVariant v : variant) {
-                v.serialize(writer);
-            }
-            writer.endArray();
-        }
-    }
-
     @Override
     public void serialize(AssetWriter writer) {
 
@@ -100,7 +85,20 @@ public class BlockState implements SerializableResource {
             writer.key("variants").startObject();
             for (Map.Entry<String, List<StateVariant>> entry : variants.entrySet()) {
                 writer.key(entry.getKey());
-                writeVariant(entry.getValue(), writer);
+                List<StateVariant> variant = entry.getValue();
+
+                if (variant.size() == 1) {
+                    // single variant, write as an object
+                    // without the weight
+                    variant.get(0).serialize(writer);
+                } else {
+                    // multiple variants, write everything
+                    writer.startArray();
+                    for (StateVariant v : variant) {
+                        v.serialize(writer);
+                    }
+                    writer.endArray();
+                }
             }
             writer.endObject();
         }
