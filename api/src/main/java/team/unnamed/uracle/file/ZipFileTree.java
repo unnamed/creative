@@ -42,8 +42,12 @@ final class ZipFileTree implements FileTree {
         this.output = output;
         this.assetWriter = new AssetWriter(output) {
             @Override
-            protected void closeEntry() throws IOException {
-                output.closeEntry();
+            public void close() {
+                try {
+                    output.closeEntry();
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
             }
         };
     }
