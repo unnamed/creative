@@ -25,60 +25,132 @@ package team.unnamed.uracle.serialize;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import team.unnamed.uracle.util.Keys;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import static java.util.Objects.requireNonNull;
 
 /**
- * Helper {@link TreeOutputStream} implementation
- * for writing assets, its main features are the
- * JSON helpers
+ * Helper class to write JavaScript-Notated Objects to a stream, and
+ * easing the usage of some {@link OutputStream} methods by converting
+ * its checked exceptions to unchecked exceptions
+ *
+ * <strong>This is a modified version of Google's GSON JsonWriter that
+ * can be reused to write multiple objects to a stream and allowing to
+ * write raw bytes to the underlying stream</strong>
+ *
+ * @author Jesse Wilson
+ * @since 1.0.0
  */
 public abstract class AssetWriter
         extends FilterOutputStream {
 
-    private final OutputStream output;
+    private static final int EMPTY_ARRAY = 1;
+    private static final int NONEMPTY_ARRAY = 2;
 
-    private boolean postValue = false;
+    private static final int EMPTY_OBJECT = 3;
+    private static final int NONEMPTY_OBJECT = 4;
 
-    public AssetWriter(OutputStream output) {
-        super(output);
-        this.output = output;
+    private static final int DANGLING_KEY = 5;
+    private static final int DOCUMENT = 6;
+
+    /*
+     * From RFC 7159, "All Unicode characters may be placed within the
+     * quotation marks except for the characters that must be escaped:
+     * quotation mark, reverse solidus, and the control characters
+     * (U+0000 through U+001F)."
+     *
+     * We also escape '\u2028' and '\u2029', which JavaScript interprets as
+     * newline characters. This prevents eval() from failing with a syntax
+     * error. http://code.google.com/p/google-gson/issues/detail?id=341
+     */
+    private static final String[] REPLACEMENT_CHARS;
+
+    static {
+        REPLACEMENT_CHARS = new String[128];
+        REPLACEMENT_CHARS['"'] = "\\\"";
+        REPLACEMENT_CHARS['\\'] = "\\\\";
+        REPLACEMENT_CHARS['\t'] = "\\t";
+        REPLACEMENT_CHARS['\b'] = "\\b";
+        REPLACEMENT_CHARS['\n'] = "\\n";
+        REPLACEMENT_CHARS['\r'] = "\\r";
+        REPLACEMENT_CHARS['\f'] = "\\f";
+        for (int i = 0; i <= 0x1F; i++) {
+            REPLACEMENT_CHARS[i] = String.format("\\u%04x", i);
+        }
+    }
+
+    /**
+     * A string containing a full set of spaces
+     * for a single level of indentation, or null
+     * for no pretty-printing
+     */
+    @Nullable private String indent;
+
+    /**
+     * The name/value separator; either ":"
+     * or ": "
+     */
+    private String separator = ":";
+
+    private int[] stack = new int[16];
+    private int stackSize = 0;
+
+    @Nullable private String deferredName;
+
+    public AssetWriter(OutputStream out) {
+        super(out);
+        // initialize stack
+        push(DOCUMENT);
+    }
+
+    /**
+     * Sets the indentation string to be repeated for each level
+     * of indentation in the written JSON document. If the given
+     * string is empty, the encoded document will be compact.
+     * Otherwise, the encoded document will be more human-readable
+     *
+     * @param indent a string containing only whitespace.
+     */
+    public void indent(String indent) {
+        if (indent.isEmpty()) {
+            this.indent = null;
+            this.separator = ":";
+        } else {
+            this.indent = indent;
+            this.separator = ": ";
+        }
     }
 
     public AssetWriter startObject() {
-        preValue();
-        write('{');
-        return this;
+        return start(EMPTY_OBJECT, '{');
     }
 
     public AssetWriter endObject() {
-        write('}');
-        postValue();
-        return this;
+        return end(EMPTY_OBJECT, NONEMPTY_OBJECT, '}');
     }
 
     public AssetWriter startArray() {
-        preValue();
-        write('[');
-        return this;
+        return start(EMPTY_ARRAY, '[');
     }
 
     public AssetWriter endArray() {
-        write(']');
-        postValue();
-        return this;
+        return end(EMPTY_ARRAY, NONEMPTY_ARRAY, ']');
     }
 
     public AssetWriter key(String key) {
-        preValue();
-        write('"');
-        write(encode(escape(key)));
-        write('"');
-        write(':');
+        requireNonNull(key, "key");
+        if (deferredName != null) {
+            throw new IllegalStateException("There is already a deferred name");
+        }
+        deferredName = key;
         return this;
     }
 
@@ -87,14 +159,15 @@ public abstract class AssetWriter
             // transform key to string, keys
             // can be optimized by removing
             // "minecraft" namespace
-            object = keyToString((Key) object);
+            object = Keys.toString((Key) object);
         }
 
         if (object instanceof String) {
             // strings must be quoted and escaped
-            write('"');
-            write(encode(escape(object.toString())));
-            write('"');
+            writeDeferredName();
+            beforeValue();
+            string(object.toString());
+
         } else if (object instanceof Iterable) {
             // array-like value
             startArray();
@@ -111,14 +184,174 @@ public abstract class AssetWriter
             write(encode(String.valueOf(object)));
         }
 
-        postValue();
         return this;
     }
 
     @Override
+    public abstract void close();
+
+    private void writeDeferredName() {
+        if (deferredName != null) {
+            beforeKey();
+            string(deferredName);
+            deferredName = null;
+        }
+    }
+
+    private void string(String value) {
+        // write start quote
+        write('\"');
+
+        int last = 0;
+        int length = value.length();
+
+        for (int i = 0; i < length; i++) {
+            char c = value.charAt(i);
+            String replacement;
+            if (c < 128) {
+                replacement = REPLACEMENT_CHARS[c];
+                if (replacement == null) {
+                    continue;
+                }
+            } else if (c == '\u2028') {
+                replacement = "\\u2028";
+            } else if (c == '\u2029') {
+                replacement = "\\u2029";
+            } else {
+                continue;
+            }
+            if (last < i) {
+                write(encode(value), last, i - last);
+            }
+            write(encode(replacement));
+            last = i + 1;
+        }
+        if (last < length) {
+            write(encode(value), last, length - last);
+        }
+
+        // write end quote
+        write('\"');
+    }
+
+    //#region Stack manipulation
+    private void push(int newTop) {
+        if (stackSize == stack.length) {
+            // create a new, bigger stack array
+            stack = Arrays.copyOf(stack, stackSize * 2);
+        }
+        stack[stackSize++] = newTop;
+    }
+
+    private int peek() {
+        return stack[stackSize - 1];
+    }
+
+    private void replaceTop(int topOfStack) {
+        stack[stackSize - 1] = topOfStack;
+    }
+    //#endregion
+
+    //#region Starting and ending objects or arrays
+    private AssetWriter start(int empty, char openBracket) {
+        writeDeferredName();
+        beforeValue();
+        push(empty);
+        write(openBracket);
+        return this;
+    }
+
+    private AssetWriter end(int empty, int nonempty, char closeBracket) {
+        int context = peek();
+        if (context != nonempty && context != empty) {
+            throw new IllegalStateException("Nesting problem");
+        }
+        if (deferredName != null) {
+            throw new IllegalStateException("Dangling name: " + deferredName);
+        }
+
+        stackSize--;
+        if (context == nonempty) {
+            newLine();
+        }
+        write(closeBracket);
+        return this;
+    }
+    //#endregion
+
+    //#region Key and value preparation
+    /**
+     * Inserts any necessary separators and whitespace
+     * before a key. Also adjusts the stack to expect
+     * the key's value
+     */
+    private void beforeKey() {
+        int context = peek();
+        if (context == NONEMPTY_OBJECT) {
+            // not the first entry in an
+            // object, write a comma
+            write(',');
+        } else if (context != EMPTY_OBJECT) {
+            throw new IllegalStateException(
+                    "Keys can only be written on objects!"
+            );
+        }
+
+        newLine();
+        replaceTop(DANGLING_KEY);
+    }
+
+    /**
+     * Inserts any necessary separators and whitespace
+     * before a literal value, inline array, or inline
+     * object. Also adjusts the stack to expect either
+     * a closing bracket or another element
+     */
+    private void beforeValue() {
+        switch (peek()) {
+            case DOCUMENT: {
+                break;
+            }
+            case EMPTY_ARRAY: {
+                // first element in array
+                replaceTop(NONEMPTY_ARRAY);
+                newLine();
+                break;
+            }
+            case NONEMPTY_ARRAY: {
+                // another element in array
+                write(',');
+                newLine();
+                break;
+            }
+            case DANGLING_KEY: {
+                // value for name
+                write(encode(separator));
+                replaceTop(NONEMPTY_OBJECT);
+                break;
+            }
+            default:
+                throw new IllegalStateException("Nesting problem.");
+        }
+    }
+    //#endregion
+
+    //#region Pretty printing
+    private void newLine() {
+        if (indent != null) {
+            write('\n');
+            for (int i = 1, size = stackSize; i < size; i++) {
+                write(encode(indent));
+            }
+        }
+    }
+    //#endregion
+
+    //#region
+    @Override
     public void write(int b) {
         try {
-            output.write(b);
+            out.write(b);
         } catch (IOException e) {
             // just let it be unchecked
             throw new UncheckedIOException(e);
@@ -128,7 +361,7 @@ public abstract class AssetWriter
     @Override
     public void write(byte @NotNull [] b) {
         try {
-            output.write(b);
+            out.write(b);
         } catch (IOException e) {
             // just let it be unchecked
             throw new UncheckedIOException(e);
@@ -136,46 +369,17 @@ public abstract class AssetWriter
     }
 
     @Override
-    public abstract void close();
-
-    private void preValue() {
-        if (postValue) {
-            write(',');
-            postValue = false;
-        }
-    }
-
-    private void postValue() {
-        postValue = true;
-    }
-
-    private static String keyToString(Key key) {
-        // very small resource-pack optimization, omits
-        // the "minecraft" namespace if key is using it
-        if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
-            return key.value();
-        } else {
-            return key.asString();
+    public void write(byte @NotNull [] b, int off, int len) {
+        try {
+            out.write(b, off, len);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
     private static byte[] encode(String string) {
         return string.getBytes(StandardCharsets.UTF_8);
     }
-
-    private static String escape(String str) {
-        StringBuilder builder = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == '"') {
-                builder.append('\\').append(c);
-            } else if (c == '\n') {
-                builder.append("\\n");
-            } else {
-                builder.append(c);
-            }
-        }
-        return builder.toString();
-    }
+    //#endregion
 
 }
