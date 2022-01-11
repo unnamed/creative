@@ -65,35 +65,19 @@ public class ResourcePack {
             Map<String, SoundRegistry> sounds,
             Map<String, Writable> extra
     ) {
-        requireNonNull(meta, "meta");
         requireNonNull(fonts, "fonts");
         requireNonNull(languages, "languages");
         requireNonNull(models, "models");
         requireNonNull(blockStates, "blockStates");
         requireNonNull(sounds, "sounds");
-        requireNonNull(textures, "textures");
         requireNonNull(extra, "extra");
-        this.meta = meta;
         this.icon = icon;
         this.fonts = immutableMapOf(fonts);
         this.languages = immutableMapOf(languages);
         this.models = immutableMapOf(models);
         this.blockStates = immutableMapOf(blockStates);
         this.sounds = immutableMapOf(sounds);
-        this.textures = immutableMapOf(textures);
         this.extra = immutableMapOf(extra);
-    }
-
-    /**
-     * Returns this resource-pack meta-data, which
-     * contains the resource-pack version, description
-     * and language registrations
-     *
-     * @return The resource-pack meta-data
-     * @since 1.0.0
-     */
-    public PackMeta meta() {
-        return meta;
     }
 
     /**
@@ -163,17 +147,6 @@ public class ResourcePack {
      */
     public @Unmodifiable Map<String, SoundRegistry> sounds() {
         return sounds;
-    }
-
-    /**
-     * Returns an unmodifiable map of the resource-pack
-     * registered textures
-     *
-     * @return The resource-pack textures
-     * @since 1.0.0
-     */
-    public @Unmodifiable Map<Key, Texture> textures() {
-        return textures;
     }
 
     /**
@@ -269,13 +242,12 @@ public class ResourcePack {
 
         public ResourcePack build() {
             return new ResourcePack(
-                    meta, icon,
+                    icon,
                     fonts,
                     languages,
                     models,
                     blockStates,
                     sounds,
-                    textures,
                     extra
             );
         }
