@@ -23,7 +23,6 @@
  */
 package team.unnamed.uracle.metadata;
 
-import net.kyori.examination.Examinable;
 import team.unnamed.uracle.serialize.SerializableResource;
 
 /**
@@ -34,5 +33,5 @@ import team.unnamed.uracle.serialize.SerializableResource;
  *
  * @since 1.0.0
  */
-public interface MetadataPart extends SerializableResource, Examinable {
+public interface MetadataPart extends SerializableResource {
 }
