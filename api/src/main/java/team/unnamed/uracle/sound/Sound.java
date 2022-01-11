@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.serialize.AssetWriter;
 import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.util.Keys;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -316,7 +317,7 @@ public class Sound implements SerializableResource {
             boolean stream, int attenuationDistance, boolean preload
     ) {
         return new Sound(
-                path.asString(), volume, pitch, weight, stream,
+                Keys.toString(path), volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.FILE
         );
     }
