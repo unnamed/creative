@@ -26,6 +26,7 @@ package team.unnamed.uracle;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.uracle.base.Writable;
 import team.unnamed.uracle.font.FontRegistry;
 import team.unnamed.uracle.lang.Language;
 import team.unnamed.uracle.blockstate.BlockState;

@@ -23,7 +23,7 @@
  */
 package team.unnamed.uracle.serialize;
 
-import team.unnamed.uracle.Writable;
+import team.unnamed.uracle.base.Writable;
 
 /**
  * Represents a file tree, which may be implemented by a

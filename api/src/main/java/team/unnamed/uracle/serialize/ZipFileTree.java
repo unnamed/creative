@@ -23,7 +23,7 @@
  */
 package team.unnamed.uracle.serialize;
 
-import team.unnamed.uracle.Writable;
+import team.unnamed.uracle.base.Writable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
