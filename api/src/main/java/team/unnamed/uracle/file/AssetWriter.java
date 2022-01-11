@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.serialize;
+package team.unnamed.uracle.file;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;

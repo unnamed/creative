@@ -28,8 +28,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.List;
 import java.util.Map;

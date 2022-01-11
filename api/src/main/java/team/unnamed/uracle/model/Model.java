@@ -27,7 +27,7 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
-import team.unnamed.uracle.serialize.KeyedFileResource;
+import team.unnamed.uracle.file.KeyedFileResource;
 
 import java.util.List;
 import java.util.Map;

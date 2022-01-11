@@ -21,55 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.serialize;
+package team.unnamed.uracle.file;
 
 import team.unnamed.uracle.base.Writable;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-final class ZipFileTree implements FileTree {
+final class DirectoryFileTree
+        implements FileTree {
 
-    private final Set<String> names = new HashSet<>();
-    private final ZipOutputStream output;
-    private final AssetWriter assetWriter;
+    private final File root;
+    private AssetWriter writer;
 
-    ZipFileTree(ZipOutputStream output) {
-        this.output = output;
-        this.assetWriter = new AssetWriter(output) {
-            @Override
-            protected void closeEntry() throws IOException {
-                output.closeEntry();
-            }
-        };
+    DirectoryFileTree(File root) {
+        this.root = root;
     }
 
     @Override
     public boolean exists(String path) {
-        return names.contains(path);
+        return getFile(path).exists();
     }
 
     @Override
     public AssetWriter open(String path) {
-        try {
-            output.putNextEntry(entryOf(path));
-            names.add(path);
-            return assetWriter;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+
+        if (writer != null) {
+            // close previous writer in case
+            // it has not been closed yet
+            writer.close();
         }
+
+        writer = new AssetWriter(openStream(path)) {
+            @Override
+            public void close() {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+        };
+        return writer;
     }
 
     @Override
     public void write(String path, Writable data) {
-        try {
-            output.putNextEntry(entryOf(path));
+        try (OutputStream output = openStream(path)) {
             data.write(output);
-            names.add(path);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -77,19 +79,40 @@ final class ZipFileTree implements FileTree {
 
     @Override
     public void close() {
+        if (writer != null) {
+            writer.close();
+        }
+    }
+
+    private File getFile(String path) {
+        return new File(root, path);
+    }
+
+    private void createFile(File file) {
         try {
-            output.finish();
+            file.createNewFile();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private ZipEntry entryOf(String path) {
-        ZipEntry entry = new ZipEntry(path);
-        // ensures that the resulting zip file is the
-        // exact same (because of hashes) always
-        entry.setTime(0L);
-        return entry;
+    private OutputStream openStream(String path) {
+        File file = getFile(path);
+
+        if (file.exists()) {
+            throw new IllegalStateException(
+                    "File " + path + " already"
+                            + "exists!"
+            );
+        } else {
+            createFile(file);
+        }
+
+        try {
+            return new FileOutputStream(file);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
 }

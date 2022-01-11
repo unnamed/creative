@@ -24,7 +24,7 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.List;
 

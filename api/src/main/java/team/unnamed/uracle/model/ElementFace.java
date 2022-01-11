@@ -29,8 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.base.CubeFace;
 import team.unnamed.uracle.base.Vector4Int;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.Locale;
 import java.util.Objects;

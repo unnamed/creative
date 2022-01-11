@@ -29,7 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.model.block.BlockTexture;
-import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.file.AssetWriter;
 
 import java.util.Collections;
 import java.util.List;

@@ -21,58 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.serialize;
+package team.unnamed.uracle.file;
 
-import team.unnamed.uracle.base.Writable;
+import net.kyori.adventure.key.Namespaced;
 
-/**
- * Represents a file tree, which may be implemented by a
- * real file system with real files, or ZIP files
- *
- * @since 1.0.0
- */
-public interface FileTree extends AutoCloseable {
-
-    /**
-     * Determines if a file exists in this file
-     * tree
-     *
-     * @param path The file path
-     * @return True if it exists
-     * @since 1.0.0
-     */
-    boolean exists(String path);
-
-    /**
-     * Opens the file at the given path and starts
-     * to write it using the {@link AssetWriter}
-     * class
-     *
-     * @param path The file path
-     * @return A new {@link AssetWriter} for the
-     * given file
-     * @since 1.0.0
-     */
-    AssetWriter open(String path);
-
-    /**
-     * Opens and writes the given data to the
-     * specified file path
-     *
-     * @param path The file path
-     * @param data The file data
-     * @since 1.0.0
-     */
-    void write(String path, Writable data);
-
-    /**
-     * Closes this file tree, necessary for virtual
-     * file trees in a single file, like a ZIP file
-     * tree
-     *
-     * @since 1.0.0
-     */
-    @Override
-    void close();
-
+public interface NamespacedFileResource extends Namespaced, FileResource {
 }

@@ -29,8 +29,8 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.metadata.language.LanguageMeta;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.KeyedFileResource;
+import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.KeyedFileResource;
 
 import java.util.Map;
 import java.util.Objects;

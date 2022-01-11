@@ -27,7 +27,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.file.AssetWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;

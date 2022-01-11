@@ -23,7 +23,7 @@
  */
 package team.unnamed.uracle.model;
 
-import team.unnamed.uracle.serialize.AssetWriter;
+import team.unnamed.uracle.file.AssetWriter;
 
 import java.util.Locale;
 import java.util.Map;

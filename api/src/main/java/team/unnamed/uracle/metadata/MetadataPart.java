@@ -23,7 +23,7 @@
  */
 package team.unnamed.uracle.metadata;
 
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.file.SerializableResource;
 
 /**
  * Represents a resource-pack resource metadata

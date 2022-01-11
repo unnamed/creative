@@ -27,8 +27,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.SerializableResource;
 import team.unnamed.uracle.util.Keys;
 
 import java.util.Locale;

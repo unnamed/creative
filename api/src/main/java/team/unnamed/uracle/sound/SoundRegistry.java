@@ -29,8 +29,8 @@ import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.NamespacedFileResource;
+import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.NamespacedFileResource;
 import team.unnamed.uracle.util.Keys;
 
 import java.util.Map;

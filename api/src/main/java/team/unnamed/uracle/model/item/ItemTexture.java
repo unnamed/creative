@@ -30,8 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.ItemModel;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.Collections;
 import java.util.List;

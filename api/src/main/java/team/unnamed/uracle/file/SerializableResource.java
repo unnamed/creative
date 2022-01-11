@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.serialize;
+package team.unnamed.uracle.file;
 
-public interface FileResource extends SerializableResource {
+import net.kyori.examination.Examinable;
 
-    String path();
+public interface SerializableResource extends Examinable {
+
+    void serialize(AssetWriter writer);
 
 }
