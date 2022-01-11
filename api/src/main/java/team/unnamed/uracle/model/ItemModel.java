@@ -28,7 +28,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.item.ItemOverride;
 import team.unnamed.uracle.model.item.ItemTexture;
 import team.unnamed.uracle.serialize.AssetWriter;
@@ -41,8 +40,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
-import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents the object responsible for specifying
@@ -50,7 +47,9 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class ItemModel extends AbstractModel implements Model  {
+public class ItemModel
+        extends AbstractModel
+        implements Model  {
 
     /**
      * An {@link ItemModel} can be set to extend this key to use
@@ -66,14 +65,16 @@ public class ItemModel extends AbstractModel implements Model  {
      */
     public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");
 
+    private final Key key;
     @Nullable private final Key parent;
-    @Unmodifiable private final Map<ModelDisplay.Type, ModelDisplay> display;
+    private final Map<ModelDisplay.Type, ModelDisplay> display;
     private final ItemTexture textures;
     @Nullable private final GuiLight guiLight;
-    @Unmodifiable private final List<Element> elements;
-    @Unmodifiable private final List<ItemOverride> overrides;
+    private final List<Element> elements;
+    private final List<ItemOverride> overrides;
 
     private ItemModel(
+            Key key,
             @Nullable Key parent,
             Map<ModelDisplay.Type, ModelDisplay> display,
             ItemTexture textures,
@@ -81,16 +82,18 @@ public class ItemModel extends AbstractModel implements Model  {
             List<Element> elements,
             List<ItemOverride> overrides
     ) {
-        requireNonNull(display, "display");
-        requireNonNull(textures, "textures");
-        requireNonNull(elements, "elements");
-        requireNonNull(overrides, "overrides");
+        this.key = requireNonNull(key, "key");
         this.parent = parent;
-        this.display = immutableMapOf(display);
-        this.textures = textures;
+        this.display = requireNonNull(display, "display");
+        this.textures = requireNonNull(textures, "textures");
         this.guiLight = guiLight;
-        this.elements = immutableListOf(elements);
-        this.overrides = immutableListOf(overrides);
+        this.elements = requireNonNull(elements, "elements");
+        this.overrides = requireNonNull(overrides, "oveerrides");
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
@@ -116,13 +119,13 @@ public class ItemModel extends AbstractModel implements Model  {
     }
 
     /**
-     * Returns an unmodifiable map that holds the different places
+     * Returns a map that holds the different places
      * where item models are displayed
      *
      * @return The model displays
      */
     @Override
-    public @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display() {
+    public Map<ModelDisplay.Type, ModelDisplay> display() {
         return display;
     }
 
@@ -150,20 +153,19 @@ public class ItemModel extends AbstractModel implements Model  {
     }
 
     /**
-     * Returns an unmodifiable list that contains all the
+     * Returns a list that contains all the
      * cubic elements for this model
      *
      * @return This model elements
      */
     @Override
-    public @Unmodifiable List<Element> elements() {
+    public List<Element> elements() {
         return elements;
     }
 
     /**
-     * Returns an unmodifiable list of item overrides, item overrides
-     * determine cases in which a different model should be used based on
-     * item tags
+     * Returns a list of item overrides, item overrides determine cases
+     * in which a different model should be used based on item tags
      *
      * <p>All cases are evaluated in order from top to bottom and
      * last predicate that matches overrides. However, overrides are ignored
@@ -172,7 +174,7 @@ public class ItemModel extends AbstractModel implements Model  {
      *
      * @return This item model overrides
      */
-    public @Unmodifiable List<ItemOverride> overrides() {
+    public List<ItemOverride> overrides() {
         return overrides;
     }
 
@@ -188,6 +190,11 @@ public class ItemModel extends AbstractModel implements Model  {
     }
 
     @Override
+    public String path() {
+        return "assets/" + key.namespace() + "/models/" + key.value() + ".json";
+    }
+
+    @Override
     protected void serializeOwnProperties(AssetWriter writer) {
         // textures
         writer.key("textures");
@@ -198,17 +205,13 @@ public class ItemModel extends AbstractModel implements Model  {
             writer.key("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
         }
 
-        // overrides
-        writer.key("overrides").startArray();
-        for (ItemOverride override : overrides) {
-            override.serialize(writer);
-        }
-        writer.endArray();
+        writer.key("overrides").value(overrides);
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
+                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("parent", parent),
                 ExaminableProperty.of("display", display),
                 ExaminableProperty.of("textures", textures),
@@ -228,7 +231,8 @@ public class ItemModel extends AbstractModel implements Model  {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemModel itemModel = (ItemModel) o;
-        return Objects.equals(parent, itemModel.parent)
+        return key.equals(itemModel.key)
+                && Objects.equals(parent, itemModel.parent)
                 && display.equals(itemModel.display)
                 && textures.equals(itemModel.textures)
                 && guiLight == itemModel.guiLight
@@ -238,7 +242,7 @@ public class ItemModel extends AbstractModel implements Model  {
 
     @Override
     public int hashCode() {
-        return Objects.hash(parent, display, textures, guiLight, elements, overrides);
+        return Objects.hash(key, parent, display, textures, guiLight, elements, overrides);
     }
 
     /**
@@ -249,6 +253,7 @@ public class ItemModel extends AbstractModel implements Model  {
      */
     public static class Builder {
 
+        private Key key;
         private Key parent;
         private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
         private ItemTexture textures;
@@ -257,6 +262,11 @@ public class ItemModel extends AbstractModel implements Model  {
         private List<ItemOverride> overrides = Collections.emptyList();
 
         protected Builder() {
+        }
+
+        public Builder key(Key key) {
+            this.key = requireNonNull(key, "key");
+            return this;
         }
 
         public Builder parent(@Nullable Key parent) {
@@ -297,7 +307,7 @@ public class ItemModel extends AbstractModel implements Model  {
          * @return A new {@link ItemModel} instance
          */
         public ItemModel build() {
-            return new ItemModel(parent, display, textures, guiLight, elements, overrides);
+            return new ItemModel(key, parent, display, textures, guiLight, elements, overrides);
         }
 
     }

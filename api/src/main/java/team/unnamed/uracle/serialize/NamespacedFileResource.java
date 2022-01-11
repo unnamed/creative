@@ -21,32 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.util;
+package team.unnamed.uracle.serialize;
 
-import net.kyori.adventure.key.Key;
-import org.intellij.lang.annotations.Subst;
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.adventure.key.Namespaced;
 
-@ApiStatus.Internal
-public final class Keys {
-
-    private Keys() {
-    }
-
-    public static void validateNamespace(
-            @Subst(Key.MINECRAFT_NAMESPACE) String namespace
-    ) {
-        Key.key(namespace, "dummy");
-    }
-
-    public static String toString(Key key) {
-        // very small resource-pack optimization, omits
-        // the "minecraft" namespace if key is using it
-        if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
-            return key.value();
-        } else {
-            return key.asString();
-        }
-    }
-
+public interface NamespacedFileResource extends Namespaced, FileResource {
 }

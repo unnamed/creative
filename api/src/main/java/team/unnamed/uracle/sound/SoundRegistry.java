@@ -23,19 +23,21 @@
  */
 package team.unnamed.uracle.sound;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.intellij.lang.annotations.Pattern;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.serialize.NamespacedFileResource;
+import team.unnamed.uracle.util.Keys;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a registry of {@link SoundEvent}, or
@@ -43,17 +45,34 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class SoundRegistry implements SerializableResource {
+public class SoundRegistry implements NamespacedFileResource {
 
+    @Subst(Key.MINECRAFT_NAMESPACE)
+    private final String namespace;
     private final Map<String, SoundEvent> sounds;
 
-    private SoundRegistry(Map<String, SoundEvent> sounds) {
-        requireNonNull(sounds, "sounds");
-        this.sounds = immutableMapOf(sounds);
+    private SoundRegistry(
+            String namespace,
+            Map<String, SoundEvent> sounds
+    ) {
+        this.namespace = requireNonNull(namespace, "namespace");
+        this.sounds = requireNonNull(sounds, "sounds");
+        Keys.validateNamespace(namespace);
     }
 
-    public @Unmodifiable Map<String, SoundEvent> sounds() {
+    @Override
+    @Pattern("[a-z0-9_\\-.]+")
+    public @NotNull String namespace() {
+        return namespace;
+    }
+
+    public Map<String, SoundEvent> sounds() {
         return sounds;
+    }
+
+    @Override
+    public String path() {
+        return "assets/" + namespace + "/sounds.json";
     }
 
     @Override
@@ -70,6 +89,7 @@ public class SoundRegistry implements SerializableResource {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
+                ExaminableProperty.of("namespace", namespace),
                 ExaminableProperty.of("sounds", sounds)
         );
     }
@@ -84,12 +104,13 @@ public class SoundRegistry implements SerializableResource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SoundRegistry that = (SoundRegistry) o;
-        return sounds.equals(that.sounds);
+        return namespace.equals(that.namespace)
+                && sounds.equals(that.sounds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sounds);
+        return Objects.hash(namespace, sounds);
     }
 
     /**
@@ -100,9 +121,10 @@ public class SoundRegistry implements SerializableResource {
      * @return A new sound registry instance
      */
     public static SoundRegistry of(
+            String namespace,
             Map<String, SoundEvent> sounds
     ) {
-        return new SoundRegistry(sounds);
+        return new SoundRegistry(namespace, sounds);
     }
 
 }

@@ -27,16 +27,14 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.serialize.KeyedFileResource;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
 
 /**
  * Represents a resource-pack font file, located
@@ -52,47 +50,54 @@ import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class FontRegistry implements SerializableResource {
+public class FontRegistry implements KeyedFileResource {
 
     public static final Key MINECRAFT_DEFAULT = Key.key("minecraft:default");
     public static final Key MINECRAFT_ALT = Key.key("minecraft:alt");
 
-    @Unmodifiable private final List<Font> providers;
+    private final Key key;
+    private final List<Font> providers;
 
-    private FontRegistry(List<Font> providers) {
-        requireNonNull(providers, "providers");
-        this.providers = immutableListOf(providers);
+    private FontRegistry(
+            Key key,
+            List<Font> providers
+    ) {
+        this.key = requireNonNull(key, "key");
+        this.providers = requireNonNull(providers, "providers");
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
-     * Returns an unmodifiable list of font providers
+     * Returns a list of font providers
      * that are merged onto this font
      *
      * @return The font providers
      * @since 1.0.0
      */
-    public @Unmodifiable List<Font> providers() {
+    public List<Font> providers() {
         return providers;
+    }
+
+    @Override
+    public String path() {
+        return "assets/" + key.namespace() + "/font/" + key.value() + ".json";
     }
 
     @Override
     public void serialize(AssetWriter writer) {
         writer.startObject()
-                .key("providers").startArray();
-
-        // write providers
-        for (Font provider : providers) {
-            provider.serialize(writer);
-        }
-
-        writer
-                .endArray()
+                .key("providers").value(providers)
                 .endObject();
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
+                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("providers", providers)
         );
     }
@@ -102,12 +107,13 @@ public class FontRegistry implements SerializableResource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FontRegistry that = (FontRegistry) o;
-        return providers.equals(that.providers);
+        return key.equals(that.key)
+                && providers.equals(that.providers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(providers);
+        return Objects.hash(key, providers);
     }
 
     @Override
@@ -123,8 +129,8 @@ public class FontRegistry implements SerializableResource {
      * @return A new {@link FontRegistry} instance
      * @since 1.0.0
      */
-    public static FontRegistry of(List<Font> providers) {
-        return new FontRegistry(providers);
+    public static FontRegistry of(Key key, List<Font> providers) {
+        return new FontRegistry(key, providers);
     }
 
 }

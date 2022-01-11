@@ -24,12 +24,10 @@
 package team.unnamed.uracle.model;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
-import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.serialize.KeyedFileResource;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +38,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public interface Model extends SerializableResource, Examinable {
+public interface Model extends KeyedFileResource {
 
     /**
      * Returns the parent model of this
@@ -68,6 +66,7 @@ public interface Model extends SerializableResource, Examinable {
     @Unmodifiable List<Element> elements();
 
     static BlockModel block(
+            Key key,
             @Nullable Key parent,
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
@@ -75,7 +74,7 @@ public interface Model extends SerializableResource, Examinable {
             List<Element> elements
     ) {
         return new BlockModel(
-                parent, ambientOcclusion, display, textures, elements
+                key, parent, ambientOcclusion, display, textures, elements
         );
     }
 

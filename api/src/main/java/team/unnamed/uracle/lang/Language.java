@@ -23,21 +23,20 @@
  */
 package team.unnamed.uracle.lang;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.metadata.language.LanguageMeta;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
 import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.serialize.KeyedFileResource;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a set of translations for a specific
@@ -47,27 +46,40 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Language implements SerializableResource {
+public class Language implements KeyedFileResource {
 
-    @Unmodifiable private final Map<String, String> translations;
+    private final Key key;
+    private final Map<String, String> translations;
 
-    private Language(Map<String, String> translations) {
-        requireNonNull(translations, "translations");
-        this.translations = immutableMapOf(translations);
+    private Language(
+            Key key,
+            Map<String, String> translations
+    ) {
+        this.key = requireNonNull(key, "key");
+        this.translations = requireNonNull(translations, "translations");
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
-     * Returns an unmodifiable map containing all the translations for this
-     * language, where the key is the translation key (yeah) and the value is
-     * the actual translation, in example, there could be a translation for the
-     * Stone block
+     * Returns a  map containing all the translations for this language, where
+     * the key is the translation key (yeah) and the value is the actual translation,
+     * in example, there could be a translation for the Stone block
      *
      * <p>"block.minecraft.stone" -> "Stone"</p>
      *
      * @return The language translations
      */
-    public @Unmodifiable Map<String, String> translations() {
+    public Map<String, String> translations() {
         return translations;
+    }
+
+    @Override
+    public String path() {
+        return "assets/" + key.namespace() + "/lang/" + key.value() + ".json";
     }
 
     @Override
@@ -82,6 +94,7 @@ public class Language implements SerializableResource {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
+                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("translations", translations)
         );
     }
@@ -95,13 +108,14 @@ public class Language implements SerializableResource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Language language = (Language) o;
-        return translations.equals(language.translations);
+        Language that = (Language) o;
+        return key.equals(that.key)
+                && translations.equals(that.translations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(translations);
+        return Objects.hash(key, translations);
     }
 
     /**
@@ -112,8 +126,8 @@ public class Language implements SerializableResource {
      * @return The language
      * @since 1.0.0
      */
-    public static Language of(Map<String, String> translations) {
-        return new Language(translations);
+    public static Language of(Key key, Map<String, String> translations) {
+        return new Language(key, translations);
     }
 
 }

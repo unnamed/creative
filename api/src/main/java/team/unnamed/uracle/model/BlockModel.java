@@ -28,7 +28,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.model.block.BlockTexture;
 import team.unnamed.uracle.serialize.AssetWriter;
 
@@ -39,8 +38,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
-import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents the object responsible for specifying
@@ -48,33 +45,40 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class BlockModel extends AbstractModel implements Model {
+public class BlockModel
+        extends AbstractModel
+        implements Model {
 
     public static final Key BUILTIN_GENERATED = Key.key("builtin/generated");
 
     public static final boolean DEFAULT_AMBIENT_OCCLUSION = true;
 
+    private final Key key;
     @Nullable private final Key parent;
     private final boolean ambientOcclusion;
     private final Map<ModelDisplay.Type, ModelDisplay> display;
     private final BlockTexture textures;
-    @Unmodifiable private final List<Element> elements;
+    private final List<Element> elements;
 
     protected BlockModel(
+            Key key,
             @Nullable Key parent,
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
             BlockTexture textures,
             List<Element> elements
     ) {
-        requireNonNull(display, "display");
-        requireNonNull(textures, "textures");
-        requireNonNull(elements, "elements");
+        this.key = requireNonNull(key, "key");
         this.parent = parent;
         this.ambientOcclusion = ambientOcclusion;
-        this.display = immutableMapOf(display);
-        this.textures = textures;
-        this.elements = immutableListOf(elements);
+        this.display = requireNonNull(display, "display");
+        this.textures = requireNonNull(textures, "textures");
+        this.elements = requireNonNull(elements, "elements");
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
@@ -99,13 +103,13 @@ public class BlockModel extends AbstractModel implements Model {
     }
 
     /**
-     * Returns an unmodifiable map that holds the different
+     * Returns a map that holds the different
      * places where block models can be displayed
      *
      * @return The display specifications for the model
      */
     @Override
-    public @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display() {
+    public Map<ModelDisplay.Type, ModelDisplay> display() {
         return display;
     }
 
@@ -119,17 +123,21 @@ public class BlockModel extends AbstractModel implements Model {
     }
 
     /**
-     * Returns an unmodifiable list that contains
-     * all the elements of the model. They can only
-     * have cubic forms. If both "parent" and "elements"
-     * are set, the "elements" tag overrides the
+     * Returns a  list that contains all the elements of the
+     * model. They can only have cubic forms. If both "parent"
+     * and "elements" are set, the "elements" tag overrides the
      * "elements" tag from the previous model
      *
      * @return The model elements
      */
     @Override
-    public @Unmodifiable List<Element> elements() {
+    public List<Element> elements() {
         return elements;
+    }
+
+    @Override
+    public String path() {
+        return "assets/" + key.namespace() + "/models/" + key.value() + ".json";
     }
 
     @Override
@@ -146,6 +154,7 @@ public class BlockModel extends AbstractModel implements Model {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
+                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("parent", parent),
                 ExaminableProperty.of("ambientocclusion", ambientOcclusion),
                 ExaminableProperty.of("display", display),
@@ -164,7 +173,8 @@ public class BlockModel extends AbstractModel implements Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BlockModel that = (BlockModel) o;
-        return ambientOcclusion == that.ambientOcclusion
+        return key.equals(that.key)
+                && ambientOcclusion == that.ambientOcclusion
                 && Objects.equals(parent, that.parent)
                 && display.equals(that.display)
                 && textures.equals(that.textures)
@@ -173,11 +183,12 @@ public class BlockModel extends AbstractModel implements Model {
 
     @Override
     public int hashCode() {
-        return Objects.hash(parent, ambientOcclusion, display, textures, elements);
+        return Objects.hash(key, parent, ambientOcclusion, display, textures, elements);
     }
 
     public static class Builder {
 
+        private Key key;
         private Key parent;
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
@@ -185,6 +196,11 @@ public class BlockModel extends AbstractModel implements Model {
         private List<Element> elements = Collections.emptyList();
 
         protected Builder() {
+        }
+
+        public Builder key(Key key) {
+            this.key = key;
+            return this;
         }
 
         public Builder parent(@Nullable Key parent) {
@@ -214,7 +230,7 @@ public class BlockModel extends AbstractModel implements Model {
 
         public BlockModel build() {
             return new BlockModel(
-                    parent, ambientOcclusion, display, textures, elements
+                    key, parent, ambientOcclusion, display, textures, elements
             );
         }
 

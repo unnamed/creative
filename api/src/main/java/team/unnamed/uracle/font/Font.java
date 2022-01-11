@@ -24,7 +24,6 @@
 package team.unnamed.uracle.font;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import team.unnamed.uracle.serialize.SerializableResource;
 
 import java.util.List;
@@ -36,7 +35,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-public interface Font extends SerializableResource, Examinable {
+public interface Font extends SerializableResource {
 
     /**
      * Creates a new bit-map font from the provided values

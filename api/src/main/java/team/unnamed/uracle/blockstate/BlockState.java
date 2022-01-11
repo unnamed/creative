@@ -23,12 +23,12 @@
  */
 package team.unnamed.uracle.blockstate;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.serialize.AssetWriter;
-import team.unnamed.uracle.serialize.SerializableResource;
+import team.unnamed.uracle.serialize.KeyedFileResource;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,8 +37,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.uracle.util.MoreCollections.immutableListOf;
-import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
 
 /**
  * There are several variants of some blocks (like doors, which can be
@@ -52,27 +50,38 @@ import static team.unnamed.uracle.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class BlockState implements SerializableResource {
+public class BlockState implements KeyedFileResource {
 
-    @Unmodifiable private final Map<String, List<StateVariant>> variants;
-    @Unmodifiable private final List<StateCase> multipart;
+    private final Key key;
+    private final Map<String, List<StateVariant>> variants;
+    private final List<StateCase> multipart;
 
     private BlockState(
+            Key key,
             Map<String, List<StateVariant>> variants,
             List<StateCase> multipart
     ) {
-        requireNonNull(variants, "variants");
-        requireNonNull(multipart, "multipart");
-        this.variants = immutableMapOf(variants);
-        this.multipart = immutableListOf(multipart);
+        this.key = requireNonNull(key, "key");
+        this.variants = requireNonNull(variants, "variants");
+        this.multipart = requireNonNull(multipart, "multipart");
     }
 
-    public @Unmodifiable Map<String, List<StateVariant>> variants() {
+    @Override
+    public @NotNull Key key() {
+        return key;
+    }
+
+    public Map<String, List<StateVariant>> variants() {
         return variants;
     }
 
-    public @Unmodifiable List<StateCase> multipart() {
+    public List<StateCase> multipart() {
         return multipart;
+    }
+
+    @Override
+    public String path() {
+        return "assets/" + key.namespace() + "/blockstates/" + key.value() + ".json";
     }
 
     @Override
@@ -118,6 +127,7 @@ public class BlockState implements SerializableResource {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
+                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("variants", variants),
                 ExaminableProperty.of("multipart", multipart)
         );
@@ -133,13 +143,14 @@ public class BlockState implements SerializableResource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BlockState that = (BlockState) o;
-        return variants.equals(that.variants)
+        return key.equals(that.key)
+                && variants.equals(that.variants)
                 && multipart.equals(that.multipart);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(variants, multipart);
+        return Objects.hash(key, variants, multipart);
     }
 
     /**
@@ -153,10 +164,11 @@ public class BlockState implements SerializableResource {
      * @since 1.0.0
      */
     public static BlockState of(
+            Key key,
             Map<String, List<StateVariant>> variants,
             List<StateCase> multipart
     ) {
-        return new BlockState(variants, multipart);
+        return new BlockState(key, variants, multipart);
     }
 
     /**
@@ -167,8 +179,9 @@ public class BlockState implements SerializableResource {
      * @return A new {@link BlockState} variants
      * @since 1.0.0
      */
-    public static BlockState ofVariants(Map<String, List<StateVariant>> variants) {
+    public static BlockState ofVariants(Key key, Map<String, List<StateVariant>> variants) {
         return new BlockState(
+                key,
                 variants,
                 Collections.emptyList()
         );
@@ -182,8 +195,9 @@ public class BlockState implements SerializableResource {
      * @return A new {@link BlockState} instance
      * @since 1.0.0
      */
-    public static BlockState ofMultipart(List<StateCase> multipart) {
+    public static BlockState ofMultipart(Key key, List<StateCase> multipart) {
         return new BlockState(
+                key,
                 Collections.emptyMap(),
                 multipart
         );
