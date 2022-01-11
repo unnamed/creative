@@ -27,8 +27,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.uracle.CubeFace;
-import team.unnamed.uracle.Vector4Int;
+import team.unnamed.uracle.base.CubeFace;
+import team.unnamed.uracle.base.Vector4Int;
 import team.unnamed.uracle.serialize.AssetWriter;
 import team.unnamed.uracle.serialize.SerializableResource;
 

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle;
+package team.unnamed.uracle.base;
 
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -35,62 +35,92 @@ import java.util.stream.Stream;
 
 /**
  * Represents a fixed-size vector of two 32-bit
- * floating-point numbers, immutable
+ * integer numbers, immutable
+ *
+ * <p>Note: this is a vector and not a matrix, but
+ * it has two "X" and two "Y" values (just names)</p>
  *
  * @since 1.0.0
  */
-public final class Vector2Float
-        implements Examinable, Iterable<Float> {
+public final class Vector4Int
+        implements Examinable, Iterable<Integer> {
 
     /**
      * Constant for {@link Vector2Float} value with
-     * abscissa and ordinate of {@code 0} zero.
+     * all four components with {@code 0} zero as
+     * value
      */
-    public static final Vector2Float ZERO = new Vector2Float(0F, 0F);
+    public static final Vector4Int ZERO = new Vector4Int(0, 0, 0, 0);
 
-    private final float x;
-    private final float y;
+    private final int x;
+    private final int y;
+    private final int x2;
+    private final int y2;
 
-    public Vector2Float(float x, float y) {
+    public Vector4Int(int x, int y, int x2, int y2) {
         this.x = x;
         this.y = y;
+        this.x2 = x2;
+        this.y2 = y2;
     }
 
     /**
-     * Returns the "X" component or abscissa
-     * of this vector
+     * Gets the first "X" value for this
+     * vector
      *
-     * @return The vector abscissa
+     * @return The first X component
      */
-    public float x() {
+    public int x() {
         return x;
     }
 
     /**
-     * Returns the "Y" component or ordinate
-     * of this vector
+     * Gets the first "Y" value for this
+     * vector
      *
-     * @return The vector ordinate
+     * @return The first Y component
      */
-    public float y() {
+    public int y() {
         return y;
     }
 
-    public float[] toArray() {
-        return new float[] { x, y };
+    /**
+     * Gets the second "X" value for
+     * this vector
+     *
+     * @return The second X component
+     */
+    public int x2() {
+        return x2;
+    }
+
+    /**
+     * Gets the second "Y" value for
+     * this vector
+     *
+     * @return The second Y component
+     */
+    public int y2() {
+        return y2;
+    }
+
+    public int[] toArray() {
+        return new int[] { x, y, x2, y2 };
     }
 
     @NotNull
     @Override
-    public Iterator<Float> iterator() {
-        return Arrays.asList(x, y).iterator();
+    public Iterator<Integer> iterator() {
+        return Arrays.asList(x, y, x2, y2).iterator();
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("x", x),
-                ExaminableProperty.of("y", y)
+                ExaminableProperty.of("y", y),
+                ExaminableProperty.of("x2", x2),
+                ExaminableProperty.of("y2", y2)
         );
     }
 
@@ -103,14 +133,16 @@ public final class Vector2Float
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vector2Float that = (Vector2Float) o;
-        return Float.compare(that.x, x) == 0
-                && Float.compare(that.y, y) == 0;
+        Vector4Int that = (Vector4Int) o;
+        return x == that.x
+                && y == that.y
+                && x2 == that.x2
+                && y2 == that.y2;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return Objects.hash(x, y, x2, y2);
     }
 
 }

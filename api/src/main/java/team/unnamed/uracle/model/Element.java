@@ -26,8 +26,8 @@ package team.unnamed.uracle.model;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.CubeFace;
-import team.unnamed.uracle.Vector3Float;
+import team.unnamed.uracle.base.CubeFace;
+import team.unnamed.uracle.base.Vector3Float;
 import team.unnamed.uracle.serialize.AssetWriter;
 import team.unnamed.uracle.serialize.SerializableResource;
 

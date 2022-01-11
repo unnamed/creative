@@ -28,7 +28,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.uracle.Vector2Float;
+import team.unnamed.uracle.base.Vector2Float;
 import team.unnamed.uracle.serialize.AssetWriter;
 
 import java.util.Collections;
