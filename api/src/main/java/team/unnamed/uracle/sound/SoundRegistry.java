@@ -30,7 +30,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.FileResource;
 import team.unnamed.uracle.util.Keys;
 
@@ -77,7 +77,7 @@ public class SoundRegistry implements Namespaced, FileResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject();
         for (Map.Entry<String, SoundEvent> entry : sounds.entrySet()) {
             SoundEvent event = entry.getValue();

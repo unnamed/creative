@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.model.item.ItemOverride;
 import team.unnamed.uracle.model.item.ItemTexture;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -195,7 +195,7 @@ public class ItemModel
     }
 
     @Override
-    protected void serializeOwnProperties(AssetWriter writer) {
+    protected void serializeOwnProperties(ResourceWriter writer) {
         // textures
         writer.key("textures");
         textures.serialize(writer);

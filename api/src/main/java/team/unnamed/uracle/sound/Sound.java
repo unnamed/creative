@@ -27,7 +27,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.SerializableResource;
 import team.unnamed.uracle.util.Keys;
 
@@ -225,7 +225,7 @@ public class Sound implements SerializableResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         // in order to make some optimizations,
         // we have to do this
         if (allDefault()) {

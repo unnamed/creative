@@ -27,7 +27,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -93,7 +93,7 @@ public class LanguageEntry implements Examinable {
         return bidirectional;
     }
 
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject()
                 .key("name").value(name)
                 .key("region").value(region);

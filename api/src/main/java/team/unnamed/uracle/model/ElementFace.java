@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.base.CubeFace;
 import team.unnamed.uracle.base.Vector4Int;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.Locale;
@@ -135,7 +135,7 @@ public class ElementFace implements SerializableResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject();
         if (uv != null) {
             writer.key("uv").value(uv);

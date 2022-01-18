@@ -23,7 +23,7 @@
  */
 package team.unnamed.uracle.model;
 
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Locale;
 import java.util.Map;
@@ -31,10 +31,10 @@ import java.util.Map;
 abstract class AbstractModel
         implements Model {
 
-    protected abstract void serializeOwnProperties(AssetWriter writer);
+    protected abstract void serializeOwnProperties(ResourceWriter writer);
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
 
         writer.startObject();
 

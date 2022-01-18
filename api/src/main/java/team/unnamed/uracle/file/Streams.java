@@ -21,53 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.uracle.mock;
+package team.unnamed.uracle.file;
 
-import team.unnamed.uracle.file.ResourceWriter;
-
-import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 
-public class MockTreeOutputStream extends TreeOutputStream {
+final class Streams {
 
-    private static final byte NEW_LINE = '\n';
+    private Streams() {
+    }
 
-    private final ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-    @Override
-    public ResourceWriter useEntry(String name) {
+    public static void closeUnchecked(Closeable closeable) {
         try {
-            output.write(name.getBytes(StandardCharsets.UTF_8));
-            output.write(":\n".getBytes(StandardCharsets.UTF_8));
+            closeable.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        return super.assetWriter;
     }
 
-    @Override
-    protected void closeEntry() {
-        output.write(NEW_LINE);
-    }
-
-    @Override
-    public void finish() {
-        // no-op
-    }
-
-    @Override
-    public void write(int i) {
-        output.write(i);
-    }
-
-    public String output() {
-        return output.toString();
-    }
-
-    @Override
-    public boolean has(String path) {
-        return false;
-    }
 }

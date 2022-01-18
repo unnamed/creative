@@ -35,7 +35,7 @@ final class DirectoryFileTree
         implements FileTree {
 
     private final File root;
-    private AssetWriter writer;
+    private ResourceWriter writer;
 
     DirectoryFileTree(File root) {
         this.root = root;
@@ -47,24 +47,15 @@ final class DirectoryFileTree
     }
 
     @Override
-    public AssetWriter open(String path) {
+    public ResourceWriter open(String path) {
 
         if (writer != null) {
             // close previous writer in case
             // it has not been closed yet
-            writer.close();
+            Streams.closeUnchecked(writer);
         }
 
-        writer = new AssetWriter(openStream(path)) {
-            @Override
-            public void close() {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }
-        };
+        writer = new ResourceWriter(openStream(path));
         return writer;
     }
 
@@ -80,7 +71,7 @@ final class DirectoryFileTree
     @Override
     public void close() {
         if (writer != null) {
-            writer.close();
+            Streams.closeUnchecked(writer);
         }
     }
 

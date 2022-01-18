@@ -36,11 +36,11 @@ final class ZipFileTree implements FileTree {
 
     private final Set<String> names = new HashSet<>();
     private final ZipOutputStream output;
-    private final AssetWriter assetWriter;
+    private final ResourceWriter resourceWriter;
 
     ZipFileTree(ZipOutputStream output) {
         this.output = output;
-        this.assetWriter = new AssetWriter(output) {
+        this.resourceWriter = new ResourceWriter(output) {
             @Override
             public void close() {
                 try {
@@ -58,11 +58,11 @@ final class ZipFileTree implements FileTree {
     }
 
     @Override
-    public AssetWriter open(String path) {
+    public ResourceWriter open(String path) {
         try {
             output.putNextEntry(entryOf(path));
             names.add(path);
-            return assetWriter;
+            return resourceWriter;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

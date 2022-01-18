@@ -51,7 +51,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.base.Vector3Float;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.Objects;
@@ -131,7 +131,7 @@ public class ModelDisplay implements SerializableResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject()
                 .key("rotation").value(rotation)
                 .key("translation").value(translation)

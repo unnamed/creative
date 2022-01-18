@@ -26,7 +26,7 @@ package team.unnamed.uracle.metadata;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -63,7 +63,7 @@ public class VillagerMeta implements MetadataPart {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.key("villager").startObject();
         if (hat != Hat.NONE) {
             // only write if not default value

@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  * @author Jesse Wilson
  * @since 1.0.0
  */
-public abstract class AssetWriter
+public class ResourceWriter
         extends FilterOutputStream {
 
     private static final int EMPTY_ARRAY = 1;
@@ -105,7 +105,7 @@ public abstract class AssetWriter
 
     @Nullable private String deferredName;
 
-    public AssetWriter(OutputStream out) {
+    public ResourceWriter(OutputStream out) {
         super(out);
         // initialize stack
         push(DOCUMENT);
@@ -129,23 +129,23 @@ public abstract class AssetWriter
         }
     }
 
-    public AssetWriter startObject() {
+    public ResourceWriter startObject() {
         return start(EMPTY_OBJECT, '{');
     }
 
-    public AssetWriter endObject() {
+    public ResourceWriter endObject() {
         return end(EMPTY_OBJECT, NONEMPTY_OBJECT, '}');
     }
 
-    public AssetWriter startArray() {
+    public ResourceWriter startArray() {
         return start(EMPTY_ARRAY, '[');
     }
 
-    public AssetWriter endArray() {
+    public ResourceWriter endArray() {
         return end(EMPTY_ARRAY, NONEMPTY_ARRAY, ']');
     }
 
-    public AssetWriter key(String key) {
+    public ResourceWriter key(String key) {
         requireNonNull(key, "key");
         if (deferredName != null) {
             throw new IllegalStateException("There is already a deferred name");
@@ -154,7 +154,7 @@ public abstract class AssetWriter
         return this;
     }
 
-    public AssetWriter value(Object object) {
+    public ResourceWriter value(Object object) {
         if (object instanceof Key) {
             // transform key to string, keys
             // can be optimized by removing
@@ -186,9 +186,6 @@ public abstract class AssetWriter
 
         return this;
     }
-
-    @Override
-    public abstract void close();
 
     private void writeDeferredName() {
         if (deferredName != null) {
@@ -253,7 +250,7 @@ public abstract class AssetWriter
     //#endregion
 
     //#region Starting and ending objects or arrays
-    private AssetWriter start(int empty, char openBracket) {
+    private ResourceWriter start(int empty, char openBracket) {
         writeDeferredName();
         beforeValue();
         push(empty);
@@ -261,7 +258,7 @@ public abstract class AssetWriter
         return this;
     }
 
-    private AssetWriter end(int empty, int nonempty, char closeBracket) {
+    private ResourceWriter end(int empty, int nonempty, char closeBracket) {
         int context = peek();
         if (context != nonempty && context != empty) {
             throw new IllegalStateException("Nesting problem");

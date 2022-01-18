@@ -29,7 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.metadata.MetadataPart;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -69,7 +69,7 @@ public class LanguageMeta implements MetadataPart {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
 
         if (languages.isEmpty()) {
             // do not write anything if no

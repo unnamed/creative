@@ -45,15 +45,15 @@ public interface FileTree extends AutoCloseable {
 
     /**
      * Opens the file at the given path and starts
-     * to write it using the {@link AssetWriter}
+     * to write it using the {@link ResourceWriter}
      * class
      *
      * @param path The file path
-     * @return A new {@link AssetWriter} for the
+     * @return A new {@link ResourceWriter} for the
      * given file
      * @since 1.0.0
      */
-    AssetWriter open(String path);
+    ResourceWriter open(String path);
 
     /**
      * Opens and writes the given data to the

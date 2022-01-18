@@ -28,7 +28,7 @@ import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.FileResource;
 
 import java.util.List;
@@ -89,7 +89,7 @@ public class FontRegistry implements Keyed, FileResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject()
                 .key("providers").value(providers)
                 .endObject();

@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.uracle.base.CubeFace;
 import team.unnamed.uracle.base.Vector3Float;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.Collections;
@@ -128,7 +128,7 @@ public class Element implements SerializableResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer
                 .startObject()
                 .key("from").value(from)

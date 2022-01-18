@@ -29,7 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.uracle.model.block.BlockTexture;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -141,7 +141,7 @@ public class BlockModel
     }
 
     @Override
-    protected void serializeOwnProperties(AssetWriter writer) {
+    protected void serializeOwnProperties(ResourceWriter writer) {
         if (ambientOcclusion != DEFAULT_AMBIENT_OCCLUSION) {
             // only write if not default value
             writer.key("ambientocclusion").value(ambientOcclusion);

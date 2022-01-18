@@ -28,7 +28,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.base.Axis3D;
 import team.unnamed.uracle.base.Vector3Float;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 import team.unnamed.uracle.file.SerializableResource;
 
 import java.util.Locale;
@@ -105,7 +105,7 @@ public class ElementRotation implements SerializableResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject()
                 .key("origin").value(origin)
                 .key("axis").value(axis.name().toLowerCase(Locale.ROOT))

@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.file.FileResource;
 import team.unnamed.uracle.metadata.language.LanguageMeta;
 import team.unnamed.uracle.metadata.language.LanguageEntry;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -84,7 +84,7 @@ public class Language implements Keyed, FileResource {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
         writer.startObject();
         for (Map.Entry<String, String> entry : translations.entrySet()) {
             writer.key(entry.getKey()).value(entry.getValue());

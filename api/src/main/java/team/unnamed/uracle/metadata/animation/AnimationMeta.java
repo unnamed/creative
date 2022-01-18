@@ -27,7 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.uracle.metadata.MetadataPart;
-import team.unnamed.uracle.file.AssetWriter;
+import team.unnamed.uracle.file.ResourceWriter;
 
 import java.util.Collections;
 import java.util.List;
@@ -127,7 +127,7 @@ public class AnimationMeta implements MetadataPart {
     }
 
     @Override
-    public void serialize(AssetWriter writer) {
+    public void serialize(ResourceWriter writer) {
 
         writer.key("animation").startObject()
                 .key("interpolate").value(interpolate)

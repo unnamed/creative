@@ -27,6 +27,6 @@ import net.kyori.examination.Examinable;
 
 public interface SerializableResource extends Examinable {
 
-    void serialize(AssetWriter writer);
+    void serialize(ResourceWriter writer);
 
 }
