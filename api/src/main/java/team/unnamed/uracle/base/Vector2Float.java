@@ -76,6 +76,34 @@ public final class Vector2Float
         return y;
     }
 
+    public Vector2Float add(Vector2Float value) {
+        return new Vector2Float(
+                x + value.x,
+                y + value.y
+        );
+    }
+
+    public Vector2Float subtract(Vector2Float value) {
+        return new Vector2Float(
+                x - value.x,
+                y - value.y
+        );
+    }
+
+    public Vector2Float multiply(Vector2Float value) {
+        return new Vector2Float(
+                x * value.x,
+                y * value.y
+        );
+    }
+
+    public Vector2Float divide(Vector2Float value) {
+        return new Vector2Float(
+                x / value.x,
+                y / value.y
+        );
+    }
+
     public float[] toArray() {
         return new float[] { x, y };
     }
