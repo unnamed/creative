@@ -23,8 +23,15 @@
  */
 package team.unnamed.uracle.file;
 
+import team.unnamed.uracle.metadata.Metadata;
+
 public interface FileResource extends SerializableResource {
 
     String path();
+
+    default Metadata meta() {
+        // todo: don't
+        return null;
+    }
 
 }

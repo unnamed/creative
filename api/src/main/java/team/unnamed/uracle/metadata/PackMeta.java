@@ -52,6 +52,11 @@ public class PackMeta implements MetadataPart {
         this.description = requireNonNull(description, "description");
     }
 
+    @Override
+    public String name() {
+        return "pack";
+    }
+
     /**
      * Returns the pack version. If this number does not match the
      * current required number, the resource pack displays an error

@@ -23,18 +23,12 @@
  */
 package team.unnamed.uracle.metadata;
 
-import team.unnamed.uracle.file.SerializableResource;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Represents a resource-pack resource metadata
- * part. Every resource-pack resource can have
- * metadata, metadata is compound by multiple
- * metadata parts
- *
- * @since 1.0.0
- */
-public interface MetadataPart extends SerializableResource {
+public interface Metadata {
 
-    String name();
+    <T extends MetadataPart> void meta(Class<T> type, T meta);
+
+    <T extends MetadataPart> @Nullable T meta(Class<T> type);
 
 }

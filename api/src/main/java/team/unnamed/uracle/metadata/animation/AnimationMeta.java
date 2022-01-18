@@ -67,6 +67,11 @@ public class AnimationMeta implements MetadataPart {
         this.frames = immutableListOf(frames);
     }
 
+    @Override
+    public String name() {
+        return "animation";
+    }
+
     /**
      * Determines if the animation is interpolated,
      * in that case, Minecraft will generate frames

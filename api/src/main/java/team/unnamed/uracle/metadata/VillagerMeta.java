@@ -49,6 +49,11 @@ public class VillagerMeta implements MetadataPart {
         this.hat = requireNonNull(hat, "hat");
     }
 
+    @Override
+    public String name() {
+        return "villager";
+    }
+
     /**
      * Determines how the villager hat should render
      * ("none", "partial", "full")

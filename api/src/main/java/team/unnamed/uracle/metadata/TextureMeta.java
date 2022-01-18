@@ -49,6 +49,11 @@ public class TextureMeta implements MetadataPart {
         this.clamp = clamp;
     }
 
+    @Override
+    public String name() {
+        return "texture";
+    }
+
     /**
      * Determines whether the texture will be
      * blur-ed when viewed from close up
