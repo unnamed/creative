@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -58,6 +59,14 @@ public class StateVariant implements SerializableResource {
         this.y = y;
         this.uvLock = uvLock;
         this.weight = weight;
+        validate();
+    }
+
+    private void validate() {
+        Validate.isTrue(x % 90 == 0 && x >= 0 && x <= 270,
+                "X rotation must be a positive multiple of 90");
+        Validate.isTrue(y % 90 == 0 && y >= 0 && y <= 270,
+                "Y rotation must be a positive multiple of 90");
     }
 
     /**
