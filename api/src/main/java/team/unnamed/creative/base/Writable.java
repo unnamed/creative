@@ -23,8 +23,12 @@
  */
 package team.unnamed.creative.base;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.Callable;
 
 /**
  * Interface for representing objects that can
@@ -39,6 +43,13 @@ import java.io.OutputStream;
 public interface Writable {
 
     /**
+     * Determines the default buffer size used when
+     * copying data from an input stream to an output
+     * stream
+     */
+    int DEFAULT_BUFFER_LENGTH = 1024;
+
+    /**
      * Writes this object information to a
      * {@link OutputStream}, this method can be
      * called anytime, it should be consistent
@@ -51,5 +62,76 @@ public interface Writable {
      * @since 1.0.0
      */
     void write(OutputStream output) throws IOException;
+
+    /**
+     * Creates a new {@link Writable} instance that represents
+     * the named resource at the specified class loader
+     *
+     * @param loader The class loader that holds the resource
+     * @param name The full resource name
+     * @return The {@link Writable} representation
+     * @since 1.0.0
+     */
+    static Writable resource(ClassLoader loader, String name) {
+        return inputStream(() -> {
+            InputStream resource = loader.getResourceAsStream(name);
+            if (resource == null) {
+                throw new IOException("Resource not found: " + name);
+            }
+            return resource;
+        });
+    }
+
+    /**
+     * Creates a new {@link Writable} instance that represents
+     * the given {@link File}, which will be copied to the
+     * given {@link OutputStream} when calling {@link Writable#write}
+     *
+     * @param file The wrapped file, must exist
+     * @return The {@link Writable} representation for this file
+     * @since 1.0.0
+     */
+    static Writable file(File file) {
+        return inputStream(() -> new FileInputStream(file));
+    }
+
+    /**
+     * Creates a new {@link Writable} instance that represents
+     * the given {@link InputStream} supplier, the supplied
+     * input stream will be opened, read and copied every
+     * time it is required
+     *
+     * @param inputStreamSupplier The input stream supplier
+     * @return The {@link Writable} representation
+     * @since 1.0.0
+     */
+    static Writable inputStream(Callable<InputStream> inputStreamSupplier) {
+        return output -> {
+            try (InputStream input = inputStreamSupplier.call()) {
+                byte[] buf = new byte[DEFAULT_BUFFER_LENGTH];
+                int len;
+                while ((len = input.read(buf)) != -1) {
+                    output.write(buf, 0, len);
+                }
+            } catch (IOException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new IOException("Failed to open InputStream", e);
+            }
+        };
+    }
+
+    /**
+     * Creates a new {@link Writable} instance representing
+     * the given byte array, which is written using the
+     * {@link OutputStream#write(byte[])}} method
+     *
+     * @param bytes The wrapped bytes
+     * @return The {@link Writable} representation
+     * @since 1.0.0
+     */
+    static Writable bytes(byte[] bytes) {
+        return output -> output.write(bytes);
+    }
 
 }
