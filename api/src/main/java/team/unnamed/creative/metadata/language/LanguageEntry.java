@@ -48,6 +48,8 @@ import static team.unnamed.creative.util.Validate.isNotEmpty;
  */
 public class LanguageEntry implements Examinable {
 
+    public static final boolean DEFAULT_BIDIRECTIONAL = false;
+
     private final String name;
     private final String region;
     private final boolean bidirectional;
@@ -98,7 +100,7 @@ public class LanguageEntry implements Examinable {
                 .key("name").value(name)
                 .key("region").value(region);
 
-        if (bidirectional) {
+        if (bidirectional != DEFAULT_BIDIRECTIONAL) {
             // only write if not default
             writer.key("bidirectional").value(bidirectional);
         }
