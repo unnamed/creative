@@ -94,6 +94,74 @@ public final class Vector3Float
         return z;
     }
 
+    public Vector3Float add(float x, float y, float z) {
+        return new Vector3Float(this.x + x, this.y + y, this.z + z);
+    }
+
+    public Vector3Float subtract(float x, float y, float z) {
+        return new Vector3Float(
+                this.x - x,
+                this.y - y,
+                this.z - z
+        );
+    }
+
+    public Vector3Float divide(float value) {
+        return new Vector3Float(
+                this.x / value,
+                this.y / value,
+                this.z / value
+        );
+    }
+
+    public Vector3Float divide(float x, float y, float z) {
+        return new Vector3Float(
+                this.x / x,
+                this.y / y,
+                this.z / z
+        );
+    }
+
+    public float dot(Vector3Float vector) {
+        return this.x * vector.x() + this.y * vector.y() + this.z * vector.z();
+    }
+
+    public Vector3Float crossProduct(Vector3Float o) {
+        return new Vector3Float(
+                y * o.z - o.y * z,
+                z * o.x - o.z * x,
+                x * o.y - o.x * y
+        );
+    }
+
+    public Vector3Float multiply(float value) {
+        return new Vector3Float(
+                this.x * value,
+                this.y * value,
+                this.z * value
+        );
+    }
+
+    public Vector3Float multiply(float x, float y, float z) {
+        return new Vector3Float(
+                this.x * x,
+                this.y * y,
+                this.z * z
+        );
+    }
+
+    public Vector3Float add(Vector3Float value) {
+        return add(value.x(), value.y(), value.z());
+    }
+
+    public Vector3Float subtract(Vector3Float value) {
+        return subtract(value.x(), value.y(), value.z());
+    }
+
+    public Vector3Float multiply(Vector3Float value) {
+        return multiply(value.x(), value.y(), value.z());
+    }
+
     public float[] toArray() {
         return new float[] { x, y, z };
     }
