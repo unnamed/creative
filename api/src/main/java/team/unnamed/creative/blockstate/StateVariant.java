@@ -72,6 +72,7 @@ public class StateVariant implements SerializableResource {
                 "X rotation must be a positive multiple of 90");
         Validate.isTrue(y % 90 == 0 && y >= 0 && y <= 270,
                 "Y rotation must be a positive multiple of 90");
+        Validate.isTrue(weight > 0, "Zero or negative weight");
     }
 
     /**
