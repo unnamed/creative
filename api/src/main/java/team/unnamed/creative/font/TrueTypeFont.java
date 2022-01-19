@@ -47,6 +47,9 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  */
 public class TrueTypeFont implements Font {
 
+    public static final float DEFAULT_SIZE = 11F;
+    public static final float DEFAULT_OVERSAMPLE = 1F;
+
     private final Key file;
     private final Vector2Float shift;
     private final float size;
@@ -126,15 +129,32 @@ public class TrueTypeFont implements Font {
     @Override
     public void serialize(ResourceWriter writer) {
         writer.startObject()
-                .key("file").value(file)
-                .key("shift").startArray()
-                .value(shift.x())
-                .value(shift.y())
-                .endArray()
-                .key("size").value(size)
-                .key("oversample").value(oversample)
-                .key("skip").value(skip)
-                .endObject();
+                .key("file").value(file);
+
+        if (!shift.equals(Vector2Float.ZERO)) {
+            writer.key("shift").startArray()
+                    .value(shift.x())
+                    .value(shift.y())
+                    .endArray();
+        }
+
+        if (!skip.isEmpty()) {
+            // micro-optimization: vanilla client is a bit lenient
+            // in this case, it can accept a string or a string array,
+            // so we can optimize this
+            writer.key("skip")
+                    .value(skip.size() == 1 ? skip.get(0) : skip);
+        }
+
+        if (size != DEFAULT_SIZE) {
+            writer.key("size").value(size);
+        }
+
+        if (oversample != DEFAULT_OVERSAMPLE) {
+            writer.key("oversample").value(oversample);
+        }
+
+        writer.endObject();
     }
 
     @Override
