@@ -30,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.file.ResourceWriter;
+import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Map;
 import java.util.Objects;
@@ -46,11 +48,24 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  */
 public class LanguageMeta implements MetadataPart {
 
+    public static final int MAX_LANGUAGE_LENGTH = 16;
+
     @Unmodifiable private final Map<Key, LanguageEntry> languages;
 
     private LanguageMeta(Map<Key, LanguageEntry> languages) {
         requireNonNull(languages, "languages");
         this.languages = immutableMapOf(languages);
+        validate();
+    }
+
+    private void validate() {
+        for (Map.Entry<Key, LanguageEntry> language : languages.entrySet()) {
+            Key key = language.getKey();
+            Validate.isNotNull(key, "Key is null");
+            Validate.isNotNull(language.getValue(), "Language entry for %s is null", key);
+            Validate.isTrue(Keys.toString(key).length() <= MAX_LANGUAGE_LENGTH,
+                    "Language code is more than %s characters long", MAX_LANGUAGE_LENGTH);
+        }
     }
 
     @Override
