@@ -53,8 +53,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class FontRegistry implements Keyed, FileResource {
 
-    public static final Key MINECRAFT_DEFAULT = Key.key("minecraft:default");
-    public static final Key MINECRAFT_ALT = Key.key("minecraft:alt");
+    public static final Key MINECRAFT_DEFAULT = Key.key(Key.MINECRAFT_NAMESPACE, "default");
+    public static final Key MINECRAFT_ALT = Key.key(Key.MINECRAFT_NAMESPACE, "alt");
 
     private final Key key;
     private final List<Font> providers;
