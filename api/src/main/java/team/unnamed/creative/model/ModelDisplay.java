@@ -97,9 +97,8 @@ public class ModelDisplay implements SerializableResource {
 
     /**
      * Returns the position of the model.
-     * If the value is greater than 80, it
-     * is displayed as 80. If the value is
-     * less than -80, it is displayed as -80
+     * The value is clamped by the client
+     * between -80 and 80
      *
      * @return The model display translation
      */
@@ -108,9 +107,9 @@ public class ModelDisplay implements SerializableResource {
     }
 
     /**
-     * Returns the scale of the mode. If
-     * the value is greater than 4, it is
-     * displayed as 4
+     * Returns the scale of the mode. This
+     * value is clamped by the client between
+     * -4 and 4
      *
      * @return The model display scale
      */
