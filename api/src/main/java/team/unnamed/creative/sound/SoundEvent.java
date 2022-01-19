@@ -187,7 +187,7 @@ public class SoundEvent implements SerializableResource {
      */
     public static class Builder {
 
-        private boolean replace;
+        private boolean replace = DEFAULT_REPLACE;
         private String subtitle;
         private List<Sound> sounds = Collections.emptyList();
 
