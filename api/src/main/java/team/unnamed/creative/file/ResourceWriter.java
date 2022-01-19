@@ -26,6 +26,7 @@ package team.unnamed.creative.file;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.util.Keys;
 
 import java.io.FilterOutputStream;
@@ -369,6 +370,14 @@ public class ResourceWriter
     public void write(byte @NotNull [] b, int off, int len) {
         try {
             out.write(b, off, len);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public void write(Writable writable) {
+        try {
+            writable.write(out);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

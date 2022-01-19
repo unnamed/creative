@@ -30,8 +30,7 @@ public interface FileResource extends SerializableResource {
     String path();
 
     default Metadata meta() {
-        // todo: don't
-        return null;
+        throw new UnsupportedOperationException("This file resource does not support metadata");
     }
 
 }

@@ -21,51 +21,69 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.metadata;
+package team.unnamed.creative.texture;
 
-import net.kyori.examination.Examinable;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.metadata.animation.AnimationMeta;
-import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.file.FileResource;
+import team.unnamed.creative.file.ResourceWriter;
+import team.unnamed.creative.metadata.Metadata;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
 
-public class Metadata implements Examinable {
+public class Texture implements Keyed, FileResource {
 
-    public static final Metadata EMPTY = new Metadata(Collections.emptyMap());
+    private final Key key;
+    private final Writable data;
+    private final Metadata meta;
 
-    private final Map<Class<?>, MetadataPart> parts;
-
-    private Metadata(Map<Class<?>, MetadataPart> parts) {
-        requireNonNull(parts, "parts");
-        this.parts = immutableMapOf(parts);
+    private Texture(
+            Key key,
+            Writable data,
+            Metadata meta
+    ) {
+        this.key = requireNonNull(key, "key");
+        this.data = requireNonNull(data, "data");
+        this.meta = requireNonNull(meta, "meta");
     }
 
-    public Collection<MetadataPart> parts() {
-        return parts.values();
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
-    public <T extends MetadataPart> @Nullable T meta(Class<T> type) {
-        @SuppressWarnings("unchecked")
-        T part = (T) parts.get(type);
-        return part;
+    public Writable data() {
+        return data;
+    }
+
+    @Override
+    public Metadata meta() {
+        return meta;
+    }
+
+    @Override
+    public String path() {
+        return "assets/" + key.namespace() + "/textures/" + key.value() + ".png";
+    }
+
+    @Override
+    public void serialize(ResourceWriter writer) {
+        writer.write(data);
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("parts", parts)
+                ExaminableProperty.of("key", key),
+                ExaminableProperty.of("data", data),
+                ExaminableProperty.of("meta", meta)
         );
     }
 
@@ -78,13 +96,15 @@ public class Metadata implements Examinable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Metadata metadata = (Metadata) o;
-        return parts.equals(metadata.parts);
+        Texture texture = (Texture) o;
+        return key.equals(texture.key)
+                && data.equals(texture.data)
+                && meta.equals(texture.meta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(parts);
+        return Objects.hash(key, data, meta);
     }
 
     public static Builder builder() {
@@ -93,41 +113,30 @@ public class Metadata implements Examinable {
 
     public static class Builder {
 
-        private final Map<Class<?>, MetadataPart> parts = new HashMap<>();
+        private Key key;
+        private Writable data;
+        private Metadata meta = Metadata.EMPTY;
 
         private Builder() {
         }
 
-        public <T extends MetadataPart> Builder add(Class<T> type, T part) {
-            requireNonNull(type, "type");
-            requireNonNull(part, "part");
-            parts.put(type, part);
+        public Builder key(Key key) {
+            this.key = requireNonNull(key, "key");
             return this;
         }
 
-        // overloads of known metadata parts
-        public Builder add(PackMeta meta) {
-            return add(PackMeta.class, meta);
+        public Builder data(Writable data) {
+            this.data = requireNonNull(data, "data");
+            return this;
         }
 
-        public Builder add(AnimationMeta meta) {
-            return add(AnimationMeta.class, meta);
+        public Builder meta(Metadata meta) {
+            this.meta = requireNonNull(meta, "meta");
+            return this;
         }
 
-        public Builder add(LanguageMeta meta) {
-            return add(LanguageMeta.class, meta);
-        }
-
-        public Builder add(TextureMeta meta) {
-            return add(TextureMeta.class, meta);
-        }
-
-        public Builder add(VillagerMeta meta) {
-            return add(VillagerMeta.class, meta);
-        }
-
-        public Metadata build() {
-            return new Metadata(parts);
+        public Texture build() {
+            return new Texture(key, data, meta);
         }
 
     }
