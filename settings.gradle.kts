@@ -1,6 +1,6 @@
-rootProject.name = "uracle"
+rootProject.name = "creative"
 
-// api's (only vanilla at the moment)
+// api
 include("api")
 
 // subprojects for manager plugins/extensions
