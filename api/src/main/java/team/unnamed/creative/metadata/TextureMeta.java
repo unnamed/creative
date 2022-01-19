@@ -38,6 +38,9 @@ import java.util.stream.Stream;
  */
 public class TextureMeta implements MetadataPart {
 
+    public static final boolean DEFAULT_BLUR = false;
+    public static final boolean DEFAULT_CLAMP = false;
+
     private final boolean blur;
     private final boolean clamp;
 
@@ -77,10 +80,14 @@ public class TextureMeta implements MetadataPart {
 
     @Override
     public void serialize(ResourceWriter writer) {
-        writer.key("texture").startObject()
-                .key("blur").value(blur)
-                .key("clamp").value(clamp)
-                .endObject();
+        writer.key("texture").startObject();
+        if (blur != DEFAULT_BLUR) {
+            writer.key("blur").value(blur);
+        }
+        if (clamp != DEFAULT_CLAMP) {
+            writer.key("clamp").value(clamp);
+        }
+        writer.endObject();
     }
 
     @Override
