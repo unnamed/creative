@@ -56,6 +56,8 @@ public class Model implements Keyed, FileResource {
      */
     public static final Key ITEM_GENERATED = Key.key("item/generated");
 
+    public static final Key ITEM_HANDHELD = Key.key("item/handheld");
+
     /**
      * A {@link Model} can be set to extend this key to load
      * a model from an entity file. As you cannot specify the entity,
