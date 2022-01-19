@@ -25,6 +25,9 @@ package team.unnamed.creative.file;
 
 import team.unnamed.creative.base.Writable;
 
+import java.io.File;
+import java.util.zip.ZipOutputStream;
+
 /**
  * Represents a file tree, which may be implemented by a
  * real file system with real files, or ZIP files
@@ -74,5 +77,13 @@ public interface FileTree extends AutoCloseable {
      */
     @Override
     void close();
+
+    static FileTree directory(File root) {
+        return new DirectoryFileTree(root);
+    }
+
+    static FileTree zip(ZipOutputStream zipStream) {
+        return new ZipFileTree(zipStream);
+    }
 
 }
