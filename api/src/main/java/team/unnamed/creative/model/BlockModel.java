@@ -73,7 +73,7 @@ public class BlockModel implements Keyed, FileResource {
     private final Key key;
     @Nullable private final Key parent;
     private final boolean ambientOcclusion;
-    private final Map<ModelDisplay.Type, ModelDisplay> display;
+    private final Map<ItemTransform.Type, ItemTransform> display;
     private final BlockTexture textures;
     @Nullable private final GuiLight guiLight;
     private final List<Element> elements;
@@ -83,7 +83,7 @@ public class BlockModel implements Keyed, FileResource {
             Key key,
             @Nullable Key parent,
             boolean ambientOcclusion,
-            Map<ModelDisplay.Type, ModelDisplay> display,
+            Map<ItemTransform.Type, ItemTransform> display,
             BlockTexture textures,
             @Nullable GuiLight guiLight,
             List<Element> elements,
@@ -130,7 +130,7 @@ public class BlockModel implements Keyed, FileResource {
      *
      * @return An unmodifiable map of displays
      */
-    public @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display() {
+    public @Unmodifiable Map<ItemTransform.Type, ItemTransform> display() {
         return display;
     }
 
@@ -196,9 +196,9 @@ public class BlockModel implements Keyed, FileResource {
 
         // display
         writer.key("display").startObject();
-        for (Map.Entry<ModelDisplay.Type, ModelDisplay> entry : display().entrySet()) {
-            ModelDisplay.Type type = entry.getKey();
-            ModelDisplay display = entry.getValue();
+        for (Map.Entry<ItemTransform.Type, ItemTransform> entry : display().entrySet()) {
+            ItemTransform.Type type = entry.getKey();
+            ItemTransform display = entry.getValue();
 
             writer.key(type.name().toLowerCase(Locale.ROOT));
             display.serialize(writer);
@@ -292,7 +292,7 @@ public class BlockModel implements Keyed, FileResource {
         private Key key;
         private Key parent;
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
-        private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
+        private Map<ItemTransform.Type, ItemTransform> display = Collections.emptyMap();
         private BlockTexture textures;
         private GuiLight guiLight = GuiLight.SIDE;
         private List<Element> elements = Collections.emptyList();
@@ -316,7 +316,7 @@ public class BlockModel implements Keyed, FileResource {
             return this;
         }
 
-        public Builder display(Map<ModelDisplay.Type, ModelDisplay> display) {
+        public Builder display(Map<ItemTransform.Type, ItemTransform> display) {
             this.display = requireNonNull(display, "display");
             return this;
         }

@@ -65,7 +65,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ModelDisplay implements SerializableResource {
+public class ItemTransform implements SerializableResource {
 
     public static final Vector3Float DEFAULT_ROTATION = Vector3Float.ZERO;
     public static final Vector3Float DEFAULT_TRANSLATION = Vector3Float.ZERO;
@@ -75,7 +75,7 @@ public class ModelDisplay implements SerializableResource {
     private final Vector3Float translation;
     private final Vector3Float scale;
 
-    private ModelDisplay(
+    private ItemTransform(
             Vector3Float rotation,
             Vector3Float translation,
             Vector3Float scale
@@ -166,7 +166,7 @@ public class ModelDisplay implements SerializableResource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ModelDisplay that = (ModelDisplay) o;
+        ItemTransform that = (ItemTransform) o;
         return rotation.equals(that.rotation)
                 && translation.equals(that.translation)
                 && scale.equals(that.scale);
@@ -178,27 +178,27 @@ public class ModelDisplay implements SerializableResource {
     }
 
     /**
-     * Creates a new {@link ModelDisplay} instance from
+     * Creates a new {@link ItemTransform} instance from
      * the given values
      *
      * @param rotation The display rotation
      * @param translation The display translation [-80, 80]
      * @param scale The display scale [0, 4]
-     * @return A new {@link ModelDisplay} instance
+     * @return A new {@link ItemTransform} instance
      * @since 1.0.0
      */
-    public static ModelDisplay of(
+    public static ItemTransform of(
             Vector3Float rotation,
             Vector3Float translation,
             Vector3Float scale
     ) {
-        return new ModelDisplay(rotation, translation, scale);
+        return new ItemTransform(rotation, translation, scale);
     }
 
     /**
      * Static factory method for instantiating our
      * builder implementation, which eases the creation
-     * of {@link ModelDisplay} instances
+     * of {@link ItemTransform} instances
      *
      * @return A new builder instance
      * @since 1.0.0
@@ -208,7 +208,7 @@ public class ModelDisplay implements SerializableResource {
     }
 
     /**
-     * Builder implementation for creating {@link ModelDisplay}
+     * Builder implementation for creating {@link ItemTransform}
      * instances
      *
      * @since 1.0.0
@@ -238,13 +238,13 @@ public class ModelDisplay implements SerializableResource {
         }
 
         /**
-         * Finished building the {@link ModelDisplay} instance
+         * Finished building the {@link ItemTransform} instance
          * using the previously set values
          *
-         * @return A new {@link ModelDisplay} instance
+         * @return A new {@link ItemTransform} instance
          */
-        public ModelDisplay build() {
-            return new ModelDisplay(rotation, translation, scale);
+        public ItemTransform build() {
+            return new ItemTransform(rotation, translation, scale);
         }
 
     }
