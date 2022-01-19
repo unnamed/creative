@@ -80,6 +80,18 @@ final class ZipFileTree implements FileTree {
     }
 
     @Override
+    public void write(FileResource resource) {
+        try {
+            String path = resource.path();
+            output.putNextEntry(entryOf(path));
+            names.add(path);
+            resource.serialize(resourceWriter);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Override
     public void close() {
         try {
             output.finish();

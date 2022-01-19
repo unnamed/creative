@@ -69,6 +69,16 @@ public interface FileTree extends AutoCloseable {
     void write(String path, Writable data);
 
     /**
+     * Opens and writes the file at the specified
+     * path ({@link FileResource#path()}) and serializes
+     * the given resource there
+     *
+     * @param resource The written resource
+     * @since 1.0.0
+     */
+    void write(FileResource resource);
+
+    /**
      * Closes this file tree, necessary for virtual
      * file trees in a single file, like a ZIP file
      * tree

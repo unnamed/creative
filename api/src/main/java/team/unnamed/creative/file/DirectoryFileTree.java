@@ -69,6 +69,15 @@ final class DirectoryFileTree
     }
 
     @Override
+    public void write(FileResource resource) {
+        try (ResourceWriter writer = open(resource.path())) {
+            resource.serialize(writer);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Override
     public void close() {
         if (writer != null) {
             Streams.closeUnchecked(writer);
