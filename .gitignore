@@ -7,5 +7,4 @@
 
 # Output files
 /build/
-/api/build/
-/manage-bukkit/build/
+/*/build/
