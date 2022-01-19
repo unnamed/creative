@@ -34,30 +34,30 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * Represents a fixed-size vector of two 32-bit
- * integer numbers, immutable
+ * Represents a fixed-size vector of four 32-bit
+ * floating numbers, immutable
  *
  * <p>Note: this is a vector and not a matrix, but
  * it has two "X" and two "Y" values (just names)</p>
  *
  * @since 1.0.0
  */
-public final class Vector4Int
-        implements Examinable, Iterable<Integer> {
+public final class Vector4Float
+        implements Examinable, Iterable<Float> {
 
     /**
      * Constant for {@link Vector2Float} value with
      * all four components with {@code 0} zero as
      * value
      */
-    public static final Vector4Int ZERO = new Vector4Int(0, 0, 0, 0);
+    public static final Vector4Float ZERO = new Vector4Float(0, 0, 0, 0);
 
-    private final int x;
-    private final int y;
-    private final int x2;
-    private final int y2;
+    private final float x;
+    private final float y;
+    private final float x2;
+    private final float y2;
 
-    public Vector4Int(int x, int y, int x2, int y2) {
+    public Vector4Float(float x, float y, float x2, float y2) {
         this.x = x;
         this.y = y;
         this.x2 = x2;
@@ -70,7 +70,7 @@ public final class Vector4Int
      *
      * @return The first X component
      */
-    public int x() {
+    public float x() {
         return x;
     }
 
@@ -80,7 +80,7 @@ public final class Vector4Int
      *
      * @return The first Y component
      */
-    public int y() {
+    public float y() {
         return y;
     }
 
@@ -90,7 +90,7 @@ public final class Vector4Int
      *
      * @return The second X component
      */
-    public int x2() {
+    public float x2() {
         return x2;
     }
 
@@ -100,17 +100,17 @@ public final class Vector4Int
      *
      * @return The second Y component
      */
-    public int y2() {
+    public float y2() {
         return y2;
     }
 
-    public int[] toArray() {
-        return new int[] { x, y, x2, y2 };
+    public float[] toArray() {
+        return new float[] { x, y, x2, y2 };
     }
 
     @NotNull
     @Override
-    public Iterator<Integer> iterator() {
+    public Iterator<Float> iterator() {
         return Arrays.asList(x, y, x2, y2).iterator();
     }
 
@@ -133,7 +133,7 @@ public final class Vector4Int
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vector4Int that = (Vector4Int) o;
+        Vector4Float that = (Vector4Float) o;
         return x == that.x
                 && y == that.y
                 && x2 == that.x2

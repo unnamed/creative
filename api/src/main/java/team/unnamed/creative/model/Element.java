@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector3Float;
+import team.unnamed.creative.base.Vector4Float;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
@@ -175,8 +176,26 @@ public class Element implements SerializableResource {
             CubeFace type = entry.getKey();
             ElementFace face = entry.getValue();
 
-            writer.key(type.name().toLowerCase(Locale.ROOT));
-            face.serialize(writer);
+            writer.key(type.name().toLowerCase(Locale.ROOT))
+                    .startObject();
+            if (face.uv() != null) {
+                Vector4Float uv = face.uv();
+                Vector4Float defaultUv = ElementFace.getDefaultUvForFace(type, from, to);
+                if (!uv.equals(defaultUv)) {
+                    writer.key("uv").value(face.uv());
+                }
+            }
+            writer.key("texture").value(face.texture());
+            if (face.cullFace() != null) {
+                writer.key("cullface").value(face.cullFace().name().toLowerCase(Locale.ROOT));
+            }
+            if (face.rotation() != ElementFace.DEFAULT_ROTATION) {
+                writer.key("rotation").value(face.rotation());
+            }
+            if (face.tintIndex() != ElementFace.DEFAULT_TINT_INDEX) {
+                writer.key("tintindex").value(face.tintIndex());
+            }
+            writer.endObject();
         }
         writer.endObject();
     }

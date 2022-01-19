@@ -23,17 +23,16 @@
  */
 package team.unnamed.creative.model;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.CubeFace;
-import team.unnamed.creative.base.Vector4Int;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
+import team.unnamed.creative.base.Vector3Float;
+import team.unnamed.creative.base.Vector4Float;
 import team.unnamed.creative.util.Validate;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -45,19 +44,19 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ElementFace implements SerializableResource {
+public class ElementFace implements Examinable {
 
     public static final int DEFAULT_ROTATION = 0;
     public static final int DEFAULT_TINT_INDEX = -1;
 
-    @Nullable private final Vector4Int uv;
+    @Nullable private final Vector4Float uv;
     private final String texture;
     @Nullable private final CubeFace cullFace;
     private final int rotation;
     private final int tintIndex;
 
     private ElementFace(
-            @Nullable Vector4Int uv,
+            @Nullable Vector4Float uv,
             String texture,
             @Nullable CubeFace cullFace,
             int rotation,
@@ -89,7 +88,7 @@ public class ElementFace implements SerializableResource {
      *
      * @return The texture area to use
      */
-    public @Nullable Vector4Int uv() {
+    public @Nullable Vector4Float uv() {
         return uv;
     }
 
@@ -142,25 +141,6 @@ public class ElementFace implements SerializableResource {
     }
 
     @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        if (uv != null) {
-            writer.key("uv").value(uv);
-        }
-        writer.key("texture").value(texture);
-        if (cullFace != null) {
-            writer.key("cullface").value(cullFace.name().toLowerCase(Locale.ROOT));
-        }
-        if (rotation != DEFAULT_ROTATION) {
-            writer.key("rotation").value(rotation);
-        }
-        if (tintIndex != DEFAULT_TINT_INDEX) {
-            writer.key("tintindex").value(tintIndex);
-        }
-        writer.endObject();
-    }
-
-    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("uv", uv),
@@ -208,13 +188,36 @@ public class ElementFace implements SerializableResource {
      * @since 1.0.0
      */
     public static ElementFace of(
-            @Nullable Vector4Int uv,
+            @Nullable Vector4Float uv,
             String texture,
             @Nullable CubeFace cullFace,
             int rotation,
             int tintIndex
     ) {
         return new ElementFace(uv, texture, cullFace, rotation, tintIndex);
+    }
+
+    public static Vector4Float getDefaultUvForFace(
+            CubeFace face,
+            Vector3Float from,
+            Vector3Float to
+    ) {
+        switch (face) {
+            case WEST:
+                return new Vector4Float(from.z(), 16F - to.y(), to.z(), 16F - from.y());
+            case EAST:
+                return new Vector4Float(16F - to.z(), 16F - to.y(), 16F - from.z(), 16F - from.y());
+            case DOWN:
+                return new Vector4Float(from.x(), 16F - to.z(), to.x(), 16F - from.z());
+            case UP:
+                return new Vector4Float(from.x(), from.z(), to.x(), to.z());
+            case NORTH:
+                return new Vector4Float(16F - to.x(), 16F - to.y(), 16F - from.x(), 16F - from.y());
+            case SOUTH:
+                return new Vector4Float(from.x(), 16.0F - to.y(), to.x(), 16.0F - from.y());
+            default:
+                throw new IllegalArgumentException("Unknown face: " + face);
+        }
     }
 
     /**
@@ -237,7 +240,7 @@ public class ElementFace implements SerializableResource {
      */
     public static class Builder {
 
-        private Vector4Int uv;
+        private Vector4Float uv;
         private String texture;
         private CubeFace cullFace;
         private int rotation = DEFAULT_ROTATION;
@@ -246,7 +249,7 @@ public class ElementFace implements SerializableResource {
         private Builder() {
         }
 
-        public Builder uv(@Nullable Vector4Int uv) {
+        public Builder uv(@Nullable Vector4Float uv) {
             this.uv = uv;
             return this;
         }
