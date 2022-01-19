@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -81,6 +82,13 @@ public class Sound implements SerializableResource {
         this.attenuationDistance = attenuationDistance;
         this.preload = preload;
         this.type = requireNonNull(type, "type");
+        validate();
+    }
+
+    private void validate() {
+        Validate.isTrue(volume > 0, "Zero or negative volume");
+        Validate.isTrue(pitch > 0, "Zero or negative pitch");
+        Validate.isTrue(weight > 0, "Zero or negative weight");
     }
 
     /**
