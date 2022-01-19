@@ -200,8 +200,8 @@ public class TrueTypeFont implements Font {
 
         private Key file;
         private Vector2Float shift = Vector2Float.ZERO;
-        private float size;
-        private float oversample;
+        private float size = DEFAULT_SIZE;
+        private float oversample = DEFAULT_OVERSAMPLE;
         private List<String> skip = Collections.emptyList();
 
         protected Builder() {
