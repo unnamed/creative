@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
 
 /**
- * Represents a {@link Model} cubic element,
+ * Represents a {@link BlockModel} cubic element,
  * has "from" and "to" locations, rotation,
  * translation and scale
  *

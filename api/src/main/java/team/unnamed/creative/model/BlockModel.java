@@ -24,10 +24,13 @@
 package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.model.block.BlockTexture;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.model.item.ItemOverride;
@@ -47,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class BlockModel implements Model {
+public class BlockModel implements Keyed, FileResource {
 
     /**
      * A {@link BlockModel} can be set to extend this key to use
@@ -102,12 +105,11 @@ public class BlockModel implements Model {
     }
 
     /**
-     * Returns the reference to the parent
-     * block model resource location
+     * Returns the parent model of this
+     * model object
      *
-     * @return The parent block model location
+     * @return The parent model location
      */
-    @Override
     public @Nullable Key parent() {
         return parent;
     }
@@ -123,13 +125,12 @@ public class BlockModel implements Model {
     }
 
     /**
-     * Returns a map that holds the different
-     * places where block models can be displayed
+     * Returns a map of the different places
+     * where the model can be displayed
      *
-     * @return The display specifications for the model
+     * @return An unmodifiable map of displays
      */
-    @Override
-    public Map<ModelDisplay.Type, ModelDisplay> display() {
+    public @Unmodifiable Map<ModelDisplay.Type, ModelDisplay> display() {
         return display;
     }
 
@@ -156,15 +157,13 @@ public class BlockModel implements Model {
     }
 
     /**
-     * Returns a  list that contains all the elements of the
-     * model. They can only have cubic forms. If both "parent"
-     * and "elements" are set, the "elements" tag overrides the
-     * "elements" tag from the previous model
+     * Returns an unmodifiable list containing all
+     * the model elements, which can only have cubic
+     * forms
      *
      * @return The model elements
      */
-    @Override
-    public List<Element> elements() {
+    public @Unmodifiable List<Element> elements() {
         return elements;
     }
 
@@ -282,6 +281,10 @@ public class BlockModel implements Model {
     @Override
     public int hashCode() {
         return Objects.hash(key, parent, ambientOcclusion, display, textures, guiLight, elements, overrides);
+    }
+
+    public static BlockModel.Builder builder() {
+        return new BlockModel.Builder();
     }
 
     public static class Builder {

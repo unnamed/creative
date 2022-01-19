@@ -30,7 +30,7 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.font.FontRegistry;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.model.Model;
+import team.unnamed.creative.model.BlockModel;
 import team.unnamed.creative.sound.SoundRegistry;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class ResourcePack {
 
     private final Map<Key, FontRegistry> fonts;
     private final Map<Key, Language> languages;
-    private final Map<Key, Model> models;
+    private final Map<Key, BlockModel> models;
     private final Map<Key, BlockState> blockStates;
     private final Map<String, SoundRegistry> sounds;
     private final Map<String, Writable> extra;
@@ -61,7 +61,7 @@ public class ResourcePack {
 
             Map<Key, FontRegistry> fonts,
             Map<Key, Language> languages,
-            Map<Key, Model> models,
+            Map<Key, BlockModel> models,
             Map<Key, BlockState> blockStates,
             Map<String, SoundRegistry> sounds,
             Map<String, Writable> extra
@@ -123,7 +123,7 @@ public class ResourcePack {
      * @return The resource-pack models
      * @since 1.0.0
      */
-    public @Unmodifiable Map<Key, Model> models() {
+    public @Unmodifiable Map<Key, BlockModel> models() {
         return models;
     }
 
@@ -178,7 +178,7 @@ public class ResourcePack {
         private Writable icon;
         private Map<Key, FontRegistry> fonts;
         private Map<Key, Language> languages;
-        private Map<Key, Model> models;
+        private Map<Key, BlockModel> models;
         private Map<Key, BlockState> blockStates;
         private Map<String, SoundRegistry> sounds;
         private Map<String, Writable> extra;
@@ -217,7 +217,7 @@ public class ResourcePack {
             return this;
         }
 
-        public Builder models(Map<Key, Model> models) {
+        public Builder models(Map<Key, BlockModel> models) {
             requireNonNull(models, "models");
             this.models = mapWithAll(this.models, models);
             return this;
