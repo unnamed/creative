@@ -47,6 +47,8 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  */
 public class SoundEvent implements SerializableResource {
 
+    public static final boolean DEFAULT_REPLACE = false;
+
     private final boolean replace;
     @Nullable private final String subtitle;
     @Unmodifiable private final List<Sound> sounds;
@@ -99,7 +101,7 @@ public class SoundEvent implements SerializableResource {
     public void serialize(ResourceWriter writer) {
         writer.startObject();
 
-        if (replace) {
+        if (replace != DEFAULT_REPLACE) {
             // only write if not default (false)
             writer.key("replace").value(replace);
         }
