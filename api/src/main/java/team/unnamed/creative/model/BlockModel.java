@@ -195,15 +195,17 @@ public class BlockModel implements Keyed, FileResource {
         writer.key("parent").value(parent());
 
         // display
-        writer.key("display").startObject();
-        for (Map.Entry<ItemTransform.Type, ItemTransform> entry : display().entrySet()) {
-            ItemTransform.Type type = entry.getKey();
-            ItemTransform display = entry.getValue();
+        if (!display.isEmpty()) {
+            writer.key("display").startObject();
+            for (Map.Entry<ItemTransform.Type, ItemTransform> entry : display().entrySet()) {
+                ItemTransform.Type type = entry.getKey();
+                ItemTransform display = entry.getValue();
 
-            writer.key(type.name().toLowerCase(Locale.ROOT));
-            display.serialize(writer);
+                writer.key(type.name().toLowerCase(Locale.ROOT));
+                display.serialize(writer);
+            }
+            writer.endObject();
         }
-        writer.endObject();
 
         // elements
         writer.key("elements").startArray();
