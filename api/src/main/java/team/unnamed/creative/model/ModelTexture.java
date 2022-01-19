@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.model.item;
+package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
@@ -43,19 +43,19 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
 
 /**
- * Object holding an {@link ItemModel} textures,
+ * Object holding a {@link BlockModel} textures,
  * every texture is stored in form of a {@link Key}
  * (resource location)
  *
  * @since 1.0.0
  */
-public class ItemTexture implements SerializableResource {
+public class ModelTexture implements SerializableResource {
 
     @Unmodifiable private final List<Key> layers;
     @Nullable private final Key particle;
     @Unmodifiable private final Map<String, Key> variables;
 
-    private ItemTexture(
+    private ModelTexture(
             List<Key> layers,
             @Nullable Key particle,
             Map<String, Key> variables
@@ -77,7 +77,7 @@ public class ItemTexture implements SerializableResource {
      * layers is hardcoded for each item.</p>
      *
      * <p>Works only in combination with
-     * {@link ItemModel#ITEM_GENERATED}</p>
+     * {@link BlockModel#ITEM_GENERATED}</p>
      *
      * @return The item texture layers
      */
@@ -112,7 +112,6 @@ public class ItemTexture implements SerializableResource {
     @Override
     public void serialize(ResourceWriter writer) {
         writer.startObject();
-        // ah yes, don't repeat yourself
         if (particle != null) {
             writer.key("particle").value(particle);
         }
@@ -143,7 +142,7 @@ public class ItemTexture implements SerializableResource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ItemTexture that = (ItemTexture) o;
+        ModelTexture that = (ModelTexture) o;
         return layers.equals(that.layers)
                 && Objects.equals(particle, that.particle)
                 && variables.equals(that.variables);
@@ -155,27 +154,27 @@ public class ItemTexture implements SerializableResource {
     }
 
     /**
-     * Creates a new {@link ItemTexture} from
+     * Creates a new {@link ModelTexture} from
      * the given values
      *
      * @param layers The texture layers
      * @param particle The particle texture
      * @param variables The texture variables
-     * @return A new {@link ItemTexture} instance
+     * @return A new {@link ModelTexture} instance
      * @since 1.0.0
      */
-    public static ItemTexture of(
+    public static ModelTexture of(
             List<Key> layers,
             @Nullable Key particle,
             Map<String, Key> variables
     ) {
-        return new ItemTexture(layers, particle, variables);
+        return new ModelTexture(layers, particle, variables);
     }
 
     /**
      * Static factory method for instantiating our
      * builder implementation, which eases the construction
-     * of new {@link ItemTexture} instances
+     * of new {@link ModelTexture} instances
      *
      * @return A new {@link Builder} instance
      * @since 1.0.0
@@ -185,7 +184,7 @@ public class ItemTexture implements SerializableResource {
     }
 
     /**
-     * Builder implementation for {@link ItemTexture}
+     * Builder implementation for {@link ModelTexture}
      * objects
      *
      * @since 1.0.0
@@ -215,14 +214,14 @@ public class ItemTexture implements SerializableResource {
         }
 
         /**
-         * Finishes the building of the {@link ItemTexture}
+         * Finishes the building of the {@link ModelTexture}
          * instance by instantiating it using the previously
          * set values
          *
-         * @return A new {@link ItemTexture} instance
+         * @return A new {@link ModelTexture} instance
          */
-        public ItemTexture build() {
-            return new ItemTexture(layers, particle, variables);
+        public ModelTexture build() {
+            return new ModelTexture(layers, particle, variables);
         }
 
     }

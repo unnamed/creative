@@ -31,9 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.FileResource;
-import team.unnamed.creative.model.block.BlockTexture;
 import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.model.item.ItemOverride;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +72,7 @@ public class BlockModel implements Keyed, FileResource {
     @Nullable private final Key parent;
     private final boolean ambientOcclusion;
     private final Map<ItemTransform.Type, ItemTransform> display;
-    private final BlockTexture textures;
+    private final ModelTexture textures;
     @Nullable private final GuiLight guiLight;
     private final List<Element> elements;
     private final List<ItemOverride> overrides;
@@ -84,7 +82,7 @@ public class BlockModel implements Keyed, FileResource {
             @Nullable Key parent,
             boolean ambientOcclusion,
             Map<ItemTransform.Type, ItemTransform> display,
-            BlockTexture textures,
+            ModelTexture textures,
             @Nullable GuiLight guiLight,
             List<Element> elements,
             List<ItemOverride> overrides
@@ -137,9 +135,9 @@ public class BlockModel implements Keyed, FileResource {
     /**
      * Returns this model textures
      *
-     * @return This block model textures
+     * @return This model textures
      */
-    public BlockTexture textures() {
+    public ModelTexture textures() {
         return textures;
     }
 
@@ -231,7 +229,9 @@ public class BlockModel implements Keyed, FileResource {
             writer.key("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
         }
 
-        writer.key("overrides").value(overrides);
+        if (!overrides.isEmpty()) {
+            writer.key("overrides").value(overrides);
+        }
         writer.endObject();
     }
 
@@ -295,7 +295,7 @@ public class BlockModel implements Keyed, FileResource {
         private Key parent;
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ItemTransform.Type, ItemTransform> display = Collections.emptyMap();
-        private BlockTexture textures;
+        private ModelTexture textures;
         private GuiLight guiLight = GuiLight.SIDE;
         private List<Element> elements = Collections.emptyList();
         private List<ItemOverride> overrides = Collections.emptyList();
@@ -323,7 +323,7 @@ public class BlockModel implements Keyed, FileResource {
             return this;
         }
 
-        public Builder textures(BlockTexture textures) {
+        public Builder textures(ModelTexture textures) {
             this.textures = requireNonNull(textures, "textures");
             return this;
         }
