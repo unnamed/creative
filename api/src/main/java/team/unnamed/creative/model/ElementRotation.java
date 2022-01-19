@@ -30,6 +30,7 @@ import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.Vector3Float;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -45,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ElementRotation implements SerializableResource {
 
-    public static final ElementRotation DEFAULT = ElementRotation.builder().build();
+    public static final boolean DEFAULT_RESCALE = false;
 
     private final Vector3Float origin;
     private final Axis3D axis;
@@ -62,6 +63,13 @@ public class ElementRotation implements SerializableResource {
         this.axis = requireNonNull(axis, "axis");
         this.angle = angle;
         this.rescale = rescale;
+        validate();
+    }
+
+    private void validate() {
+        float absAngle = Math.abs(angle);
+        Validate.isTrue(angle != 0F && absAngle != 22.5 && absAngle != 45,
+                "Angle must be multiple of 22.5, in range of -45 to 45");
     }
 
     /**
@@ -111,7 +119,7 @@ public class ElementRotation implements SerializableResource {
                 .key("axis").value(axis.name().toLowerCase(Locale.ROOT))
                 .key("angle").value(angle);
 
-        if (rescale) {
+        if (rescale != DEFAULT_RESCALE) {
             // only write if not equal to default value
             writer.key("rescale").value(rescale);
         }
@@ -192,11 +200,10 @@ public class ElementRotation implements SerializableResource {
      */
     public static class Builder {
 
-        private Vector3Float origin = Vector3Float.ZERO;
-        // default axis doesn't really matter since (default) rotation is zero
-        private Axis3D axis = Axis3D.X;
-        private float angle = 0.0F;
-        private boolean rescale = false;
+        private Vector3Float origin;
+        private Axis3D axis;
+        private float angle;
+        private boolean rescale = DEFAULT_RESCALE;
 
         private Builder() {
         }

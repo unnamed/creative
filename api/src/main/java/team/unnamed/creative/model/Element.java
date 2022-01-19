@@ -25,11 +25,13 @@ package team.unnamed.creative.model;
 
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector3Float;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -49,28 +51,51 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  */
 public class Element implements SerializableResource {
 
+    public static final boolean DEFAULT_SHADE = true;
+
+    public static final float MIN_EXTENT = -16F;
+    public static final float MAX_EXTENT = 32F;
+
     private final Vector3Float from;
     private final Vector3Float to;
-    private final ElementRotation rotation;
+    @Nullable private final ElementRotation rotation;
     private final boolean shade;
     @Unmodifiable private final Map<CubeFace, ElementFace> faces;
 
     private Element(
             Vector3Float from,
             Vector3Float to,
-            ElementRotation rotation,
+            @Nullable ElementRotation rotation,
             boolean shade,
             Map<CubeFace, ElementFace> faces
     ) {
         requireNonNull(from, "from");
         requireNonNull(to, "to");
-        requireNonNull(rotation, "rotation");
         requireNonNull(faces, "faces");
         this.from = from;
         this.to = to;
         this.rotation = rotation;
         this.shade = shade;
         this.faces = immutableMapOf(faces);
+        validate();
+    }
+
+    private void validateBound(float value, String axisName) {
+        Validate.isTrue(value >= MIN_EXTENT && value <= MAX_EXTENT,
+                "Value at %s axis (%s) is out of bounds", axisName, value);
+        Validate.isTrue(faces.size() > 0 && faces.size() < 6,
+                "Invalid amount of faces (%s)", faces.size());
+    }
+
+    private void validateBound(Vector3Float vec) {
+        validateBound(vec.x(), "X");
+        validateBound(vec.y(), "Y");
+        validateBound(vec.z(), "Z");
+    }
+
+    private void validate() {
+        validateBound(from);
+        validateBound(to);
     }
 
     /**
@@ -132,12 +157,14 @@ public class Element implements SerializableResource {
         writer
                 .startObject()
                 .key("from").value(from)
-                .key("to").value(to)
-                .key("rotation");
+                .key("to").value(to);
 
-        rotation.serialize(writer);
+        if (rotation != null) {
+            writer.key("rotation");
+            rotation.serialize(writer);
+        }
 
-        if (!shade) {
+        if (shade != DEFAULT_SHADE) {
             // only write if not equal to default value
             writer.key("shade").value(shade);
         }
@@ -172,7 +199,7 @@ public class Element implements SerializableResource {
         Element element = (Element) o;
         return from.equals(element.from)
                 && to.equals(element.to)
-                && rotation.equals(element.rotation)
+                && Objects.equals(rotation, element.rotation)
                 && shade == element.shade
                 && faces.equals(element.faces);
     }
@@ -188,10 +215,10 @@ public class Element implements SerializableResource {
 
     public static class Builder {
 
-        private Vector3Float from = Vector3Float.ZERO;
-        private Vector3Float to = Vector3Float.ONE;
-        private ElementRotation rotation = ElementRotation.DEFAULT;
-        private boolean shade = false;
+        private Vector3Float from;
+        private Vector3Float to;
+        private ElementRotation rotation = null;
+        private boolean shade = DEFAULT_SHADE;
         private Map<CubeFace, ElementFace> faces = Collections.emptyMap();
 
         private Builder() {
@@ -207,8 +234,8 @@ public class Element implements SerializableResource {
             return this;
         }
 
-        public Builder rotation(ElementRotation rotation) {
-            this.rotation = requireNonNull(rotation, "rotation");
+        public Builder rotation(@Nullable ElementRotation rotation) {
+            this.rotation = rotation;
             return this;
         }
 

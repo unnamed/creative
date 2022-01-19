@@ -31,6 +31,7 @@ import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector4Int;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -46,24 +47,33 @@ import static java.util.Objects.requireNonNull;
  */
 public class ElementFace implements SerializableResource {
 
+    public static final int DEFAULT_ROTATION = 0;
+    public static final int DEFAULT_TINT_INDEX = -1;
+
     @Nullable private final Vector4Int uv;
     private final String texture;
     @Nullable private final CubeFace cullFace;
     private final int rotation;
-    @Nullable private final Integer tintIndex;
+    private final int tintIndex;
 
     private ElementFace(
             @Nullable Vector4Int uv,
             String texture,
             @Nullable CubeFace cullFace,
             int rotation,
-            @Nullable Integer tintIndex
+            int tintIndex
     ) {
         this.uv = uv;
         this.texture = requireNonNull(texture, "texture");
         this.cullFace = cullFace;
         this.rotation = rotation;
         this.tintIndex = tintIndex;
+        validate();
+    }
+
+    private void validate() {
+        Validate.isTrue(rotation % 90 == 0 && rotation >= 0 && rotation <= 270,
+                "Rotation must be a positive multiple of 90");
     }
 
     /**
@@ -125,12 +135,9 @@ public class ElementFace implements SerializableResource {
      * Determines whether to tint the texture using a hardcoded tint
      * index.
      *
-     * <p>The default is not using tints (-1 for blocks, unset for
-     * items), and for item elements, any number caused it to use tint</p>
-     *
      * @return The face tint index
      */
-    public @Nullable Integer tintIndex() {
+    public int tintIndex() {
         return tintIndex;
     }
 
@@ -144,10 +151,10 @@ public class ElementFace implements SerializableResource {
         if (cullFace != null) {
             writer.key("cullface").value(cullFace.name().toLowerCase(Locale.ROOT));
         }
-        if (rotation != 0) {
+        if (rotation != DEFAULT_ROTATION) {
             writer.key("rotation").value(rotation);
         }
-        if (tintIndex != null) {
+        if (tintIndex != DEFAULT_TINT_INDEX) {
             writer.key("tintindex").value(tintIndex);
         }
         writer.endObject();
@@ -178,7 +185,7 @@ public class ElementFace implements SerializableResource {
                 && Objects.equals(uv, that.uv)
                 && texture.equals(that.texture)
                 && cullFace == that.cullFace
-                && Objects.equals(tintIndex, that.tintIndex);
+                && tintIndex == that.tintIndex;
     }
 
     @Override
@@ -205,7 +212,7 @@ public class ElementFace implements SerializableResource {
             String texture,
             @Nullable CubeFace cullFace,
             int rotation,
-            @Nullable Integer tintIndex
+            int tintIndex
     ) {
         return new ElementFace(uv, texture, cullFace, rotation, tintIndex);
     }
@@ -233,8 +240,8 @@ public class ElementFace implements SerializableResource {
         private Vector4Int uv;
         private String texture;
         private CubeFace cullFace;
-        private int rotation;
-        private Integer tintIndex;
+        private int rotation = DEFAULT_ROTATION;
+        private int tintIndex = DEFAULT_TINT_INDEX;
 
         private Builder() {
         }
@@ -259,7 +266,7 @@ public class ElementFace implements SerializableResource {
             return this;
         }
 
-        public Builder tintIndex(@Nullable Integer tintIndex) {
+        public Builder tintIndex(int tintIndex) {
             this.tintIndex = tintIndex;
             return this;
         }
