@@ -46,6 +46,11 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  */
 public class AnimationMeta implements MetadataPart {
 
+    public static final int DEFAULT_FRAMETIME = 1;
+    public static final int DEFAULT_WIDTH = -1;
+    public static final int DEFAULT_HEIGHT = -1;
+    public static final boolean DEFAULT_INTERPOLATE = false;
+
     private final boolean interpolate;
     private final int width;
     private final int height;
@@ -129,30 +134,47 @@ public class AnimationMeta implements MetadataPart {
     @Override
     public void serialize(ResourceWriter writer) {
 
-        writer.key("animation").startObject()
-                .key("interpolate").value(interpolate)
-                .key("width").value(width)
-                .key("height").value(height)
-                .key("frametime").value(frameTime)
-                .key("frames").startArray();
+        writer.key("animation").startObject();
 
-        for (AnimationFrame frame : frames) {
-            int index = frame.index();
-            int time = frame.frameTime();
-
-            if (frameTime == time || frameTime == AnimationFrame.DELEGATE_FRAME_TIME) {
-                // same as default frameTime, we can skip it
-                writer.value(index);
-            } else {
-                // specific frameTime, write as an object
-                writer.startObject()
-                        .key("index").value(index)
-                        .key("time").value(time)
-                        .endObject();
-            }
+        if (interpolate != DEFAULT_INTERPOLATE) {
+            writer.key("interpolate").value(interpolate);
         }
 
-        writer.endArray().endObject();
+        if (width != DEFAULT_WIDTH) {
+            writer.key("width").value(width);
+        }
+
+        if (height != DEFAULT_HEIGHT) {
+            writer.key("height").value(height);
+        }
+
+        if (frameTime != DEFAULT_FRAMETIME) {
+            writer.key("frametime").value(frameTime);
+        }
+
+        if (!frames.isEmpty()) {
+            writer.key("frames").startArray();
+
+            for (AnimationFrame frame : frames) {
+                int index = frame.index();
+                int time = frame.frameTime();
+
+                if (frameTime == time || frameTime == AnimationFrame.DELEGATE_FRAME_TIME) {
+                    // same as default frameTime, we can skip it
+                    writer.value(index);
+                } else {
+                    // specific frameTime, write as an object
+                    writer.startObject()
+                            .key("index").value(index)
+                            .key("time").value(time)
+                            .endObject();
+                }
+            }
+
+            writer.endArray();
+        }
+
+        writer.endObject();
     }
 
     @Override
