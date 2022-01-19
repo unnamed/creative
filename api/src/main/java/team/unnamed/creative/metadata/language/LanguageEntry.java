@@ -32,7 +32,7 @@ import team.unnamed.creative.file.ResourceWriter;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static team.unnamed.creative.util.Validate.requireNonEmpty;
+import static team.unnamed.creative.util.Validate.isNotEmpty;
 
 /**
  * Object representing a Minecraft's Resource Pack language
@@ -57,8 +57,8 @@ public class LanguageEntry implements Examinable {
             String region,
             boolean bidirectional
     ) {
-        this.name = requireNonEmpty(name, "name");
-        this.region = requireNonEmpty(region, "region");
+        this.name = isNotEmpty(name, "name");
+        this.region = isNotEmpty(region, "region");
         this.bidirectional = bidirectional;
     }
 
@@ -178,12 +178,12 @@ public class LanguageEntry implements Examinable {
         }
 
         public Builder name(String name) {
-            this.name = requireNonEmpty(name, "name");
+            this.name = isNotEmpty(name, "name");
             return this;
         }
 
         public Builder region(String region) {
-            this.region = requireNonEmpty(region, "region");
+            this.region = isNotEmpty(region, "region");
             return this;
         }
 

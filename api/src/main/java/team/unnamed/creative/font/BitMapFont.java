@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.ResourceWriter;
+import team.unnamed.creative.util.Validate;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +70,18 @@ public class BitMapFont implements Font {
         this.height = height;
         this.ascent = ascent;
         this.characters = immutableListOf(characters);
+        validate();
+    }
+
+    private void validate() {
+        Validate.isTrue(ascent <= height, "Ascent (%s) is higher than height (%s)", ascent, height);
+        Validate.isTrue(!characters.isEmpty(), "Character list is empty");
+
+        String sample = characters.get(0);
+        for (String character : characters) {
+            Validate.isNotNull(character, "An element from the character list is null");
+            Validate.isTrue(character.length() == sample.length(), "Elements of character list must have the same length");
+        }
     }
 
     @Override
