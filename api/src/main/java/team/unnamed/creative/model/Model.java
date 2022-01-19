@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.model.block.BlockTexture;
+import team.unnamed.creative.model.item.ItemOverride;
 
 import java.util.List;
 import java.util.Map;
@@ -72,26 +73,18 @@ public interface Model extends Keyed, FileResource {
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
             BlockTexture textures,
-            List<Element> elements
+            BlockModel.GuiLight guiLight,
+            List<Element> elements,
+            List<ItemOverride> overrides
     ) {
         return new BlockModel(
-                key, parent, ambientOcclusion, display, textures, elements
+                key, parent, ambientOcclusion, display,
+                textures, guiLight, elements, overrides
         );
     }
 
     static BlockModel.Builder block() {
         return new BlockModel.Builder();
-    }
-
-    /**
-     * Static factory method for {@link ItemModel} builder
-     * implementation, which eases its instantiation
-     *
-     * @return A new {@link ItemModel.Builder} instance
-     * @since 1.0.0
-     */
-    static ItemModel.Builder item() {
-        return new ItemModel.Builder();
     }
 
 }

@@ -30,9 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.model.block.BlockTexture;
 import team.unnamed.creative.file.ResourceWriter;
+import team.unnamed.creative.model.item.ItemOverride;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -49,7 +51,21 @@ public class BlockModel
         extends AbstractModel
         implements Model {
 
-    public static final Key BUILTIN_GENERATED = Key.key("builtin/generated");
+    /**
+     * A {@link BlockModel} can be set to extend this key to use
+     * a model that is created out of the specified icon
+     */
+    public static final Key ITEM_GENERATED = Key.key("item/generated");
+
+    /**
+     * A {@link BlockModel} can be set to extend this key to load
+     * a model from an entity file. As you cannot specify the entity,
+     * this does not work for all items (only for chests, ender chests,
+     * mob heads, shields, banners and tridents)
+     */
+    public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");
+
+    public static final Key BUILT_IN_GENERATED = Key.key("builtin/generated");
 
     public static final boolean DEFAULT_AMBIENT_OCCLUSION = true;
 
@@ -58,7 +74,9 @@ public class BlockModel
     private final boolean ambientOcclusion;
     private final Map<ModelDisplay.Type, ModelDisplay> display;
     private final BlockTexture textures;
+    @Nullable private final GuiLight guiLight;
     private final List<Element> elements;
+    private final List<ItemOverride> overrides;
 
     protected BlockModel(
             Key key,
@@ -66,14 +84,18 @@ public class BlockModel
             boolean ambientOcclusion,
             Map<ModelDisplay.Type, ModelDisplay> display,
             BlockTexture textures,
-            List<Element> elements
+            @Nullable GuiLight guiLight,
+            List<Element> elements,
+            List<ItemOverride> overrides
     ) {
         this.key = requireNonNull(key, "key");
         this.parent = parent;
         this.ambientOcclusion = ambientOcclusion;
         this.display = requireNonNull(display, "display");
         this.textures = requireNonNull(textures, "textures");
+        this.guiLight = guiLight;
         this.elements = requireNonNull(elements, "elements");
+        this.overrides = requireNonNull(overrides, "oveerrides");
     }
 
     @Override
@@ -123,6 +145,19 @@ public class BlockModel
     }
 
     /**
+     * Returns the way how the item is rendered, can be "side"
+     * or "front"
+     *
+     * <p>If set to "side", the model is rendered like a block.
+     * If set to "front", model is shaded like a flat item</p>
+     *
+     * @return Value that determines how to render this item
+     */
+    public @Nullable GuiLight guiLight() {
+        return guiLight;
+    }
+
+    /**
      * Returns a  list that contains all the elements of the
      * model. They can only have cubic forms. If both "parent"
      * and "elements" are set, the "elements" tag overrides the
@@ -133,6 +168,21 @@ public class BlockModel
     @Override
     public List<Element> elements() {
         return elements;
+    }
+
+    /**
+     * Returns a list of item overrides, item overrides determine cases
+     * in which a different model should be used based on item tags
+     *
+     * <p>All cases are evaluated in order from top to bottom and
+     * last predicate that matches overrides. However, overrides are ignored
+     * if it has been already overridden once, for example this avoids recursion
+     * on overriding to the same model</p>
+     *
+     * @return This item model overrides
+     */
+    public List<ItemOverride> overrides() {
+        return overrides;
     }
 
     @Override
@@ -149,6 +199,28 @@ public class BlockModel
 
         writer.key("textures");
         textures.serialize(writer);
+
+        // textures
+        writer.key("textures");
+        textures.serialize(writer);
+
+        if (guiLight != GuiLight.SIDE) {
+            // only write if not default
+            writer.key("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
+        }
+
+        writer.key("overrides").value(overrides);
+    }
+
+    /**
+     * Enum of possible "gui_light" property
+     * values
+     *
+     * @since 1.0.0
+     */
+    public enum GuiLight {
+        FRONT,
+        SIDE
     }
 
     @Override
@@ -159,7 +231,9 @@ public class BlockModel
                 ExaminableProperty.of("ambientocclusion", ambientOcclusion),
                 ExaminableProperty.of("display", display),
                 ExaminableProperty.of("textures", textures),
-                ExaminableProperty.of("elements", elements)
+                ExaminableProperty.of("guiLight", guiLight),
+                ExaminableProperty.of("elements", elements),
+                ExaminableProperty.of("overrides", overrides)
         );
     }
 
@@ -178,12 +252,14 @@ public class BlockModel
                 && Objects.equals(parent, that.parent)
                 && display.equals(that.display)
                 && textures.equals(that.textures)
-                && elements.equals(that.elements);
+                && guiLight == that.guiLight
+                && elements.equals(that.elements)
+                && overrides.equals(that.overrides);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, parent, ambientOcclusion, display, textures, elements);
+        return Objects.hash(key, parent, ambientOcclusion, display, textures, guiLight, elements, overrides);
     }
 
     public static class Builder {
@@ -193,7 +269,9 @@ public class BlockModel
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ModelDisplay.Type, ModelDisplay> display = Collections.emptyMap();
         private BlockTexture textures;
+        private GuiLight guiLight = GuiLight.SIDE;
         private List<Element> elements = Collections.emptyList();
+        private List<ItemOverride> overrides = Collections.emptyList();
 
         protected Builder() {
         }
@@ -223,14 +301,25 @@ public class BlockModel
             return this;
         }
 
+        public Builder guiLight(@Nullable GuiLight guiLight) {
+            this.guiLight = guiLight;
+            return this;
+        }
+
         public Builder elements(List<Element> elements) {
             this.elements = requireNonNull(elements, "elements");
             return this;
         }
 
+        public Builder overrides(List<ItemOverride> overrides) {
+            this.overrides = requireNonNull(overrides, "overrides");
+            return this;
+        }
+
         public BlockModel build() {
             return new BlockModel(
-                    key, parent, ambientOcclusion, display, textures, elements
+                    key, parent, ambientOcclusion, display,
+                    textures, guiLight, elements, overrides
             );
         }
 
