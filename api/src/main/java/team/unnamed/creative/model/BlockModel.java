@@ -47,9 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class BlockModel
-        extends AbstractModel
-        implements Model {
+public class BlockModel implements Model {
 
     /**
      * A {@link BlockModel} can be set to extend this key to use
@@ -191,7 +189,30 @@ public class BlockModel
     }
 
     @Override
-    protected void serializeOwnProperties(ResourceWriter writer) {
+    public void serialize(ResourceWriter writer) {
+        writer.startObject();
+
+        // parent
+        writer.key("parent").value(parent());
+
+        // display
+        writer.key("display").startObject();
+        for (Map.Entry<ModelDisplay.Type, ModelDisplay> entry : display().entrySet()) {
+            ModelDisplay.Type type = entry.getKey();
+            ModelDisplay display = entry.getValue();
+
+            writer.key(type.name().toLowerCase(Locale.ROOT));
+            display.serialize(writer);
+        }
+        writer.endObject();
+
+        // elements
+        writer.key("elements").startArray();
+        for (Element element : elements()) {
+            element.serialize(writer);
+        }
+        writer.endArray();
+
         if (ambientOcclusion != DEFAULT_AMBIENT_OCCLUSION) {
             // only write if not default value
             writer.key("ambientocclusion").value(ambientOcclusion);
@@ -210,6 +231,7 @@ public class BlockModel
         }
 
         writer.key("overrides").value(overrides);
+        writer.endObject();
     }
 
     /**
