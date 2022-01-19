@@ -41,6 +41,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class StateVariant implements SerializableResource {
 
+    public static final int DEFAULT_X_ROTATION = 0;
+    public static final int DEFAULT_Y_ROTATION = 0;
+    public static final boolean DEFAULT_UV_LOCK = false;
+    public static final int DEFAULT_WEIGHT = 1;
+
     private final Key model;
     private final int x;
     private final int y;
@@ -129,11 +134,17 @@ public class StateVariant implements SerializableResource {
     public void serialize(ResourceWriter writer) {
         writer
                 .startObject()
-                .key("model").value(model)
-                .key("x").value(x)
-                .key("y").value(y)
-                .key("uvlock").value(uvLock);
-        if (weight != 1) {
+                .key("model").value(model);
+        if (x != DEFAULT_X_ROTATION) {
+            writer.key("x").value(x);
+        }
+        if (y != DEFAULT_Y_ROTATION) {
+            writer.key("y").value(y);
+        }
+        if (uvLock != DEFAULT_UV_LOCK) {
+            writer.key("uvlock").value(uvLock);
+        }
+        if (weight != DEFAULT_WEIGHT) {
             writer.key("weight").value(weight);
         }
         writer.endObject();
@@ -179,10 +190,10 @@ public class StateVariant implements SerializableResource {
     public static class Builder {
 
         private Key model;
-        private int x;
-        private int y;
-        private boolean uvLock;
-        private int weight = 1;
+        private int x = DEFAULT_X_ROTATION;
+        private int y = DEFAULT_Y_ROTATION;
+        private boolean uvLock = DEFAULT_UV_LOCK;
+        private int weight = DEFAULT_WEIGHT;
 
         private Builder() {
         }
