@@ -162,6 +162,26 @@ public final class Vector3Float
         return multiply(value.x(), value.y(), value.z());
     }
 
+    public Vector3Float with(Axis3D axis, float value) {
+        float x = this.x;
+        float y = this.y;
+        float z = this.z;
+        switch (axis) {
+            case X:
+                x = value;
+                break;
+            case Y:
+                y = value;
+                break;
+            case Z:
+                z = value;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid axis: " + axis);
+        }
+        return new Vector3Float(x, y, z);
+    }
+
     public float[] toArray() {
         return new float[] { x, y, z };
     }
