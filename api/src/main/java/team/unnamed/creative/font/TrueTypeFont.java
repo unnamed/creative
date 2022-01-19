@@ -70,6 +70,11 @@ public class TrueTypeFont implements Font {
         this.skip = immutableListOf(skip);
     }
 
+    @Override
+    public String name() {
+        return "ttf";
+    }
+
     /**
      * Returns the resource location of the TrueType font
      * file within assets/&lt;namespace&gt;/font

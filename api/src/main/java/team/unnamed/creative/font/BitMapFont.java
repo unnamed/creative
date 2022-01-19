@@ -71,6 +71,11 @@ public class BitMapFont implements Font {
         this.characters = immutableListOf(characters);
     }
 
+    @Override
+    public String name() {
+        return "bitmap";
+    }
+
     /**
      * Returns the texture location of this
      * bitmap font, must be a PNG image
