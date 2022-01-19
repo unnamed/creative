@@ -67,6 +67,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class ModelDisplay implements SerializableResource {
 
+    public static final Vector3Float DEFAULT_ROTATION = Vector3Float.ZERO;
+    public static final Vector3Float DEFAULT_TRANSLATION = Vector3Float.ZERO;
+    public static final Vector3Float DEFAULT_SCALE = Vector3Float.ONE;
+
     private final Vector3Float rotation;
     private final Vector3Float translation;
     private final Vector3Float scale;
@@ -132,11 +136,17 @@ public class ModelDisplay implements SerializableResource {
 
     @Override
     public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("rotation").value(rotation)
-                .key("translation").value(translation)
-                .key("scale").value(scale)
-                .endObject();
+        writer.startObject();
+        if (!rotation.equals(DEFAULT_ROTATION)) {
+            writer.key("rotation").value(rotation);
+        }
+        if (!translation.equals(DEFAULT_TRANSLATION)) {
+            writer.key("translation").value(translation);
+        }
+        if (!scale.equals(DEFAULT_SCALE)) {
+            writer.key("scale").value(scale);
+        }
+        writer.endObject();
     }
 
     @Override
@@ -206,9 +216,9 @@ public class ModelDisplay implements SerializableResource {
      */
     public static class Builder {
 
-        private Vector3Float rotation = Vector3Float.ZERO;
-        private Vector3Float translation = Vector3Float.ZERO;
-        private Vector3Float scale = Vector3Float.ONE;
+        private Vector3Float rotation = DEFAULT_ROTATION;
+        private Vector3Float translation = DEFAULT_TRANSLATION;
+        private Vector3Float scale = DEFAULT_SCALE;
 
         private Builder() {
         }
