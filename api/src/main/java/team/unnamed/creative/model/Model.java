@@ -48,16 +48,16 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class BlockModel implements Keyed, FileResource {
+public class Model implements Keyed, FileResource {
 
     /**
-     * A {@link BlockModel} can be set to extend this key to use
+     * A {@link Model} can be set to extend this key to use
      * a model that is created out of the specified icon
      */
     public static final Key ITEM_GENERATED = Key.key("item/generated");
 
     /**
-     * A {@link BlockModel} can be set to extend this key to load
+     * A {@link Model} can be set to extend this key to load
      * a model from an entity file. As you cannot specify the entity,
      * this does not work for all items (only for chests, ender chests,
      * mob heads, shields, banners and tridents)
@@ -77,7 +77,7 @@ public class BlockModel implements Keyed, FileResource {
     private final List<Element> elements;
     private final List<ItemOverride> overrides;
 
-    protected BlockModel(
+    protected Model(
             Key key,
             @Nullable Key parent,
             boolean ambientOcclusion,
@@ -269,7 +269,7 @@ public class BlockModel implements Keyed, FileResource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BlockModel that = (BlockModel) o;
+        Model that = (Model) o;
         return key.equals(that.key)
                 && ambientOcclusion == that.ambientOcclusion
                 && Objects.equals(parent, that.parent)
@@ -285,8 +285,8 @@ public class BlockModel implements Keyed, FileResource {
         return Objects.hash(key, parent, ambientOcclusion, display, textures, guiLight, elements, overrides);
     }
 
-    public static BlockModel.Builder builder() {
-        return new BlockModel.Builder();
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
@@ -343,8 +343,8 @@ public class BlockModel implements Keyed, FileResource {
             return this;
         }
 
-        public BlockModel build() {
-            return new BlockModel(
+        public Model build() {
+            return new Model(
                     key, parent, ambientOcclusion, display,
                     textures, guiLight, elements, overrides
             );

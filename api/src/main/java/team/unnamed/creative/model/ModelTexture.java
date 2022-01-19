@@ -43,7 +43,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
 
 /**
- * Object holding a {@link BlockModel} textures,
+ * Object holding a {@link Model} textures,
  * every texture is stored in form of a {@link Key}
  * (resource location)
  *
@@ -77,7 +77,7 @@ public class ModelTexture implements SerializableResource {
      * layers is hardcoded for each item.</p>
      *
      * <p>Works only in combination with
-     * {@link BlockModel#ITEM_GENERATED}</p>
+     * {@link Model#ITEM_GENERATED}</p>
      *
      * @return The item texture layers
      */
