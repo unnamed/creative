@@ -68,7 +68,7 @@ public class ElementRotation implements SerializableResource {
 
     private void validate() {
         float absAngle = Math.abs(angle);
-        Validate.isTrue(angle != 0F && absAngle != 22.5 && absAngle != 45,
+        Validate.isTrue(angle == 0F || absAngle == 22.5 || absAngle == 45,
                 "Angle must be multiple of 22.5, in range of -45 to 45");
     }
 
