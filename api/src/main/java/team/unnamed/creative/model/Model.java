@@ -210,11 +210,13 @@ public class Model implements Keyed, FileResource {
         }
 
         // elements
-        writer.key("elements").startArray();
-        for (Element element : elements()) {
-            element.serialize(writer);
+        if (!elements.isEmpty()) {
+            writer.key("elements").startArray();
+            for (Element element : elements) {
+                element.serialize(writer);
+            }
+            writer.endArray();
         }
-        writer.endArray();
 
         if (ambientOcclusion != DEFAULT_AMBIENT_OCCLUSION) {
             // only write if not default value

@@ -195,6 +195,17 @@ public class ResourceWriter
             ((SerializableResource) object).serialize(this);
             return this;
         } else {
+            if (object instanceof Double || object instanceof Float) {
+                Number number = (Number) object;
+                double value = number.doubleValue();
+                int intValue = number.intValue();
+
+                // optimization: removes ".0" suffix
+                // and negation sign on zeros (-0.0)
+                if (value == intValue) {
+                    object = intValue;
+                }
+            }
             writeDeferredName();
             beforeValue();
             // other objects (numbers, booleans) are
