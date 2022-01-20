@@ -162,6 +162,18 @@ public final class Vector3Float
         return multiply(value.x(), value.y(), value.z());
     }
 
+    public Vector3Float x(float x) {
+        return new Vector3Float(x, this.y, this.z);
+    }
+
+    public Vector3Float y(float y) {
+        return new Vector3Float(this.x, y, this.z);
+    }
+
+    public Vector3Float z(float z) {
+        return new Vector3Float(this.x, this.y, z);
+    }
+
     public Vector3Float with(Axis3D axis, float value) {
         float x = this.x;
         float y = this.y;

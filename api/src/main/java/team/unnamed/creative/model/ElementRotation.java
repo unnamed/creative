@@ -112,6 +112,22 @@ public class ElementRotation implements SerializableResource {
         return rescale;
     }
 
+    public ElementRotation origin(Vector3Float origin) {
+        return new ElementRotation(origin, this.axis, this.angle, this.rescale);
+    }
+
+    public ElementRotation axis(Axis3D axis) {
+        return new ElementRotation(this.origin, axis, this.angle, this.rescale);
+    }
+
+    public ElementRotation angle(float angle) {
+        return new ElementRotation(this.origin, this.axis, angle, this.rescale);
+    }
+
+    public ElementRotation rescale(boolean rescale) {
+        return new ElementRotation(this.origin, this.axis, this.angle, rescale);
+    }
+
     @Override
     public void serialize(ResourceWriter writer) {
         writer.startObject()
