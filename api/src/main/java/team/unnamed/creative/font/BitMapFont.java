@@ -99,6 +99,10 @@ public class BitMapFont implements Font {
         return file;
     }
 
+    public BitMapFont file(Key newFile) {
+        return new BitMapFont(newFile, height, ascent, characters);
+    }
+
     /**
      * Returns the height of the character, measured in pixels.
      * Can be negative. This tag is separate from the area used
@@ -111,6 +115,10 @@ public class BitMapFont implements Font {
         return height;
     }
 
+    public BitMapFont height(int newHeight) {
+        return new BitMapFont(file, newHeight, ascent, characters);
+    }
+
     /**
      * Returns the font characters ascent, measured in
      * pixels, this value as a vertical shift to displayed
@@ -120,6 +128,10 @@ public class BitMapFont implements Font {
      */
     public int ascent() {
         return ascent;
+    }
+
+    public BitMapFont ascent(int newAscent) {
+        return new BitMapFont(file, height, newAscent, characters);
     }
 
     /**
@@ -134,6 +146,18 @@ public class BitMapFont implements Font {
      */
     public @Unmodifiable List<String> characters() {
         return characters;
+    }
+
+    public BitMapFont characters(List<String> newCharacters) {
+        return new BitMapFont(file, height, ascent, newCharacters);
+    }
+
+    public BitMapFont.Builder toBuilder() {
+        return Font.bitMap()
+                .file(file)
+                .height(height)
+                .ascent(ascent)
+                .characters(characters);
     }
 
     @Override
