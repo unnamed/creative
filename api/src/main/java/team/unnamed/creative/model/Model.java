@@ -296,7 +296,7 @@ public class Model implements Keyed, FileResource {
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ItemTransform.Type, ItemTransform> display = Collections.emptyMap();
         private ModelTexture textures;
-        private GuiLight guiLight = GuiLight.SIDE;
+        private GuiLight guiLight;
         private List<Element> elements = Collections.emptyList();
         private List<ItemOverride> overrides = Collections.emptyList();
 
