@@ -80,7 +80,7 @@ public class TextureMeta implements MetadataPart {
 
     @Override
     public void serialize(ResourceWriter writer) {
-        writer.key("texture").startObject();
+        writer.startObject();
         if (blur != DEFAULT_BLUR) {
             writer.key("blur").value(blur);
         }

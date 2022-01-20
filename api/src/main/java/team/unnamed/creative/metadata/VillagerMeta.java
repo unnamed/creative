@@ -64,7 +64,7 @@ public class VillagerMeta implements MetadataPart {
 
     @Override
     public void serialize(ResourceWriter writer) {
-        writer.key("villager").startObject();
+        writer.startObject();
         if (hat != Hat.NONE) {
             // only write if not default value
             writer.key("hat").value(hat.name().toLowerCase(Locale.ROOT));

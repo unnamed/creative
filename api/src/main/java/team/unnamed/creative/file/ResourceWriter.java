@@ -164,11 +164,10 @@ public class ResourceWriter
         }
 
         if (object instanceof String) {
-            // strings must be quoted and escaped
             writeDeferredName();
             beforeValue();
+            // strings must be quoted and escaped
             string(object.toString());
-
         } else if (object instanceof Iterable) {
             // array-like value
             startArray();
@@ -180,6 +179,8 @@ public class ResourceWriter
             ((SerializableResource) object).serialize(this);
             return this;
         } else {
+            writeDeferredName();
+            beforeValue();
             // other objects (numbers, booleans) are
             // written literally as its toString() value
             write(encode(String.valueOf(object)));

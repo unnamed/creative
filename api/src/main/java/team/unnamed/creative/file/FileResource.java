@@ -29,8 +29,12 @@ public interface FileResource extends SerializableResource {
 
     String path();
 
+    default String metaPath() {
+        return path() + ".mcmeta";
+    }
+
     default Metadata meta() {
-        throw new UnsupportedOperationException("This file resource does not support metadata");
+        return Metadata.EMPTY;
     }
 
 }

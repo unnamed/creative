@@ -134,7 +134,7 @@ public class AnimationMeta implements MetadataPart {
     @Override
     public void serialize(ResourceWriter writer) {
 
-        writer.key("animation").startObject();
+        writer.startObject();
 
         if (interpolate != DEFAULT_INTERPOLATE) {
             writer.key("interpolate").value(interpolate);

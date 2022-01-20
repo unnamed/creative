@@ -86,13 +86,7 @@ public class LanguageMeta implements MetadataPart {
     @Override
     public void serialize(ResourceWriter writer) {
 
-        if (languages.isEmpty()) {
-            // do not write anything if no
-            // languages were registered
-            return;
-        }
-
-        writer.key("language").startObject();
+        writer.startObject();
 
         for (Map.Entry<Key, LanguageEntry> entry : languages.entrySet()) {
             LanguageEntry language = entry.getValue();

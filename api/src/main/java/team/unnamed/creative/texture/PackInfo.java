@@ -46,7 +46,7 @@ public class PackInfo implements FileResource {
             @Nullable Writable icon,
             Metadata meta
     ) {
-        this.icon = requireNonNull(icon, "icon");
+        this.icon = icon;
         this.meta = requireNonNull(meta, "metadata");
     }
 
@@ -62,6 +62,11 @@ public class PackInfo implements FileResource {
     @Override
     public String path() {
         return "pack.png";
+    }
+
+    @Override
+    public String metaPath() {
+        return "pack.mcmeta";
     }
 
     @Override

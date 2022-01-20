@@ -78,13 +78,13 @@ public class Element implements SerializableResource {
         this.rotation = rotation;
         this.shade = shade;
         this.faces = immutableMapOf(faces);
-        validate();
+        //validate();
     }
 
     private void validateBound(float value, String axisName) {
         Validate.isTrue(value >= MIN_EXTENT && value <= MAX_EXTENT,
                 "Value at %s axis (%s) is out of bounds", axisName, value);
-        Validate.isTrue(faces.size() > 0 && faces.size() < 6,
+        Validate.isTrue(faces.size() <= 6,
                 "Invalid amount of faces (%s)", faces.size());
     }
 
@@ -197,7 +197,7 @@ public class Element implements SerializableResource {
             }
             writer.endObject();
         }
-        writer.endObject();
+        writer.endObject().endObject();
     }
 
     @Override
