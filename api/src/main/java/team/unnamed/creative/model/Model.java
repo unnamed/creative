@@ -192,7 +192,9 @@ public class Model implements Keyed, FileResource {
         writer.startObject();
 
         // parent
-        writer.key("parent").value(parent);
+        if (parent != null) {
+            writer.key("parent").value(parent);
+        }
 
         // display
         if (!display.isEmpty()) {
