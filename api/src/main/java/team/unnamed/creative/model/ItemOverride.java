@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -51,17 +52,27 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  */
 public class ItemOverride implements SerializableResource {
 
-    @Unmodifiable private final List<ItemPredicate> predicate;
     private final Key model;
+    @Unmodifiable private final List<ItemPredicate> predicate;
 
     private ItemOverride(
-            List<ItemPredicate> predicate,
-            Key model
+            Key model,
+            List<ItemPredicate> predicate
     ) {
-        requireNonNull(predicate, "predicate");
         requireNonNull(model, "model");
-        this.predicate = immutableListOf(predicate);
+        requireNonNull(predicate, "predicate");
         this.model = model;
+        this.predicate = immutableListOf(predicate);
+    }
+
+    /**
+     * Returns the resource location of the new
+     * item model if the case is met
+     *
+     * @return The item override model
+     */
+    public Key model() {
+        return model;
     }
 
     /**
@@ -73,16 +84,6 @@ public class ItemOverride implements SerializableResource {
      */
     public @Unmodifiable List<ItemPredicate> predicate() {
         return predicate;
-    }
-
-    /**
-     * Returns the resource location of the new
-     * item model if the case is met
-     *
-     * @return The item override model
-     */
-    public Key model() {
-        return model;
     }
 
     @Override
@@ -128,16 +129,32 @@ public class ItemOverride implements SerializableResource {
      * Creates a new {@link ItemOverride} instance
      * from the given values
      *
-     * @param predicate The item override predicate
      * @param model The new item model
+     * @param predicates The item override predicates
      * @return A new {@link ItemOverride} instance
      * @since 1.0.0
      */
     public static ItemOverride of(
-            List<ItemPredicate> predicate,
-            Key model
+            Key model,
+            List<ItemPredicate> predicates
     ) {
-        return new ItemOverride(predicate, model);
+        return new ItemOverride(model, predicates);
+    }
+
+    /**
+     * Creates a new {@link ItemOverride} instance
+     * from the given values
+     *
+     * @param model The new item model
+     * @param predicates The item override predicates
+     * @return A new {@link ItemOverride} instance
+     * @since 1.0.0
+     */
+    public static ItemOverride of(
+            Key model,
+            ItemPredicate... predicates
+    ) {
+        return new ItemOverride(model, Arrays.asList(predicates));
     }
 
 }
