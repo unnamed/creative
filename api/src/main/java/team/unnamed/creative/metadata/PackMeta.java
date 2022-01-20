@@ -88,7 +88,7 @@ public class PackMeta implements MetadataPart {
     @Override
     public void serialize(ResourceWriter writer) {
         writer.startObject()
-                .key("format").value(format)
+                .key("pack_format").value(format)
                 .key("description").value(description)
                 .endObject();
     }
