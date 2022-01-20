@@ -224,10 +224,6 @@ public class Model implements Keyed, FileResource {
         writer.key("textures");
         textures.serialize(writer);
 
-        // textures
-        writer.key("textures");
-        textures.serialize(writer);
-
         if (guiLight != null) {
             // only write if not default
             writer.key("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
