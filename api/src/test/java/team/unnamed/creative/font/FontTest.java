@@ -29,12 +29,15 @@ import org.junit.jupiter.api.Test;
 import team.unnamed.creative.file.ResourceAssertions;
 
 import java.util.Arrays;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FontTest {
 
     @Test
-    @DisplayName("Test that Font serialization works")
-    public void test_serialization() {
+    @DisplayName("Test that full BitMap font serialization works")
+    public void test_full_bitmap_font_serialization() {
         Font font = Font.bitMap()
                 .file(Key.key("creative:test"))
                 .height(16)
@@ -49,6 +52,57 @@ public class FontTest {
                 "{\"type\":\"bitmap\",\"file\":\"creative:test\",\"height\":16,\"ascent\":8,\"chars\":[\"µŋ\",\"tm\"]}",
                 font
         );
+    }
+
+    @Test
+    @DisplayName("Test that BitMap font default values are not serialized")
+    public void test_minimal_bitmap_font_serialization() {
+        Font font = Font.bitMap()
+                .file(Key.key("test"))
+                .height(BitMapFont.DEFAULT_HEIGHT)
+                .ascent(8)
+                .characters(Arrays.asList(
+                        "creative",
+                        "creative"
+                ))
+                .build();
+
+        ResourceAssertions.assertSerializedResult(
+                "{\"type\":\"bitmap\",\"file\":\"test\",\"ascent\":8,\"chars\":[\"creative\",\"creative\"]}",
+                font
+        );
+    }
+
+    @Test
+    @DisplayName("Test that BitMap font values are validated")
+    public void test_bitmap_font_validation() {
+        assertThrows(IllegalArgumentException.class, () ->
+                Font.bitMap()
+                        .file(Key.key("test"))
+                        .height(8)
+                        .ascent(16) // <--- Error here, ascent > height
+                        .characters(Arrays.asList(
+                                "creative",
+                                "creative"
+                        ))
+                        .build());
+
+        assertThrows(IllegalArgumentException.class, () ->
+                Font.bitMap()
+                        .file(Key.key("test"))
+                        .ascent(4)
+                        .characters(Collections.emptyList()) // <--- Error here, empty char list
+                        .build());
+
+        assertThrows(IllegalArgumentException.class, () ->
+                Font.bitMap()
+                        .file(Key.key("test"))
+                        .ascent(4)
+                        .characters(Arrays.asList(
+                                "hello world",
+                                "hello" // <--- Error here, elements do not have the same length
+                        ))
+                        .build());
     }
 
 }
