@@ -78,7 +78,7 @@ public class Element implements SerializableResource {
         this.rotation = rotation;
         this.shade = shade;
         this.faces = immutableMapOf(faces);
-        //validate();
+        validate();
     }
 
     private void validateBound(float value, String axisName) {

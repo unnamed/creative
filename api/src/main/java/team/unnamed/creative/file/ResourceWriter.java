@@ -32,7 +32,10 @@ import team.unnamed.creative.util.Keys;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -89,6 +92,14 @@ public class ResourceWriter
     }
 
     /**
+     * Internal {@link Writer} instance, to deal with
+     * characters and encoding, we can't directly extend
+     * Writer since we need compatibility with it as we
+     * handle binary data like textures
+     */
+    private final Writer writer;
+
+    /**
      * A string containing a full set of spaces
      * for a single level of indentation, or null
      * for no pretty-printing
@@ -106,10 +117,15 @@ public class ResourceWriter
 
     @Nullable private String deferredName;
 
-    public ResourceWriter(OutputStream out) {
+    public ResourceWriter(OutputStream out, Charset charset) {
         super(out);
+        this.writer = new OutputStreamWriter(out);
         // initialize stack
         push(DOCUMENT);
+    }
+
+    public ResourceWriter(OutputStream out) {
+        this(out, StandardCharsets.UTF_8);
     }
 
     /**
@@ -183,7 +199,12 @@ public class ResourceWriter
             beforeValue();
             // other objects (numbers, booleans) are
             // written literally as its toString() value
-            write(encode(String.valueOf(object)));
+            try {
+                writer.write(String.valueOf(object));
+                writer.flush();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
 
         return this;
@@ -198,39 +219,44 @@ public class ResourceWriter
     }
 
     private void string(String value) {
-        // write start quote
-        write('\"');
+        try {
+            // write start quote
+            writer.write('\"');
 
-        int last = 0;
-        int length = value.length();
+            int last = 0;
+            int length = value.length();
 
-        for (int i = 0; i < length; i++) {
-            char c = value.charAt(i);
-            String replacement;
-            if (c < 128) {
-                replacement = REPLACEMENT_CHARS[c];
-                if (replacement == null) {
+            for (int i = 0; i < length; i++) {
+                char c = value.charAt(i);
+                String replacement;
+                if (c < 128) {
+                    replacement = REPLACEMENT_CHARS[c];
+                    if (replacement == null) {
+                        continue;
+                    }
+                } else if (c == '\u2028') {
+                    replacement = "\\u2028";
+                } else if (c == '\u2029') {
+                    replacement = "\\u2029";
+                } else {
                     continue;
                 }
-            } else if (c == '\u2028') {
-                replacement = "\\u2028";
-            } else if (c == '\u2029') {
-                replacement = "\\u2029";
-            } else {
-                continue;
+                if (last < i) {
+                    writer.write(value, last, i - last);
+                }
+                writer.write(replacement);
+                last = i + 1;
             }
-            if (last < i) {
-                write(encode(value), last, i - last);
+            if (last < length) {
+                writer.write(value, last, length - last);
             }
-            write(encode(replacement));
-            last = i + 1;
-        }
-        if (last < length) {
-            write(encode(value), last, length - last);
-        }
 
-        // write end quote
-        write('\"');
+            // write end quote
+            writer.write('\"');
+            writer.flush();
+        } catch (IOException e) {
+             throw new UncheckedIOException(e);
+        }
     }
 
     //#region Stack manipulation
@@ -256,7 +282,12 @@ public class ResourceWriter
         writeDeferredName();
         beforeValue();
         push(empty);
-        write(openBracket);
+        try {
+            writer.write(openBracket);
+            writer.flush();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         return this;
     }
 
@@ -287,9 +318,13 @@ public class ResourceWriter
     private void beforeKey() {
         int context = peek();
         if (context == NONEMPTY_OBJECT) {
-            // not the first entry in an
-            // object, write a comma
-            write(',');
+            try {
+                // not the first entry in an
+                // object, write a comma
+                writer.write(',');
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         } else if (context != EMPTY_OBJECT) {
             throw new IllegalStateException(
                     "Keys can only be written on objects!"
@@ -307,46 +342,56 @@ public class ResourceWriter
      * a closing bracket or another element
      */
     private void beforeValue() {
-        switch (peek()) {
-            case DOCUMENT: {
-                break;
+        try {
+            switch (peek()) {
+                case DOCUMENT: {
+                    break;
+                }
+                case EMPTY_ARRAY: {
+                    // first element in array
+                    replaceTop(NONEMPTY_ARRAY);
+                    newLine();
+                    break;
+                }
+                case NONEMPTY_ARRAY: {
+                    // another element in array
+                    writer.write(',');
+                    newLine();
+                    break;
+                }
+                case DANGLING_KEY: {
+                    // value for name
+                    writer.write(separator);
+                    writer.flush();
+                    replaceTop(NONEMPTY_OBJECT);
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Nesting problem.");
             }
-            case EMPTY_ARRAY: {
-                // first element in array
-                replaceTop(NONEMPTY_ARRAY);
-                newLine();
-                break;
-            }
-            case NONEMPTY_ARRAY: {
-                // another element in array
-                write(',');
-                newLine();
-                break;
-            }
-            case DANGLING_KEY: {
-                // value for name
-                write(encode(separator));
-                replaceTop(NONEMPTY_OBJECT);
-                break;
-            }
-            default:
-                throw new IllegalStateException("Nesting problem.");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
     //#endregion
 
     //#region Pretty printing
     private void newLine() {
-        if (indent != null) {
-            write('\n');
-            for (int i = 1, size = stackSize; i < size; i++) {
-                write(encode(indent));
+        try {
+            if (indent != null) {
+                writer.write('\n');
+                for (int i = 1, size = stackSize; i < size; i++) {
+                    writer.write(indent);
+                }
             }
+            writer.flush();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
     //#endregion
 
-    //#region
+    //#region (unchecked) OutputStream methods
     @Override
     public void write(int b) {
         try {
@@ -382,10 +427,6 @@ public class ResourceWriter
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    private static byte[] encode(String string) {
-        return string.getBytes(StandardCharsets.UTF_8);
     }
     //#endregion
 
