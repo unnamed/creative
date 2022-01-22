@@ -32,7 +32,6 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
-import team.unnamed.creative.model.ItemOverride;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.texture.PackInfo;
@@ -43,6 +42,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.zip.ZipOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileTreeTest {
 
@@ -102,6 +103,18 @@ public class FileTreeTest {
                                 .build())
                         .build()
         );
+
+        String packIcon = "pack.png";
+        String packMeta = "pack.mcmeta";
+        String leatherHorseArmormodel = "assets/minecraft/models/item/leather_horse_armor.json";
+        String texture0 = "assets/creative/textures/texture0.png";
+        String texture0Meta = texture0 + ".mcmeta";
+
+        assertTrue(tree.exists(packIcon));
+        assertTrue(tree.exists(packMeta));
+        assertTrue(tree.exists(leatherHorseArmormodel));
+        assertTrue(tree.exists(texture0));
+        assertTrue(tree.exists(texture0Meta));
     }
 
 }
