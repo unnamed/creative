@@ -106,6 +106,10 @@ final class DirectoryFileTree
 
     private void createFile(File file) {
         try {
+            File parent = file.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
             file.createNewFile();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
