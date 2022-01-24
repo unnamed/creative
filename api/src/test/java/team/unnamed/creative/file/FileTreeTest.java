@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
@@ -66,15 +65,6 @@ public class FileTreeTest {
     }
 
     public void test_file_tree(FileTree tree) {
-        // writes to pack.png and pack.mcmeta
-        tree.write(
-                PackInfo.builder()
-                        .icon(Writable.bytes(new byte[0]))
-                        .meta(Metadata.builder()
-                                .add(PackMeta.of(8, "Creative resource-pack"))
-                                .build())
-                        .build()
-        );
 
         // writes to assets/minecraft/models/item/leather_horse_armor.json
         tree.write(
@@ -103,14 +93,10 @@ public class FileTreeTest {
                         .build()
         );
 
-        String packIcon = "pack.png";
-        String packMeta = "pack.mcmeta";
         String leatherHorseArmormodel = "assets/minecraft/models/item/leather_horse_armor.json";
         String texture0 = "assets/creative/textures/texture0.png";
         String texture0Meta = texture0 + ".mcmeta";
 
-        assertTrue(tree.exists(packIcon));
-        assertTrue(tree.exists(packMeta));
         assertTrue(tree.exists(leatherHorseArmormodel));
         assertTrue(tree.exists(texture0));
         assertTrue(tree.exists(texture0Meta));
