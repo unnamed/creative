@@ -15,3 +15,6 @@ X-Minecraft-Version-ID:   <Client Version ID>
 X-Minecraft-Pack-Format:  <Resource Pack Format>
 User-Agent:                Minecraft Java/<Client Version>
 ```
+
+The HTTP server must return a ZIP file with the resource pack files, see the
+ZIP file structure [here](root.md)
