@@ -11,5 +11,5 @@ This library lets programmers safely create resource-packs, instantly find
 bugs in the resource-pack and create the most compact version of your
 resource-pack
 
-Check the [documentation](./docs/) for installation and usage information for
+Check the [documentation](docs/readme.md) for installation and usage information for
 this project
