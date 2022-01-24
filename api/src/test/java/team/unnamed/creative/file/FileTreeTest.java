@@ -34,7 +34,6 @@ import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
-import team.unnamed.creative.texture.PackInfo;
 import team.unnamed.creative.texture.Texture;
 
 import java.io.ByteArrayOutputStream;
