@@ -1,4 +1,5 @@
-## Resource Pack Packet
+## Resource Pack Networking
+
 The Minecraft: Java Edition protocol defines two packets for resource pack
 handling
 - **The client-bound Resource Pack packet** which makes the client download and use a resource pack

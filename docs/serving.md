@@ -1,11 +1,15 @@
-# Serving Resource Packs
+## Serving Resource Packs
 
-The Minecraft: Java Edition vanilla client sends the following HTTP headers to
-the resource-pack server when downloading a resource-pack
+*See [Resource Pack Networking](network.md) for information about the client
+and server communication*
+
+After the client is requested to download a resource pack at a specified
+`http` or `https` location, it will send an HTTP `GET` request to the
+specified location. It will also add the following headers to the request
 
 ```yaml
 X-Minecraft-Username:     <Player Username>
-X-Minecraft-UUID:         <Player UUID>
+X-Minecraft-UUID:         <Player UUID without hyphens>
 X-Minecraft-Version:      <Client Version>
 X-Minecraft-Version-ID:   <Client Version ID>
 X-Minecraft-Pack-Format:  <Resource Pack Format>
