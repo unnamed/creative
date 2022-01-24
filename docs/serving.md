@@ -17,4 +17,4 @@ User-Agent:                Minecraft Java/<Client Version>
 ```
 
 The HTTP server must return a ZIP file with the resource pack files, see the
-ZIP file structure [here](root.md)
+ZIP file structure [here](structure.md)
