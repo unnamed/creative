@@ -132,8 +132,7 @@ public final class Vector2Float
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector2Float that = (Vector2Float) o;
-        return Float.compare(that.x, x) == 0
-                && Float.compare(that.y, y) == 0;
+        return x == that.x && y == that.y;
     }
 
     @Override

@@ -247,9 +247,9 @@ public final class Vector3Float
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector3Float that = (Vector3Float) o;
-        return Float.compare(that.x, x) == 0
-                && Float.compare(that.y, y) == 0
-                && Float.compare(that.z, z) == 0;
+        return x == that.x
+                && y == that.y
+                && z == that.z;
     }
 
     @Override
