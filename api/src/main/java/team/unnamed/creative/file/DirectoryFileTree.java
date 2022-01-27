@@ -25,7 +25,6 @@ package team.unnamed.creative.file;
 
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.MetadataPart;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -81,12 +80,7 @@ final class DirectoryFileTree
         Metadata meta = resource.meta();
         if (!meta.parts().isEmpty()) {
             try (ResourceWriter writer = open(resource.metaPath())) {
-                writer.startObject();
-                for (MetadataPart part : meta.parts()) {
-                    writer.key(part.name());
-                    part.serialize(writer);
-                }
-                writer.endObject();
+                meta.serialize(writer);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }

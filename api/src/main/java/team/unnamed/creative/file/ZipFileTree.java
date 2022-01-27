@@ -25,7 +25,6 @@ package team.unnamed.creative.file;
 
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.MetadataPart;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -94,12 +93,7 @@ final class ZipFileTree implements FileTree {
                 path = resource.metaPath();
                 output.putNextEntry(entryOf(path));
                 names.add(path);
-                resourceWriter.startObject();
-                for (MetadataPart part : meta.parts()) {
-                    resourceWriter.key(part.name());
-                    part.serialize(resourceWriter);
-                }
-                resourceWriter.endObject();
+                meta.serialize(resourceWriter);
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
