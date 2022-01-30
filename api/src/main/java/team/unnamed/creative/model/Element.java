@@ -181,8 +181,8 @@ public class Element implements SerializableResource {
             if (face.uv() != null) {
                 Vector4Float uv = face.uv();
                 Vector4Float defaultUv = ElementFace.getDefaultUvForFace(type, from, to);
-                if (!uv.equals(defaultUv)) {
-                    writer.key("uv").value(face.uv());
+                if (uv != null && !uv.equals(defaultUv)) {
+                    writer.key("uv").value(uv.multiply(ElementFace.MINECRAFT_UV_UNIT));
                 }
             }
             writer.key("texture").value(face.texture());

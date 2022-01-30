@@ -46,6 +46,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class ElementFace implements Examinable {
 
+    public static final float MINECRAFT_UV_UNIT = 16F;
+
     public static final int DEFAULT_ROTATION = 0;
     public static final int DEFAULT_TINT_INDEX = -1;
 
@@ -70,18 +72,32 @@ public class ElementFace implements Examinable {
         validate();
     }
 
+    private void validateUVComponentInRange(float value, String name) {
+        Validate.isTrue(value >= 0 && value <= 1,
+                "UV component '%s' is not within zero and one", name);
+    }
+
     private void validate() {
         Validate.isTrue(rotation % 90 == 0 && rotation >= 0 && rotation <= 270,
                 "Rotation must be a positive multiple of 90");
+        if (uv != null) {
+            validateUVComponentInRange(uv.x(), "X (from)");
+            validateUVComponentInRange(uv.y(), "Y (from)");
+            validateUVComponentInRange(uv.x2(), "X (to)");
+            validateUVComponentInRange(uv.y2(), "Y (to)");
+        }
     }
 
     /**
      * Returns the area of the texture to
      * use according to the scheme [x1, y1, x2, y2]
      *
-     * <p>The texture behavior is inconsistent if
-     * UV extends below 0 or above 16. If the numbers
-     * of x1 and x2 are swapped the texture flips</p>
+     * <p>All components are always between 0 and
+     * 1 and then converted to 0-16 (Minecraft UV)
+     * when creating the resource pack</p>
+     *
+     * <p>If the numbers of x1 and x2 are swapped
+     * the texture flips</p>
      *
      * <p>UV is optional, and if not supplied it automatically
      * generates based on the element's position.</p>
@@ -204,17 +220,17 @@ public class ElementFace implements Examinable {
     ) {
         switch (face) {
             case WEST:
-                return new Vector4Float(from.z(), 16F - to.y(), to.z(), 16F - from.y());
+                return new Vector4Float(from.z(), 1F - to.y(), to.z(), 1F - from.y());
             case EAST:
-                return new Vector4Float(16F - to.z(), 16F - to.y(), 16F - from.z(), 16F - from.y());
+                return new Vector4Float(1F - to.z(), 1F - to.y(), 1F - from.z(), 1F - from.y());
             case DOWN:
-                return new Vector4Float(from.x(), 16F - to.z(), to.x(), 16F - from.z());
+                return new Vector4Float(from.x(), 1F - to.z(), to.x(), 1F - from.z());
             case UP:
                 return new Vector4Float(from.x(), from.z(), to.x(), to.z());
             case NORTH:
-                return new Vector4Float(16F - to.x(), 16F - to.y(), 16F - from.x(), 16F - from.y());
+                return new Vector4Float(1F - to.x(), 1F - to.y(), 1F - from.x(), 1F - from.y());
             case SOUTH:
-                return new Vector4Float(from.x(), 16.0F - to.y(), to.x(), 16.0F - from.y());
+                return new Vector4Float(from.x(), 1F - to.y(), to.x(), 1F - from.y());
             default:
                 throw new IllegalArgumentException("Unknown face: " + face);
         }

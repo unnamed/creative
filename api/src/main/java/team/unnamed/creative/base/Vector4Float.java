@@ -108,6 +108,18 @@ public final class Vector4Float
         return new float[] { x, y, x2, y2 };
     }
 
+    /**
+     * Multiplies this vector components by
+     * the given scalar, returns a new vector
+     * with the resulting values
+     *
+     * @param scalar The multiplicand
+     * @return The resulting vector
+     */
+    public Vector4Float multiply(float scalar) {
+        return new Vector4Float(x * scalar, y * scalar, x2 * scalar, y2 * scalar);
+    }
+
     @NotNull
     @Override
     public Iterator<Float> iterator() {
