@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.base;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -62,6 +63,20 @@ public interface Writable {
      * @since 1.0.0
      */
     void write(OutputStream output) throws IOException;
+
+    /**
+     * Converts this {@link Writable} instance to a byte
+     * array, it is not recommended invoking this method
+     * so often
+     *
+     * @return This writable instance as a byte array
+     * @throws IOException If conversion fails
+     */
+    default byte[] toByteArray() throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        write(output);
+        return output.toByteArray();
+    }
 
     /**
      * Creates a new {@link Writable} instance that represents
@@ -131,7 +146,19 @@ public interface Writable {
      * @since 1.0.0
      */
     static Writable bytes(byte[] bytes) {
-        return output -> output.write(bytes);
+        return new Writable() {
+
+            @Override
+            public void write(OutputStream output) throws IOException {
+                output.write(bytes);
+            }
+
+            @Override
+            public byte[] toByteArray() {
+                return bytes;
+            }
+
+        };
     }
 
 }
