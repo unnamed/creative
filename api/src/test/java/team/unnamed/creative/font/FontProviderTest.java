@@ -33,12 +33,12 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FontTest {
+public class FontProviderTest {
 
     @Test
     @DisplayName("Test that full BitMap font serialization works")
     public void test_full_bitmap_font_serialization() {
-        Font font = Font.bitMap()
+        FontProvider fontProvider = FontProvider.bitMap()
                 .file(Key.key("creative:test"))
                 .height(16)
                 .ascent(8)
@@ -50,16 +50,16 @@ public class FontTest {
 
         ResourceAssertions.assertSerializedResult(
                 "{\"type\":\"bitmap\",\"file\":\"creative:test\",\"height\":16,\"ascent\":8,\"chars\":[\"µŋ\",\"tm\"]}",
-                font
+                fontProvider
         );
     }
 
     @Test
     @DisplayName("Test that BitMap font default values are not serialized")
     public void test_minimal_bitmap_font_serialization() {
-        Font font = Font.bitMap()
+        FontProvider fontProvider = FontProvider.bitMap()
                 .file(Key.key("test"))
-                .height(BitMapFont.DEFAULT_HEIGHT)
+                .height(BitMapFontProvider.DEFAULT_HEIGHT)
                 .ascent(8)
                 .characters(Arrays.asList(
                         "creative",
@@ -69,7 +69,7 @@ public class FontTest {
 
         ResourceAssertions.assertSerializedResult(
                 "{\"type\":\"bitmap\",\"file\":\"test\",\"ascent\":8,\"chars\":[\"creative\",\"creative\"]}",
-                font
+                fontProvider
         );
     }
 
@@ -77,7 +77,7 @@ public class FontTest {
     @DisplayName("Test that BitMap font values are validated")
     public void test_bitmap_font_validation() {
         assertThrows(IllegalArgumentException.class, () ->
-                Font.bitMap()
+                FontProvider.bitMap()
                         .file(Key.key("test"))
                         .height(8)
                         .ascent(16) // <--- Error here, ascent > height
@@ -88,14 +88,14 @@ public class FontTest {
                         .build());
 
         assertThrows(IllegalArgumentException.class, () ->
-                Font.bitMap()
+                FontProvider.bitMap()
                         .file(Key.key("test"))
                         .ascent(4)
                         .characters(Collections.emptyList()) // <--- Error here, empty char list
                         .build());
 
         assertThrows(IllegalArgumentException.class, () ->
-                Font.bitMap()
+                FontProvider.bitMap()
                         .file(Key.key("test"))
                         .ascent(4)
                         .characters(Arrays.asList(

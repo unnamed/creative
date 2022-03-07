@@ -40,12 +40,12 @@ import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
- * A {@link Font} implementation that uses fonts
+ * A {@link FontProvider} implementation that uses fonts
  * with the True Type Font format
  *
  * @since 1.0.0
  */
-public class TrueTypeFont implements Font {
+public class TrueTypeFontProvider implements FontProvider {
 
     public static final float DEFAULT_SIZE = 11F;
     public static final float DEFAULT_OVERSAMPLE = 1F;
@@ -56,7 +56,7 @@ public class TrueTypeFont implements Font {
     private final float oversample;
     @Unmodifiable private final List<String> skip;
 
-    protected TrueTypeFont(
+    protected TrueTypeFontProvider(
             Key file,
             Vector2Float shift,
             float size,
@@ -177,7 +177,7 @@ public class TrueTypeFont implements Font {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TrueTypeFont that = (TrueTypeFont) o;
+        TrueTypeFontProvider that = (TrueTypeFontProvider) o;
         return Float.compare(that.size, size) == 0
                 && Float.compare(that.oversample, oversample) == 0
                 && file.equals(that.file)
@@ -191,7 +191,7 @@ public class TrueTypeFont implements Font {
     }
 
     /**
-     * Mutable and fluent-style builder for {@link TrueTypeFont}
+     * Mutable and fluent-style builder for {@link TrueTypeFontProvider}
      * instances
      *
      * @since 1.0.0
@@ -233,14 +233,14 @@ public class TrueTypeFont implements Font {
         }
 
         /**
-         * Finishes building the {@link TrueTypeFont} instance,
+         * Finishes building the {@link TrueTypeFontProvider} instance,
          * this method may fail if values were not correctly
          * provided
          *
          * @return The recently created font
          */
-        public TrueTypeFont build() {
-            return new TrueTypeFont(file, shift, size, oversample, skip);
+        public TrueTypeFontProvider build() {
+            return new TrueTypeFontProvider(file, shift, size, oversample, skip);
         }
 
     }

@@ -46,7 +46,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class BitMapFont implements Font {
+public class BitMapFontProvider implements FontProvider {
 
     /**
      * Default bitmap font height
@@ -58,7 +58,7 @@ public class BitMapFont implements Font {
     private final int ascent;
     @Unmodifiable private final List<String> characters;
 
-    protected BitMapFont(
+    protected BitMapFontProvider(
             Key file,
             int height,
             int ascent,
@@ -99,8 +99,8 @@ public class BitMapFont implements Font {
         return file;
     }
 
-    public BitMapFont file(Key newFile) {
-        return new BitMapFont(newFile, height, ascent, characters);
+    public BitMapFontProvider file(Key newFile) {
+        return new BitMapFontProvider(newFile, height, ascent, characters);
     }
 
     /**
@@ -115,8 +115,8 @@ public class BitMapFont implements Font {
         return height;
     }
 
-    public BitMapFont height(int newHeight) {
-        return new BitMapFont(file, newHeight, ascent, characters);
+    public BitMapFontProvider height(int newHeight) {
+        return new BitMapFontProvider(file, newHeight, ascent, characters);
     }
 
     /**
@@ -130,8 +130,8 @@ public class BitMapFont implements Font {
         return ascent;
     }
 
-    public BitMapFont ascent(int newAscent) {
-        return new BitMapFont(file, height, newAscent, characters);
+    public BitMapFontProvider ascent(int newAscent) {
+        return new BitMapFontProvider(file, height, newAscent, characters);
     }
 
     /**
@@ -148,12 +148,12 @@ public class BitMapFont implements Font {
         return characters;
     }
 
-    public BitMapFont characters(List<String> newCharacters) {
-        return new BitMapFont(file, height, ascent, newCharacters);
+    public BitMapFontProvider characters(List<String> newCharacters) {
+        return new BitMapFontProvider(file, height, ascent, newCharacters);
     }
 
-    public BitMapFont.Builder toBuilder() {
-        return Font.bitMap()
+    public BitMapFontProvider.Builder toBuilder() {
+        return FontProvider.bitMap()
                 .file(file)
                 .height(height)
                 .ascent(ascent)
@@ -166,7 +166,7 @@ public class BitMapFont implements Font {
                 .key("type").value("bitmap")
                 .key("file").value(file);
 
-        if (height != BitMapFont.DEFAULT_HEIGHT) {
+        if (height != BitMapFontProvider.DEFAULT_HEIGHT) {
             // only write if height is not equal to the default height
             writer.key("height").value(height);
         }
@@ -195,7 +195,7 @@ public class BitMapFont implements Font {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BitMapFont that = (BitMapFont) o;
+        BitMapFontProvider that = (BitMapFontProvider) o;
         return height == that.height
                 && ascent == that.ascent
                 && file.equals(that.file)
@@ -208,7 +208,7 @@ public class BitMapFont implements Font {
     }
 
     /**
-     * Mutable and fluent-style builder for {@link BitMapFont}
+     * Mutable and fluent-style builder for {@link BitMapFontProvider}
      * instances
      *
      * @since 1.0.0
@@ -244,14 +244,14 @@ public class BitMapFont implements Font {
         }
 
         /**
-         * Finishes building the {@link BitMapFont} instance,
+         * Finishes building the {@link BitMapFontProvider} instance,
          * this method may fail if values were not correctly
          * provided
          *
          * @return The recently created font
          */
-        public BitMapFont build() {
-            return new BitMapFont(file, height, ascent, characters);
+        public BitMapFontProvider build() {
+            return new BitMapFontProvider(file, height, ascent, characters);
         }
 
     }

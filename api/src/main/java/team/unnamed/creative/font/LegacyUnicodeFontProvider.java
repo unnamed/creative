@@ -40,12 +40,12 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class LegacyUnicodeFont implements Font {
+public class LegacyUnicodeFontProvider implements FontProvider {
 
     private final Key sizes;
     private final Key template;
 
-    protected LegacyUnicodeFont(Key sizes, Key template) {
+    protected LegacyUnicodeFontProvider(Key sizes, Key template) {
         this.sizes = requireNonNull(sizes, "sizes");
         this.template = requireNonNull(template, "template");
     }
@@ -105,7 +105,7 @@ public class LegacyUnicodeFont implements Font {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LegacyUnicodeFont that = (LegacyUnicodeFont) o;
+        LegacyUnicodeFontProvider that = (LegacyUnicodeFontProvider) o;
         return sizes.equals(that.sizes) && template.equals(that.template);
     }
 
