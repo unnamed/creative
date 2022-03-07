@@ -88,10 +88,31 @@ public interface FileTree extends AutoCloseable {
     @Override
     void close();
 
+    /**
+     * Creates a new {@link FileTree} instance for
+     * the given {@link File} folder, all files will
+     * be written inside it
+     *
+     * @param root The root folder
+     * @return The created file tree for the given folder
+     */
     static FileTree directory(File root) {
         return new DirectoryFileTree(root);
     }
 
+    /**
+     * Creates a new {@link FileTree} instance for
+     * the given {@link ZipOutputStream}, will not
+     * be closed
+     *
+     * <p>Note that the created file tree will never
+     * close the given output stream, but it may be
+     * finished ({@link ZipOutputStream#finish()})</p>
+     *
+     * @param zipStream The underlying zip stream
+     * @return The file tree for the given zip output
+     * stream
+     */
     static FileTree zip(ZipOutputStream zipStream) {
         return new ZipFileTree(zipStream);
     }
