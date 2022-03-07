@@ -1,7 +1,6 @@
-## Serving Resource Packs
+## Resource Pack Server
 
-*See [Resource Pack Networking](network.md) for information about the client
-and server communication*
+*Requires `creative-server` library*
 
 After the client is requested to download a resource pack at a specified
 `http` or `https` location, it will send an HTTP `GET` request to the
