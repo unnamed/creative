@@ -24,6 +24,7 @@ as this library is very compatible with it. See more:
 - [Installation](installation.md): Installing the library
 - [Fonts](fonts.md): Creating custom fonts, glyphs, etc.
 - [Language](language.md): Creating languages, modifying translations
-- [Model](models.md): Creating custom item and block models
+<!-- TODO: - [Model](models.md): Creating custom item and block models -->
 - [Sound](sounds.md): Creating custom sounds
-- [Serving Resource Packs](resource-pack-server.md): Serving resource packs
+- [Putting All Together](putting-all-together.md): Building the resource pack
+- [Serving Resource Packs](serving-resource-packs.md): Serving resource packs

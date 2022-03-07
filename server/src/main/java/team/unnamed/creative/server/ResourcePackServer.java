@@ -26,6 +26,7 @@ package team.unnamed.creative.server;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import team.unnamed.creative.ResourcePack;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -146,12 +147,17 @@ public final class ResourcePackServer {
             return this;
         }
 
+        public Builder pack(ResourcePack pack) {
+            this.handler = ResourcePackRequestHandler.of(pack);
+            return this;
+        }
+
         public Builder path(String path) {
             this.path = requireNonNull(path, "path");
             return this;
         }
 
-        public ResourcePackServer create() throws IOException {
+        public ResourcePackServer build() throws IOException {
             requireNonNull(address, "Address must be set!");
             requireNonNull(handler, "Handler must be set!");
             return new ResourcePackServer(address, path, handler);

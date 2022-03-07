@@ -24,6 +24,7 @@
 package team.unnamed.creative.server;
 
 import com.sun.net.httpserver.HttpExchange;
+import team.unnamed.creative.ResourcePack;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -74,11 +75,12 @@ public interface ResourcePackRequestHandler {
         exchange.getResponseBody().write(response);
     }
 
-    static ResourcePackRequestHandler of(byte[] zipArchiveBytes) {
+    static ResourcePackRequestHandler of(ResourcePack pack) {
         return (request, exchange) -> {
+            byte[] data = pack.bytes();
             exchange.getResponseHeaders().set("Content-Type", "application/zip");
-            exchange.sendResponseHeaders(200, zipArchiveBytes.length);
-            exchange.getResponseBody().write(zipArchiveBytes);
+            exchange.sendResponseHeaders(200, data.length);
+            exchange.getResponseBody().write(data);
         };
     }
 
