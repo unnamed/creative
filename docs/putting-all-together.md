@@ -5,7 +5,14 @@ Now we can build the resource-pack!
 ```java
 ResourcePack resourcePack = ResourcePack.build(tree -> {
     
-    // TODO: Write top-level metadata file
+    // Required to be a valid resource-pack!
+    tree.write(Metadata.builder()
+        .add(PackMeta.of(8, "Description!"))
+        // .add(LanguageMeta...) // to register custom languages!
+        .build());
+    
+    // The resource-pack icon
+    tree.write("pack.png", Writable...);
     
     // writing a font...
     tree.write(font);
