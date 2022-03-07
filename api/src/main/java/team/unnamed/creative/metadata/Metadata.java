@@ -28,8 +28,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 
@@ -43,7 +43,12 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
 
-public class Metadata implements SerializableResource, Examinable {
+/**
+ * Represents a metadata file resource for a specific
+ * metadata-able resource, or a top level metadata file
+ * (pack.mcmeta)
+ */
+public class Metadata implements FileResource, Examinable {
 
     public static final Metadata EMPTY = new Metadata(Collections.emptyMap());
 
@@ -62,6 +67,22 @@ public class Metadata implements SerializableResource, Examinable {
         @SuppressWarnings("unchecked")
         T part = (T) parts.get(type);
         return part;
+    }
+
+    @Override
+    public String path() {
+        return "pack.mcmeta";
+    }
+
+    @Override
+    public String metaPath() {
+        return "pack.mcmeta";
+    }
+
+    @Override
+    public Metadata meta() {
+        // Metadata does not have metadata!
+        return Metadata.EMPTY;
     }
 
     @Override
