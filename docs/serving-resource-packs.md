@@ -10,7 +10,7 @@ ResourcePack resourcePack = ...;
 // create and bind the HTTP server instance
 ResourcePackServer server = ResourcePackServer.builder()
     .address("127.0.0.1", 8080)
-    .handler(resourcePack)
+    .pack(resourcePack)
     .build();
 
 // start the server
