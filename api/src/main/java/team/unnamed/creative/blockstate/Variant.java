@@ -37,9 +37,12 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Represents a block state variant, applies a
+ * different model for a block state
+ *
  * @since 1.0.0
  */
-public class StateVariant implements SerializableResource {
+public class Variant implements SerializableResource {
 
     public static final int DEFAULT_X_ROTATION = 0;
     public static final int DEFAULT_Y_ROTATION = 0;
@@ -52,7 +55,7 @@ public class StateVariant implements SerializableResource {
     private final boolean uvLock;
     private final int weight;
 
-    private StateVariant(
+    private Variant(
             Key model,
             int x,
             int y,
@@ -171,7 +174,7 @@ public class StateVariant implements SerializableResource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StateVariant that = (StateVariant) o;
+        Variant that = (Variant) o;
         return x == that.x
                 && y == that.y
                 && uvLock == that.uvLock
@@ -224,8 +227,8 @@ public class StateVariant implements SerializableResource {
             return this;
         }
 
-        public StateVariant build() {
-            return new StateVariant(model, x, y, uvLock, weight);
+        public Variant build() {
+            return new Variant(model, x, y, uvLock, weight);
         }
 
     }

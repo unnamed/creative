@@ -54,17 +54,24 @@ import static java.util.Objects.requireNonNull;
 public class BlockState implements Keyed, FileResource {
 
     private final Key key;
-    private final Map<String, List<StateVariant>> variants;
-    private final List<StateCase> multipart;
+    private final Map<String, MultiVariant> variants;
+    private final List<Selector> multipart;
 
     private BlockState(
             Key key,
-            Map<String, List<StateVariant>> variants,
-            List<StateCase> multipart
+            Map<String, MultiVariant> variants,
+            List<Selector> multipart
     ) {
         this.key = requireNonNull(key, "key");
         this.variants = requireNonNull(variants, "variants");
         this.multipart = requireNonNull(multipart, "multipart");
+        validate();
+    }
+
+    private void validate() {
+        if (variants.isEmpty() && multipart.isEmpty()) {
+            throw new IllegalArgumentException("variants and multipart cannot be both empty!");
+        }
     }
 
     @Override
@@ -72,11 +79,11 @@ public class BlockState implements Keyed, FileResource {
         return key;
     }
 
-    public Map<String, List<StateVariant>> variants() {
+    public Map<String, MultiVariant> variants() {
         return variants;
     }
 
-    public List<StateCase> multipart() {
+    public List<Selector> multipart() {
         return multipart;
     }
 
@@ -93,22 +100,9 @@ public class BlockState implements Keyed, FileResource {
         // write "variants" part if not empty
         if (!variants.isEmpty()) {
             writer.key("variants").startObject();
-            for (Map.Entry<String, List<StateVariant>> entry : variants.entrySet()) {
-                writer.key(entry.getKey());
-                List<StateVariant> variant = entry.getValue();
-
-                if (variant.size() == 1) {
-                    // single variant, write as an object
-                    // without the weight
-                    variant.get(0).serialize(writer);
-                } else {
-                    // multiple variants, write everything
-                    writer.startArray();
-                    for (StateVariant v : variant) {
-                        v.serialize(writer);
-                    }
-                    writer.endArray();
-                }
+            for (Map.Entry<String, MultiVariant> entry : variants.entrySet()) {
+                writer.key(entry.getKey())
+                        .value(entry.getValue());
             }
             writer.endObject();
         }
@@ -116,8 +110,8 @@ public class BlockState implements Keyed, FileResource {
         // write "multipart" part if not empty
         if (!multipart.isEmpty()) {
             writer.key("multipart").startArray();
-            for (StateCase stateCase : multipart) {
-                stateCase.serialize(writer);
+            for (Selector selector : multipart) {
+                selector.serialize(writer);
             }
             writer.endArray();
         }
@@ -166,8 +160,8 @@ public class BlockState implements Keyed, FileResource {
      */
     public static BlockState of(
             Key key,
-            Map<String, List<StateVariant>> variants,
-            List<StateCase> multipart
+            Map<String, MultiVariant> variants,
+            List<Selector> multipart
     ) {
         return new BlockState(key, variants, multipart);
     }
@@ -180,7 +174,7 @@ public class BlockState implements Keyed, FileResource {
      * @return A new {@link BlockState} variants
      * @since 1.0.0
      */
-    public static BlockState ofVariants(Key key, Map<String, List<StateVariant>> variants) {
+    public static BlockState of(Key key, Map<String, MultiVariant> variants) {
         return new BlockState(
                 key,
                 variants,
@@ -196,7 +190,7 @@ public class BlockState implements Keyed, FileResource {
      * @return A new {@link BlockState} instance
      * @since 1.0.0
      */
-    public static BlockState ofMultipart(Key key, List<StateCase> multipart) {
+    public static BlockState of(Key key, List<Selector> multipart) {
         return new BlockState(
                 key,
                 Collections.emptyMap(),
