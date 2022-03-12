@@ -67,6 +67,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class ItemTransform implements SerializableResource {
 
+    public static final float MIN_TRANSLATION = -80F;
+    public static final float MAX_TRANSLATION = 80F;
+
+    public static final float MIN_SCALE = -4F;
+    public static final float MAX_SCALE = 4F;
+
     public static final Vector3Float DEFAULT_ROTATION = Vector3Float.ZERO;
     public static final Vector3Float DEFAULT_TRANSLATION = Vector3Float.ZERO;
     public static final Vector3Float DEFAULT_SCALE = Vector3Float.ONE;
@@ -83,6 +89,23 @@ public class ItemTransform implements SerializableResource {
         this.rotation = requireNonNull(rotation, "rotation");
         this.translation = requireNonNull(translation, "translation");
         this.scale = requireNonNull(scale, "scale");
+        validate();
+    }
+
+    private void validate() {
+        if (translation.x() < MIN_TRANSLATION || translation.x() > MAX_TRANSLATION
+                || translation.y() < MIN_TRANSLATION || translation.y() > MAX_TRANSLATION
+                || translation.z() < MIN_TRANSLATION || translation.z() > MAX_TRANSLATION) {
+            throw new IllegalArgumentException("Invalid translation (" + translation + ")" +
+                    ", out of bounds (" + MIN_TRANSLATION + " to " + MAX_TRANSLATION + ")");
+        }
+
+        if (scale.x() < MIN_SCALE || scale.x() > MAX_SCALE
+                || scale.y() < MIN_SCALE || scale.y() > MAX_SCALE
+                || scale.z() < MIN_SCALE || scale.z() > MAX_SCALE) {
+            throw new IllegalArgumentException("Invalid scale (" + scale + ")" +
+                    ", out of bounds (" + MIN_SCALE + " to " + MAX_SCALE + ")");
+        }
     }
 
     /**
@@ -96,9 +119,10 @@ public class ItemTransform implements SerializableResource {
     }
 
     /**
-     * Returns the position of the model.
-     * The value is clamped by the client
-     * between -80 and 80
+     * Returns the position of the model
+     *
+     * <p>Components are always between {@code MIN_TRANSLATION}
+     * and {@code MAX_TRANSLATION}</p>
      *
      * @return The model display translation
      */
@@ -107,9 +131,10 @@ public class ItemTransform implements SerializableResource {
     }
 
     /**
-     * Returns the scale of the mode. This
-     * value is clamped by the client between
-     * -4 and 4
+     * Returns the scale of the mode
+     *
+     * <p>Components are always between {@code MIN_SCALE}
+     * and {@code MAX_SCALE} constants</p>
      *
      * @return The model display scale
      */
