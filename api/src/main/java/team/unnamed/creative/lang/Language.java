@@ -33,6 +33,7 @@ import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.file.ResourceWriter;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -58,6 +59,14 @@ public class Language implements Keyed, FileResource {
     ) {
         this.key = requireNonNull(key, "key");
         this.translations = requireNonNull(translations, "translations");
+        validate();
+    }
+
+    private void validate() {
+        translations.forEach((key, value) -> {
+            requireNonNull(key, "Translation key cannot be null");
+            requireNonNull(value, "Translation cannot be null");
+        });
     }
 
     @Override
@@ -129,6 +138,44 @@ public class Language implements Keyed, FileResource {
      */
     public static Language of(Key key, Map<String, String> translations) {
         return new Language(key, translations);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private Key key;
+        private Map<String, String> translations;
+
+        private Builder() {
+        }
+
+        public Builder key(Key key) {
+            this.key = requireNonNull(key, "key");
+            return this;
+        }
+
+        public Builder translations(Map<String, String> translations) {
+            this.translations = requireNonNull(translations, "translations");
+            return this;
+        }
+
+        public Builder translation(String key, String value) {
+            requireNonNull(key, "key");
+            requireNonNull(value, "value");
+            if (this.translations == null) {
+                this.translations = new HashMap<>();
+            }
+            this.translations.put(key, value);
+            return this;
+        }
+
+        public Language build() {
+            return new Language(key, translations);
+        }
+
     }
 
 }
