@@ -32,6 +32,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipOutputStream;
 
+import static java.util.Objects.requireNonNull;
+
+/**
+ * Represents a built server-side resource-pack ready
+ * to be sent to a player, contains the resource-pack
+ * content bytes (of the resource-pack ZIP archive)
+ * and its SHA-1 hash
+ *
+ * @since 1.0.0
+ */
 public final class ResourcePack {
 
     private final byte[] bytes;
@@ -41,8 +51,8 @@ public final class ResourcePack {
             byte[] bytes,
             String hash
     ) {
-        this.bytes = bytes;
-        this.hash = hash;
+        this.bytes = requireNonNull(bytes, "bytes");
+        this.hash = requireNonNull(hash, "hash");
     }
 
     /**
