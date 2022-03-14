@@ -107,6 +107,14 @@ public class Texture implements Keyed, FileResource {
         return Objects.hash(key, data, meta);
     }
 
+    public static Texture of(Key key, Writable data, Metadata meta) {
+        return new Texture(key, data, meta);
+    }
+
+    public static Texture of(Key key, Writable data) {
+        return new Texture(key, data, Metadata.EMPTY);
+    }
+
     public static Builder builder() {
         return new Builder();
     }

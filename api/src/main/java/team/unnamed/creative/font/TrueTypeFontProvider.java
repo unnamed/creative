@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.file.ResourceWriter;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -229,6 +230,12 @@ public class TrueTypeFontProvider implements FontProvider {
 
         public Builder skip(List<String> skip) {
             this.skip = requireNonNull(skip, "skip");
+            return this;
+        }
+
+        public Builder skip(String... skip) {
+            requireNonNull(skip, "skip");
+            this.skip = Arrays.asList(skip);
             return this;
         }
 

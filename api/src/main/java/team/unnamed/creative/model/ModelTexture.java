@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -200,6 +201,12 @@ public class ModelTexture implements SerializableResource {
 
         public Builder layers(List<Key> layers) {
             this.layers = requireNonNull(layers, "layers");
+            return this;
+        }
+
+        public Builder layers(Key... layers) {
+            requireNonNull(layers, "layers");
+            this.layers = Arrays.asList(layers);
             return this;
         }
 

@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.FileResource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -55,6 +56,8 @@ public class Font implements Keyed, FileResource {
 
     public static final Key MINECRAFT_DEFAULT = Key.key(Key.MINECRAFT_NAMESPACE, "default");
     public static final Key MINECRAFT_ALT = Key.key(Key.MINECRAFT_NAMESPACE, "alt");
+    public static final Key MINECRAFT_ILAGERALT = Key.key(Key.MINECRAFT_NAMESPACE, "ilageralt");
+    public static final Key MINECRAFT_UNIFORM = Key.key(Key.MINECRAFT_NAMESPACE, "uniform");
 
     private final Key key;
     private final List<FontProvider> providers;
@@ -126,12 +129,26 @@ public class Font implements Keyed, FileResource {
      * Creates a new {@link Font} instance from
      * the given provider list
      *
+     * @param key The font key
      * @param providers The font providers
      * @return A new {@link Font} instance
      * @since 1.0.0
      */
     public static Font of(Key key, List<FontProvider> providers) {
         return new Font(key, providers);
+    }
+
+    /**
+     * Creates a new {@link Font} instance from
+     * the given providers
+     *
+     * @param key The font key
+     * @param providers The font providers
+     * @return A new {@link Font} instance
+     * @since 1.0.0
+     */
+    public static Font of(Key key, FontProvider... providers) {
+        return new Font(key, Arrays.asList(providers));
     }
 
 }

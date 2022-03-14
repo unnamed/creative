@@ -35,6 +35,7 @@ import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -238,7 +239,7 @@ public class Element implements SerializableResource {
         private Vector3Float to;
         private ElementRotation rotation = null;
         private boolean shade = DEFAULT_SHADE;
-        private Map<CubeFace, ElementFace> faces = Collections.emptyMap();
+        private Map<CubeFace, ElementFace> faces;
 
         private Builder() {
         }
@@ -268,7 +269,20 @@ public class Element implements SerializableResource {
             return this;
         }
 
+        public Builder face(CubeFace type, ElementFace face) {
+            requireNonNull(type, "type");
+            requireNonNull(face, "face");
+            if (this.faces == null) {
+                this.faces = new HashMap<>();
+            }
+            this.faces.put(type, face);
+            return this;
+        }
+
         public Element build() {
+            if (this.faces == null) {
+                this.faces = Collections.emptyMap();
+            }
             return new Element(from, to, rotation, shade, faces);
         }
 

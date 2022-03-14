@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.util.Validate;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -240,6 +241,12 @@ public class BitMapFontProvider implements FontProvider {
 
         public Builder characters(List<String> characters) {
             this.characters = requireNonNull(characters, "characters");
+            return this;
+        }
+
+        public Builder characters(String... characters) {
+            requireNonNull(characters, "characters");
+            this.characters = Arrays.asList(characters);
             return this;
         }
 

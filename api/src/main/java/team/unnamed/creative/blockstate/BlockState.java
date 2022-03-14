@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.FileResource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -195,6 +196,14 @@ public class BlockState implements Keyed, FileResource {
                 key,
                 Collections.emptyMap(),
                 multipart
+        );
+    }
+
+    public static BlockState of(Key key, Selector... multipart) {
+        return new BlockState(
+                key,
+                Collections.emptyMap(),
+                Arrays.asList(multipart)
         );
     }
 

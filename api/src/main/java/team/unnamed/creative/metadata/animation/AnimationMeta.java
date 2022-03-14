@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.file.ResourceWriter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -287,6 +289,20 @@ public class AnimationMeta implements MetadataPart {
 
         public Builder frames(List<AnimationFrame> frames) {
             this.frames = requireNonNull(frames, "frames");
+            return this;
+        }
+
+        public Builder frames(AnimationFrame... frames) {
+            requireNonNull(frames, "frames");
+            this.frames = Arrays.asList(frames);
+            return this;
+        }
+
+        public Builder frames(int... indexes) {
+            this.frames = new ArrayList<>();
+            for (int index : indexes) {
+                this.frames.add(AnimationFrame.of(index));
+            }
             return this;
         }
 

@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -206,6 +207,12 @@ public class SoundEvent implements SerializableResource {
 
         public Builder sounds(List<Sound> sounds) {
             this.sounds = requireNonNull(sounds, "sounds");
+            return this;
+        }
+
+        public Builder sounds(Sound... sounds) {
+            requireNonNull(sounds, "sounds");
+            this.sounds = Arrays.asList(sounds);
             return this;
         }
 

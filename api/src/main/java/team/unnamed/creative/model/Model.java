@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.ResourceWriter;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -340,8 +341,20 @@ public class Model implements Keyed, FileResource {
             return this;
         }
 
+        public Builder elements(Element... elements) {
+            requireNonNull(elements, "elements");
+            this.elements = Arrays.asList(elements);
+            return this;
+        }
+
         public Builder overrides(List<ItemOverride> overrides) {
             this.overrides = requireNonNull(overrides, "overrides");
+            return this;
+        }
+
+        public Builder overrides(ItemOverride... overrides) {
+            requireNonNull(overrides, "overrides");
+            this.overrides = Arrays.asList(overrides);
             return this;
         }
 

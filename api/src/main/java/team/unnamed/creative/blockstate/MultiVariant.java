@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -72,6 +73,14 @@ public class MultiVariant implements SerializableResource {
             }
             writer.endArray();
         }
+    }
+
+    public static MultiVariant of(List<Variant> variants) {
+        return new MultiVariant(variants);
+    }
+
+    public static MultiVariant of(Variant... variants) {
+        return new MultiVariant(Arrays.asList(variants));
     }
 
 }
