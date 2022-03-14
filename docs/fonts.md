@@ -27,11 +27,11 @@ Texture texture = ...;
 FontProvider provider = FontProvider.bitMap()
         .file(texture.key())
         .ascent(7)
-        .characters(List.of(
+        .characters(
             "abcdef",
             "012345",
             "6789ñá"
-        ))
+        )
         .build();
 ```
 *TODO: add the other font providers*
@@ -45,7 +45,9 @@ providers and assign a key
 ```java
 Font font = Font.of(
     Key.key("namespace", "my_font"),
-    List.of(fontProvider1, fontProvider2, ...)
+    fontProvider1,
+    fontProvider2,
+    ...
 );
 ```
 

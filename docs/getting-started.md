@@ -22,6 +22,7 @@ In some examples, we will be referencing [adventure](https://github.com/KyoriPow
 as this library is very compatible with it. See more:
 
 - [Installation](installation.md): Installing the library
+- [Textures](textures.md): Creating and animating textures
 - [Fonts](fonts.md): Creating custom fonts, glyphs, etc.
 - [Language](language.md): Creating languages, modifying translations
 <!-- TODO: - [Model](models.md): Creating custom item and block models -->
