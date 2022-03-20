@@ -11,6 +11,7 @@ ResourcePack resourcePack = ...;
 ResourcePackServer server = ResourcePackServer.builder()
     .address("127.0.0.1", 8080)
     .pack(resourcePack)
+    .secure(...) // (optional) HTTPS support
     .build();
 
 // start the server
