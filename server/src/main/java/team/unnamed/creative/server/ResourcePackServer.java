@@ -26,11 +26,16 @@ package team.unnamed.creative.server;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
+import com.sun.net.httpserver.HttpsServer;
 import team.unnamed.creative.ResourcePack;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,11 +45,11 @@ public final class ResourcePackServer {
     private final ResourcePackRequestHandler handler;
 
     private ResourcePackServer(
-            InetSocketAddress address,
+            HttpServer server,
             String path,
             ResourcePackRequestHandler handler
-    ) throws IOException {
-        this.server = HttpServer.create(address, 0);
+    ) {
+        this.server = server;
         this.handler = handler;
         this.server.createContext(path, this::handleRequest);
     }
@@ -126,8 +131,10 @@ public final class ResourcePackServer {
     public static class Builder {
 
         private InetSocketAddress address;
+        private int backlog;
         private ResourcePackRequestHandler handler;
         private String path = "/";
+        private HttpServerFactory serverFactory = HttpServer::create;
 
         private Builder() {
         }
@@ -139,6 +146,51 @@ public final class ResourcePackServer {
 
         public Builder address(String hostname, int port) {
             this.address = new InetSocketAddress(hostname, port);
+            return this;
+        }
+
+        public Builder secure(HttpsConfigurator httpsConfigurator) {
+            requireNonNull(httpsConfigurator, "httpsConfigurator");
+            this.serverFactory = (address, backlog) -> {
+                HttpsServer server = HttpsServer.create(address, backlog);
+                server.setHttpsConfigurator(httpsConfigurator);
+                return server;
+            };
+            return this;
+        }
+
+        public Builder secure(SSLContext sslContext, Consumer<HttpsParameters> configurator) {
+            return this.secure(new HttpsConfigurator(sslContext) {
+
+                @Override
+                public void configure(HttpsParameters params) {
+                    configurator.accept(params);
+                }
+
+                @Override
+                public String toString() {
+                    return "ResourcePackServer/HttpsConfigurator for " + configurator;
+                }
+
+            });
+        }
+
+        public Builder secure(SSLContext sslContext) {
+            return this.secure(new HttpsConfigurator(sslContext));
+        }
+
+        /**
+         * Sets the socket backlog, specifies the number
+         * of pending connections the connection queue will
+         * hold
+         *
+         * <p>If the given value is less than or equal to
+         * zero, then a system default value is used</p>
+         *
+         * @param backlog The socket backlog
+         */
+        public Builder backlog(int backlog) {
+            this.backlog = backlog;
             return this;
         }
 
@@ -160,8 +212,14 @@ public final class ResourcePackServer {
         public ResourcePackServer build() throws IOException {
             requireNonNull(address, "Address must be set!");
             requireNonNull(handler, "Handler must be set!");
-            return new ResourcePackServer(address, path, handler);
+            return new ResourcePackServer(serverFactory.create(address, backlog), path, handler);
         }
+
+    }
+
+    interface HttpServerFactory {
+
+        HttpServer create(InetSocketAddress address, int backlog) throws IOException;
 
     }
 
