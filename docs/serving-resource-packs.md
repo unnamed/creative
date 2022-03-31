@@ -33,10 +33,16 @@ the resource-pack from there, this depends on the platform
 In [Paper](https://papermc.io/) you can use:
 
 ```java
-ResourcePack resourcePack = ...;
+ResourcePack pack = ...;
+// The resource-pack path, can be empty, but due to a bug
+// on the Minecraft client, the hashes are not correctly
+// checked, and it will fail to update
+String path = pack.hash() + ".zip";
 
 player.setResourcePack(
-        "url to the resource pack server",
-        resourcePack.hash()
+        // just an example! replace this by your server's
+        // public address for production
+        "http://127.0.0.1:8080/" + path,
+        pack.hash()
 );
 ```
