@@ -42,8 +42,6 @@ final class UUIDUtil {
     private static long parseUnsignedLong(String str, int radix) {
 
         // from Long.parseUnsignedLong in Java 9+
-
-        int start = 0;
         int len = str.length();
 
         if (str.length() < 1) {
