@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,9 +39,11 @@ final class ZipFileTree implements FileTree {
     private final Set<String> names = new HashSet<>();
     private final ZipOutputStream output;
     private final ResourceWriter resourceWriter;
+    private final Function<String, ZipEntry> entryFactory;
 
-    ZipFileTree(ZipOutputStream output) {
+    ZipFileTree(ZipOutputStream output, Function<String, ZipEntry> entryFactory) {
         this.output = output;
+        this.entryFactory = entryFactory;
         this.resourceWriter = new ResourceWriter(output) {
             @Override
             public void close() {
@@ -61,7 +64,7 @@ final class ZipFileTree implements FileTree {
     @Override
     public ResourceWriter open(String path) {
         try {
-            output.putNextEntry(entryOf(path));
+            output.putNextEntry(entryFactory.apply(path));
             names.add(path);
             return resourceWriter;
         } catch (IOException e) {
@@ -72,7 +75,7 @@ final class ZipFileTree implements FileTree {
     @Override
     public void write(String path, Writable data) {
         try {
-            output.putNextEntry(entryOf(path));
+            output.putNextEntry(entryFactory.apply(path));
             data.write(output);
             names.add(path);
         } catch (IOException e) {
@@ -84,14 +87,14 @@ final class ZipFileTree implements FileTree {
     public void write(FileResource resource) {
         try {
             String path = resource.path();
-            output.putNextEntry(entryOf(path));
+            output.putNextEntry(entryFactory.apply(path));
             names.add(path);
             resource.serialize(resourceWriter);
 
             Metadata meta = resource.meta();
             if (!meta.parts().isEmpty()) {
                 path = resource.metaPath();
-                output.putNextEntry(entryOf(path));
+                output.putNextEntry(entryFactory.apply(path));
                 names.add(path);
                 meta.serialize(resourceWriter);
             }
@@ -107,14 +110,6 @@ final class ZipFileTree implements FileTree {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    private ZipEntry entryOf(String path) {
-        ZipEntry entry = new ZipEntry(path);
-        // ensures that the resulting zip file is the
-        // exact same (because of hashes) always
-        entry.setTime(0L);
-        return entry;
     }
 
 }

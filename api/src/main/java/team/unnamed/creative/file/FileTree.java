@@ -26,6 +26,8 @@ package team.unnamed.creative.file;
 import team.unnamed.creative.base.Writable;
 
 import java.io.File;
+import java.util.function.Function;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -110,11 +112,38 @@ public interface FileTree extends AutoCloseable {
      * finished ({@link ZipOutputStream#finish()})</p>
      *
      * @param zipStream The underlying zip stream
+     * @param entryFactory The ZIP archive entry factory
+     * @return The file tree for the given zip output
+     * stream
+     */
+    static FileTree zip(ZipOutputStream zipStream, Function<String, ZipEntry> entryFactory) {
+        return new ZipFileTree(zipStream, entryFactory);
+    }
+
+    /**
+     * Creates a new {@link FileTree} instance for
+     * the given {@link ZipOutputStream}, will not
+     * be closed
+     *
+     * <p>Note that the created file tree will never
+     * close the given output stream, but it may be
+     * finished ({@link ZipOutputStream#finish()})</p>
+     *
+     * @param zipStream The underlying zip stream
      * @return The file tree for the given zip output
      * stream
      */
     static FileTree zip(ZipOutputStream zipStream) {
-        return new ZipFileTree(zipStream);
+        return zip(zipStream, path -> {
+            ZipEntry entry = new ZipEntry(path);
+            // ensures that the resulting zip file is always
+            // the exact same (because of hashes)
+            entry.setTime(0L);
+            // tip: if you want to make the resource pack
+            // harder to open, you can set an asi extra field
+            // using ZipEntry#setExtra(byte[])
+            return entry;
+        });
     }
 
 }
