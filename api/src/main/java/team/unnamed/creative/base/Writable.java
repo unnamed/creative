@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 /**
@@ -158,6 +159,37 @@ public interface Writable {
                 return bytes;
             }
 
+        };
+    }
+
+
+    /**
+     * Creates a new {@link Writable} instance representing
+     * the given string, which is written using the UTF-8
+     * {@link StandardCharsets#UTF_8} encoding
+     *
+     * @param string The wrapped string
+     * @return The {@link Writable} representation
+     * @since 1.0.0
+     */
+    static Writable stringUtf8(String string) {
+        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        return new Writable() {
+
+            @Override
+            public void write(OutputStream output) throws IOException {
+                output.write(bytes);
+            }
+
+            @Override
+            public byte[] toByteArray() {
+                return bytes;
+            }
+
+            @Override
+            public String toString() {
+                return "Writable { type='utf8', value='" + string + "' }";
+            }
         };
     }
 
