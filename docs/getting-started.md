@@ -28,4 +28,4 @@ as this library is very compatible with it. See more:
 <!-- TODO: - [Model](models.md): Creating custom item and block models -->
 - [Sound](sounds.md): Creating custom sounds
 - [Putting All Together](putting-all-together.md): Building the resource pack
-- [Serving Resource Packs](serving-resource-packs.md): Serving resource packs
+- [Creative Server](./server/creative-server.md): The creative-server documentation

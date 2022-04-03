@@ -1,6 +1,6 @@
 ## Installation
 
-You can add `creative-api` to your project using [Gradle](https://gradle.org/)
+You can add `creative-server` to your project using [Gradle](https://gradle.org/)
 *(recommended)*, [Maven](https://maven.apache.org/) or manually downloading the
 JAR files
 
@@ -13,7 +13,7 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("team.unnamed:creative-api:0.1.12-SNAPSHOT")
+    implementation("team.unnamed:creative-server:0.1.12-SNAPSHOT")
 }
 ```
 
@@ -29,7 +29,7 @@ dependencies {
 ```xml
 <dependency>
     <groupId>team.unnamed</groupId>
-    <artifactId>creative-api</artifactId>
+    <artifactId>creative-server</artifactId>
     <version>0.1.12-SNAPSHOT</version>
 </dependency>
 ```
