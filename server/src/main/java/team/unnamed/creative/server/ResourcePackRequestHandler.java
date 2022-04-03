@@ -76,11 +76,20 @@ public interface ResourcePackRequestHandler {
     }
 
     static ResourcePackRequestHandler of(ResourcePack pack) {
-        return (request, exchange) -> {
-            byte[] data = pack.bytes();
-            exchange.getResponseHeaders().set("Content-Type", "application/zip");
-            exchange.sendResponseHeaders(200, data.length);
-            exchange.getResponseBody().write(data);
+        return new ResourcePackRequestHandler() {
+
+            @Override
+            public void onRequest(ResourcePackRequest request, HttpExchange exchange) throws IOException {
+                onInvalidRequest(exchange);
+            }
+
+            @Override
+            public void onInvalidRequest(HttpExchange exchange) throws IOException {
+                byte[] data = pack.bytes();
+                exchange.getResponseHeaders().set("Content-Type", "application/zip");
+                exchange.sendResponseHeaders(200, data.length);
+                exchange.getResponseBody().write(data);
+            }
         };
     }
 
