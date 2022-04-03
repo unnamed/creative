@@ -53,7 +53,7 @@ public class LocalHttpTestBase {
         );
         server = ResourcePackServer.builder()
                 .address(new InetSocketAddress(PORT))
-                .pack(resourcePack)
+                .pack(resourcePack, true)
                 .build();
         server.start();
     }

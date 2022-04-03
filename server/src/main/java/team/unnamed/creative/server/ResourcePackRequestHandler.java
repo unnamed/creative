@@ -24,6 +24,7 @@
 package team.unnamed.creative.server;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 
 import java.io.IOException;
@@ -75,22 +76,30 @@ public interface ResourcePackRequestHandler {
         exchange.getResponseBody().write(response);
     }
 
-    static ResourcePackRequestHandler of(ResourcePack pack) {
+    static ResourcePackRequestHandler of(ResourcePack pack, boolean validOnly) {
         return new ResourcePackRequestHandler() {
 
             @Override
-            public void onRequest(ResourcePackRequest request, HttpExchange exchange) throws IOException {
-                onInvalidRequest(exchange);
+            public void onRequest(@Nullable ResourcePackRequest request, HttpExchange exchange) throws IOException {
+                if (request != null || !validOnly) {
+                    byte[] data = pack.bytes();
+                    exchange.getResponseHeaders().set("Content-Type", "application/zip");
+                    exchange.sendResponseHeaders(200, data.length);
+                    exchange.getResponseBody().write(data);
+                } else {
+                    ResourcePackRequestHandler.super.onInvalidRequest(exchange);
+                }
             }
 
             @Override
             public void onInvalidRequest(HttpExchange exchange) throws IOException {
-                byte[] data = pack.bytes();
-                exchange.getResponseHeaders().set("Content-Type", "application/zip");
-                exchange.sendResponseHeaders(200, data.length);
-                exchange.getResponseBody().write(data);
+                onRequest(null, exchange);
             }
         };
+    }
+
+    static ResourcePackRequestHandler of(ResourcePack pack) {
+        return of(pack, false);
     }
 
 }

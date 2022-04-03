@@ -199,6 +199,11 @@ public final class ResourcePackServer {
             return this;
         }
 
+        public Builder pack(ResourcePack pack, boolean validOnly) {
+            this.handler = ResourcePackRequestHandler.of(pack, validOnly);
+            return this;
+        }
+
         public Builder pack(ResourcePack pack) {
             this.handler = ResourcePackRequestHandler.of(pack);
             return this;
