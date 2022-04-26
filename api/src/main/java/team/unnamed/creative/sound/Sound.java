@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Locale;
@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Sound implements Keyed, FileResource {
+public class Sound implements Keyed, SerializableResource {
 
     public static final float DEFAULT_VOLUME = 1.0F;
     public static final float DEFAULT_PITCH = 1.0F;
@@ -58,7 +58,6 @@ public class Sound implements Keyed, FileResource {
     public static final Type DEFAULT_TYPE = Type.FILE;
 
     private final Key key;
-    private final Writable data;
     private final float volume;
     private final float pitch;
     private final int weight;
@@ -69,7 +68,6 @@ public class Sound implements Keyed, FileResource {
 
     private Sound(
             Key key,
-            Writable data,
             float volume,
             float pitch,
             int weight,
@@ -79,7 +77,6 @@ public class Sound implements Keyed, FileResource {
             Type type
     ) {
         this.key = requireNonNull(key, "key");
-        this.data = requireNonNull(data, "data");
         this.volume = volume;
         this.pitch = pitch;
         this.weight = weight;
@@ -115,10 +112,6 @@ public class Sound implements Keyed, FileResource {
      */
     public String name() {
         return key.value();
-    }
-
-    public Writable data() {
-        return data;
     }
 
     /**
@@ -210,11 +203,6 @@ public class Sound implements Keyed, FileResource {
         return type;
     }
 
-    @Override
-    public String path() {
-        return "assets/" + key.namespace() + "/sounds/" + key.value() + ".ogg";
-    }
-
     /**
      * Determines if the sound has all its properties
      * with the default values
@@ -256,13 +244,11 @@ public class Sound implements Keyed, FileResource {
         // in order to make some optimizations,
         // we have to do this
         if (allDefault()) {
-            // everything is default, just write the name and data
-            writer.value(key.value());
-            writer.write(data);
+            // everything is default, just write the name
+            writer.value(key);
         } else {
             writer.startObject()
-                    .key("key").value(key);
-            writer.write(data);
+                    .key("name").value(key);
             if (volume != DEFAULT_VOLUME) {
                 writer.key("volume").value(volume);
             }
@@ -292,7 +278,6 @@ public class Sound implements Keyed, FileResource {
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("key", key),
-                ExaminableProperty.of("data", data),
                 ExaminableProperty.of("volume", volume),
                 ExaminableProperty.of("pitch", pitch),
                 ExaminableProperty.of("weight", weight),
@@ -319,7 +304,6 @@ public class Sound implements Keyed, FileResource {
                 && stream == sound.stream
                 && attenuationDistance == sound.attenuationDistance
                 && preload == sound.preload
-                && data == sound.data
                 && key.equals(sound.key)
                 && type == sound.type;
     }
@@ -327,7 +311,7 @@ public class Sound implements Keyed, FileResource {
     @Override
     public int hashCode() {
         return Objects.hash(
-                key, data, volume, pitch, weight, stream,
+                key, volume, pitch, weight, stream,
                 attenuationDistance, preload, type
         );
     }
@@ -348,7 +332,7 @@ public class Sound implements Keyed, FileResource {
             boolean stream, int attenuationDistance, boolean preload
     ) {
         return new Sound(
-                path, Writable.bytes(new byte[]{}), volume, pitch, weight, stream,
+                path, volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.FILE
         );
     }
@@ -369,7 +353,7 @@ public class Sound implements Keyed, FileResource {
             boolean stream, int attenuationDistance, boolean preload
     ) {
         return new Sound(
-                Key.key(name), Writable.bytes(new byte[]{}), volume, pitch, weight, stream,
+                Key.key(name), volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.EVENT
         );
     }
@@ -382,6 +366,29 @@ public class Sound implements Keyed, FileResource {
         return new Builder();
     }
 
+    public class File implements FileResource {
+        private final Writable data;
+
+        public File(Writable data) {
+            this.data = requireNonNull(data, "data");
+        }
+
+        @Override
+        public String path() {
+            return "assets/" + key.namespace() + "/sounds/" + key.value() + ".ogg";
+        }
+
+        @Override
+        public void serialize(ResourceWriter writer) {
+            writer.write(data);
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("data", data));
+        }
+    }
     /**
      * Mutable and fluent-style builder for {@link Sound}
      * instances, since it has a lot of parameters, we create
@@ -416,10 +423,6 @@ public class Sound implements Keyed, FileResource {
             return this;
         }
 
-        public Builder data(Writable data) {
-            this.data = data;
-            return this;
-        }
 
         public Builder volume(float volume) {
             this.volume = volume;
@@ -460,7 +463,7 @@ public class Sound implements Keyed, FileResource {
          */
         public Sound build() {
             return new Sound(
-                    key, data, volume, pitch, weight, stream,
+                    key, volume, pitch, weight, stream,
                     attenuationDistance, preload, type
             );
         }
