@@ -416,7 +416,7 @@ public class Sound implements Keyed, SerializableResource {
             return this;
         }
 
-        public Builder keyEvent(Key key) {
+        public Builder nameEvent(Key key) {
             this.key = key;
             this.type = Type.EVENT;
             return this;
