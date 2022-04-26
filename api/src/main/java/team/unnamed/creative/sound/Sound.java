@@ -399,7 +399,6 @@ public class Sound implements Keyed, SerializableResource {
     public static class Builder {
 
         private Key key;
-        private Writable data;
         private float volume = DEFAULT_VOLUME;
         private float pitch = DEFAULT_PITCH;
         private int weight = DEFAULT_WEIGHT;
