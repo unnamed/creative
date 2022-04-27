@@ -165,7 +165,7 @@ public class BitMapFontProvider implements FontProvider {
     public void serialize(ResourceWriter writer) {
         writer.startObject()
                 .key("type").value("bitmap")
-                .key("file").value(file);
+                .key("file").value(file.asString().endsWith(".png") ? file : file.asString() + ".png");
 
         if (height != BitMapFontProvider.DEFAULT_HEIGHT) {
             // only write if height is not equal to the default height
