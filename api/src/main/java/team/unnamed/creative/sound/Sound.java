@@ -24,12 +24,14 @@
 package team.unnamed.creative.sound;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.SerializableResource;
-import team.unnamed.creative.util.Keys;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Locale;
@@ -45,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Sound implements SerializableResource {
+public class Sound implements Keyed, SerializableResource {
 
     public static final float DEFAULT_VOLUME = 1.0F;
     public static final float DEFAULT_PITCH = 1.0F;
@@ -55,7 +57,7 @@ public class Sound implements SerializableResource {
     public static final boolean DEFAULT_PRELOAD = false;
     public static final Type DEFAULT_TYPE = Type.FILE;
 
-    private final String name;
+    private final Key key;
     private final float volume;
     private final float pitch;
     private final int weight;
@@ -65,7 +67,7 @@ public class Sound implements SerializableResource {
     private final Type type;
 
     private Sound(
-            String name,
+            Key key,
             float volume,
             float pitch,
             int weight,
@@ -74,7 +76,7 @@ public class Sound implements SerializableResource {
             boolean preload,
             Type type
     ) {
-        this.name = requireNonNull(name, "name");
+        this.key = requireNonNull(key, "key");
         this.volume = volume;
         this.pitch = pitch;
         this.weight = weight;
@@ -91,6 +93,11 @@ public class Sound implements SerializableResource {
         Validate.isTrue(weight > 0, "Zero or negative weight");
     }
 
+    @Override
+    public @NotNull Key key() {
+        return key;
+    }
+
     /**
      * Returns the path to this sound file, starting
      * from assets/&lt;namespace&gt;/sounds folder or
@@ -104,7 +111,7 @@ public class Sound implements SerializableResource {
      * @return The sound name
      */
     public String name() {
-        return name;
+        return key.value();
     }
 
     /**
@@ -238,10 +245,10 @@ public class Sound implements SerializableResource {
         // we have to do this
         if (allDefault()) {
             // everything is default, just write the name
-            writer.value(name);
+            writer.value(key);
         } else {
             writer.startObject()
-                    .key("name").value(name);
+                    .key("name").value(key);
             if (volume != DEFAULT_VOLUME) {
                 writer.key("volume").value(volume);
             }
@@ -270,7 +277,7 @@ public class Sound implements SerializableResource {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("name", name),
+                ExaminableProperty.of("key", key),
                 ExaminableProperty.of("volume", volume),
                 ExaminableProperty.of("pitch", pitch),
                 ExaminableProperty.of("weight", weight),
@@ -297,14 +304,14 @@ public class Sound implements SerializableResource {
                 && stream == sound.stream
                 && attenuationDistance == sound.attenuationDistance
                 && preload == sound.preload
-                && name.equals(sound.name)
+                && key.equals(sound.key)
                 && type == sound.type;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-                name, volume, pitch, weight, stream,
+                key, volume, pitch, weight, stream,
                 attenuationDistance, preload, type
         );
     }
@@ -325,7 +332,7 @@ public class Sound implements SerializableResource {
             boolean stream, int attenuationDistance, boolean preload
     ) {
         return new Sound(
-                Keys.toString(path), volume, pitch, weight, stream,
+                path, volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.FILE
         );
     }
@@ -346,7 +353,7 @@ public class Sound implements SerializableResource {
             boolean stream, int attenuationDistance, boolean preload
     ) {
         return new Sound(
-                name, volume, pitch, weight, stream,
+                Key.key(name), volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.EVENT
         );
     }
@@ -359,6 +366,29 @@ public class Sound implements SerializableResource {
         return new Builder();
     }
 
+    public class File implements FileResource {
+        private final Writable data;
+
+        public File(Writable data) {
+            this.data = requireNonNull(data, "data");
+        }
+
+        @Override
+        public String path() {
+            return "assets/" + key.namespace() + "/sounds/" + key.value() + ".ogg";
+        }
+
+        @Override
+        public void serialize(ResourceWriter writer) {
+            writer.write(data);
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("data", data));
+        }
+    }
     /**
      * Mutable and fluent-style builder for {@link Sound}
      * instances, since it has a lot of parameters, we create
@@ -368,7 +398,7 @@ public class Sound implements SerializableResource {
      */
     public static class Builder {
 
-        private String name;
+        private Key key;
         private float volume = DEFAULT_VOLUME;
         private float pitch = DEFAULT_PITCH;
         private int weight = DEFAULT_WEIGHT;
@@ -381,16 +411,17 @@ public class Sound implements SerializableResource {
         }
 
         public Builder nameSound(Key key) {
-            this.name = key.asString();
+            this.key = key;
             this.type = Type.FILE;
             return this;
         }
 
-        public Builder nameEvent(String name) {
-            this.name = name;
+        public Builder nameEvent(Key key) {
+            this.key = key;
             this.type = Type.EVENT;
             return this;
         }
+
 
         public Builder volume(float volume) {
             this.volume = volume;
@@ -431,7 +462,7 @@ public class Sound implements SerializableResource {
          */
         public Sound build() {
             return new Sound(
-                    name, volume, pitch, weight, stream,
+                    key, volume, pitch, weight, stream,
                     attenuationDistance, preload, type
             );
         }
