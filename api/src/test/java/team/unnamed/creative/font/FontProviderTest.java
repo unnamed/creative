@@ -49,7 +49,7 @@ public class FontProviderTest {
                 .build();
 
         ResourceAssertions.assertSerializedResult(
-                "{\"type\":\"bitmap\",\"file\":\"creative:test\",\"height\":16,\"ascent\":8,\"chars\":[\"µŋ\",\"tm\"]}",
+                "{\"type\":\"bitmap\",\"file\":\"creative:test.png\",\"height\":16,\"ascent\":8,\"chars\":[\"µŋ\",\"tm\"]}",
                 fontProvider
         );
     }
@@ -68,7 +68,7 @@ public class FontProviderTest {
                 .build();
 
         ResourceAssertions.assertSerializedResult(
-                "{\"type\":\"bitmap\",\"file\":\"test\",\"ascent\":8,\"chars\":[\"creative\",\"creative\"]}",
+                "{\"type\":\"bitmap\",\"file\":\"test.png\",\"ascent\":8,\"chars\":[\"creative\",\"creative\"]}",
                 fontProvider
         );
     }
