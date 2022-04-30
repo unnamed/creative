@@ -93,23 +93,27 @@ public class Sound implements Keyed, SerializableResource {
         Validate.isTrue(weight > 0, "Zero or negative weight");
     }
 
+    /**
+     * Returns the path to this sound file, starting
+     * from assets/&lt;namespace&gt;/sounds folder or
+     * another sound event key
+     *
+     * <p>Doesn't include the file extension (.ogg)</p>
+     *
+     * <p>May instead be the key of another sound
+     * event, according to value of {@code type}</p>
+     *
+     * @return The sound path or sound event key
+     */
     @Override
     public @NotNull Key key() {
         return key;
     }
 
     /**
-     * Returns the path to this sound file, starting
-     * from assets/&lt;namespace&gt;/sounds folder or
-     * another sound name
-     *
-     * <p>Doesn't include the file extension (.ogg)</p>
-     *
-     * <p>May instead be the name of another sound
-     * event, according to value of {@code type}</p>
-     *
-     * @return The sound name
+     * @deprecated Use {@link Sound#key()} instead
      */
+    @Deprecated
     public String name() {
         return key.value();
     }
@@ -349,12 +353,26 @@ public class Sound implements Keyed, SerializableResource {
      * @return A new sound
      */
     public static Sound event(
-            String name, float volume, float pitch, int weight,
+            Key name, float volume, float pitch, int weight,
             boolean stream, int attenuationDistance, boolean preload
     ) {
         return new Sound(
-                Key.key(name), volume, pitch, weight, stream,
+                name, volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.EVENT
+        );
+    }
+
+    /**
+     * @deprecated Use {@link Sound#event(Key, float, float, int, boolean, int, boolean)} instead
+     */
+    @Deprecated
+    public static Sound event(
+            String name, float volume, float pitch, int weight,
+            boolean stream, int attenuationDistance, boolean preload
+    ) {
+        return Sound.event(
+                Key.key(name), volume, pitch, weight, stream,
+                attenuationDistance, preload
         );
     }
 
@@ -422,6 +440,13 @@ public class Sound implements Keyed, SerializableResource {
             return this;
         }
 
+        /**
+         * @deprecated Use {@link Sound.Builder#nameEvent(Key)} instead
+         */
+        @Deprecated
+        public Builder nameEvent(String name) {
+            return nameEvent(Key.key(name));
+        }
 
         public Builder volume(float volume) {
             this.volume = volume;
