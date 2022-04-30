@@ -384,10 +384,11 @@ public class Sound implements Keyed, SerializableResource {
         return new Builder();
     }
 
-    public class File implements FileResource {
+    public final class File implements FileResource {
+
         private final Writable data;
 
-        public File(Writable data) {
+        private File(Writable data) {
             this.data = requireNonNull(data, "data");
         }
 
@@ -404,8 +405,10 @@ public class Sound implements Keyed, SerializableResource {
         @Override
         public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
             return Stream.of(
-                    ExaminableProperty.of("data", data));
+                    ExaminableProperty.of("data", data)
+            );
         }
+
     }
     /**
      * Mutable and fluent-style builder for {@link Sound}
