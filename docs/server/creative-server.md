@@ -1,4 +1,4 @@
-## creative-server
+## Creative Server
 
 Welcome to the `creative-server` documentation, creative-server is a fast,
 lightweight and specialized HTTP(s) server for Minecraft: Java Edition
