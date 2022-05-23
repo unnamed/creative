@@ -27,6 +27,8 @@ import java.util.UUID;
 
 final class UUIDUtil {
 
+    private static final int HEX_RADIX = 16;
+
     private UUIDUtil() {
     }
 
@@ -34,36 +36,28 @@ final class UUIDUtil {
         if (string.length() != 32) {
             throw new IllegalArgumentException("Undashed string must be 32 characters long");
         }
-        long msb = parseUnsignedLong(string.substring(0, 16), 16);
-        long lsb = parseUnsignedLong(string.substring(16), 16);
+        long msb = parseUnsignedHexLong(string.substring(0, 16));
+        long lsb = parseUnsignedHexLong(string.substring(16));
         return new UUID(msb, lsb);
     }
 
-    private static long parseUnsignedLong(String str, int radix) {
+    private static long parseUnsignedHexLong(String str) {
 
         // from Long.parseUnsignedLong in Java 9+
         int len = str.length();
-
-        if (str.length() < 1) {
-            throw new IllegalArgumentException("String with invalid length");
-        }
 
         if (str.charAt(0) == '-') {
             throw new IllegalArgumentException("Illegal leading minus sign on unsigned string " + str);
         }
 
-        if (len <= 12 || (radix == 10 && len <= 18)) {
-            return Long.parseLong(str, radix);
-        }
-
-        long first = Long.parseLong(str.substring(0, len - 1), radix);
-        int second = Character.digit(str.charAt(len - 1), radix);
+        long first = Long.parseLong(str.substring(0, len - 1), HEX_RADIX);
+        int second = Character.digit(str.charAt(len - 1), HEX_RADIX);
         if (second < 0) {
             throw new IllegalArgumentException("Bad digit at end of " + str);
         }
-        long result = first * radix + second;
+        long result = first * HEX_RADIX + second;
 
-        int guard = radix * (int) (first >>> 57);
+        int guard = HEX_RADIX * (int) (first >>> 57);
         if (guard >= 128 || (result >= 0 && guard >= 128 - Character.MAX_RADIX)) {
             throw new IllegalArgumentException("String value " + str
                     + " exceeds range of unsigned long");
