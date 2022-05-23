@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 /**
@@ -109,6 +112,20 @@ public interface Writable {
      */
     static Writable file(File file) {
         return inputStream(() -> new FileInputStream(file));
+    }
+
+    /**
+     * Creates a new {@link Writable} instance that represents
+     * the given {@link Path}, which will be copied to the given
+     * {@link OutputStream} when calling {@link Writable#write}
+     *
+     * @param path The file path
+     * @param options The options ({@link Files#newInputStream})
+     * @return The {@link Writable} representation for this path
+     * @since 1.0.0
+     */
+    static Writable path(Path path, OpenOption options) {
+        return inputStream(() -> Files.newInputStream(path, options));
     }
 
     /**
