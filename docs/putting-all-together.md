@@ -7,7 +7,7 @@ ResourcePack resourcePack = ResourcePack.build(tree -> {
     
     // Required to be a valid resource-pack!
     tree.write(Metadata.builder()
-        .add(PackMeta.of(8, "Description!"))
+        .add(PackMeta.of(9, "Description!"))
         // .add(LanguageMeta...) // to register custom languages!
         .build());
     
