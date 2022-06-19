@@ -23,7 +23,7 @@
  */
 package team.unnamed.creative.metadata;
 
-import team.unnamed.creative.file.SerializableResource;
+import net.kyori.examination.Examinable;
 
 /**
  * Represents a resource-pack resource metadata
@@ -33,7 +33,7 @@ import team.unnamed.creative.file.SerializableResource;
  *
  * @since 1.0.0
  */
-public interface MetadataPart extends SerializableResource {
+public interface MetadataPart extends Examinable {
 
     String name();
 

@@ -23,20 +23,17 @@
  */
 package team.unnamed.creative.model;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.base.Vector4Float;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -51,7 +48,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Element implements SerializableResource {
+public class Element implements Examinable {
 
     public static final boolean DEFAULT_SHADE = true;
 
@@ -152,53 +149,6 @@ public class Element implements SerializableResource {
      */
     public @Unmodifiable Map<CubeFace, ElementFace> faces() {
         return faces;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer
-                .startObject()
-                .key("from").value(from)
-                .key("to").value(to);
-
-        if (rotation != null) {
-            writer.key("rotation");
-            rotation.serialize(writer);
-        }
-
-        if (shade != DEFAULT_SHADE) {
-            // only write if not equal to default value
-            writer.key("shade").value(shade);
-        }
-
-        // faces
-        writer.key("faces").startObject();
-        for (Map.Entry<CubeFace, ElementFace> entry : faces.entrySet()) {
-            CubeFace type = entry.getKey();
-            ElementFace face = entry.getValue();
-
-            writer.key(type.name().toLowerCase(Locale.ROOT))
-                    .startObject();
-            if (face.uv() != null) {
-                Vector4Float uv = face.uv();
-                Vector4Float defaultUv = ElementFace.getDefaultUvForFace(type, from, to);
-                if (uv != null && !uv.equals(defaultUv)) {
-                    writer.key("uv").value(uv.multiply(ElementFace.MINECRAFT_UV_UNIT));
-                }
-            }
-            writer.key("texture").value(face.texture());
-            if (face.cullFace() != null) {
-                writer.key("cullface").value(face.cullFace().name().toLowerCase(Locale.ROOT));
-            }
-            if (face.rotation() != ElementFace.DEFAULT_ROTATION) {
-                writer.key("rotation").value(face.rotation());
-            }
-            if (face.tintIndex() != ElementFace.DEFAULT_TINT_INDEX) {
-                writer.key("tintindex").value(face.tintIndex());
-            }
-            writer.endObject();
-        }
-        writer.endObject().endObject();
     }
 
     @Override

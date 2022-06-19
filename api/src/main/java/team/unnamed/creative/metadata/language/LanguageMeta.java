@@ -29,7 +29,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.MetadataPart;
-import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.util.Keys;
 import team.unnamed.creative.util.Validate;
 
@@ -81,20 +80,6 @@ public class LanguageMeta implements MetadataPart {
      */
     public @Unmodifiable Map<Key, LanguageEntry> languages() {
         return languages;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-
-        writer.startObject();
-
-        for (Map.Entry<Key, LanguageEntry> entry : languages.entrySet()) {
-            LanguageEntry language = entry.getValue();
-            writer.key(entry.getKey().asString());
-            language.serialize(writer);
-        }
-
-        writer.endObject();
     }
 
     @Override

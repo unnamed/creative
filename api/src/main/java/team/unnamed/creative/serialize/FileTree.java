@@ -21,11 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.serialize;
 
 import team.unnamed.creative.base.Writable;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -50,15 +56,31 @@ public interface FileTree extends AutoCloseable {
 
     /**
      * Opens the file at the given path and starts
-     * to write it using the {@link ResourceWriter}
-     * class
+     * to write it using the {@link OutputStream}
+     * class, which is used for byte streams
+     *
+     * <p>Use {@link FileTree#openWriter(String)}
+     * for character streams (like just text)
+     * instead</p>
      *
      * @param path The file path
-     * @return A new {@link ResourceWriter} for the
-     * given file
+     * @return A new {@link OutputStream} for the given file
      * @since 1.0.0
      */
-    ResourceWriter open(String path);
+    OutputStream openStream(String path);
+
+    /**
+     * Opens the file at the given path and starts
+     * to write it using the {@link Writer} class,
+     * which is used for character streams
+     *
+     * @param path The file path
+     * @return A new {@link Writer} for the given file
+     * @since 1.0.0
+     */
+    default Writer openWriter(String path) {
+        return new OutputStreamWriter(openStream(path), StandardCharsets.UTF_8);
+    }
 
     /**
      * Opens and writes the given data to the
@@ -68,17 +90,13 @@ public interface FileTree extends AutoCloseable {
      * @param data The file data
      * @since 1.0.0
      */
-    void write(String path, Writable data);
-
-    /**
-     * Opens and writes the file at the specified
-     * path ({@link FileResource#path()}) and serializes
-     * the given resource there
-     *
-     * @param resource The written resource
-     * @since 1.0.0
-     */
-    void write(FileResource resource);
+    default void write(String path, Writable data) {
+        try (OutputStream stream = openStream(path)) {
+            data.write(stream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     /**
      * Closes this file tree, necessary for virtual

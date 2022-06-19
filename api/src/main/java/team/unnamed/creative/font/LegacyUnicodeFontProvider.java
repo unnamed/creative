@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -78,14 +77,6 @@ public class LegacyUnicodeFontProvider implements FontProvider {
      */
     public Key template() {
         return template;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("sizes").value(sizes)
-                .key("template").value(template)
-                .endObject();
     }
 
     @Override

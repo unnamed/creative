@@ -47,12 +47,11 @@
  */
 package team.unnamed.creative.model;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -65,7 +64,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ItemTransform implements SerializableResource {
+public class ItemTransform implements Examinable {
 
     public static final float MIN_TRANSLATION = -80F;
     public static final float MAX_TRANSLATION = 80F;
@@ -156,21 +155,6 @@ public class ItemTransform implements SerializableResource {
         HEAD,
         GROUND,
         FIXED
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        if (!rotation.equals(DEFAULT_ROTATION)) {
-            writer.key("rotation").value(rotation);
-        }
-        if (!translation.equals(DEFAULT_TRANSLATION)) {
-            writer.key("translation").value(translation);
-        }
-        if (!scale.equals(DEFAULT_SCALE)) {
-            writer.key("scale").value(scale);
-        }
-        writer.endObject();
     }
 
     @Override

@@ -51,9 +51,9 @@ public class ElementFace implements Examinable {
     public static final int DEFAULT_ROTATION = 0;
     public static final int DEFAULT_TINT_INDEX = -1;
 
-    @Nullable private final Vector4Float uv;
+    private final @Nullable Vector4Float uv;
     private final String texture;
-    @Nullable private final CubeFace cullFace;
+    private final @Nullable CubeFace cullFace;
     private final int rotation;
     private final int tintIndex;
 

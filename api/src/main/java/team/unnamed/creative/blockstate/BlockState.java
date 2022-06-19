@@ -25,11 +25,10 @@ package team.unnamed.creative.blockstate;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.FileResource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,7 +51,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class BlockState implements Keyed, FileResource {
+public class BlockState implements Keyed, Examinable {
 
     private final Key key;
     private final Map<String, MultiVariant> variants;
@@ -86,38 +85,6 @@ public class BlockState implements Keyed, FileResource {
 
     public List<Selector> multipart() {
         return multipart;
-    }
-
-    @Override
-    public String path() {
-        return "assets/" + key.namespace() + "/blockstates/" + key.value() + ".json";
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-
-        writer.startObject();
-
-        // write "variants" part if not empty
-        if (!variants.isEmpty()) {
-            writer.key("variants").startObject();
-            for (Map.Entry<String, MultiVariant> entry : variants.entrySet()) {
-                writer.key(entry.getKey())
-                        .value(entry.getValue());
-            }
-            writer.endObject();
-        }
-
-        // write "multipart" part if not empty
-        if (!multipart.isEmpty()) {
-            writer.key("multipart").startArray();
-            for (Selector selector : multipart) {
-                selector.serialize(writer);
-            }
-            writer.endArray();
-        }
-
-        writer.endObject();
     }
 
     @Override

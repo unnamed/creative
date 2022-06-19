@@ -21,22 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.serialize.minecraft;
 
-import java.io.Closeable;
+import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Key;
+import team.unnamed.creative.lang.Language;
+
 import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.util.Map;
 
-final class Streams {
+final class LanguageSerializer extends ElementSerializer<Language> {
 
-    private Streams() {
-    }
+    static final LanguageSerializer INSTANCE = new LanguageSerializer();
 
-    public static void closeUnchecked(Closeable closeable) {
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+    @Override
+    public void write(Language language, MinecraftFileTree tree) throws IOException {
+
+        Key key = language.key();
+
+        // assets/<namespace>/lang/<language>.json
+        try (JsonWriter writer = tree.openJsonWriter(
+                MinecraftFileTree.ASSETS_FOLDER,
+                key.namespace(),
+                MinecraftFileTree.LANGUAGES_FOLDER,
+                key.value() + MinecraftFileTree.OBJECT_EXTENSION
+        )) {
+            // {
+            //   "key.1": "value 1",
+            //   "key.2": "value 2"
+            // }
+            writer.beginObject();
+            for (Map.Entry<String, String> entry : language.translations().entrySet()) {
+                writer.name(entry.getKey())
+                        .value(entry.getValue());
+            }
+            writer.endObject();
         }
     }
 

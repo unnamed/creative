@@ -21,10 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.serialize;
 
-public interface FileTreeWriter {
+import net.kyori.adventure.key.Key;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.font.Font;
+import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.model.Model;
+import team.unnamed.creative.sound.SoundRegistry;
+import team.unnamed.creative.texture.Texture;
 
-    void write(FileTree tree);
+public interface ResourcePackWriter {
+
+    ResourcePackWriter meta(Metadata meta);
+
+    ResourcePackWriter texture(Texture texture);
+
+    ResourcePackWriter sounds(SoundRegistry registry);
+
+    ResourcePackWriter sound(Key key, Writable data);
+
+    ResourcePackWriter blockState(BlockState blockState);
+
+    ResourcePackWriter font(Font font);
+
+    ResourcePackWriter language(Language language);
+
+    ResourcePackWriter model(Model model);
 
 }

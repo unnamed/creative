@@ -23,8 +23,8 @@
  */
 package team.unnamed.creative.blockstate;
 
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents a {@link Selector} condition, may be used
@@ -34,57 +34,75 @@ import team.unnamed.creative.file.SerializableResource;
  * @see Selector
  * @since 1.0.0
  */
-public interface Condition extends SerializableResource {
+public interface Condition {
 
-    Condition NONE = (tree, topLevel) -> {};
+    Condition NONE = new Condition() {
 
-    void serialize(ResourceWriter writer, boolean topLevel);
+        @Override
+        public String toString() {
+            return "Condition.NONE";
+        }
 
-    @Override
-    default void serialize(ResourceWriter writer) {
-        serialize(writer, false);
-    }
+    };
 
     static Condition and(Condition... conditions) {
-        return (writer, topLevel) -> {
-            if (topLevel || conditions.length == 1) {
-                // single condition, just delegate serialization
-                for (Condition condition : conditions) {
-                    condition.serialize(writer);
-                }
-                return;
-            }
-
-            writer.key("AND").startArray();
-            for (Condition condition : conditions) {
-                writer.startObject();
-                condition.serialize(writer);
-                writer.endObject();
-            }
-            writer.endArray();
-        };
+        return new Condition.And(Arrays.asList(conditions));
     }
 
     static Condition or(Condition... conditions) {
-        return (writer, topLevel) -> {
-            if (conditions.length == 1) {
-                // single condition, just delegate serialization
-                conditions[0].serialize(writer);
-                return;
-            }
-
-            writer.key("OR").startArray();
-            for (Condition condition : conditions) {
-                writer.startObject();
-                condition.serialize(writer);
-                writer.endObject();
-            }
-            writer.endArray();
-        };
+        return new Condition.Or(Arrays.asList(conditions));
     }
 
     static Condition match(String key, Object value) {
-        return (writer, topLevel) -> writer.key(key).value(value);
+        return new Condition.Match(key, value);
+    }
+
+    class And implements Condition {
+
+        private final List<Condition> conditions;
+
+        public And(List<Condition> conditions) {
+            this.conditions = conditions;
+        }
+
+        public List<Condition> conditions() {
+            return conditions;
+        }
+
+    }
+
+    class Or implements Condition {
+
+        private final List<Condition> conditions;
+
+        public Or(List<Condition> conditions) {
+            this.conditions = conditions;
+        }
+
+        public List<Condition> conditions() {
+            return conditions;
+        }
+
+    }
+
+    class Match implements Condition {
+
+        private final String key;
+        private final Object value;
+
+        private Match(String key, Object value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        public Object value() {
+            return value;
+        }
+
     }
 
 }

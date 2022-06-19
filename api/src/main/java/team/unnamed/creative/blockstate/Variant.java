@@ -24,11 +24,10 @@
 package team.unnamed.creative.blockstate;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
@@ -42,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Variant implements SerializableResource {
+public class Variant implements Examinable {
 
     public static final int DEFAULT_X_ROTATION = 0;
     public static final int DEFAULT_Y_ROTATION = 0;
@@ -132,26 +131,6 @@ public class Variant implements SerializableResource {
      */
     public int weight() {
         return weight;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer
-                .startObject()
-                .key("model").value(model);
-        if (x != DEFAULT_X_ROTATION) {
-            writer.key("x").value(x);
-        }
-        if (y != DEFAULT_Y_ROTATION) {
-            writer.key("y").value(y);
-        }
-        if (uvLock != DEFAULT_UV_LOCK) {
-            writer.key("uvlock").value(uvLock);
-        }
-        if (weight != DEFAULT_WEIGHT) {
-            writer.key("weight").value(weight);
-        }
-        writer.endObject();
     }
 
     @Override

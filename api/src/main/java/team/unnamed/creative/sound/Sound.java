@@ -25,16 +25,12 @@ package team.unnamed.creative.sound;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.file.FileResource;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -47,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Sound implements Keyed, SerializableResource {
+public class Sound implements Keyed, Examinable {
 
     public static final float DEFAULT_VOLUME = 1.0F;
     public static final float DEFAULT_PITCH = 1.0F;
@@ -244,41 +240,6 @@ public class Sound implements Keyed, SerializableResource {
     }
 
     @Override
-    public void serialize(ResourceWriter writer) {
-        // in order to make some optimizations,
-        // we have to do this
-        if (allDefault()) {
-            // everything is default, just write the name
-            writer.value(key);
-        } else {
-            writer.startObject()
-                    .key("name").value(key);
-            if (volume != DEFAULT_VOLUME) {
-                writer.key("volume").value(volume);
-            }
-            if (pitch != DEFAULT_PITCH) {
-                writer.key("pitch").value(pitch);
-            }
-            if (weight != DEFAULT_WEIGHT) {
-                writer.key("weight").value(weight);
-            }
-            if (stream != DEFAULT_STREAM) {
-                writer.key("stream").value(stream);
-            }
-            if (attenuationDistance() != DEFAULT_ATTENUATION_DISTANCE) {
-                writer.key("attenuation_distance").value(attenuationDistance);
-            }
-            if (preload != DEFAULT_PRELOAD) {
-                writer.key("preload").value(preload);
-            }
-            if (type != Sound.DEFAULT_TYPE) {
-                writer.key("type").value(type.name().toLowerCase(Locale.ROOT));
-            }
-            writer.endObject();
-        }
-    }
-
-    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("key", key),
@@ -384,51 +345,6 @@ public class Sound implements Keyed, SerializableResource {
         return new Builder();
     }
 
-    public static final class File implements Keyed, FileResource {
-
-        private final Key key;
-        private final Writable data;
-
-        private File(
-                Key key,
-                Writable data
-        ) {
-            this.key = requireNonNull(key, "key");
-            this.data = requireNonNull(data, "data");
-        }
-
-        @Override
-        public @NotNull Key key() {
-            return key;
-        }
-
-        public Writable data() {
-            return data;
-        }
-
-        @Override
-        public String path() {
-            return "assets/" + key.namespace() + "/sounds/" + key.value() + ".ogg";
-        }
-
-        @Override
-        public void serialize(ResourceWriter writer) {
-            writer.write(data);
-        }
-
-        @Override
-        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-            return Stream.of(
-                    ExaminableProperty.of("key", key),
-                    ExaminableProperty.of("data", data)
-            );
-        }
-
-        public static File of(Key key, Writable data) {
-            return new File(key, data);
-        }
-
-    }
     /**
      * Mutable and fluent-style builder for {@link Sound}
      * instances, since it has a lot of parameters, we create
@@ -450,24 +366,14 @@ public class Sound implements Keyed, SerializableResource {
         private Builder() {
         }
 
-        public Builder nameSound(Key key) {
+        public Builder key(Key key) {
             this.key = key;
-            this.type = Type.FILE;
             return this;
         }
 
-        public Builder nameEvent(Key key) {
-            this.key = key;
-            this.type = Type.EVENT;
+        public Builder type(Type type) {
+            this.type = type;
             return this;
-        }
-
-        /**
-         * @deprecated Use {@link Sound.Builder#nameEvent(Key)} instead
-         */
-        @Deprecated
-        public Builder nameEvent(String name) {
-            return nameEvent(Key.key(name));
         }
 
         public Builder volume(float volume) {

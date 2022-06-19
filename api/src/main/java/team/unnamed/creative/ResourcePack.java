@@ -23,8 +23,8 @@
  */
 package team.unnamed.creative;
 
-import team.unnamed.creative.file.FileTree;
-import team.unnamed.creative.file.FileTreeWriter;
+import team.unnamed.creative.serialize.FileTree;
+import team.unnamed.creative.serialize.FileTreeWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.security.DigestOutputStream;

@@ -21,20 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.serialize;
 
-import team.unnamed.creative.metadata.Metadata;
+public interface FileTreeWriter {
 
-public interface FileResource extends SerializableResource {
-
-    String path();
-
-    default String metaPath() {
-        return path() + ".mcmeta";
-    }
-
-    default Metadata meta() {
-        return Metadata.EMPTY;
-    }
+    void write(FileTree tree);
 
 }

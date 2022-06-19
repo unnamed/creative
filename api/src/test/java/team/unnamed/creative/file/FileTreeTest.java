@@ -33,6 +33,7 @@ import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
+import team.unnamed.creative.serialize.FileTree;
 import team.unnamed.creative.texture.Texture;
 
 import java.io.ByteArrayOutputStream;

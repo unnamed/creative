@@ -21,10 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
-
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.metadata.Metadata;
+package team.unnamed.creative.serialize;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,11 +29,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 
-final class DirectoryFileTree
-        implements FileTree {
+final class DirectoryFileTree implements FileTree {
 
     private final File root;
-    private ResourceWriter writer;
+    private OutputStream stream;
 
     DirectoryFileTree(File root) {
         this.root = root;
@@ -48,49 +44,36 @@ final class DirectoryFileTree
     }
 
     @Override
-    public ResourceWriter open(String path) {
+    public OutputStream openStream(String path) {
 
-        if (writer != null) {
-            // close previous writer in case
-            // it has not been closed yet
-            Streams.closeUnchecked(writer);
+        // close previous stream if it has
+        // not been closed yet
+        close();
+
+        File file = getFile(path);
+
+        if (file.exists()) {
+            throw new IllegalStateException("File " + path + " already exists!");
+        } else {
+            createFile(file);
         }
 
-        writer = new ResourceWriter(openStream(path));
-        return writer;
-    }
-
-    @Override
-    public void write(String path, Writable data) {
-        try (OutputStream output = openStream(path)) {
-            data.write(output);
+        try {
+            return stream = new FileOutputStream(file);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        }
-    }
-
-    @Override
-    public void write(FileResource resource) {
-        try (ResourceWriter writer = open(resource.path())) {
-            resource.serialize(writer);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        Metadata meta = resource.meta();
-        if (!meta.parts().isEmpty()) {
-            try (ResourceWriter writer = open(resource.metaPath())) {
-                meta.serialize(writer);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
         }
     }
 
     @Override
     public void close() {
-        if (writer != null) {
-            Streams.closeUnchecked(writer);
+        if (stream != null) {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            stream = null;
         }
     }
 
@@ -105,25 +88,6 @@ final class DirectoryFileTree
                 parent.mkdirs();
             }
             file.createNewFile();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private OutputStream openStream(String path) {
-        File file = getFile(path);
-
-        if (file.exists()) {
-            throw new IllegalStateException(
-                    "File " + path + " already"
-                            + "exists!"
-            );
-        } else {
-            createFile(file);
-        }
-
-        try {
-            return new FileOutputStream(file);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

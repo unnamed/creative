@@ -27,7 +27,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -93,19 +92,6 @@ public class LanguageEntry implements Examinable {
      */
     public boolean bidirectional() {
         return bidirectional;
-    }
-
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("name").value(name)
-                .key("region").value(region);
-
-        if (bidirectional != DEFAULT_BIDIRECTIONAL) {
-            // only write if not default
-            writer.key("bidirectional").value(bidirectional);
-        }
-
-        writer.endObject();
     }
 
     @Override

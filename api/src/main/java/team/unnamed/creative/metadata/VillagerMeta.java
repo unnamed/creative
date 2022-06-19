@@ -26,9 +26,7 @@ package team.unnamed.creative.metadata;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -60,16 +58,6 @@ public class VillagerMeta implements MetadataPart {
      */
     public Hat hat() {
         return hat;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        if (hat != Hat.NONE) {
-            // only write if not default value
-            writer.key("hat").value(hat.name().toLowerCase(Locale.ROOT));
-        }
-        writer.endObject();
     }
 
     @Override

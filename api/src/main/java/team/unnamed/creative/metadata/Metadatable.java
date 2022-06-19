@@ -21,12 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.metadata;
 
-import net.kyori.examination.Examinable;
+public interface Metadatable {
 
-public interface SerializableResource extends Examinable {
-
-    void serialize(ResourceWriter writer);
+    Metadata meta();
 
 }

@@ -26,7 +26,6 @@ package team.unnamed.creative.metadata;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -76,18 +75,6 @@ public class TextureMeta implements MetadataPart {
      */
     public boolean clamp() {
         return clamp;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        if (blur != DEFAULT_BLUR) {
-            writer.key("blur").value(blur);
-        }
-        if (clamp != DEFAULT_CLAMP) {
-            writer.key("clamp").value(clamp);
-        }
-        writer.endObject();
     }
 
     @Override

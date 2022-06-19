@@ -23,15 +23,11 @@
  */
 package team.unnamed.creative.sound;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Namespaced;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.intellij.lang.annotations.Pattern;
-import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.util.Keys;
 
 import java.util.Map;
@@ -46,45 +42,24 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class SoundRegistry implements Namespaced, FileResource {
+public class SoundRegistry implements Namespaced, Examinable {
 
-    @Subst(Key.MINECRAFT_NAMESPACE)
     private final String namespace;
     private final Map<String, SoundEvent> sounds;
 
-    private SoundRegistry(
-            String namespace,
-            Map<String, SoundEvent> sounds
-    ) {
+    private SoundRegistry(String namespace, Map<String, SoundEvent> sounds) {
+        Keys.validateNamespace(namespace);
         this.namespace = requireNonNull(namespace, "namespace");
         this.sounds = requireNonNull(sounds, "sounds");
-        Keys.validateNamespace(namespace);
     }
 
     @Override
-    @Pattern("[a-z0-9_\\-.]+")
     public @NotNull String namespace() {
         return namespace;
     }
 
     public Map<String, SoundEvent> sounds() {
         return sounds;
-    }
-
-    @Override
-    public String path() {
-        return "assets/" + namespace + "/sounds.json";
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        for (Map.Entry<String, SoundEvent> entry : sounds.entrySet()) {
-            SoundEvent event = entry.getValue();
-            writer.key(entry.getKey());
-            event.serialize(writer);
-        }
-        writer.endObject();
     }
 
     @Override
@@ -118,13 +93,11 @@ public class SoundRegistry implements Namespaced, FileResource {
      * Creates a new registry from the given
      * sounds
      *
+     * @param namespace The sounds namespace
      * @param sounds The registered sounds
      * @return A new sound registry instance
      */
-    public static SoundRegistry of(
-            String namespace,
-            Map<String, SoundEvent> sounds
-    ) {
+    public static SoundRegistry of(String namespace, Map<String, SoundEvent> sounds) {
         return new SoundRegistry(namespace, sounds);
     }
 
