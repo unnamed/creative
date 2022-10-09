@@ -13,7 +13,7 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("team.unnamed:creative-api:0.3.0-SNAPSHOT")
+    implementation("team.unnamed:creative-api:0.4.1-SNAPSHOT")
 }
 ```
 
@@ -30,6 +30,6 @@ dependencies {
 <dependency>
     <groupId>team.unnamed</groupId>
     <artifactId>creative-api</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.1-SNAPSHOT</version>
 </dependency>
 ```
