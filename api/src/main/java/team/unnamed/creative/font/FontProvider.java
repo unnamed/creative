@@ -27,6 +27,7 @@ import net.kyori.adventure.key.Key;
 import team.unnamed.creative.file.SerializableResource;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a Minecraft Resource Pack Font provider,
@@ -90,6 +91,29 @@ public interface FontProvider extends SerializableResource {
      */
     static LegacyUnicodeFontProvider legacyUnicode(Key sizes, Key template) {
         return new LegacyUnicodeFontProvider(sizes, template);
+    }
+
+    /**
+     * Creates a new SpaceFontProvider builder
+     * This font provider consists of a map of codepoints (characters) and integers (how many pixels to shift by)
+     * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
+     * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
+     * @return the newly created builder
+     */
+    static SpaceFontProvider.Builder space() {
+        return new SpaceFontProvider.Builder();
+    }
+
+
+    /**
+     * Creates a new SpaceFontProvider instance from provided arguments
+     * This font provider consists of a map of codepoints (characters) and integers (how many pixels to shift by)
+     * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
+     * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
+     * @return the newly created builder
+     */
+    static SpaceFontProvider space(Map<Character,Integer> advances) {
+        return new SpaceFontProvider(advances);
     }
 
     /**
