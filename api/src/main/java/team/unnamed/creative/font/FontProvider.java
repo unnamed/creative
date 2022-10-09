@@ -31,16 +31,17 @@ import java.util.Map;
 
 /**
  * Represents a Minecraft Resource Pack Font provider,
- * can be bit-map, true type font, or (LEGACY) unicode
- * font
+ * a part of a {@link Font}
  *
  * @since 1.0.0
+ * @see Font
  */
 public interface FontProvider extends SerializableResource {
 
     /**
      * Returns the font name used in the resulting
-     * resource pack, e.g. "bitmap", "ttf", "legacy_unicode"
+     * resource pack, e.g. "bitmap", "ttf", "legacy_unicode",
+     * "space"
      *
      * @return The font provider name
      */
@@ -112,7 +113,7 @@ public interface FontProvider extends SerializableResource {
      * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
      * @return the newly created builder
      */
-    static SpaceFontProvider space(Map<Character,Integer> advances) {
+    static SpaceFontProvider space(Map<Character, Integer> advances) {
         return new SpaceFontProvider(advances);
     }
 

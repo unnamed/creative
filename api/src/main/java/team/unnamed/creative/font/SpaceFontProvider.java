@@ -1,3 +1,26 @@
+/*
+ * This file is part of creative, licensed under the MIT license
+ *
+ * Copyright (c) 2021-2022 Unnamed Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package team.unnamed.creative.font;
 
 import net.kyori.examination.ExaminableProperty;
@@ -22,10 +45,10 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  */
 public class SpaceFontProvider implements FontProvider {
 
-    private final Map<Character,Integer> advances;
+    private final Map<Character, Integer> advances;
 
     protected SpaceFontProvider(
-            Map<Character,Integer> advances
+            Map<Character, Integer> advances
     ) {
         requireNonNull(advances,"advances");
         this.advances = immutableMapOf(advances);
@@ -33,18 +56,19 @@ public class SpaceFontProvider implements FontProvider {
     }
 
     private void validate() {
-        for (Map.Entry<Character,Integer> entry : advances.entrySet()) {
+        for (Map.Entry<Character, Integer> entry : advances.entrySet()) {
             Character character = entry.getKey();
             Integer offset = entry.getValue();
             Validate.isNotNull(character, "An element from the character list is null");
-            Validate.isNotNull(offset,"Integer object is null");
+            Validate.isNotNull(offset, "Integer object is null");
         }
     }
 
-    public Map<Character,Integer> advances() {
+    public Map<Character, Integer> advances() {
         return advances;
     }
-    public SpaceFontProvider advances(Map<Character,Integer> advances) {
+
+    public SpaceFontProvider advances(Map<Character, Integer> advances) {
         return new SpaceFontProvider(advances);
     }
 
@@ -54,7 +78,8 @@ public class SpaceFontProvider implements FontProvider {
     }
 
     public SpaceFontProvider.Builder toBuilder() {
-        return FontProvider.space();
+        return FontProvider.space()
+                .advances(advances);
     }
 
     @Override
@@ -99,20 +124,18 @@ public class SpaceFontProvider implements FontProvider {
      */
     public static class Builder {
 
-        private Map<Character,Integer> advances;
+        private Map<Character, Integer> advances;
 
         protected Builder() {
         }
 
-        public Builder advances(Map<Character,Integer> entries) {
+        public Builder advances(Map<Character, Integer> entries) {
             requireNonNull(entries, "entries");
             advances = entries;
             return this;
         }
 
-        public Builder advance(Character key, Integer value) {
-            requireNonNull(key, "key");
-            requireNonNull(value, "value");
+        public Builder advance(char key, int value) {
             if (this.advances == null) {
                 this.advances = new HashMap<>();
             }
@@ -132,4 +155,5 @@ public class SpaceFontProvider implements FontProvider {
         }
 
     }
+
 }
