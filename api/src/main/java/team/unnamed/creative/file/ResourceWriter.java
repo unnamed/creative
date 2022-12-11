@@ -119,7 +119,7 @@ public class ResourceWriter
 
     public ResourceWriter(OutputStream out, Charset charset) {
         super(out);
-        this.writer = new OutputStreamWriter(out);
+        this.writer = new OutputStreamWriter(out, charset);
         // initialize stack
         push(DOCUMENT);
     }
