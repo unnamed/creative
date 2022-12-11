@@ -30,6 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.zip.ZipOutputStream;
 
 import static java.util.Objects.requireNonNull;
@@ -76,7 +78,7 @@ public final class ResourcePack {
         return hash;
     }
 
-    public static ResourcePack build(FileTreeWriter writer) {
+    public static ResourcePack build(Iterable<? extends FileTreeWriter> writers) {
 
         MessageDigest digest;
 
@@ -89,7 +91,9 @@ public final class ResourcePack {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try (FileTree tree = FileTree.zip(new ZipOutputStream(new DigestOutputStream(output, digest)))) {
-            writer.write(tree);
+            for (FileTreeWriter writer : writers) {
+                writer.write(tree);
+            }
         }
 
         byte[] hash = digest.digest();
@@ -103,6 +107,15 @@ public final class ResourcePack {
         }
 
         return new ResourcePack(output.toByteArray(), hexHash.toString());
+    }
+
+    public static ResourcePack build(FileTreeWriter... writers) {
+        return build(Arrays.asList(writers));
+    }
+
+    @Deprecated
+    public static ResourcePack build() {
+        return build(Collections.emptyList());
     }
 
     private static char hex(int c) {

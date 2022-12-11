@@ -23,8 +23,18 @@
  */
 package team.unnamed.creative.file;
 
+import team.unnamed.creative.util.Validate;
+
 public interface FileTreeWriter {
 
     void write(FileTree tree);
+
+    default FileTreeWriter andThen(FileTreeWriter after) {
+        Validate.isNotNull(after, "after");
+        return tree -> {
+            write(tree);
+            after.write(tree);
+        };
+    }
 
 }
