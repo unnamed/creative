@@ -95,11 +95,30 @@ public interface FileTree extends AutoCloseable {
      * the given {@link File} folder, all files will
      * be written inside it
      *
+     * <p>Will delete all the contents of the {@code root}
+     * folder if {@code clear} is set to true</p>
+     *
+     * @param root The root folder
+     * @param clear True to delete the folder contents
+     * @return The created file tree for the given folder
+     */
+    static FileTree directory(File root, boolean clear) {
+        return new DirectoryFileTree(root, clear);
+    }
+
+    /**
+     * Creates a new {@link FileTree} instance for
+     * the given {@link File} folder, all files will
+     * be written inside it
+     *
+     * <p>Will delete all the contents of the {@code root}
+     * folder</p>
+     *
      * @param root The root folder
      * @return The created file tree for the given folder
      */
     static FileTree directory(File root) {
-        return new DirectoryFileTree(root);
+        return directory(root, true);
     }
 
     /**

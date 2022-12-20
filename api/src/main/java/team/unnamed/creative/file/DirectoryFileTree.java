@@ -31,20 +31,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.HashSet;
+import java.util.Set;
 
 final class DirectoryFileTree
         implements FileTree {
 
+    private final Set<String> names = new HashSet<>();
+
     private final File root;
     private ResourceWriter writer;
 
-    DirectoryFileTree(File root) {
+    DirectoryFileTree(File root, boolean clear) {
         this.root = root;
+        if (clear) {
+            Streams.deleteContents(root);
+        }
     }
 
     @Override
     public boolean exists(String path) {
-        return getFile(path).exists();
+        return names.contains(path);
     }
 
     @Override
@@ -57,6 +64,7 @@ final class DirectoryFileTree
         }
 
         writer = new ResourceWriter(openStream(path));
+        names.add(path);
         return writer;
     }
 
@@ -64,6 +72,7 @@ final class DirectoryFileTree
     public void write(String path, Writable data) {
         try (OutputStream output = openStream(path)) {
             data.write(output);
+            names.add(path);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -98,31 +107,27 @@ final class DirectoryFileTree
         return new File(root, path);
     }
 
-    private void createFile(File file) {
-        try {
-            File parent = file.getParentFile();
-            if (!parent.exists()) {
-                parent.mkdirs();
-            }
-            file.createNewFile();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
     private OutputStream openStream(String path) {
         File file = getFile(path);
 
-        if (file.exists()) {
+        if (names.contains(path)) {
             throw new IllegalStateException(
                     "File " + path + " already"
                             + "exists!"
             );
+        }
+
+        if (file.exists()) {
+            file.delete();
         } else {
-            createFile(file);
+            File parent = file.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
         }
 
         try {
+            file.createNewFile();
             return new FileOutputStream(file);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
