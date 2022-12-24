@@ -97,10 +97,15 @@ final class DirectoryFileTree
     }
 
     @Override
-    public void close() {
+    public void finish() {
         if (writer != null) {
             Streams.closeUnchecked(writer);
         }
+    }
+
+    @Override
+    public void close() {
+        finish();
     }
 
     private File getFile(String path) {

@@ -104,9 +104,18 @@ final class ZipFileTree implements FileTree {
     }
 
     @Override
-    public void close() {
+    public void finish() {
         try {
             output.finish();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Override
+    public void close() {
+        try {
+            output.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

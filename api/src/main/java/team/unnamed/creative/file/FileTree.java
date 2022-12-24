@@ -81,6 +81,15 @@ public interface FileTree extends AutoCloseable {
     void write(FileResource resource);
 
     /**
+     * Finishes writing the file tree without
+     * closing the underlying resource, if any
+     *
+     * @since 1.0.0
+     */
+    default void finish() {
+    }
+
+    /**
      * Closes this file tree, necessary for virtual
      * file trees in a single file, like a ZIP file
      * tree
