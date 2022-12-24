@@ -61,11 +61,8 @@ public class FileTreeTest {
     @DisplayName("Test ZipFileTree implementation")
     public void test_zip_tree() {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (ZipOutputStream zipOutput = new ZipOutputStream(output)) {
-            FileTree tree = FileTree.zip(zipOutput);
+        try (FileTree tree = FileTree.zip(new ZipOutputStream(output))) {
             test_file_tree(tree);
-        } catch (IOException e) {
-            Assertions.fail(e);
         }
     }
 
