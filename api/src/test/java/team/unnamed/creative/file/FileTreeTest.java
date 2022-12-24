@@ -35,10 +35,16 @@ import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.texture.Texture;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -61,6 +67,40 @@ public class FileTreeTest {
             test_file_tree(tree);
         } catch (IOException e) {
             Assertions.fail(e);
+        }
+    }
+
+    @Test
+    @DisplayName("Test ZipFileTree implementation using a buffered OutputStream")
+    public void test_buffered_zip_tree() throws IOException {
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (FileTree tree = FileTree.zip(new ZipOutputStream(new BufferedOutputStream(output)))) {
+            try (ResourceWriter writer = tree.open("test.txt")) {
+                writer.startObject()
+                        .key("hello").value("there")
+                        .key("one").value(1)
+                        .endObject();
+            }
+        }
+
+        byte[] bytes = output.toByteArray();
+        Assertions.assertEquals(175, bytes.length);
+
+        try (ZipInputStream inputStream = new ZipInputStream(new ByteArrayInputStream(bytes))) {
+            ZipEntry entry = inputStream.getNextEntry();
+
+            Assertions.assertNotNull(entry, "No entries in the ZIP file");
+            Assertions.assertEquals("test.txt", entry.getName());
+
+            byte[] buf = new byte[256];
+            int len = inputStream.read(buf);
+            Assertions.assertEquals(
+                    "{\"hello\":\"there\",\"one\":1}",
+                    new String(buf, 0, len, StandardCharsets.UTF_8)
+            );
+
+            inputStream.closeEntry();
         }
     }
 
