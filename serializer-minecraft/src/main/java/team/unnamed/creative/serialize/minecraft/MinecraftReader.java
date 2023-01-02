@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.reader.minecraft;
+package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePackBuilder;

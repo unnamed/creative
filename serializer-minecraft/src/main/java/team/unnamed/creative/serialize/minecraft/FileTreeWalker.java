@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.reader.minecraft;
+package team.unnamed.creative.serialize.minecraft;
 
 import java.io.IOException;
 import java.io.InputStream;
