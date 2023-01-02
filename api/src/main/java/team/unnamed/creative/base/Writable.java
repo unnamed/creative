@@ -124,7 +124,7 @@ public interface Writable {
      * @return The {@link Writable} representation for this path
      * @since 1.0.0
      */
-    static Writable path(Path path, OpenOption options) {
+    static Writable path(Path path, OpenOption... options) {
         return inputStream(() -> Files.newInputStream(path, options));
     }
 
