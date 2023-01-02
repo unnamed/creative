@@ -81,9 +81,18 @@ public interface ResourcePackBuilder {
     ResourcePackBuilder customMetaPart(MetadataPart part);
     //#endregion
 
+    //#region Blockstate methods
+    // |-------------------------------------|
+    // |------- BLOCKSTATE OPERATIONS -------|
+    // |-------------------------------------|
     default ResourcePackBuilder blockState(BlockState state) {
         return file(state);
     }
+
+    @Nullable BlockState blockState(Key key);
+
+    Collection<BlockState> blockStates();
+    //#endregion
 
     //#region Font methods
     // |-----------------------------------|

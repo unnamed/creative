@@ -31,6 +31,7 @@ import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.FileTree;
 import team.unnamed.creative.file.KeyedMap;
+import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
@@ -47,6 +48,7 @@ import team.unnamed.creative.texture.Texture;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -70,6 +72,8 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
 
     private final Map<String, KeyedMap<? extends FileResource>> files = new HashMap<>();
     private @Nullable Map<String, SoundRegistry> soundRegistries;
+
+    private @Nullable Collection<FileResource> extraFiles;
 
 
     //#region Metadata methods
@@ -130,15 +134,20 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
     }
     //#endregion
 
-    @SuppressWarnings("unchecked")
-    private <T extends Keyed & FileResource> KeyedMap<T> getOrCreateFor(String key) {
-        return (KeyedMap<T>) files.computeIfAbsent(key, k -> new KeyedMap<>());
-    }
-
     @Override
     public ResourcePackBuilder blockState(BlockState state) {
         getOrCreateFor(BLOCK_STATES).put(state);
         return this;
+    }
+
+    @Override
+    public @Nullable BlockState blockState(Key key) {
+        return get(BLOCK_STATES, key);
+    }
+
+    @Override
+    public Collection<BlockState> blockStates() {
+        return getAll(BLOCK_STATES);
     }
 
     @Override
@@ -182,12 +191,30 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder file(FileResource resource) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        requireNonNull(resource, "resource");
+        if (extraFiles == null) {
+            extraFiles = new HashSet<>();
+        }
+        extraFiles.add(resource);
+        return this;
     }
 
     @Override
     public ResourcePackBuilder file(String path, Writable data) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        requireNonNull(path, "path");
+        requireNonNull(data, "data");
+        return file(new FileResource() {
+            @Override
+            public String path() {
+                return path;
+            }
+
+            @Override
+            public void serialize(ResourceWriter writer) {
+                writer.write(data);
+            }
+
+        });
     }
 
     @Override
@@ -222,6 +249,37 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
         // write sound registries
         if (soundRegistries != null) {
             tree.write(soundRegistries.values());
+        }
+
+        // write extra files
+        if (extraFiles != null) {
+            tree.write(extraFiles);
+        }
+    }
+
+    // helper methods
+    @SuppressWarnings("unchecked")
+    private <T extends Keyed & FileResource> KeyedMap<T> getOrCreateFor(String key) {
+        return (KeyedMap<T>) files.computeIfAbsent(key, k -> new KeyedMap<>());
+    }
+
+    private <T extends Keyed & FileResource> @Nullable T get(String key, Key objectKey) {
+        @SuppressWarnings("unchecked")
+        KeyedMap<T> map = (KeyedMap<T>) files.get(key);
+        if (map == null) {
+            return null;
+        } else {
+            return map.get(objectKey);
+        }
+    }
+
+    private <T extends Keyed & FileResource> Collection<T> getAll(String key) {
+        @SuppressWarnings("unchecked")
+        KeyedMap<T> map = (KeyedMap<T>) files.get(key);
+        if (map == null) {
+            return Collections.emptySet();
+        } else {
+            return map.values();
         }
     }
 
