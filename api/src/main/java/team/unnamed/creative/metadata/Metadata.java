@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
+import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 
 import java.util.Collection;
@@ -95,6 +96,18 @@ public class Metadata implements FileResource, Examinable {
         writer.endObject();
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Metadata.Builder toBuilder() {
+        Metadata.Builder builder = Metadata.builder();
+        for (Map.Entry<Class<?>, MetadataPart> entry : parts.entrySet()) {
+            builder.add(
+                    (Class) entry.getKey(),
+                    entry.getValue()
+            );
+        }
+        return builder;
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
@@ -157,6 +170,10 @@ public class Metadata implements FileResource, Examinable {
 
         public Builder add(VillagerMeta meta) {
             return add(VillagerMeta.class, meta);
+        }
+
+        public Builder add(FilterMeta meta) {
+            return add(FilterMeta.class, meta);
         }
 
         public Metadata build() {
