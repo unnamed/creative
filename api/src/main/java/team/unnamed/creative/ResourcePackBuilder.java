@@ -30,6 +30,7 @@ import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.FileTree;
 import team.unnamed.creative.font.Font;
+import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
@@ -37,7 +38,6 @@ import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
-import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -85,9 +85,22 @@ public interface ResourcePackBuilder {
         return file(state);
     }
 
+    //#region Font methods
+    // |-----------------------------------|
+    // |--------- FONT OPERATIONS ---------|
+    // |-----------------------------------|
     default ResourcePackBuilder font(Font font) {
         return file(font);
     }
+
+    default ResourcePackBuilder font(Key key, FontProvider... providers) {
+        return font(Font.of(key, providers));
+    }
+
+    default ResourcePackBuilder font(Key key, List<FontProvider> providers) {
+        return font(Font.of(key, providers));
+    }
+    //#endregion
 
     default ResourcePackBuilder language(Language language) {
         return file(language);
@@ -101,9 +114,18 @@ public interface ResourcePackBuilder {
         return file(soundRegistry);
     }
 
+    //#region Sound methods
+    // |------------------------------------|
+    // |--------- SOUND OPERATIONS ---------|
+    // |------------------------------------|
     default ResourcePackBuilder sound(Sound.File soundFile) {
         return file(soundFile);
     }
+
+    default ResourcePackBuilder sound(Key key, Writable data) {
+        return sound(Sound.File.of(key, data));
+    }
+    //#endregion
 
     //#region Texture methods
     // |------------------------------------|
@@ -120,6 +142,33 @@ public interface ResourcePackBuilder {
     default ResourcePackBuilder texture(Key key, Writable data, Metadata meta) {
         return texture(Texture.of(key, data, meta));
     }
+    //#endregion
+
+    //#region Miscellaneous methods
+    // |----------------------------------|
+    // |---------- MISC METHODS ----------|
+    // |----------------------------------|
+    default ResourcePackBuilder endPoem(String endPoem) {
+        return file("assets/minecraft/texts/end.txt", Writable.stringUtf8(endPoem));
+    }
+
+    default ResourcePackBuilder splashes(String splashes) {
+        return file("assets/minecraft/texts/splashes.txt", Writable.stringUtf8(splashes));
+    }
+
+    // TODO: credits.json
+
+    default ResourcePackBuilder postCredits(String postCredits) {
+        return file("assets/minecraft/texts/postcredits.txt", Writable.stringUtf8(postCredits));
+    }
+
+//    default ResourcePackBuilder shader(String path, Writable content) {
+//        return file("assets/minecraft/shaders/" + path, content);
+//    }
+//
+//    default ResourcePackBuilder shader(String path, String content) {
+//        return shader(path, Writable.stringUtf8(content));
+//    }
     //#endregion
 
     ResourcePackBuilder file(String path, Writable data);

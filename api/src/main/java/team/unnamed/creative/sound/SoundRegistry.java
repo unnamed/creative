@@ -34,6 +34,7 @@ import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.util.Keys;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -126,6 +127,41 @@ public class SoundRegistry implements Namespaced, FileResource {
             Map<String, SoundEvent> sounds
     ) {
         return new SoundRegistry(namespace, sounds);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private String namespace;
+        private Map<String, SoundEvent> sounds;
+
+        private Builder() {
+        }
+
+        public Builder namespace(String namespace) {
+            this.namespace = requireNonNull(namespace, "namespace");
+            return this;
+        }
+
+        public Builder sound(String key, SoundEvent event) {
+            requireNonNull(key, "key");
+            requireNonNull(event, "event");
+            if (sounds == null) {
+                sounds = new HashMap<>();
+            }
+            sounds.put(key, event);
+            return this;
+        }
+
+        public SoundRegistry build() {
+            requireNonNull(namespace, "namespace");
+            requireNonNull(sounds, "sounds");
+            return new SoundRegistry(namespace, sounds);
+        }
+
     }
 
 }
