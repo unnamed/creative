@@ -24,8 +24,10 @@
 package team.unnamed.creative;
 
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.file.FileTree;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
@@ -34,11 +36,14 @@ import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
+import team.unnamed.creative.metadata.language.LanguageEntry;
+import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ResourcePackBuilder {
@@ -47,12 +52,22 @@ public interface ResourcePackBuilder {
     // |-----------------------------------|
     // |------- METADATA OPERATIONS -------|
     // |-----------------------------------|
+
+    // Meta
     ResourcePackBuilder meta(PackMeta meta);
 
     default ResourcePackBuilder meta(int format, String description) {
         return meta(PackMeta.of(format, description));
     }
 
+    // Languages
+    ResourcePackBuilder languageEntry(Key key, LanguageEntry languageEntry);
+
+    @Nullable LanguageEntry languageEntry(Key key);
+
+    Collection<LanguageEntry> languageEntries();
+
+    // Filter
     ResourcePackBuilder filter(FilterMeta filter);
 
     default ResourcePackBuilder filter(FilterPattern... patterns) {
@@ -66,23 +81,37 @@ public interface ResourcePackBuilder {
     ResourcePackBuilder customMetaPart(MetadataPart part);
     //#endregion
 
-    ResourcePackBuilder blockState(BlockState state);
+    default ResourcePackBuilder blockState(BlockState state) {
+        return file(state);
+    }
 
-    ResourcePackBuilder font(Font font);
+    default ResourcePackBuilder font(Font font) {
+        return file(font);
+    }
 
-    ResourcePackBuilder language(Language language);
+    default ResourcePackBuilder language(Language language) {
+        return file(language);
+    }
 
-    ResourcePackBuilder model(Model model);
+    default ResourcePackBuilder model(Model model) {
+        return file(model);
+    }
 
-    ResourcePackBuilder sounds(SoundRegistry soundRegistry);
+    default ResourcePackBuilder sounds(SoundRegistry soundRegistry) {
+        return file(soundRegistry);
+    }
 
-    ResourcePackBuilder sound(Sound.File soundFile);
+    default ResourcePackBuilder sound(Sound.File soundFile) {
+        return file(soundFile);
+    }
 
     //#region Texture methods
     // |------------------------------------|
     // |-------- TEXTURE OPERATIONS --------|
     // |------------------------------------|
-    ResourcePackBuilder texture(Texture texture);
+    default ResourcePackBuilder texture(Texture texture) {
+        return file(texture);
+    }
 
     default ResourcePackBuilder texture(Key key, Writable data) {
         return texture(Texture.of(key, data));
@@ -92,6 +121,10 @@ public interface ResourcePackBuilder {
         return texture(Texture.of(key, data, meta));
     }
     //#endregion
+
+    ResourcePackBuilder file(String path, Writable data);
+
+    ResourcePackBuilder file(FileResource resource);
 
     void writeTo(FileTree tree);
 

@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Represents a file tree, which may be implemented by a
  * real file system with real files, or ZIP files
@@ -79,6 +81,13 @@ public interface FileTree extends AutoCloseable {
      * @since 1.0.0
      */
     void write(FileResource resource);
+
+    default void write(Iterable<? extends FileResource> resources) {
+        requireNonNull(resources, "resources");
+        for (FileResource resource : resources) {
+            write(resource);
+        }
+    }
 
     /**
      * Finishes writing the file tree without
