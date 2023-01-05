@@ -23,50 +23,80 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Key;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.blockstate.Condition;
 import team.unnamed.creative.blockstate.MultiVariant;
 import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 final class SerializerBlockState {
 
     static final SerializerBlockState INSTANCE = new SerializerBlockState();
 
-    public void write(BlockState state, FileTreeWriter tree) throws IOException {
-        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(state))) {
-            writer.beginObject();
+    public void write(JsonWriter writer, BlockState state) throws IOException {
+        writer.beginObject();
 
-            // write "variants" part if not empty
-            Map<String, MultiVariant> variants = state.variants();
-            if (!variants.isEmpty()) {
-                writer.name("variants").beginObject();
-                for (Map.Entry<String, MultiVariant> entry : variants.entrySet()) {
-                    writer.name(entry.getKey());
-                    writeMultiVariant(writer, entry.getValue());
-                }
-                writer.endObject();
+        // write "variants" part if not empty
+        Map<String, MultiVariant> variants = state.variants();
+        if (!variants.isEmpty()) {
+            writer.name("variants").beginObject();
+            for (Map.Entry<String, MultiVariant> entry : variants.entrySet()) {
+                writer.name(entry.getKey());
+                writeMultiVariant(writer, entry.getValue());
             }
-
-            // write "multipart" part if not empty
-            List<Selector> multipart = state.multipart();
-            if (!multipart.isEmpty()) {
-                writer.name("multipart").beginArray();
-                for (Selector selector : multipart) {
-                    writeSelector(writer, selector);
-                }
-                writer.endArray();
-            }
-
             writer.endObject();
         }
+
+        // write "multipart" part if not empty
+        List<Selector> multipart = state.multipart();
+        if (!multipart.isEmpty()) {
+            writer.name("multipart").beginArray();
+            for (Selector selector : multipart) {
+                writeSelector(writer, selector);
+            }
+            writer.endArray();
+        }
+
+        writer.endObject();
+    }
+
+    public BlockState readFromTree(JsonElement node, Key key) {
+
+        JsonObject objectNode = node.getAsJsonObject();
+
+        Map<String, MultiVariant> variants = new HashMap<>();
+        List<Selector> multipart = new ArrayList<>();
+
+        // read variants
+        if (objectNode.has("variants")) {
+            JsonObject variantsNode = objectNode.getAsJsonObject("variants");
+            for (Map.Entry<String, JsonElement> variantEntry : variantsNode.entrySet()) {
+                String variantKey = variantEntry.getKey();
+                variants.put(variantKey, readMultiVariant(variantEntry.getValue()));
+            }
+        }
+
+        // read multipart
+        if (objectNode.has("multipart")) {
+            for (JsonElement selectorNode : objectNode.getAsJsonArray("multipart")) {
+                multipart.add(readSelector(selectorNode));
+            }
+        }
+
+        return BlockState.of(key, variants, multipart);
     }
 
     private static void writeMultiVariant(JsonWriter writer, MultiVariant multiVariant) throws IOException {
@@ -81,6 +111,20 @@ final class SerializerBlockState {
                 writeVariant(writer, variant);
             }
             writer.endArray();
+        }
+    }
+
+    private static MultiVariant readMultiVariant(JsonElement node) {
+        if (node.isJsonObject()) {
+            // single variant
+            return MultiVariant.of(readVariant(node.getAsJsonObject()));
+        } else {
+            // multiple variants
+            List<Variant> variants = new ArrayList<>();
+            for (JsonElement variantNode : node.getAsJsonArray()) {
+                variants.add(readVariant(variantNode.getAsJsonObject()));
+            }
+            return MultiVariant.of(variants);
         }
     }
 
@@ -107,6 +151,16 @@ final class SerializerBlockState {
         writer.endObject();
     }
 
+    private static Variant readVariant(JsonObject node) {
+        return Variant.builder()
+                .model(Key.key(node.get("model").getAsString()))
+                .x(GsonUtil.getInt(node, "x", Variant.DEFAULT_X_ROTATION))
+                .y(GsonUtil.getInt(node, "y", Variant.DEFAULT_Y_ROTATION))
+                .uvLock(GsonUtil.getBoolean(node, "uvlock", Variant.DEFAULT_UV_LOCK))
+                .weight(GsonUtil.getInt(node, "weight", Variant.DEFAULT_WEIGHT))
+                .build();
+    }
+
     private static void writeSelector(JsonWriter writer, Selector selector) throws IOException {
         writer.beginObject();
 
@@ -120,6 +174,17 @@ final class SerializerBlockState {
         writer.name("apply");
         writeMultiVariant(writer, selector.variant());
         writer.endObject();
+    }
+
+    private static Selector readSelector(JsonElement node) {
+        JsonObject objectNode = node.getAsJsonObject();
+        Condition condition = Condition.NONE;
+        if (objectNode.has("when")) {
+            JsonObject conditionNode = objectNode.getAsJsonObject("when");
+            condition = readCondition(conditionNode);
+        }
+        MultiVariant multiVariant = readMultiVariant(objectNode.get("apply"));
+        return Selector.of(condition, multiVariant);
     }
 
     private static void writeCondition(JsonWriter writer, Condition condition) throws IOException {
@@ -162,6 +227,52 @@ final class SerializerBlockState {
                 writer.endObject();
             }
             writer.endArray();
+        }
+    }
+
+    private static Condition readCondition(JsonObject node) {
+        Set<Map.Entry<String, JsonElement>> entrySet = node.entrySet();
+        if (entrySet.isEmpty()) {
+            throw new IllegalStateException("No conditions");
+        } else if (entrySet.size() == 1) {
+            Map.Entry<String, JsonElement> entry = entrySet.iterator().next();
+            JsonElement contentNode = entry.getValue();
+
+            switch (entry.getKey()) {
+                case "AND": {
+                    List<Condition> conditions = new ArrayList<>();
+                    for (JsonElement element : contentNode.getAsJsonArray()) {
+                        // recursive
+                        conditions.add(readCondition(element.getAsJsonObject()));
+                    }
+                    return Condition.and(conditions);
+                }
+                case "OR": {
+                    List<Condition> conditions = new ArrayList<>();
+                    for (JsonElement element : contentNode.getAsJsonArray()) {
+                        // recursive
+                        conditions.add(readCondition(element.getAsJsonObject()));
+                    }
+                    return Condition.or(conditions);
+                }
+                default: {
+                    // match (key -> value)
+                    return Condition.match(
+                            entry.getKey(),
+                            contentNode.getAsString()
+                    );
+                }
+            }
+        } else {
+            // AND everything by match (key -> value)
+            List<Condition> conditions = new ArrayList<>();
+            for (Map.Entry<String, JsonElement> entry : entrySet) {
+                conditions.add(Condition.match(
+                        entry.getKey(),
+                        entry.getValue().getAsString()
+                ));
+            }
+            return Condition.and(conditions);
         }
     }
 

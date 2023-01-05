@@ -23,7 +23,11 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Key;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.font.BitMapFontProvider;
 import team.unnamed.creative.font.Font;
@@ -31,10 +35,12 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.font.LegacyUnicodeFontProvider;
 import team.unnamed.creative.font.SpaceFontProvider;
 import team.unnamed.creative.font.TrueTypeFontProvider;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,26 +48,54 @@ final class SerializerFont {
 
     static final SerializerFont INSTANCE = new SerializerFont();
 
-    public void write(Font font, FileTreeWriter tree) throws IOException {
-        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(font))) {
-            writer.beginObject()
-                    .name("providers")
-                    .beginArray();
-            for (FontProvider provider : font.providers()) {
-                if (provider instanceof BitMapFontProvider) {
-                    writeBitMap(writer, (BitMapFontProvider) provider);
-                } else if (provider instanceof LegacyUnicodeFontProvider) {
-                    writeLegacyUnicode(writer, (LegacyUnicodeFontProvider) provider);
-                } else if (provider instanceof SpaceFontProvider) {
-                    writeSpace(writer, (SpaceFontProvider) provider);
-                } else if (provider instanceof TrueTypeFontProvider) {
-                    writeTrueType(writer, (TrueTypeFontProvider) provider);
-                } else {
-                    throw new IllegalStateException("Unknown font provider type: " + provider);
-                }
+    public void write(JsonWriter writer, Font font) throws IOException {
+        writer.beginObject()
+                .name("providers")
+                .beginArray();
+        for (FontProvider provider : font.providers()) {
+            if (provider instanceof BitMapFontProvider) {
+                writeBitMap(writer, (BitMapFontProvider) provider);
+            } else if (provider instanceof LegacyUnicodeFontProvider) {
+                writeLegacyUnicode(writer, (LegacyUnicodeFontProvider) provider);
+            } else if (provider instanceof SpaceFontProvider) {
+                writeSpace(writer, (SpaceFontProvider) provider);
+            } else if (provider instanceof TrueTypeFontProvider) {
+                writeTrueType(writer, (TrueTypeFontProvider) provider);
+            } else {
+                throw new IllegalStateException("Unknown font provider type: " + provider);
             }
-            writer.endArray().endObject();
         }
+        writer.endArray().endObject();
+    }
+
+    public Font readFont(JsonElement node, Key key) {
+        JsonObject objectNode = node.getAsJsonObject();
+        List<FontProvider> providers = new ArrayList<>();
+        for (JsonElement providerNode : objectNode.getAsJsonArray()) {
+            JsonObject providerObjectNode = providerNode.getAsJsonObject();
+            String type = providerObjectNode.get("type").getAsString();
+            switch (type) {
+                case "bitmap": {
+                    providers.add(readBitMap(providerObjectNode));
+                    break;
+                }
+                case "legacy_unicode": {
+                    providers.add(readLegacyUnicode(providerObjectNode));
+                    break;
+                }
+                case "space": {
+                    providers.add(readSpace(providerObjectNode));
+                    break;
+                }
+                case "ttf": {
+                    providers.add(readTrueType(providerObjectNode));
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unknown font provider type: " + type);
+            }
+        }
+        return Font.of(key, providers);
     }
 
     private static void writeBitMap(JsonWriter writer, BitMapFontProvider provider) throws IOException {
@@ -91,12 +125,34 @@ final class SerializerFont {
                 .endObject();
     }
 
+    private static BitMapFontProvider readBitMap(JsonObject node) {
+        List<String> characters = new ArrayList<>();
+        for (JsonElement line : node.getAsJsonArray("chars")) {
+            characters.add(line.getAsString());
+        }
+
+        return FontProvider.bitMap()
+                .file(Key.key(node.get("file").getAsString())) // TODO: process
+                .height(GsonUtil.getInt(node, "height", BitMapFontProvider.DEFAULT_HEIGHT))
+                .ascent(node.get("ascent").getAsInt())
+                .characters(characters)
+                .build();
+    }
+
     private static void writeLegacyUnicode(JsonWriter writer, LegacyUnicodeFontProvider provider) throws IOException {
         writer.beginObject()
                 .name("type").value("legacy_unicode")
                 .name("sizes").value(Keys.toString(provider.sizes()))
                 .name("template").value(Keys.toString(provider.template()))
                 .endObject();
+    }
+
+    private static LegacyUnicodeFontProvider readLegacyUnicode(JsonObject node) {
+        // TODO: Should not be keys, they are formatted using String#format(...)
+        return FontProvider.legacyUnicode(
+                Key.key(node.get("sizes").getAsString()),
+                Key.key(node.get("template").getAsString())
+        );
     }
 
     private static void writeSpace(JsonWriter writer, SpaceFontProvider provider) throws IOException {
@@ -107,6 +163,17 @@ final class SerializerFont {
             writer.name(Character.toString(entry.getKey())).value(entry.getValue());
         }
         writer.endObject().endObject();
+    }
+
+    private static SpaceFontProvider readSpace(JsonObject node) {
+        JsonObject advancesNode = node.getAsJsonObject("advances");
+        Map<Character, Integer> advances = new HashMap<>();
+        for (Map.Entry<String, JsonElement> advanceEntryNode : advancesNode.entrySet()) {
+            char character = advanceEntryNode.getKey().charAt(0);
+            int advance = advanceEntryNode.getValue().getAsInt();
+            advances.put(character, advance);
+        }
+        return FontProvider.space(advances);
     }
 
     private static void writeTrueType(JsonWriter writer, TrueTypeFontProvider provider) throws IOException {
@@ -150,6 +217,39 @@ final class SerializerFont {
         }
 
         writer.endObject();
+    }
+
+    private static TrueTypeFontProvider readTrueType(JsonObject node) {
+        Vector2Float shift = Vector2Float.ZERO;
+        if (node.has("shift")) {
+            JsonArray shiftNode = node.getAsJsonArray("shift");
+            shift = new Vector2Float(
+                    (float) shiftNode.get(0).getAsDouble(),
+                    (float) shiftNode.get(1).getAsDouble()
+            );
+        }
+
+        List<String> skip = new ArrayList<>();
+        if (node.has("skip")) {
+            JsonElement skipNode = node.get("skip");
+            if (skipNode.isJsonArray()) {
+                // multiple skip
+                for (JsonElement skipped : skipNode.getAsJsonArray()) {
+                    skip.add(skipped.getAsString());
+                }
+            } else {
+                // single
+                skip.add(skipNode.getAsString());
+            }
+        }
+
+        return FontProvider.trueType()
+                .file(Key.key(node.get("file").getAsString()))
+                .shift(shift)
+                .skip(skip)
+                .size(GsonUtil.getFloat(node, "size", TrueTypeFontProvider.DEFAULT_SIZE))
+                .oversample(GsonUtil.getFloat(node, "oversample", TrueTypeFontProvider.DEFAULT_OVERSAMPLE))
+                .build();
     }
 
 }

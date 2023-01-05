@@ -27,6 +27,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -54,8 +55,16 @@ public interface Condition extends Examinable {
         return new Condition.And(Arrays.asList(conditions));
     }
 
+    static Condition and(List<Condition> conditions) {
+        return new Condition.And(new ArrayList<>(conditions));
+    }
+
     static Condition or(Condition... conditions) {
         return new Condition.Or(Arrays.asList(conditions));
+    }
+
+    static Condition or(List<Condition> conditions) {
+        return new Condition.Or(new ArrayList<>(conditions));
     }
 
     static Condition match(String key, Object value) {
