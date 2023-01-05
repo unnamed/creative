@@ -24,7 +24,6 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
-import net.kyori.adventure.key.Key;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.font.BitMapFontProvider;
 import team.unnamed.creative.font.Font;
@@ -32,27 +31,19 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.font.LegacyUnicodeFontProvider;
 import team.unnamed.creative.font.SpaceFontProvider;
 import team.unnamed.creative.font.TrueTypeFontProvider;
+import team.unnamed.creative.serialize.minecraft.io.FileTree;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-final class FontSerializer extends ElementSerializer<Font> {
+final class SerializerFont {
 
-    static final FontSerializer INSTANCE = new FontSerializer();
+    static final SerializerFont INSTANCE = new SerializerFont();
 
-    @Override
-    public void write(Font font, MinecraftFileTree tree) throws IOException {
-        Key key = font.key();
-
-        // assets/<namespace>/font/<font>.json
-        try (JsonWriter writer = tree.openJsonWriter(
-                MinecraftFileTree.ASSETS_FOLDER,
-                key.namespace(),
-                MinecraftFileTree.FONTS_FOLDER,
-                key.value() + MinecraftFileTree.OBJECT_EXTENSION
-        )) {
+    public void write(Font font, FileTree tree) throws IOException {
+        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(font))) {
             writer.beginObject()
                     .name("providers")
                     .beginArray();

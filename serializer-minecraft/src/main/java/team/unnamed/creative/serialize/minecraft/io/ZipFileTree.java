@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.io;
 
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.metadata.Metadata;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,22 +39,13 @@ final class ZipFileTree implements FileTree {
 
     private final Set<String> names = new HashSet<>();
     private final ZipOutputStream output;
-    private final ResourceWriter resourceWriter;
     private final Function<String, ZipEntry> entryFactory;
+
+    private ZipEntryOutputStream current;
 
     ZipFileTree(ZipOutputStream output, Function<String, ZipEntry> entryFactory) {
         this.output = output;
         this.entryFactory = entryFactory;
-        this.resourceWriter = new ResourceWriter(output) {
-            @Override
-            public void close() {
-                try {
-                    output.closeEntry();
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }
-        };
     }
 
     @Override
@@ -62,14 +54,24 @@ final class ZipFileTree implements FileTree {
     }
 
     @Override
-    public ResourceWriter open(String path) {
+    public OutputStream openStream(String path) {
+
+        if (!names.add(path)) {
+            throw new IllegalStateException("File " + path + " already exists!");
+        }
+
         try {
+            if (current != null) {
+                // did you forgor to close it?
+                current.close();
+            }
+
             output.putNextEntry(entryFactory.apply(path));
-            names.add(path);
-            return resourceWriter;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+
+        return current = new ZipEntryOutputStream();
     }
 
     @Override
@@ -78,26 +80,6 @@ final class ZipFileTree implements FileTree {
             output.putNextEntry(entryFactory.apply(path));
             data.write(output);
             names.add(path);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    @Override
-    public void write(FileResource resource) {
-        try {
-            String path = resource.path();
-            output.putNextEntry(entryFactory.apply(path));
-            names.add(path);
-            resource.serialize(resourceWriter);
-
-            Metadata meta = resource.meta();
-            if (!meta.parts().isEmpty()) {
-                path = resource.metaPath();
-                output.putNextEntry(entryFactory.apply(path));
-                names.add(path);
-                meta.serialize(resourceWriter);
-            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -119,6 +101,57 @@ final class ZipFileTree implements FileTree {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private class ZipEntryOutputStream extends OutputStream {
+
+        private boolean closed;
+
+        @Override
+        public void write(byte @NotNull [] b) throws IOException {
+            ensureValid();
+            output.write(b);
+        }
+
+        @Override
+        public void write(byte @NotNull [] b, int off, int len) throws IOException {
+            ensureValid();
+            output.write(b, off, len);
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            ensureValid();
+            output.write(b);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            ensureValid();
+            output.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (!closed) {
+                output.closeEntry();
+                current = null;
+                closed = true;
+            }
+        }
+
+        private void ensureValid() throws IOException {
+            if (closed) {
+                if (current != this) {
+                    // !!! A new entry output stream was opened,
+                    // we are not anymore the current entry os
+                    throw new IOException("A new output stream has been " +
+                            "opened, this one is no longer usable");
+                }
+                throw new IOException("Stream closed");
+            }
+        }
+
     }
 
 }

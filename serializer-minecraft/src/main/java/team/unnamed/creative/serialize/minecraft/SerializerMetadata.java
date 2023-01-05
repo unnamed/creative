@@ -51,9 +51,9 @@ import java.util.regex.Pattern;
 
 import static com.google.gson.stream.JsonToken.END_OBJECT;
 
-final class MetadataSerializer extends TypeAdapter<Metadata> {
+final class SerializerMetadata extends TypeAdapter<Metadata> {
 
-    static final MetadataSerializer INSTANCE = new MetadataSerializer();
+    static final SerializerMetadata INSTANCE = new SerializerMetadata();
 
     static final String ANIMATION_FIELD = "animation";
     static final String FILTER_FIELD = "filter";

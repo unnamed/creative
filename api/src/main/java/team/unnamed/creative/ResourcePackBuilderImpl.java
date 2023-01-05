@@ -28,10 +28,8 @@ import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.serialize.FileResource;
 import team.unnamed.creative.serialize.FileTree;
-import team.unnamed.creative.serialize.KeyedMap;
-import team.unnamed.creative.serialize.ResourceWriter;
+import team.unnamed.creative.base.KeyedMap;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
@@ -48,7 +46,6 @@ import team.unnamed.creative.texture.Texture;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -73,7 +70,7 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
     private final Map<String, KeyedMap<? extends FileResource>> files = new HashMap<>();
     private @Nullable Map<String, SoundRegistry> soundRegistries;
 
-    private @Nullable Collection<FileResource> extraFiles;
+    private @Nullable Map<String, Writable> extraFiles;
 
 
     //#region Metadata methods
@@ -190,31 +187,14 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
     }
 
     @Override
-    public ResourcePackBuilder file(FileResource resource) {
-        requireNonNull(resource, "resource");
-        if (extraFiles == null) {
-            extraFiles = new HashSet<>();
-        }
-        extraFiles.add(resource);
-        return this;
-    }
-
-    @Override
     public ResourcePackBuilder file(String path, Writable data) {
         requireNonNull(path, "path");
         requireNonNull(data, "data");
-        return file(new FileResource() {
-            @Override
-            public String path() {
-                return path;
-            }
-
-            @Override
-            public void serialize(ResourceWriter writer) {
-                writer.write(data);
-            }
-
-        });
+        if (extraFiles == null) {
+            extraFiles = new HashMap<>();
+        }
+        extraFiles.put(path, data);
+        return this;
     }
 
     @Override
@@ -242,7 +222,7 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
             tree.write(metaBuilder.build());
         }
 
-        for (KeyedMap<? extends FileResource> map : files.values()) {
+        for (KeyedMap<?> map : files.values()) {
             tree.write(map.values());
         }
 

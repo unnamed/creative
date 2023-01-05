@@ -23,10 +23,15 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import java.io.IOException;
+import team.unnamed.creative.serialize.ResourcePackSerializer;
 
-public abstract class ElementSerializer<T> {
+public final class MinecraftResourcePackSerializer implements ResourcePackSerializer {
 
-    public abstract void write(T element, MinecraftFileTree tree) throws IOException;
+    private MinecraftResourcePackSerializer() {
+    }
+
+    public static ResourcePackSerializer minecraft() {
+        return new MinecraftResourcePackSerializer();
+    }
 
 }

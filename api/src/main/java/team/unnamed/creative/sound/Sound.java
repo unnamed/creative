@@ -402,6 +402,11 @@ public class Sound implements Keyed, Examinable {
         private Builder() {
         }
 
+        public Builder key(Key key) {
+            this.key = key;
+            return this;
+        }
+
         public Builder nameSound(Key key) {
             this.key = key;
             this.type = Type.FILE;
@@ -449,6 +454,11 @@ public class Sound implements Keyed, Examinable {
 
         public Builder preload(boolean preload) {
             this.preload = preload;
+            return this;
+        }
+
+        public Builder type(Type type) {
+            this.type = type;
             return this;
         }
 

@@ -26,6 +26,7 @@ package team.unnamed.creative.serialize.minecraft;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWalker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,21 +35,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public final class MinecraftReader {
+final class MinecraftResourcePackReader {
 
-    private static final String PACK_META = "pack.mcmeta";
-    private static final String PACK_ICON = "pack.png";
-
-    private static final String ASSETS_FOLDER = "assets";
-
-    private static final String MODELS_CATEGORY = "models";
-    private static final String FONTS_CATEGORY = "font";
-    private static final String TEXTURES_CATEGORY = "textures";
-    private static final String LANGUAGES_CATEGORY = "lang";
-    private static final String BLOCK_STATES_CATEGORY = "blockstates";
-    private static final String SOUNDS_CATEGORY = "sounds";
-
-    private MinecraftReader() {
+    private MinecraftResourcePackReader() {
     }
 
     public void read(FileTreeWalker tree, ResourcePackBuilder builder) throws IOException {
@@ -66,11 +55,11 @@ public final class MinecraftReader {
 
             if (tokens.size() == 1) {
                 switch (tokens.poll()) {
-                    case PACK_META: {
+                    case MinecraftResourcePackStructure.PACK_METADATA_FILE: {
                         System.out.println("Found pack metadata");
                         break;
                     }
-                    case PACK_ICON: {
+                    case MinecraftResourcePackStructure.PACK_ICON_FILE: {
                         System.out.println("Found pack icon");
                         break;
                     }
@@ -87,7 +76,7 @@ public final class MinecraftReader {
 
             // has folders
             String folder = tokens.poll();
-            if (folder.equals(ASSETS_FOLDER)) {
+            if (folder.equals(MinecraftResourcePackStructure.ASSETS_FOLDER)) {
                 if (tokens.isEmpty()) {
                     // assets was a file?
                     System.err.println("Is 'assets' a file?");
@@ -114,29 +103,29 @@ public final class MinecraftReader {
                 }
 
                 switch (category) {
-                    case MODELS_CATEGORY: {
+                    case MinecraftResourcePackStructure.MODELS_FOLDER: {
                         String keyValue = String.join("/", tokens);
                         Key key = Key.key(namespace, keyValue);
                         System.out.println("Found a model with key: " + key);
                         break;
                     }
-                    case TEXTURES_CATEGORY: {
+                    case MinecraftResourcePackStructure.TEXTURES_FOLDER: {
                         // TODO: Read texture metadata
                         String keyValue = String.join("/", tokens);
                         Key key = Key.key(namespace, keyValue);
                         System.out.println("Found a texture with key: " + key);
                         break;
                     }
-                    case SOUNDS_CATEGORY: {
+                    case MinecraftResourcePackStructure.SOUNDS_FOLDER: {
                         break;
                     }
-                    case FONTS_CATEGORY: {
+                    case MinecraftResourcePackStructure.FONTS_FOLDER: {
                         break;
                     }
-                    case LANGUAGES_CATEGORY: {
+                    case MinecraftResourcePackStructure.LANGUAGES_FOLDER: {
                         break;
                     }
-                    case BLOCK_STATES_CATEGORY: {
+                    case MinecraftResourcePackStructure.BLOCKSTATES_FOLDER: {
                         break;
                     }
                     default: {
@@ -149,10 +138,6 @@ public final class MinecraftReader {
                 builder.file(path, Writable.bytes(toBytes(inputStream)));
             }
         }
-    }
-
-    public static MinecraftReader minecraft() {
-        return new MinecraftReader();
     }
 
     private static byte[] toBytes(InputStream input) throws IOException {

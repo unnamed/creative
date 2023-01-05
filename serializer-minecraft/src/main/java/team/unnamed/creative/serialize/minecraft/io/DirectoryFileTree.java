@@ -21,10 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.io;
 
 import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.metadata.Metadata;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,7 +39,7 @@ final class DirectoryFileTree
     private final Set<String> names = new HashSet<>();
 
     private final File root;
-    private ResourceWriter writer;
+    private OutputStream stream;
 
     DirectoryFileTree(File root, boolean clear) {
         this.root = root;
@@ -55,64 +54,14 @@ final class DirectoryFileTree
     }
 
     @Override
-    public ResourceWriter open(String path) {
+    public OutputStream openStream(String path) {
 
-        if (writer != null) {
+        if (stream != null) {
             // close previous writer in case
             // it has not been closed yet
-            Streams.closeUnchecked(writer);
+            Streams.closeUnchecked(stream);
         }
 
-        writer = new ResourceWriter(openStream(path));
-        names.add(path);
-        return writer;
-    }
-
-    @Override
-    public void write(String path, Writable data) {
-        try (OutputStream output = openStream(path)) {
-            data.write(output);
-            names.add(path);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    @Override
-    public void write(FileResource resource) {
-        try (ResourceWriter writer = open(resource.path())) {
-            resource.serialize(writer);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-
-        Metadata meta = resource.meta();
-        if (!meta.parts().isEmpty()) {
-            try (ResourceWriter writer = open(resource.metaPath())) {
-                meta.serialize(writer);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-    }
-
-    @Override
-    public void finish() {
-        if (writer != null) {
-            Streams.closeUnchecked(writer);
-        }
-    }
-
-    @Override
-    public void close() {
-        finish();
-    }
-
-    private File getFile(String path) {
-        return new File(root, path);
-    }
-
-    private OutputStream openStream(String path) {
         File file = getFile(path);
 
         if (names.contains(path)) {
@@ -133,10 +82,39 @@ final class DirectoryFileTree
 
         try {
             file.createNewFile();
-            return new FileOutputStream(file);
+            stream = new FileOutputStream(file);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+
+        names.add(path);
+        return stream;
+    }
+
+    @Override
+    public void write(String path, Writable data) {
+        try (OutputStream output = openStream(path)) {
+            data.write(output);
+            names.add(path);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Override
+    public void finish() {
+        if (stream != null) {
+            Streams.closeUnchecked(stream);
+        }
+    }
+
+    @Override
+    public void close() {
+        finish();
+    }
+
+    private File getFile(String path) {
+        return new File(root, path);
     }
 
 }

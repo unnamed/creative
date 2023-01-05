@@ -21,37 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.Nullable;
+import com.google.gson.stream.JsonWriter;
+import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.serialize.minecraft.io.FileTree;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
+final class SerializerLanguage {
 
-public final class KeyedMap<T extends Keyed> {
+    static final SerializerLanguage INSTANCE = new SerializerLanguage();
 
-    private final Map<Key, T> map = new HashMap<>();
-
-    public @Nullable T get(Key key) {
-        requireNonNull(key, "key");
-        return map.get(key);
-    }
-
-    public T put(T value) {
-        return map.put(value.key(), value);
-    }
-
-    public T putIfAbsent(T value) {
-        return map.putIfAbsent(value.key(), value);
-    }
-
-    public Collection<T> values() {
-        return map.values();
+    public void write(Language language, FileTree tree) throws IOException {
+        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(language))) {
+            // {
+            //   "key.1": "value 1",
+            //   "key.2": "value 2"
+            // }
+            writer.beginObject();
+            for (Map.Entry<String, String> entry : language.translations().entrySet()) {
+                writer.name(entry.getKey())
+                        .value(entry.getValue());
+            }
+            writer.endObject();
+        }
     }
 
 }

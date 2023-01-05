@@ -21,16 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.io;
 
+import com.google.gson.stream.JsonWriter;
 import team.unnamed.creative.base.Writable;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a file tree, which may be implemented by a
@@ -60,7 +63,24 @@ public interface FileTree extends AutoCloseable {
      * given file
      * @since 1.0.0
      */
-    ResourceWriter open(String path);
+    OutputStream openStream(String path);
+
+    /**
+     * Opens the file at the given path and starts
+     * to write it using the {@link Writer} class,
+     * which is used for character streams
+     *
+     * @param path The file path
+     * @return A new {@link Writer} for the given file
+     * @since 1.0.0
+     */
+    default Writer openWriter(String path) {
+        return new OutputStreamWriter(openStream(path), StandardCharsets.UTF_8);
+    }
+
+    default JsonWriter openJsonWriter(String path) {
+        return new JsonWriter(openWriter(path));
+    }
 
     /**
      * Opens and writes the given data to the
@@ -71,23 +91,6 @@ public interface FileTree extends AutoCloseable {
      * @since 1.0.0
      */
     void write(String path, Writable data);
-
-    /**
-     * Opens and writes the file at the specified
-     * path ({@link FileResource#path()}) and serializes
-     * the given resource there
-     *
-     * @param resource The written resource
-     * @since 1.0.0
-     */
-    void write(FileResource resource);
-
-    default void write(Iterable<? extends FileResource> resources) {
-        requireNonNull(resources, "resources");
-        for (FileResource resource : resources) {
-            write(resource);
-        }
-    }
 
     /**
      * Finishes writing the file tree without

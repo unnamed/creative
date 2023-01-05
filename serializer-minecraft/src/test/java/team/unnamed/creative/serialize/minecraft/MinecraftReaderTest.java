@@ -24,12 +24,8 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import org.junit.jupiter.api.Test;
-import team.unnamed.creative.ResourcePackBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.zip.ZipInputStream;
 
 public class MinecraftReaderTest {
 

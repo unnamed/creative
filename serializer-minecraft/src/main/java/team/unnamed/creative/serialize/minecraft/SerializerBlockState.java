@@ -24,34 +24,24 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
-import net.kyori.adventure.key.Key;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.blockstate.Condition;
 import team.unnamed.creative.blockstate.MultiVariant;
 import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
+import team.unnamed.creative.serialize.minecraft.io.FileTree;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-final class BlockStateSerializer extends ElementSerializer<BlockState> {
+final class SerializerBlockState {
 
-    static final BlockStateSerializer INSTANCE = new BlockStateSerializer();
+    static final SerializerBlockState INSTANCE = new SerializerBlockState();
 
-    @Override
-    public void write(BlockState state, MinecraftFileTree tree) throws IOException {
-
-        Key key = state.key();
-
-        // assets/<namespace>/blockstates/<blockstate>.json
-        try (JsonWriter writer = tree.openJsonWriter(
-                MinecraftFileTree.ASSETS_FOLDER,
-                key.namespace(),
-                MinecraftFileTree.BLOCKSTATES_FOLDER,
-                key.value() + MinecraftFileTree.OBJECT_EXTENSION
-        )) {
+    public void write(BlockState state, FileTree tree) throws IOException {
+        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(state))) {
             writer.beginObject();
 
             // write "variants" part if not empty

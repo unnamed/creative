@@ -23,10 +23,11 @@
  */
 package team.unnamed.creative.serialize;
 
-import net.kyori.examination.Examinable;
+/**
+ * @since 1.0.0
+ */
+public interface ResourcePackSerializer {
 
-public interface SerializableResource extends Examinable {
 
-    void serialize(ResourceWriter writer);
 
 }

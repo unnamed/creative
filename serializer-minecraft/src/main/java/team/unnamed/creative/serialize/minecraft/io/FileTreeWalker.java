@@ -21,19 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import team.unnamed.creative.util.Validate;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.NoSuchElementException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-public interface FileTreeWriter {
+public interface FileTreeWalker {
 
-    void write(FileTree tree);
+    boolean hasNext();
 
-    default FileTreeWriter andThen(FileTreeWriter after) {
-        Validate.isNotNull(after, "after");
-        return tree -> {
-            write(tree);
-            after.write(tree);
+    String next();
+
+    InputStream input();
+
+    static FileTreeWalker zip(ZipInputStream zip) {
+        return new FileTreeWalker() {
+
+            private ZipEntry entry;
+
+            @Override
+            public boolean hasNext() {
+                try {
+                    do {
+                        entry = zip.getNextEntry();
+                    } while (entry != null && entry.isDirectory());
+                    return entry != null;
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+
+            @Override
+            public String next() {
+                if (entry == null) throw new NoSuchElementException();
+                return entry.getName();
+            }
+
+            @Override
+            public InputStream input() {
+                return zip;
+            }
+
         };
     }
 

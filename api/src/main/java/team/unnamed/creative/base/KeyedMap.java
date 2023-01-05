@@ -21,37 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.base;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.Nullable;
 
-final class Streams {
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-    private Streams() {
+import static java.util.Objects.requireNonNull;
+
+public final class KeyedMap<T extends Keyed> {
+
+    private final Map<Key, T> map = new HashMap<>();
+
+    public @Nullable T get(Key key) {
+        requireNonNull(key, "key");
+        return map.get(key);
     }
 
-    public static void closeUnchecked(Closeable closeable) {
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public T put(T value) {
+        return map.put(value.key(), value);
     }
 
-    public static void deleteContents(File folder) {
-        File[] children = folder.listFiles();
-        if (children != null) {
-            for (File child : children) {
-                if (!Files.isSymbolicLink(child.toPath())) {
-                    deleteContents(child);
-                    child.delete();
-                }
-            }
-        }
+    public T putIfAbsent(T value) {
+        return map.putIfAbsent(value.key(), value);
+    }
+
+    public Collection<T> values() {
+        return map.values();
     }
 
 }

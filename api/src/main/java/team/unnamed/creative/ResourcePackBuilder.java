@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.serialize.FileResource;
 import team.unnamed.creative.serialize.FileTree;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
@@ -85,9 +84,7 @@ public interface ResourcePackBuilder {
     // |-------------------------------------|
     // |------- BLOCKSTATE OPERATIONS -------|
     // |-------------------------------------|
-    default ResourcePackBuilder blockState(BlockState state) {
-        return file(state);
-    }
+    ResourcePackBuilder blockState(BlockState state);
 
     @Nullable BlockState blockState(Key key);
 
@@ -98,9 +95,7 @@ public interface ResourcePackBuilder {
     // |-----------------------------------|
     // |--------- FONT OPERATIONS ---------|
     // |-----------------------------------|
-    default ResourcePackBuilder font(Font font) {
-        return file(font);
-    }
+    ResourcePackBuilder font(Font font);
 
     default ResourcePackBuilder font(Key key, FontProvider... providers) {
         return font(Font.of(key, providers));
@@ -111,25 +106,17 @@ public interface ResourcePackBuilder {
     }
     //#endregion
 
-    default ResourcePackBuilder language(Language language) {
-        return file(language);
-    }
+    ResourcePackBuilder language(Language language);
 
-    default ResourcePackBuilder model(Model model) {
-        return file(model);
-    }
+    ResourcePackBuilder model(Model model);
 
-    default ResourcePackBuilder sounds(SoundRegistry soundRegistry) {
-        return file(soundRegistry);
-    }
+    ResourcePackBuilder sounds(SoundRegistry soundRegistry);
 
     //#region Sound methods
     // |------------------------------------|
     // |--------- SOUND OPERATIONS ---------|
     // |------------------------------------|
-    default ResourcePackBuilder sound(Sound.File soundFile) {
-        return file(soundFile);
-    }
+    ResourcePackBuilder sound(Sound.File soundFile);
 
     default ResourcePackBuilder sound(Key key, Writable data) {
         return sound(Sound.File.of(key, data));
@@ -140,9 +127,7 @@ public interface ResourcePackBuilder {
     // |------------------------------------|
     // |-------- TEXTURE OPERATIONS --------|
     // |------------------------------------|
-    default ResourcePackBuilder texture(Texture texture) {
-        return file(texture);
-    }
+    ResourcePackBuilder texture(Texture texture);
 
     default ResourcePackBuilder texture(Key key, Writable data) {
         return texture(Texture.of(key, data));
@@ -181,8 +166,6 @@ public interface ResourcePackBuilder {
     //#endregion
 
     ResourcePackBuilder file(String path, Writable data);
-
-    ResourcePackBuilder file(FileResource resource);
 
     void writeTo(FileTree tree);
 

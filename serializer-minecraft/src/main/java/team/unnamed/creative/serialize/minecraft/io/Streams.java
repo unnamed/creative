@@ -21,52 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.io;
 
+import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.NoSuchElementException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.nio.file.Files;
 
-public interface FileTreeWalker {
+final class Streams {
 
-    boolean hasNext();
+    private Streams() {
+    }
 
-    String next();
+    public static void closeUnchecked(Closeable closeable) {
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
-    InputStream input();
-
-    static FileTreeWalker zip(ZipInputStream zip) {
-        return new FileTreeWalker() {
-
-            private ZipEntry entry;
-
-            @Override
-            public boolean hasNext() {
-                try {
-                    do {
-                        entry = zip.getNextEntry();
-                    } while (entry != null && entry.isDirectory());
-                    return entry != null;
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
+    public static void deleteContents(File folder) {
+        File[] children = folder.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (!Files.isSymbolicLink(child.toPath())) {
+                    deleteContents(child);
+                    child.delete();
                 }
             }
-
-            @Override
-            public String next() {
-                if (entry == null) throw new NoSuchElementException();
-                return entry.getName();
-            }
-
-            @Override
-            public InputStream input() {
-                return zip;
-            }
-
-        };
+        }
     }
 
 }
