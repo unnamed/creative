@@ -26,11 +26,12 @@ package team.unnamed.creative.serialize.minecraft;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.serialize.ResourcePackSerializer;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 
 import java.util.function.Consumer;
 
-public final class MinecraftResourcePackSerializer implements ResourcePackSerializer {
+public final class MinecraftResourcePackSerializer implements ResourcePackSerializer<FileTreeReader, FileTreeWriter> {
 
     private MinecraftResourcePackSerializer() {
     }
@@ -40,9 +41,23 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
         return MinecraftResourcePackBuilder.minecraft();
     }
 
+    @Override
+    public void deserialize(FileTreeReader reader, ResourcePackBuilder output) {
+        MinecraftResourcePackReader.read(reader, output);
+    }
+
+    @Override
+    public ResourcePackBuilder deserialize(FileTreeReader treeReader) {
+        ResourcePackBuilder builder = MinecraftResourcePackBuilder.minecraft();
+        deserialize(treeReader, builder);
+        return builder;
+    }
+
+    @Override
     public void serialize(ResourcePackBuilder resourcePack, FileTreeWriter tree) {
     }
 
+    @Override
     public ResourcePack build(Consumer<ResourcePackBuilder> builder) {
         return null;
     }

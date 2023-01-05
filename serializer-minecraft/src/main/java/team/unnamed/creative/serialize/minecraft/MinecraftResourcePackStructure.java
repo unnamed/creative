@@ -33,6 +33,9 @@ import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringJoiner;
 
 final class MinecraftResourcePackStructure {
@@ -51,6 +54,9 @@ final class MinecraftResourcePackStructure {
 
     // assets folder (assets/<namespace>)
     public static final String ASSETS_FOLDER = "assets";
+
+    // known special folders
+    public static final String OPTIFINE_FOLDER = "optifine";
 
     // sounds.json file (assets/<namespace>/sounds.json)
     public static final String SOUNDS_FILE = "sounds" + OBJECT_EXTENSION;
@@ -98,7 +104,7 @@ final class MinecraftResourcePackStructure {
 
     public static String pathOf(SoundRegistry registry) {
         // assets/<namespace>/sounds.json
-        return buildPath(ASSETS_FOLDER, registry.namespace(), SOUNDS_FILE);
+        return path(ASSETS_FOLDER, registry.namespace(), SOUNDS_FILE);
     }
 
     public static String pathOf(Sound.File sound) {
@@ -116,19 +122,31 @@ final class MinecraftResourcePackStructure {
         return withCategory(TEXTURES_FOLDER, texture, METADATA_EXTENSION);
     }
 
-    // helper methods
-    private static String withCategory(String categoryFolder, Keyed resource, String extension) {
-        Key key = resource.key();
-        // assets/<namespace>/<category>/<path>.<extension>
-        return buildPath(ASSETS_FOLDER, key.namespace(), categoryFolder, key.value() + extension);
+    public static Queue<String> tokenize(String path) {
+        return new LinkedList<>(Arrays.asList(path.split(FILE_SEPARATOR)));
     }
 
-    private static String buildPath(String... path) {
+    public static String path(String... path) {
         StringJoiner joiner = new StringJoiner(FILE_SEPARATOR);
         for (String part : path) {
             joiner.add(part);
         }
         return joiner.toString();
+    }
+
+    public static String path(Iterable<String> path) {
+        StringJoiner joiner = new StringJoiner(FILE_SEPARATOR);
+        for (String part : path) {
+            joiner.add(part);
+        }
+        return joiner.toString();
+    }
+
+    // helper methods
+    private static String withCategory(String categoryFolder, Keyed resource, String extension) {
+        Key key = resource.key();
+        // assets/<namespace>/<category>/<path>.<extension>
+        return path(ASSETS_FOLDER, key.namespace(), categoryFolder, key.value() + extension);
     }
 
 }

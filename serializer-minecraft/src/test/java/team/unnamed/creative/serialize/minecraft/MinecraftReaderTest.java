@@ -36,7 +36,7 @@ public class MinecraftReaderTest {
     public void test() throws IOException {
         String pack = "barelydefault";
         try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/" + pack + ".zip")))) {
-            MinecraftResourcePackReader.minecraft().read(
+            MinecraftResourcePackSerializer.minecraft().deserialize(
                     treeReader,
                     new MinecraftResourcePackBuilder()
             );
