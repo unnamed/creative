@@ -40,10 +40,13 @@ import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
+import team.unnamed.creative.text.Credits;
+import team.unnamed.creative.text.Text;
 import team.unnamed.creative.texture.Texture;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface ResourcePackBuilder {
 
@@ -51,8 +54,22 @@ public interface ResourcePackBuilder {
     // |-----------------------------------|
     // |--------- ICON OPERATIONS ---------|
     // |-----------------------------------|
+    /**
+     * Sets the resource pack icon image
+     * (must be a PNG file)
+     *
+     * @param icon The icon (PNG image)
+     * @return This builder, for chaining
+     */
     ResourcePackBuilder icon(@Nullable Writable icon);
 
+    /**
+     * Returns the resource pack icon image (must
+     * be a PNG file), it may be null
+     *
+     * @return The resource pack icon image, null if
+     * not set
+     */
     @Nullable Writable icon();
     //#endregion
 
@@ -61,15 +78,37 @@ public interface ResourcePackBuilder {
     // |------- METADATA OPERATIONS -------|
     // |-----------------------------------|
 
-    // Meta
+    // ----- Pack Meta -----
     ResourcePackBuilder meta(PackMeta meta);
 
     default ResourcePackBuilder meta(int format, String description) {
         return meta(PackMeta.of(format, description));
     }
 
-    // Languages
+    @Nullable PackMeta meta();
+
+    default int format() {
+        PackMeta meta = meta();
+        if (meta == null) {
+            return -1;
+        } else {
+            return meta.format();
+        }
+    }
+
+    default @Nullable String description() {
+        PackMeta meta = meta();
+        if (meta == null) {
+            return null;
+        } else {
+            return meta.description();
+        }
+    }
+
+    // ----- Language Meta -----
     ResourcePackBuilder languageRegistry(LanguageMeta meta);
+
+    @Nullable LanguageMeta languageRegistry();
 
     ResourcePackBuilder languageEntry(Key key, LanguageEntry languageEntry);
 
@@ -77,8 +116,10 @@ public interface ResourcePackBuilder {
 
     Collection<LanguageEntry> languageEntries();
 
-    // Filter
+    // ----- Filter Meta -----
     ResourcePackBuilder filter(FilterMeta filter);
+
+    @Nullable FilterMeta filter();
 
     default ResourcePackBuilder filter(FilterPattern... patterns) {
         return filter(FilterMeta.of(patterns));
@@ -88,6 +129,7 @@ public interface ResourcePackBuilder {
         return filter(FilterMeta.of(patterns));
     }
 
+    // ----- Custom Meta -----
     ResourcePackBuilder customMetaPart(MetadataPart part);
     //#endregion
 
@@ -115,11 +157,19 @@ public interface ResourcePackBuilder {
     default ResourcePackBuilder font(Key key, List<FontProvider> providers) {
         return font(Font.of(key, providers));
     }
+
+    @Nullable Font font(Key key);
+
+    Collection<Font> fonts();
     //#endregion
 
     ResourcePackBuilder language(Language language);
 
+    Collection<Language> languages();
+
     ResourcePackBuilder model(Model model);
+
+    Collection<Model> models();
 
     ResourcePackBuilder sounds(SoundRegistry soundRegistry);
 
@@ -147,35 +197,29 @@ public interface ResourcePackBuilder {
     default ResourcePackBuilder texture(Key key, Writable data, Metadata meta) {
         return texture(Texture.of(key, data, meta));
     }
+
+    Collection<Texture> textures();
     //#endregion
 
-    //#region Miscellaneous methods
+    //#region Text methods
     // |----------------------------------|
-    // |---------- MISC METHODS ----------|
+    // |---------- TEXT METHODS ----------|
     // |----------------------------------|
-    default ResourcePackBuilder endPoem(String endPoem) {
-        return file("assets/minecraft/texts/end.txt", Writable.stringUtf8(endPoem));
+    default ResourcePackBuilder text(Text text) {
+        return file("assets/" + text.key().namespace() + "/texts/" + text.key().value() + ".txt", text.content());
     }
 
-    default ResourcePackBuilder splashes(String splashes) {
-        return file("assets/minecraft/texts/splashes.txt", Writable.stringUtf8(splashes));
-    }
+    // ResourcePackBuilder credits(@Nullable Credits credits);
 
-    // TODO: credits.json
+    // @Nullable Credits credits();
+    //#endregion
 
-    default ResourcePackBuilder postCredits(String postCredits) {
-        return file("assets/minecraft/texts/postcredits.txt", Writable.stringUtf8(postCredits));
-    }
+    //#region Shader methods
 
-//    default ResourcePackBuilder shader(String path, Writable content) {
-//        return file("assets/minecraft/shaders/" + path, content);
-//    }
-//
-//    default ResourcePackBuilder shader(String path, String content) {
-//        return shader(path, Writable.stringUtf8(content));
-//    }
     //#endregion
 
     ResourcePackBuilder file(String path, Writable data);
+
+    Map<String, Writable> extraFiles();
 
 }

@@ -24,22 +24,35 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import org.junit.jupiter.api.Test;
+import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class MinecraftReaderTest {
 
     @Test
     public void test() throws IOException {
         String pack = "barelydefault";
+        ResourcePackBuilder builder;
+
+        System.out.println(" [INFO] ------------------------------");
+        System.out.println(" [INFO]    Starting deserialization   ");
+        System.out.println(" [INFO] ------------------------------");
         try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/" + pack + ".zip")))) {
-            MinecraftResourcePackSerializer.minecraft().deserialize(
-                    treeReader,
-                    new MinecraftResourcePackBuilder()
-            );
+            builder = MinecraftResourcePackSerializer.minecraft().deserialize(treeReader);
+        }
+
+        System.out.println(" [INFO] ------------------------------");
+        System.out.println(" [INFO]     Starting serialization    ");
+        System.out.println(" [INFO] ------------------------------");
+        try (FileTreeWriter treeWriter = FileTreeWriter.zip(new ZipOutputStream(new FileOutputStream("/home/nd/Desktop/" + pack + "-output.zip")))) {
+            MinecraftResourcePackSerializer.minecraft().serialize(builder, treeWriter);
         }
     }
 

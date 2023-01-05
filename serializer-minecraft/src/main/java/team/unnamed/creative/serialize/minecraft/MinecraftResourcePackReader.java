@@ -194,6 +194,7 @@ final class MinecraftResourcePackReader {
                     System.err.println(" [WARN] Found OptiFine files, remember that creative doesn't currently support them");
                     alertOptiFineNotSupported = false;
                 }
+                output.file(path, Writable.copyInputStream(inputStream));
                 continue;
             }
 
@@ -212,14 +213,13 @@ final class MinecraftResourcePackReader {
                             Key.key(namespace, stripExtension(value))
                     );
                     output.model(model);
-                    System.out.println(" [INFO] Found a model with key: " + Keys.toString(model.key()));
                     break;
                 }
 
                 case MinecraftResourcePackStructure.TEXTURES_FOLDER: {
                     if (value.endsWith(TEXTURE_EXTENSION + METADATA_EXTENSION)) {
                         // a metadata file
-                        Key key = Key.key(value.substring(0, value.length() - TEXTURE_EXTENSION.length() - METADATA_EXTENSION.length()));
+                        Key key = Key.key(namespace, value.substring(0, value.length() - TEXTURE_EXTENSION.length() - METADATA_EXTENSION.length()));
                         Metadata meta = SerializerMetadata.INSTANCE.readFromTree(PARSER.parse(reader(inputStream)));
                         Texture texture = waitingForMeta.remove(key);
 
@@ -235,11 +235,9 @@ final class MinecraftResourcePackReader {
                                     meta
                             ));
                         }
-
-                        System.out.println(" [INFO] Found metadata for texture: " + key);
                     } else if (value.endsWith(TEXTURE_EXTENSION)) {
                         // a texture file
-                        Key key = Key.key(value.substring(0, value.length() - TEXTURE_EXTENSION.length()));
+                        Key key = Key.key(namespace, value.substring(0, value.length() - TEXTURE_EXTENSION.length()));
                         Writable data = Writable.copyInputStream(inputStream);
 
                         Texture texture = waitingForMeta.remove(key);
@@ -255,8 +253,6 @@ final class MinecraftResourcePackReader {
                                     data
                             ));
                         }
-
-                        System.out.println(" [INFO] Found a texture: " + key);
                     } else {
                         System.err.println(" [WARN] Found an unknown file in textures folder: " + path);
                     }
@@ -291,7 +287,6 @@ final class MinecraftResourcePackReader {
                             Key.key(namespace, value.substring(0, value.length() - OBJECT_EXTENSION.length()))
                     );
                     output.font(font);
-                    System.out.println(" [INFO] Loaded font: " + font.key());
                     break;
                 }
 
@@ -307,8 +302,6 @@ final class MinecraftResourcePackReader {
                             Key.key(namespace, value.substring(0, value.length() - OBJECT_EXTENSION.length()))
                     );
                     output.language(language);
-                    System.out.println(" [INFO] Loaded language '" + language.key() + "' with "
-                            + language.translations().size() + " translations");
                     break;
                 }
 
@@ -325,11 +318,11 @@ final class MinecraftResourcePackReader {
                             key
                     );
                     output.blockState(blockState);
-                    System.out.println(" [INFO] Loaded blockstate: " + key);
                     break;
                 }
                 default: {
                     System.err.println(" [WARN] Unknown category: " + category);
+                    output.file(path, Writable.copyInputStream(inputStream));
                     break;
                 }
             }
@@ -346,6 +339,13 @@ final class MinecraftResourcePackReader {
                 System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
             }
         }
+
+        System.out.println(" [INFO] Loaded " + output.fonts().size() + " fonts");
+        System.out.println(" [INFO] Loaded " + output.blockStates().size() + " blockstates");
+        System.out.println(" [INFO] Loaded " + output.textures().size() + " textures");
+        System.out.println(" [INFO] Loaded " + output.models().size() + " models");
+        System.out.println(" [INFO] Loaded " + output.languages().size() + " languages");
+        System.out.println(" [INFO] Loaded " + output.extraFiles().size() + " extra files");
     }
 
     private static String stripExtension(String path) {

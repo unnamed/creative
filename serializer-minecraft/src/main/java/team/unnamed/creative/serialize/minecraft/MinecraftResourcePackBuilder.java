@@ -26,6 +26,7 @@ package team.unnamed.creative.serialize.minecraft;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePackBuilder;
+import team.unnamed.creative.base.KeyedMap;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
@@ -33,6 +34,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
+import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
@@ -70,6 +72,13 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     private @Nullable Map<String, Writable> extraFiles;
 
+    // Objects
+    private @Nullable KeyedMap<BlockState> blockStates;
+    private @Nullable KeyedMap<Font> fonts;
+    private @Nullable KeyedMap<Language> languages;
+    private @Nullable KeyedMap<Model> models;
+    private @Nullable KeyedMap<Texture> textures;
+
     //#region Icon methods
     // |-----------------------------------|
     // |--------- ICON OPERATIONS ---------|
@@ -97,9 +106,19 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
     }
 
     @Override
+    public @Nullable PackMeta meta() {
+        return packMeta;
+    }
+
+    @Override
     public ResourcePackBuilder languageRegistry(LanguageMeta meta) {
         this.languageMeta = meta;
         return this;
+    }
+
+    @Override
+    public @Nullable LanguageMeta languageRegistry() {
+        return languageMeta;
     }
 
     @Override
@@ -136,8 +155,13 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder filter(FilterMeta filter) {
-        this.filterMeta = requireNonNull(filter, "filter");
+        this.filterMeta = filter;
         return this;
+    }
+
+    @Override
+    public @Nullable FilterMeta filter() {
+        return filterMeta;
     }
 
     @Override
@@ -152,32 +176,60 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder blockState(BlockState state) {
+        if (blockStates == null) blockStates = new KeyedMap<>();
+        blockStates.put(state);
         return this;
     }
 
     @Override
     public @Nullable BlockState blockState(Key key) {
-        return null;
+        return blockStates == null ? null : blockStates.get(key);
     }
 
     @Override
     public Collection<BlockState> blockStates() {
-        return null;
+        return blockStates == null ? Collections.emptySet() : blockStates.values();
     }
 
     @Override
     public ResourcePackBuilder font(Font font) {
+        if (fonts == null) fonts = new KeyedMap<>();
+        fonts.put(font);
         return this;
+    }
+
+    @Override
+    public @Nullable Font font(Key key) {
+        return fonts == null ? null : fonts.get(key);
+    }
+
+    @Override
+    public Collection<Font> fonts() {
+        return fonts == null ? Collections.emptySet() : fonts.values();
     }
 
     @Override
     public ResourcePackBuilder language(Language language) {
+        if (languages == null) languages = new KeyedMap<>();
+        languages.put(language);
         return this;
     }
 
     @Override
+    public Collection<Language> languages() {
+        return languages == null ? Collections.emptySet() : languages.values();
+    }
+
+    @Override
     public ResourcePackBuilder model(Model model) {
+        if (models == null) models = new KeyedMap<>();
+        models.put(model);
         return this;
+    }
+
+    @Override
+    public Collection<Model> models() {
+        return models == null ? Collections.emptySet() : models.values();
     }
 
     @Override
@@ -196,7 +248,14 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder texture(Texture texture) {
+        if (textures == null) textures = new KeyedMap<>();
+        textures.put(texture);
         return this;
+    }
+
+    @Override
+    public Collection<Texture> textures() {
+        return textures == null ? Collections.emptySet() : textures.values();
     }
 
     @Override
@@ -208,6 +267,11 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
         }
         extraFiles.put(path, data);
         return this;
+    }
+
+    @Override
+    public Map<String, Writable> extraFiles() {
+        return extraFiles == null ? Collections.emptyMap() : extraFiles;
     }
 
     public static ResourcePackBuilder minecraft() {

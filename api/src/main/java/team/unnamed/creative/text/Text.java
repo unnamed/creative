@@ -21,54 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative;
+package team.unnamed.creative.text;
 
-import static java.util.Objects.requireNonNull;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.base.Writable;
 
-/**
- * Represents a built server-side resource-pack ready
- * to be sent to a player, contains the resource-pack
- * content bytes (of the resource-pack ZIP archive)
- * and its SHA-1 hash
- *
- * @since 1.0.0
- */
-public final class ResourcePack {
+public class Text implements Keyed {
 
-    private final byte[] bytes;
-    private final String hash;
+    public static final Key END_POEM = Key.key("end");
+    public static final Key SPLASHES = Key.key("splashes");
+    public static final Key POST_CREDITS = Key.key("postcredits");
 
-    private ResourcePack(
-            byte[] bytes,
-            String hash
-    ) {
-        this.bytes = requireNonNull(bytes, "bytes");
-        this.hash = requireNonNull(hash, "hash");
+    private final Key key;
+    private final Writable content;
+
+    private Text(Key key, Writable content) {
+        this.key = key;
+        this.content = content;
     }
 
-    /**
-     * Returns the resource-pack zip archive
-     * bytes
-     *
-     * @return The resource-pack file data
-     */
-    public byte[] bytes() {
-        return bytes;
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
-    /**
-     * Returns the SHA-1 hash of the
-     * resource-pack
-     *
-     * @return The SHA-1 hash of the
-     * resource-pack
-     */
-    public String hash() {
-        return hash;
+    public Writable content() {
+        return content;
     }
 
-    public static ResourcePack of(byte[] bytes, String hash) {
-        return new ResourcePack(bytes, hash);
+    public static Text of(Key key, Writable content) {
+        return new Text(key, content);
+    }
+
+    public static Text of(Key key, String content) {
+        return of(key, Writable.stringUtf8(content));
     }
 
 }

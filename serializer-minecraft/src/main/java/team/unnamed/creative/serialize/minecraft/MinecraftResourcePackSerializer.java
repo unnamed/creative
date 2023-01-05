@@ -29,7 +29,12 @@ import team.unnamed.creative.serialize.ResourcePackSerializer;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 
+import java.io.ByteArrayOutputStream;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.function.Consumer;
+import java.util.zip.ZipOutputStream;
 
 public final class MinecraftResourcePackSerializer implements ResourcePackSerializer<FileTreeReader, FileTreeWriter> {
 
@@ -55,11 +60,46 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
 
     @Override
     public void serialize(ResourcePackBuilder resourcePack, FileTreeWriter tree) {
+        MinecraftResourcePackWriter.write(resourcePack, tree);
     }
 
     @Override
     public ResourcePack build(Consumer<ResourcePackBuilder> builder) {
-        return null;
+
+        // build resource-pack
+        ResourcePackBuilder resourcePack = builder();
+        builder.accept(resourcePack);
+
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Cannot find SHA-1 algorithm");
+        }
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        // write resource-pack to zip
+        try (FileTreeWriter writer = FileTreeWriter.zip(new ZipOutputStream(new DigestOutputStream(output, digest)))) {
+            serialize(resourcePack, writer);
+        }
+
+        byte[] bytes = output.toByteArray();
+        String hash = hex(digest);
+
+        return ResourcePack.of(bytes, hash);
+    }
+
+    private static String hex(MessageDigest digest) {
+        byte[] bytes = digest.digest();
+        StringBuilder builder = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) {
+            int part1 = (b >> 4) & 0xF;
+            int part2 = b & 0xF;
+            builder
+                    .append("0123456789abcdef".charAt(part1))
+                    .append("0123456789abcdef".charAt(part2));
+        }
+        return builder.toString();
     }
 
     public static MinecraftResourcePackSerializer minecraft() {
