@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     api(project(":creative-api"))
-    api(project(":creative-serializer-minecraft"))
+    testCompileOnly(project(":creative-serializer-minecraft"))
 }
