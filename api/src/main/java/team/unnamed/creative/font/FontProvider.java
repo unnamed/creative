@@ -39,15 +39,6 @@ import java.util.Map;
 public interface FontProvider extends Examinable {
 
     /**
-     * Returns the font name used in the resulting
-     * resource pack, e.g. "bitmap", "ttf", "legacy_unicode",
-     * "space"
-     *
-     * @return The font provider name
-     */
-    String name();
-
-    /**
      * Creates a new bit-map font from the provided values
      *
      * @param file The bit-map texture location in PNG format

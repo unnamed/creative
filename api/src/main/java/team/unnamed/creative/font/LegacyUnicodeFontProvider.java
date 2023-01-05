@@ -49,11 +49,6 @@ public class LegacyUnicodeFontProvider implements FontProvider {
         this.template = requireNonNull(template, "template");
     }
 
-    @Override
-    public String name() {
-        return "legacy_unicode";
-    }
-
     /**
      * Returns the resource location inside assets/&lt;namespace&gt;/font
      * describing a binary file describing the horizontal start and

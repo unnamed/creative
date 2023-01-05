@@ -71,11 +71,6 @@ public class SpaceFontProvider implements FontProvider {
         return new SpaceFontProvider(advances);
     }
 
-    @Override
-    public String name() {
-        return "space";
-    }
-
     public SpaceFontProvider.Builder toBuilder() {
         return FontProvider.space()
                 .advances(advances);
