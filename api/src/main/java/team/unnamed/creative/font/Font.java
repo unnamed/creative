@@ -55,7 +55,7 @@ public class Font implements Keyed, Examinable {
 
     public static final Key MINECRAFT_DEFAULT = Key.key(Key.MINECRAFT_NAMESPACE, "default");
     public static final Key MINECRAFT_ALT = Key.key(Key.MINECRAFT_NAMESPACE, "alt");
-    public static final Key MINECRAFT_ILAGERALT = Key.key(Key.MINECRAFT_NAMESPACE, "ilageralt");
+    public static final Key MINECRAFT_ILLAGERALT = Key.key(Key.MINECRAFT_NAMESPACE, "illageralt");
     public static final Key MINECRAFT_UNIFORM = Key.key(Key.MINECRAFT_NAMESPACE, "uniform");
 
     private final Key key;
