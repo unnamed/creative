@@ -26,7 +26,6 @@ package team.unnamed.creative.metadata.filter;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Arrays;
@@ -86,18 +85,6 @@ public class FilterMeta implements MetadataPart {
      */
     public List<FilterPattern> patterns() {
         return patterns;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("block")
-                .startArray();
-        for (FilterPattern pattern : patterns) {
-            pattern.serialize(writer);
-        }
-        writer.endArray();
-        writer.endObject();
     }
 
     @Override

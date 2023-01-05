@@ -24,12 +24,11 @@
 package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +49,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class ItemOverride implements SerializableResource {
+public class ItemOverride implements Examinable {
 
     private final Key model;
     @Unmodifiable private final List<ItemPredicate> predicate;
@@ -84,18 +83,6 @@ public class ItemOverride implements SerializableResource {
      */
     public @Unmodifiable List<ItemPredicate> predicate() {
         return predicate;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("predicate").startObject();
-        for (ItemPredicate predicate : predicate()) {
-            writer.key(predicate.name()).value(predicate.value());
-        }
-        writer.endObject()
-                .key("model").value(model)
-                .endObject();
     }
 
     @Override

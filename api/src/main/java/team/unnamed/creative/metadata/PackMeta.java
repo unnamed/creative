@@ -26,7 +26,6 @@ package team.unnamed.creative.metadata;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -83,14 +82,6 @@ public class PackMeta implements MetadataPart {
      */
     public String description() {
         return description;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("pack_format").value(format)
-                .key("description").value(description)
-                .endObject();
     }
 
     @Override

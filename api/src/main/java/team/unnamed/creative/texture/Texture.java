@@ -25,12 +25,11 @@ package team.unnamed.creative.texture;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.file.FileResource;
-import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.metadata.Metadata;
 
 import java.util.Objects;
@@ -38,7 +37,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class Texture implements Keyed, FileResource {
+public class Texture implements Keyed, Examinable {
 
     private final Key key;
     private final Writable data;
@@ -63,19 +62,8 @@ public class Texture implements Keyed, FileResource {
         return data;
     }
 
-    @Override
     public Metadata meta() {
         return meta;
-    }
-
-    @Override
-    public String path() {
-        return "assets/" + key.namespace() + "/textures/" + key.value() + ".png";
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.write(data);
     }
 
     @Override

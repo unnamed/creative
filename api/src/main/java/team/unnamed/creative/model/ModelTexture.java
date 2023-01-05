@@ -24,13 +24,12 @@
 package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,7 +49,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class ModelTexture implements SerializableResource {
+public class ModelTexture implements Examinable {
 
     @Unmodifiable private final List<Key> layers;
     @Nullable private final Key particle;
@@ -108,21 +107,6 @@ public class ModelTexture implements SerializableResource {
      */
     public @Unmodifiable Map<String, Key> variables() {
         return variables;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        if (particle != null) {
-            writer.key("particle").value(particle);
-        }
-        for (int i = 0; i < layers.size(); i++) {
-            writer.key("layer" + i).value(layers.get(i));
-        }
-        for (Map.Entry<String, Key> variable : variables.entrySet()) {
-            writer.key(variable.getKey()).value(variable.getValue());
-        }
-        writer.endObject();
     }
 
     @Override

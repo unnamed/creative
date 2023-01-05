@@ -26,7 +26,7 @@ package team.unnamed.creative.font;
 import net.kyori.adventure.key.Key;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import team.unnamed.creative.file.ResourceAssertions;
+import team.unnamed.creative.serialize.ResourceAssertions;
 
 import java.util.Arrays;
 import java.util.Collections;

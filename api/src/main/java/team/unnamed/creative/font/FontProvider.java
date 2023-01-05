@@ -24,7 +24,7 @@
 package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
-import team.unnamed.creative.file.SerializableResource;
+import net.kyori.examination.Examinable;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ import java.util.Map;
  * @since 1.0.0
  * @see Font
  */
-public interface FontProvider extends SerializableResource {
+public interface FontProvider extends Examinable {
 
     /**
      * Returns the font name used in the resulting

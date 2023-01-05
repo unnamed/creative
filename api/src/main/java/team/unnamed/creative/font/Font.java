@@ -25,11 +25,10 @@ package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.FileResource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +51,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Font implements Keyed, FileResource {
+public class Font implements Keyed, Examinable {
 
     public static final Key MINECRAFT_DEFAULT = Key.key(Key.MINECRAFT_NAMESPACE, "default");
     public static final Key MINECRAFT_ALT = Key.key(Key.MINECRAFT_NAMESPACE, "alt");
@@ -86,19 +85,6 @@ public class Font implements Keyed, FileResource {
         return providers;
     }
 
-    @Override
-    public String path() {
-        return "assets/" + key.namespace() + "/font/" + key.value() + ".json";
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("providers").value(providers)
-                .endObject();
-    }
-
-    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("key", key),

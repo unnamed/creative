@@ -23,13 +23,12 @@
  */
 package team.unnamed.creative.sound;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +45,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements SerializableResource {
+public class SoundEvent implements Examinable {
 
     public static final boolean DEFAULT_REPLACE = false;
 
@@ -96,28 +95,6 @@ public class SoundEvent implements SerializableResource {
      */
     public @Unmodifiable List<Sound> sounds() {
         return sounds;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-
-        if (replace != DEFAULT_REPLACE) {
-            // only write if not default (false)
-            writer.key("replace").value(replace);
-        }
-
-        if (subtitle != null) {
-            writer.key("subtitle").value(subtitle);
-        }
-        if (!sounds.isEmpty()) {
-            writer.key("sounds").startArray();
-            for (Sound sound : sounds) {
-                sound.serialize(writer);
-            }
-            writer.endArray();
-        }
-        writer.endObject();
     }
 
     @Override

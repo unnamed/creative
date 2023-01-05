@@ -23,12 +23,11 @@
  */
 package team.unnamed.creative.blockstate;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -44,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Selector implements SerializableResource {
+public class Selector implements Examinable {
 
     private final Condition condition;
     @Unmodifiable private final MultiVariant variant;
@@ -63,20 +62,6 @@ public class Selector implements SerializableResource {
 
     public @Unmodifiable MultiVariant variant() {
         return variant;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-
-        if (condition != Condition.NONE) {
-            writer.key("when").startObject();
-            condition.serialize(writer, true);
-            writer.endObject();
-        }
-
-        writer.key("apply").value(variant);
-        writer.endObject();
     }
 
     @Override

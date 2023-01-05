@@ -21,12 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.serialize;
 
-import net.kyori.examination.Examinable;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 
-public interface SerializableResource extends Examinable {
+final class Streams {
 
-    void serialize(ResourceWriter writer);
+    private Streams() {
+    }
+
+    public static void closeUnchecked(Closeable closeable) {
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static void deleteContents(File folder) {
+        File[] children = folder.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (!Files.isSymbolicLink(child.toPath())) {
+                    deleteContents(child);
+                    child.delete();
+                }
+            }
+        }
+    }
 
 }

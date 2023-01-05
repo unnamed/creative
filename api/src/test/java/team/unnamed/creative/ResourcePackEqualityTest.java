@@ -26,7 +26,7 @@ package team.unnamed.creative;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.file.FileTree;
+import team.unnamed.creative.serialize.FileTree;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.PackMeta;
 

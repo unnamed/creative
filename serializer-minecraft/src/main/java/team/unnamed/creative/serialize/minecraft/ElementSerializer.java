@@ -21,20 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.file;
+package team.unnamed.creative.serialize.minecraft;
 
-import team.unnamed.creative.util.Validate;
+import java.io.IOException;
 
-public interface FileTreeWriter {
+public abstract class ElementSerializer<T> {
 
-    void write(FileTree tree);
-
-    default FileTreeWriter andThen(FileTreeWriter after) {
-        Validate.isNotNull(after, "after");
-        return tree -> {
-            write(tree);
-            after.write(tree);
-        };
-    }
+    public abstract void write(T element, MinecraftFileTree tree) throws IOException;
 
 }

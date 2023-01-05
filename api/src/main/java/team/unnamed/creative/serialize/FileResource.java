@@ -21,20 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize;
 
-import org.junit.jupiter.api.Test;
-import team.unnamed.creative.ResourcePackBuilder;
+import team.unnamed.creative.metadata.Metadata;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.zip.ZipInputStream;
+public interface FileResource extends SerializableResource {
 
-public class MinecraftReaderTest {
+    String path();
 
-    @Test
-    public void test() throws IOException {
+    default String metaPath() {
+        return path() + ".mcmeta";
+    }
+
+    default Metadata meta() {
+        return Metadata.EMPTY;
     }
 
 }

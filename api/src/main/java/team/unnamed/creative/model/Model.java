@@ -25,18 +25,16 @@ package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.file.FileResource;
-import team.unnamed.creative.file.ResourceWriter;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -49,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Model implements Keyed, FileResource {
+public class Model implements Keyed, Examinable {
 
     /**
      * A {@link Model} can be set to extend this key to use
@@ -181,61 +179,6 @@ public class Model implements Keyed, FileResource {
      */
     public List<ItemOverride> overrides() {
         return overrides;
-    }
-
-    @Override
-    public String path() {
-        return "assets/" + key.namespace() + "/models/" + key.value() + ".json";
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-
-        // parent
-        if (parent != null) {
-            writer.key("parent").value(parent);
-        }
-
-        // display
-        if (!display.isEmpty()) {
-            writer.key("display").startObject();
-            for (Map.Entry<ItemTransform.Type, ItemTransform> entry : display().entrySet()) {
-                ItemTransform.Type type = entry.getKey();
-                ItemTransform display = entry.getValue();
-
-                writer.key(type.name().toLowerCase(Locale.ROOT));
-                display.serialize(writer);
-            }
-            writer.endObject();
-        }
-
-        // elements
-        if (!elements.isEmpty()) {
-            writer.key("elements").startArray();
-            for (Element element : elements) {
-                element.serialize(writer);
-            }
-            writer.endArray();
-        }
-
-        if (ambientOcclusion != DEFAULT_AMBIENT_OCCLUSION) {
-            // only write if not default value
-            writer.key("ambientocclusion").value(ambientOcclusion);
-        }
-
-        writer.key("textures");
-        textures.serialize(writer);
-
-        if (guiLight != null) {
-            // only write if not default
-            writer.key("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
-        }
-
-        if (!overrides.isEmpty()) {
-            writer.key("overrides").value(overrides);
-        }
-        writer.endObject();
     }
 
     /**

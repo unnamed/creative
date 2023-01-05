@@ -23,10 +23,9 @@
  */
 package team.unnamed.creative.blockstate;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class MultiVariant implements SerializableResource {
+public class MultiVariant implements Examinable {
 
     private final List<Variant> variants;
 
@@ -58,21 +57,6 @@ public class MultiVariant implements SerializableResource {
         return Stream.of(
                 ExaminableProperty.of("variants", variants)
         );
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        if (variants.size() == 1) {
-            // single variant, write as an object
-            variants.get(0).serialize(writer);
-        } else {
-            // multiple variants, write as an array
-            writer.startArray();
-            for (Variant variant : variants) {
-                variant.serialize(writer);
-            }
-            writer.endArray();
-        }
     }
 
     public static MultiVariant of(List<Variant> variants) {

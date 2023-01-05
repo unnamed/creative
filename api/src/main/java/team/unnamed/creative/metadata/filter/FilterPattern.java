@@ -30,7 +30,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
@@ -96,17 +95,6 @@ public class FilterPattern implements Examinable {
         Validate.isNotNull(key, "key");
         return (namespace == null || namespace.matcher(key.namespace()).matches())
                 && (value == null || value.matcher(key.value()).matches());
-    }
-
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        if (namespace != null) {
-            writer.key("namespace").value(namespace.pattern());
-        }
-        if (value != null) {
-            writer.key("path").value(value.pattern());
-        }
-        writer.endObject();
     }
 
     @Override
