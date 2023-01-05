@@ -33,11 +33,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-final class SerializerLanguage extends LazyTypeAdapter<Language> {
+final class SerializerLanguage {
 
     static final SerializerLanguage INSTANCE = new SerializerLanguage();
 
-    @Override
     public void write(JsonWriter writer, Language language) throws IOException {
         // {
         //   "key.1": "value 1",
@@ -50,7 +49,7 @@ final class SerializerLanguage extends LazyTypeAdapter<Language> {
         writer.endObject();
     }
 
-    public Language readFromTree(JsonElement node, Key key) throws IOException {
+    public Language readFromTree(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         Map<String, String> translations = new HashMap<>();
 
@@ -62,11 +61,6 @@ final class SerializerLanguage extends LazyTypeAdapter<Language> {
         }
 
         return Language.of(key, translations);
-    }
-
-    @Override
-    public Language readFromTree(JsonElement element) throws IOException {
-        throw new UnsupportedOperationException("We require a key!");
     }
 
 }

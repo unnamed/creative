@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-final class SerializerMetadata extends LazyTypeAdapter<Metadata> {
+final class SerializerMetadata {
 
     static final SerializerMetadata INSTANCE = new SerializerMetadata();
 
@@ -61,7 +61,6 @@ final class SerializerMetadata extends LazyTypeAdapter<Metadata> {
     static final String TEXTURE_FIELD = "texture";
     static final String VILLAGER_FIELD = "villager";
 
-    @Override
     public void write(JsonWriter writer, Metadata metadata) throws IOException {
         writer.beginObject();
         for (MetadataPart part : metadata.parts()) {
@@ -91,7 +90,6 @@ final class SerializerMetadata extends LazyTypeAdapter<Metadata> {
         writer.endObject();
     }
 
-    @Override
     public Metadata readFromTree(JsonElement element) {
         JsonObject object = element.getAsJsonObject();
         Metadata.Builder builder = Metadata.builder();

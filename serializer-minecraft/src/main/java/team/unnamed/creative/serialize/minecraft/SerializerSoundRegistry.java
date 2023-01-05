@@ -40,11 +40,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerSoundRegistry extends LazyTypeAdapter<SoundRegistry> {
+final class SerializerSoundRegistry {
 
     static final SerializerSoundRegistry INSTANCE = new SerializerSoundRegistry();
 
-    @Override
     public void write(JsonWriter writer, SoundRegistry registry) throws IOException {
         writer.beginObject();
         for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
@@ -166,12 +165,6 @@ final class SerializerSoundRegistry extends LazyTypeAdapter<SoundRegistry> {
             soundEvents.put(eventKey, event.build());
         }
         return SoundRegistry.of(namespace, soundEvents);
-    }
-
-    @Override
-    @Deprecated
-    public SoundRegistry readFromTree(JsonElement node) {
-        throw new UnsupportedOperationException("We need a namespace!");
     }
 
 }
