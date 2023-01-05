@@ -42,6 +42,7 @@ import team.unnamed.creative.model.ItemPredicate;
 import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
+import team.unnamed.creative.model.ModelTextures;
 import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
@@ -93,7 +94,7 @@ final class SerializerModel {
         }
 
         writer.name("textures");
-        writeTexture(writer, model.textures());
+        writeTextures(writer, model.textures());
 
         Model.GuiLight guiLight = model.guiLight();
         if (guiLight != null) {
@@ -140,7 +141,11 @@ final class SerializerModel {
             }
         }
 
-        ModelTexture texture = readTexture(objectNode.get("textures"));
+        ModelTextures texture = ModelTextures.builder().build();
+
+        if (objectNode.has("textures")) {
+            texture = readTextures(objectNode.get("textures"));
+        }
 
         Model.GuiLight guiLight = null;
         if (objectNode.has("gui_light")) {
@@ -359,45 +364,59 @@ final class SerializerModel {
         return ItemTransform.of(rotation, translation, scale);
     }
 
-    private static void writeTexture(JsonWriter writer, ModelTexture texture) throws IOException {
+    private static void writeTextures(JsonWriter writer, ModelTextures texture) throws IOException {
         writer.beginObject();
-        Key particle = texture.particle();
+        ModelTexture particle = texture.particle();
         if (particle != null) {
-            writer.name("particle").value(Keys.toString(particle));
+            writer.name("particle");
+            writeModelTexture(writer, particle);
         }
-        List<Key> layers = texture.layers();
+        List<ModelTexture> layers = texture.layers();
         for (int i = 0; i < layers.size(); i++) {
-            writer.name("layer" + i).value(Keys.toString(layers.get(i)));
+            writer.name("layer" + i);
+            writeModelTexture(writer, layers.get(i));
         }
-        for (Map.Entry<String, Key> variable : texture.variables().entrySet()) {
-            writer.name(variable.getKey()).value(Keys.toString(variable.getValue()));
+        for (Map.Entry<String, ModelTexture> variable : texture.variables().entrySet()) {
+            writer.name(variable.getKey());
+            writeModelTexture(writer, variable.getValue());
         }
         writer.endObject();
     }
 
-    private static ModelTexture readTexture(JsonElement node) {
+    private static void writeModelTexture(JsonWriter writer, ModelTexture texture) throws IOException {
+        if (texture.reference() != null) {
+            writer.value("#" + texture.reference());
+        } else {
+            writer.value(Keys.toString(texture.key()));
+        }
+    }
+
+    private static ModelTextures readTextures(JsonElement node) {
 
         JsonObject objectNode = node.getAsJsonObject();
-        Key particle = null;
-        List<Key> layers = new ArrayList<>(objectNode.entrySet().size());
-        Map<String, Key> variables = new HashMap<>();
+        ModelTexture particle = null;
+        List<ModelTexture> layers = new ArrayList<>(objectNode.entrySet().size());
+        Map<String, ModelTexture> variables = new HashMap<>();
 
         for (Map.Entry<String, JsonElement> entry : objectNode.entrySet()) {
             String key = entry.getKey();
-            Key value = Key.key(entry.getValue().getAsString());
+            String value = entry.getValue().getAsString();
+            ModelTexture texture = value.charAt(0) == '#'
+                    ? ModelTexture.ofReference(value.substring(1))
+                    : ModelTexture.ofKey(Key.key(value));
 
             if ("particle".equals(key)) {
-                particle = value;
+                particle = texture;
             } else if (key.startsWith("layer")) {
                 int layer = Integer.parseInt(key.substring("layer".length()));
                 // TODO: Fix
-                layers.add(value);
+                layers.add(texture);
             } else {
-                variables.put(key, value);
+                variables.put(key, texture);
             }
         }
 
-        return ModelTexture.builder()
+        return ModelTextures.builder()
                 .particle(particle)
                 .layers(layers)
                 .variables(variables)

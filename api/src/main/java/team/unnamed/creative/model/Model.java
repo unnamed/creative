@@ -73,7 +73,7 @@ public class Model implements Keyed, Examinable {
     @Nullable private final Key parent;
     private final boolean ambientOcclusion;
     private final Map<ItemTransform.Type, ItemTransform> display;
-    private final ModelTexture textures;
+    private final ModelTextures textures;
     @Nullable private final GuiLight guiLight;
     private final List<Element> elements;
     private final List<ItemOverride> overrides;
@@ -83,7 +83,7 @@ public class Model implements Keyed, Examinable {
             @Nullable Key parent,
             boolean ambientOcclusion,
             Map<ItemTransform.Type, ItemTransform> display,
-            ModelTexture textures,
+            ModelTextures textures,
             @Nullable GuiLight guiLight,
             List<Element> elements,
             List<ItemOverride> overrides
@@ -138,7 +138,7 @@ public class Model implements Keyed, Examinable {
      *
      * @return This model textures
      */
-    public ModelTexture textures() {
+    public ModelTextures textures() {
         return textures;
     }
 
@@ -241,7 +241,7 @@ public class Model implements Keyed, Examinable {
         private Key parent;
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ItemTransform.Type, ItemTransform> display = Collections.emptyMap();
-        private ModelTexture textures;
+        private ModelTextures textures;
         private GuiLight guiLight;
         private List<Element> elements = Collections.emptyList();
         private List<ItemOverride> overrides = Collections.emptyList();
@@ -269,7 +269,7 @@ public class Model implements Keyed, Examinable {
             return this;
         }
 
-        public Builder textures(ModelTexture textures) {
+        public Builder textures(ModelTextures textures) {
             this.textures = requireNonNull(textures, "textures");
             return this;
         }

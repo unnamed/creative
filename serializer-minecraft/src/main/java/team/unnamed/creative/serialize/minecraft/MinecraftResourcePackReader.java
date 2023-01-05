@@ -168,7 +168,8 @@ public final class MinecraftResourcePackReader {
                     case MinecraftResourcePackStructure.MODELS_FOLDER: {
                         String keyValue = String.join("/", tokens);
                         if (!keyValue.endsWith(OBJECT_EXTENSION)) {
-                            throw new IllegalStateException("model extension is not JSON!");
+                            System.err.println("Unknown file in models folder: " + path);
+                            break;
                         }
                         Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
                         Model model = SerializerModel.INSTANCE.readModel(PARSER.parse(reader(inputStream)), key);
@@ -178,9 +179,9 @@ public final class MinecraftResourcePackReader {
                     }
                     case MinecraftResourcePackStructure.TEXTURES_FOLDER: {
                         String keyValue = String.join("/", tokens);
-                        if (keyValue.endsWith(METADATA_EXTENSION)) {
+                        if (keyValue.endsWith(TEXTURE_EXTENSION + METADATA_EXTENSION)) {
                             // a metadata file
-                            Key key = Key.key(keyValue.substring(0, keyValue.length() - METADATA_EXTENSION.length()));
+                            Key key = Key.key(keyValue.substring(0, keyValue.length() - TEXTURE_EXTENSION.length() - METADATA_EXTENSION.length()));
                             Metadata meta = SerializerMetadata.INSTANCE.readFromTree(PARSER.parse(reader(inputStream)));
                             Texture texture = waitingForMeta.remove(key);
 
@@ -227,7 +228,8 @@ public final class MinecraftResourcePackReader {
                     case MinecraftResourcePackStructure.SOUNDS_FOLDER: {
                         String keyValue = String.join("/", tokens);
                         if (!keyValue.endsWith(SOUND_EXTENSION)) {
-                            throw new IllegalStateException("Sound not ending with its valid extension");
+                            System.err.println("Unknown file found in sounds folder: " + path);
+                            break;
                         }
                         Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - SOUND_EXTENSION.length()));
                         Sound.File sound = Sound.File.of(key, Writable.copyInputStream(inputStream));
@@ -238,7 +240,8 @@ public final class MinecraftResourcePackReader {
                     case MinecraftResourcePackStructure.FONTS_FOLDER: {
                         String keyValue = String.join("/", tokens);
                         if (!keyValue.endsWith(OBJECT_EXTENSION)) {
-                            throw new IllegalStateException("Font not ending with its valid extension");
+                            System.err.println("Unknown file found in fonts folder: " + path);
+                            break;
                         }
                         Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
                         Font font = SerializerFont.INSTANCE.readFont(
@@ -252,7 +255,7 @@ public final class MinecraftResourcePackReader {
                         String keyValue = String.join("/", tokens);
 
                         if (!keyValue.endsWith(OBJECT_EXTENSION)) {
-                            System.err.println("Language file doesn't have a JSON extension");
+                            System.err.println("Unknown file found in languages folder: " + path);
                             break;
                         }
 
@@ -269,7 +272,7 @@ public final class MinecraftResourcePackReader {
                         String keyValue = String.join("/", tokens);
 
                         if (!keyValue.endsWith(OBJECT_EXTENSION)) {
-                            System.err.println("Blockstate file doesn't have a JSON extension");
+                            System.err.println("Unknown file found in blockstates folder: " + path);
                             break;
                         }
 
@@ -287,8 +290,7 @@ public final class MinecraftResourcePackReader {
                     }
                 }
             } else {
-                // unknown folder, just add it as an unknown file
-                System.out.println("Unknown complex file: " + path);
+                System.err.println("Unknown file: " + path);
                 output.file(path, Writable.copyInputStream(inputStream));
             }
         }

@@ -34,7 +34,8 @@ public class MinecraftReaderTest {
 
     @Test
     public void test() throws IOException {
-        try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/generated-resource-pack/a.zip")))) {
+        String pack = "barelydefault";
+        try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/" + pack + ".zip")))) {
             MinecraftResourcePackReader.minecraft().read(
                     treeReader,
                     new MinecraftResourcePackBuilder()
