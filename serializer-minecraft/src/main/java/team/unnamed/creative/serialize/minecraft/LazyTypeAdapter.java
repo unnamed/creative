@@ -21,43 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft;
 
-import org.junit.jupiter.api.Assertions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
 
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
-public final class ResourceAssertions {
+// TypeAdapter for lazy people
+public abstract class LazyTypeAdapter<T> extends TypeAdapter<T> {
 
-    private ResourceAssertions() {
+    static final JsonParser PARSER = new JsonParser();
+
+    @Override
+    public T read(JsonReader jsonReader) throws IOException {
+        return readFromTree(PARSER.parse(jsonReader));
     }
 
-    public static void assertSerializedResult(
-            String expected,
-            SerializableResource resource
-    ) {
-        StringResourceWriter writer = StringResourceWriter.create();
-        resource.serialize(writer);
-        Assertions.assertEquals(expected, writer.toString());
-    }
-
-    private static class StringResourceWriter extends ResourceWriter {
-
-        private final ByteArrayOutputStream output;
-
-        private StringResourceWriter(ByteArrayOutputStream output) {
-            super(output);
-            this.output = output;
-        }
-
-        public String toString() {
-            return output.toString();
-        }
-
-        private static StringResourceWriter create() {
-            return new StringResourceWriter(new ByteArrayOutputStream());
-        }
-
-    }
+    public abstract T readFromTree(JsonElement element) throws IOException;
 
 }

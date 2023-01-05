@@ -25,7 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
 import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.serialize.minecraft.io.FileTree;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 
 import java.io.IOException;
 import java.util.Map;
@@ -34,7 +34,7 @@ final class SerializerLanguage {
 
     static final SerializerLanguage INSTANCE = new SerializerLanguage();
 
-    public void write(Language language, FileTree tree) throws IOException {
+    public void write(Language language, FileTreeWriter tree) throws IOException {
         try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(language))) {
             // {
             //   "key.1": "value 1",

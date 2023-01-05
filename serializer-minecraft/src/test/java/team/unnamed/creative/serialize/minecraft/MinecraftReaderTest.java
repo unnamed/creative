@@ -24,13 +24,22 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import org.junit.jupiter.api.Test;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.zip.ZipInputStream;
 
 public class MinecraftReaderTest {
 
     @Test
     public void test() throws IOException {
+        try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/resource-packs/spawn_eggs.zip")))) {
+            MinecraftResourcePackReader.minecraft().read(
+                    treeReader,
+                    new MinecraftResourcePackBuilder()
+            );
+        }
     }
 
 }

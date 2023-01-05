@@ -23,14 +23,31 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.serialize.ResourcePackSerializer;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+
+import java.util.function.Consumer;
 
 public final class MinecraftResourcePackSerializer implements ResourcePackSerializer {
 
     private MinecraftResourcePackSerializer() {
     }
 
-    public static ResourcePackSerializer minecraft() {
+    @Override
+    public ResourcePackBuilder builder() {
+        return MinecraftResourcePackBuilder.minecraft();
+    }
+
+    public void serialize(ResourcePackBuilder resourcePack, FileTreeWriter tree) {
+    }
+
+    public ResourcePack build(Consumer<ResourcePackBuilder> builder) {
+        return null;
+    }
+
+    public static MinecraftResourcePackSerializer minecraft() {
         return new MinecraftResourcePackSerializer();
     }
 

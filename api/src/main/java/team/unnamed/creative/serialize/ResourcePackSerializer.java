@@ -23,11 +23,13 @@
  */
 package team.unnamed.creative.serialize;
 
+import team.unnamed.creative.ResourcePackBuilder;
+
 /**
  * @since 1.0.0
  */
 public interface ResourcePackSerializer {
 
-
+    ResourcePackBuilder builder();
 
 }

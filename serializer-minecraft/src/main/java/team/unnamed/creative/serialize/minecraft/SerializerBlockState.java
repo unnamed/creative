@@ -29,7 +29,7 @@ import team.unnamed.creative.blockstate.Condition;
 import team.unnamed.creative.blockstate.MultiVariant;
 import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
-import team.unnamed.creative.serialize.minecraft.io.FileTree;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ final class SerializerBlockState {
 
     static final SerializerBlockState INSTANCE = new SerializerBlockState();
 
-    public void write(BlockState state, FileTree tree) throws IOException {
+    public void write(BlockState state, FileTreeWriter tree) throws IOException {
         try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(state))) {
             writer.beginObject();
 

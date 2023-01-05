@@ -397,7 +397,7 @@ public class Sound implements Keyed, Examinable {
         private boolean stream = DEFAULT_STREAM;
         private int attenuationDistance = DEFAULT_ATTENUATION_DISTANCE;
         private boolean preload = DEFAULT_PRELOAD;
-        private Type type;
+        private Type type = DEFAULT_TYPE;
 
         private Builder() {
         }

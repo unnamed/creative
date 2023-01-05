@@ -33,15 +33,15 @@ import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.Set;
 
-final class DirectoryFileTree
-        implements FileTree {
+final class DirectoryFileTreeWriter
+        implements FileTreeWriter {
 
     private final Set<String> names = new HashSet<>();
 
     private final File root;
     private OutputStream stream;
 
-    DirectoryFileTree(File root, boolean clear) {
+    DirectoryFileTreeWriter(File root, boolean clear) {
         this.root = root;
         if (clear) {
             Streams.deleteContents(root);

@@ -41,7 +41,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @since 1.0.0
  */
-public interface FileTree extends AutoCloseable {
+public interface FileTreeWriter extends AutoCloseable {
 
     /**
      * Determines if a file exists in this file
@@ -112,7 +112,7 @@ public interface FileTree extends AutoCloseable {
     void close();
 
     /**
-     * Creates a new {@link FileTree} instance for
+     * Creates a new {@link FileTreeWriter} instance for
      * the given {@link File} folder, all files will
      * be written inside it
      *
@@ -123,12 +123,12 @@ public interface FileTree extends AutoCloseable {
      * @param clear True to delete the folder contents
      * @return The created file tree for the given folder
      */
-    static FileTree directory(File root, boolean clear) {
-        return new DirectoryFileTree(root, clear);
+    static FileTreeWriter directory(File root, boolean clear) {
+        return new DirectoryFileTreeWriter(root, clear);
     }
 
     /**
-     * Creates a new {@link FileTree} instance for
+     * Creates a new {@link FileTreeWriter} instance for
      * the given {@link File} folder, all files will
      * be written inside it
      *
@@ -138,12 +138,12 @@ public interface FileTree extends AutoCloseable {
      * @param root The root folder
      * @return The created file tree for the given folder
      */
-    static FileTree directory(File root) {
+    static FileTreeWriter directory(File root) {
         return directory(root, true);
     }
 
     /**
-     * Creates a new {@link FileTree} instance for
+     * Creates a new {@link FileTreeWriter} instance for
      * the given {@link ZipOutputStream}, will not
      * be closed
      *
@@ -156,12 +156,12 @@ public interface FileTree extends AutoCloseable {
      * @return The file tree for the given zip output
      * stream
      */
-    static FileTree zip(ZipOutputStream zipStream, Function<String, ZipEntry> entryFactory) {
-        return new ZipFileTree(zipStream, entryFactory);
+    static FileTreeWriter zip(ZipOutputStream zipStream, Function<String, ZipEntry> entryFactory) {
+        return new ZipFileTreeWriter(zipStream, entryFactory);
     }
 
     /**
-     * Creates a new {@link FileTree} instance for
+     * Creates a new {@link FileTreeWriter} instance for
      * the given {@link ZipOutputStream}, will not
      * be closed
      *
@@ -173,7 +173,7 @@ public interface FileTree extends AutoCloseable {
      * @return The file tree for the given zip output
      * stream
      */
-    static FileTree zip(ZipOutputStream zipStream) {
+    static FileTreeWriter zip(ZipOutputStream zipStream) {
         return zip(zipStream, path -> {
             ZipEntry entry = new ZipEntry(path);
             // ensures that the resulting zip file is always

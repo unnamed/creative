@@ -31,7 +31,7 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.font.LegacyUnicodeFontProvider;
 import team.unnamed.creative.font.SpaceFontProvider;
 import team.unnamed.creative.font.TrueTypeFontProvider;
-import team.unnamed.creative.serialize.minecraft.io.FileTree;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ final class SerializerFont {
 
     static final SerializerFont INSTANCE = new SerializerFont();
 
-    public void write(Font font, FileTree tree) throws IOException {
+    public void write(Font font, FileTreeWriter tree) throws IOException {
         try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(font))) {
             writer.beginObject()
                     .name("providers")

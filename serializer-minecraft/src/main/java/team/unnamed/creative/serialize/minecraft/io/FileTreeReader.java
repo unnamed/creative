@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public interface FileTreeWalker {
+public interface FileTreeReader extends AutoCloseable {
 
     boolean hasNext();
 
@@ -38,8 +38,11 @@ public interface FileTreeWalker {
 
     InputStream input();
 
-    static FileTreeWalker zip(ZipInputStream zip) {
-        return new FileTreeWalker() {
+    @Override
+    void close() throws IOException;
+
+    static FileTreeReader zip(ZipInputStream zip) {
+        return new FileTreeReader() {
 
             private ZipEntry entry;
 
@@ -66,6 +69,10 @@ public interface FileTreeWalker {
                 return zip;
             }
 
+            @Override
+            public void close() throws IOException {
+                zip.close();
+            }
         };
     }
 

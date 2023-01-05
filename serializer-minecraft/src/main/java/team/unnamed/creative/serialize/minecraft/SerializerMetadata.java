@@ -23,11 +23,11 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import org.intellij.lang.annotations.RegExp;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.PackMeta;
@@ -39,6 +39,7 @@ import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -49,9 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.google.gson.stream.JsonToken.END_OBJECT;
-
-final class SerializerMetadata extends TypeAdapter<Metadata> {
+final class SerializerMetadata extends LazyTypeAdapter<Metadata> {
 
     static final SerializerMetadata INSTANCE = new SerializerMetadata();
 
@@ -93,27 +92,37 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
     }
 
     @Override
-    public Metadata read(JsonReader reader) throws IOException {
-        reader.beginObject();
+    public Metadata readFromTree(JsonElement element) {
+        JsonObject object = element.getAsJsonObject();
         Metadata.Builder builder = Metadata.builder();
-        while (reader.peek() != END_OBJECT) {
-            String key = reader.nextName();
-            switch (key) {
+        for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+            String partName = entry.getKey();
+            JsonObject partObject = entry.getValue().getAsJsonObject();
+
+            switch (partName) {
                 case ANIMATION_FIELD:
-                    builder.add(readAnimation(reader));
+                    builder.add(readAnimation(partObject));
+                    break;
                 case FILTER_FIELD:
-                    builder.add(readFilter(reader));
+                    builder.add(readFilter(partObject));
+                    break;
                 case LANGUAGE_FIELD:
-                    builder.add(readLanguage(reader));
+                    builder.add(readLanguage(partObject));
+                    break;
                 case PACK_FIELD:
-                    builder.add(readPack(reader));
+                    builder.add(readPack(partObject));
+                    break;
                 case TEXTURE_FIELD:
-                    builder.add(readTexture(reader));
+                    builder.add(readTexture(partObject));
+                    break;
                 case VILLAGER_FIELD:
-                    builder.add(readVillager(reader));
+                    builder.add(readVillager(partObject));
+                    break;
+                default:
+                    System.err.println("Unknown metadata part name: " + partName);
+                    break;
             }
         }
-        reader.endObject();
         return builder.build();
     }
 
@@ -159,64 +168,31 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
         writer.endObject();
     }
 
-    private static AnimationMeta readAnimation(JsonReader reader) throws IOException {
-        reader.beginObject();
-        AnimationMeta.Builder animation = AnimationMeta.builder();
-        while (reader.peek() != END_OBJECT) {
-            String key = reader.nextName();
-            switch (key) {
-                case "interpolate":
-                    animation.interpolate(reader.nextBoolean());
-                    break;
-                case "width":
-                    animation.width(reader.nextInt());
-                    break;
-                case "height":
-                    animation.height(reader.nextInt());
-                    break;
-                case "frametime":
-                    animation.frameTime(reader.nextInt());
-                    break;
-                case "frames": {
-                    reader.beginArray();
-                    JsonToken tok;
-                    List<AnimationFrame> frames = new ArrayList<>();
-                    while ((tok = reader.peek()) != JsonToken.END_ARRAY) {
-                        if (tok == JsonToken.NUMBER) {
-                            // only a number, represents an index
-                            frames.add(AnimationFrame.of(reader.nextInt()));
-                        } else if (tok == JsonToken.BEGIN_OBJECT) {
-                            reader.beginObject();
-                            int index = 0;
-                            int time = AnimationFrame.DELEGATE_FRAME_TIME;
-                            while (reader.peek() != END_OBJECT) {
-                                String name = reader.nextName();
-                                switch (name) {
-                                    case "index":
-                                        index = reader.nextInt();
-                                        break;
-                                    case "time":
-                                        time = reader.nextInt();
-                                        break;
-                                    default:
-                                        throw new IllegalStateException("Unknown animation meta frame property: " + name);
-                                }
-                            }
-                            frames.add(AnimationFrame.of(index, time));
-                            reader.endObject();
-                        } else {
-                            throw new IllegalStateException("Expected a NUMBER or an OBJECT, found: " + tok);
-                        }
-                    }
-                    animation.frames(frames);
-                    reader.endArray();
-                    break;
+    private static AnimationMeta readAnimation(JsonObject node) {
+        AnimationMeta.Builder animation = AnimationMeta.builder()
+                .interpolate(GsonUtil.getBoolean(node, "interpolate", AnimationMeta.DEFAULT_INTERPOLATE))
+                .width(GsonUtil.getInt(node, "width", AnimationMeta.DEFAULT_WIDTH))
+                .height(GsonUtil.getInt(node, "height", AnimationMeta.DEFAULT_HEIGHT))
+                .frameTime(GsonUtil.getInt(node, "frametime", AnimationMeta.DEFAULT_FRAMETIME));
+
+        if (node.has("frames")) {
+            List<AnimationFrame> frames = new ArrayList<>();
+            for (JsonElement frameNode : node.get("frames").getAsJsonArray()) {
+                if (frameNode.isJsonObject()) {
+                    JsonObject frameObject = frameNode.getAsJsonObject();
+                    // represents complete frame (index and frame time)
+                    int time = GsonUtil.getInt(frameObject, "time", AnimationFrame.DELEGATE_FRAME_TIME);
+                    int index = frameObject.get("index").getAsInt(); // required
+                    frames.add(AnimationFrame.of(index, time));
+                } else {
+                    // represents the index only
+                    int index = frameNode.getAsInt();
+                    frames.add(AnimationFrame.of(index));
                 }
-                default:
-                    throw new IllegalStateException("Unknown animation meta property: " + key);
             }
+            animation.frames(frames);
         }
-        reader.endObject();
+
         return animation.build();
     }
     //#endregion
@@ -242,16 +218,20 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
         writer.endArray().endObject();
     }
 
-    private static FilterMeta readFilter(JsonReader reader) throws IOException {
+    private static FilterMeta readFilter(JsonObject node) {
         List<FilterPattern> patterns = new ArrayList<>();
-        reader.beginObject();
-        String name = reader.nextName();
-        if (!"block".equals(name)) {
-            throw new IllegalStateException("Unknown filter meta property: " + name);
+        for (JsonElement filterNode : node.getAsJsonArray("block")) {
+            JsonObject filterObjectNode = filterNode.getAsJsonObject();
+            @RegExp String namespace = null;
+            @RegExp String path = null;
+            if (filterObjectNode.has("namespace")) {
+                namespace = filterObjectNode.get("namespace").getAsString();
+            }
+            if (filterObjectNode.has("path")) {
+                path = filterObjectNode.get("path").getAsString();
+            }
+            patterns.add(FilterPattern.of(namespace, path));
         }
-        reader.beginArray();
-        reader.endArray();
-        reader.endObject();
         return FilterMeta.of(patterns);
     }
     //#endregion
@@ -275,33 +255,20 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
         writer.endObject();
     }
 
-    private static LanguageMeta readLanguage(JsonReader reader) throws IOException {
+    private static LanguageMeta readLanguage(JsonObject node) {
         Map<Key, LanguageEntry> languages = new HashMap<>();
-        reader.beginObject();
-        while (reader.peek() != END_OBJECT) {
-            Key key = Key.key(reader.nextName());
-            LanguageEntry.Builder entry = LanguageEntry.builder();
-            reader.beginObject();
-            while (reader.peek() != END_OBJECT) {
-                String name = reader.nextName();
-                switch (name) {
-                    case "name":
-                        entry.name(reader.nextString());
-                        break;
-                    case "region":
-                        entry.region(reader.nextString());
-                        break;
-                    case "bidirectional":
-                        entry.bidirectional(reader.nextBoolean());
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown language entry property: " + name);
-                }
-            }
-            reader.endObject();
-            languages.put(key, entry.build());
+
+        for (Map.Entry<String, JsonElement> entry : node.entrySet()) {
+            Key key = Key.key(entry.getKey());
+            JsonObject languageEntryNode = entry.getValue().getAsJsonObject();
+
+            LanguageEntry languageEntry = LanguageEntry.builder()
+                    .name(languageEntryNode.get("name").getAsString())
+                    .region(languageEntryNode.get("region").getAsString())
+                    .bidirectional(GsonUtil.getBoolean(languageEntryNode, "bidirectional", LanguageEntry.DEFAULT_BIDIRECTIONAL))
+                    .build();
+            languages.put(key, languageEntry);
         }
-        reader.endObject();
         return LanguageMeta.of(languages);
     }
     //#endregion
@@ -314,27 +281,9 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
                 .endObject();
     }
 
-    private static PackMeta readPack(JsonReader reader) throws IOException {
-        Integer format = null;
-        String description = null;
-        reader.beginObject();
-        while (reader.peek() != END_OBJECT) {
-            String name = reader.nextName();
-            switch (name) {
-                case "pack_format":
-                    format = reader.nextInt();
-                    break;
-                case "description":
-                    description = reader.nextString();
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown pack meta property: " + name);
-            }
-        }
-        reader.endObject();
-        if (format == null || description == null) {
-            throw new IllegalStateException("No 'pack_format' nor 'description' required properties found");
-        }
+    private static PackMeta readPack(JsonObject node) {
+        int format = node.get("pack_format").getAsInt();
+        String description = node.get("description").getAsString();
         return PackMeta.of(format, description);
     }
     //#endregion
@@ -353,24 +302,9 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
         writer.endObject();
     }
 
-    private static TextureMeta readTexture(JsonReader reader) throws IOException {
-        boolean blur = TextureMeta.DEFAULT_BLUR;
-        boolean clamp = TextureMeta.DEFAULT_CLAMP;
-        reader.beginObject();
-        while (reader.peek() != END_OBJECT) {
-            String name = reader.nextName();
-            switch (name) {
-                case "blur":
-                    blur = reader.nextBoolean();
-                    break;
-                case "clamp":
-                    clamp = reader.nextBoolean();
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown texture meta property: " + name);
-            }
-        }
-        reader.endObject();
+    private static TextureMeta readTexture(JsonObject node) {
+        boolean blur = GsonUtil.getBoolean(node, "blur", TextureMeta.DEFAULT_BLUR);
+        boolean clamp = GsonUtil.getBoolean(node, "clamp", TextureMeta.DEFAULT_CLAMP);
         return TextureMeta.of(blur, clamp);
     }
     //#endregion
@@ -386,14 +320,9 @@ final class SerializerMetadata extends TypeAdapter<Metadata> {
         writer.endObject();
     }
 
-    private static VillagerMeta readVillager(JsonReader reader) throws IOException {
-        reader.beginObject();
-        String name = reader.nextName();
-        if (!"hat".equals(name)) {
-            throw new IllegalStateException("Unknown villager meta property: " + name);
-        }
-        VillagerMeta.Hat hat = VillagerMeta.Hat.valueOf(reader.nextString().toUpperCase(Locale.ROOT));
-        reader.endObject();
+    private static VillagerMeta readVillager(JsonObject node) {
+        String hatName = node.get("hat").getAsString();
+        VillagerMeta.Hat hat = VillagerMeta.Hat.valueOf(hatName.toUpperCase(Locale.ROOT));
         return VillagerMeta.of(hat);
     }
     //#endregion

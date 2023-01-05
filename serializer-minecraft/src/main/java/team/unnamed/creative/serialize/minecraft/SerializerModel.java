@@ -37,7 +37,7 @@ import team.unnamed.creative.model.ItemPredicate;
 import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
-import team.unnamed.creative.serialize.minecraft.io.FileTree;
+import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -49,7 +49,7 @@ final class SerializerModel {
 
     static final SerializerModel INSTANCE = new SerializerModel();
 
-    public void write(Model model, FileTree tree) throws IOException {
+    public void write(Model model, FileTreeWriter tree) throws IOException {
         try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(model))) {
             writer.beginObject();
 

@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.serialize.FileTree;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
@@ -37,6 +36,7 @@ import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
+import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -46,6 +46,15 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ResourcePackBuilder {
+
+    //#region Icon methods
+    // |-----------------------------------|
+    // |--------- ICON OPERATIONS ---------|
+    // |-----------------------------------|
+    ResourcePackBuilder icon(@Nullable Writable icon);
+
+    @Nullable Writable icon();
+    //#endregion
 
     //#region Metadata methods
     // |-----------------------------------|
@@ -60,6 +69,8 @@ public interface ResourcePackBuilder {
     }
 
     // Languages
+    ResourcePackBuilder languageRegistry(LanguageMeta meta);
+
     ResourcePackBuilder languageEntry(Key key, LanguageEntry languageEntry);
 
     @Nullable LanguageEntry languageEntry(Key key);
@@ -166,15 +177,5 @@ public interface ResourcePackBuilder {
     //#endregion
 
     ResourcePackBuilder file(String path, Writable data);
-
-    void writeTo(FileTree tree);
-
-    default ResourcePack build() {
-        return ResourcePack.build(this::writeTo);
-    }
-
-    static ResourcePackBuilder create() {
-        return new ResourcePackBuilderImpl();
-    }
 
 }

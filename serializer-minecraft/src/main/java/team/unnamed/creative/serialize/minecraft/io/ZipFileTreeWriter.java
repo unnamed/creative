@@ -35,7 +35,7 @@ import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-final class ZipFileTree implements FileTree {
+final class ZipFileTreeWriter implements FileTreeWriter {
 
     private final Set<String> names = new HashSet<>();
     private final ZipOutputStream output;
@@ -43,7 +43,7 @@ final class ZipFileTree implements FileTree {
 
     private ZipEntryOutputStream current;
 
-    ZipFileTree(ZipOutputStream output, Function<String, ZipEntry> entryFactory) {
+    ZipFileTreeWriter(ZipOutputStream output, Function<String, ZipEntry> entryFactory) {
         this.output = output;
         this.entryFactory = entryFactory;
     }

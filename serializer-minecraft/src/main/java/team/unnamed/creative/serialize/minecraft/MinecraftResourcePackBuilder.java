@@ -21,18 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative;
+package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.serialize.FileTree;
-import team.unnamed.creative.base.KeyedMap;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
@@ -50,7 +47,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-final class ResourcePackBuilderImpl implements ResourcePackBuilder {
+public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     private static final String BLOCK_STATES = "blockStates";
     private static final String FONTS = "fonts";
@@ -61,17 +58,33 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
     private static final String SOUND_FILES = "soundFiles";
     private static final String TEXTURES = "textures";
 
+    private @Nullable Writable icon;
+
     // Metadata
     private @Nullable PackMeta packMeta;
     private @Nullable LanguageMeta languageMeta;
     private @Nullable FilterMeta filterMeta;
     private @Nullable Map<String, MetadataPart> customMetadataParts;
 
-    private final Map<String, KeyedMap<? extends FileResource>> files = new HashMap<>();
     private @Nullable Map<String, SoundRegistry> soundRegistries;
 
     private @Nullable Map<String, Writable> extraFiles;
 
+    //#region Icon methods
+    // |-----------------------------------|
+    // |--------- ICON OPERATIONS ---------|
+    // |-----------------------------------|
+    @Override
+    public ResourcePackBuilder icon(@Nullable Writable icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    @Override
+    public @Nullable Writable icon() {
+        return icon;
+    }
+    //#endregion
 
     //#region Metadata methods
     // |-----------------------------------|
@@ -80,6 +93,12 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
     @Override
     public ResourcePackBuilder meta(PackMeta meta) {
         this.packMeta = requireNonNull(meta, "meta");
+        return this;
+    }
+
+    @Override
+    public ResourcePackBuilder languageRegistry(LanguageMeta meta) {
+        this.languageMeta = meta;
         return this;
     }
 
@@ -133,35 +152,31 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder blockState(BlockState state) {
-        getOrCreateFor(BLOCK_STATES).put(state);
         return this;
     }
 
     @Override
     public @Nullable BlockState blockState(Key key) {
-        return get(BLOCK_STATES, key);
+        return null;
     }
 
     @Override
     public Collection<BlockState> blockStates() {
-        return getAll(BLOCK_STATES);
+        return null;
     }
 
     @Override
     public ResourcePackBuilder font(Font font) {
-        getOrCreateFor(FONTS).put(font);
         return this;
     }
 
     @Override
     public ResourcePackBuilder language(Language language) {
-        getOrCreateFor(LANGUAGES).put(language);
         return this;
     }
 
     @Override
     public ResourcePackBuilder model(Model model) {
-        getOrCreateFor(MODELS).put(model);
         return this;
     }
 
@@ -176,13 +191,11 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder sound(Sound.File soundFile) {
-        getOrCreateFor(SOUND_FILES).put(soundFile);
         return this;
     }
 
     @Override
     public ResourcePackBuilder texture(Texture texture) {
-        getOrCreateFor(TEXTURES).put(texture);
         return this;
     }
 
@@ -197,70 +210,8 @@ final class ResourcePackBuilderImpl implements ResourcePackBuilder {
         return this;
     }
 
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void writeTo(FileTree tree) {
-        if (packMeta == null) {
-            throw new IllegalStateException("You must set the resource pack meta (ResourcePackBuilder#meta)");
-        }
-
-        // write our pack.mcmeta file
-        {
-            Metadata.Builder metaBuilder = Metadata.builder()
-                    .add(packMeta);
-
-            if (filterMeta != null) {
-                metaBuilder.add(filterMeta);
-            }
-
-            if (customMetadataParts != null) {
-                for (MetadataPart part : customMetadataParts.values()) {
-                    metaBuilder.add((Class) part.getClass(), part);
-                }
-            }
-
-            tree.write(metaBuilder.build());
-        }
-
-        for (KeyedMap<?> map : files.values()) {
-            tree.write(map.values());
-        }
-
-        // write sound registries
-        if (soundRegistries != null) {
-            tree.write(soundRegistries.values());
-        }
-
-        // write extra files
-        if (extraFiles != null) {
-            tree.write(extraFiles);
-        }
-    }
-
-    // helper methods
-    @SuppressWarnings("unchecked")
-    private <T extends Keyed & FileResource> KeyedMap<T> getOrCreateFor(String key) {
-        return (KeyedMap<T>) files.computeIfAbsent(key, k -> new KeyedMap<>());
-    }
-
-    private <T extends Keyed & FileResource> @Nullable T get(String key, Key objectKey) {
-        @SuppressWarnings("unchecked")
-        KeyedMap<T> map = (KeyedMap<T>) files.get(key);
-        if (map == null) {
-            return null;
-        } else {
-            return map.get(objectKey);
-        }
-    }
-
-    private <T extends Keyed & FileResource> Collection<T> getAll(String key) {
-        @SuppressWarnings("unchecked")
-        KeyedMap<T> map = (KeyedMap<T>) files.get(key);
-        if (map == null) {
-            return Collections.emptySet();
-        } else {
-            return map.values();
-        }
+    public static ResourcePackBuilder minecraft() {
+        return new MinecraftResourcePackBuilder();
     }
 
 }

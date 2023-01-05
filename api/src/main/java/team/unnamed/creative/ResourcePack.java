@@ -23,17 +23,6 @@
  */
 package team.unnamed.creative;
 
-import team.unnamed.creative.serialize.FileTree;
-import team.unnamed.creative.serialize.FileTreeWriter;
-
-import java.io.ByteArrayOutputStream;
-import java.security.DigestOutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.zip.ZipOutputStream;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -76,50 +65,6 @@ public final class ResourcePack {
      */
     public String hash() {
         return hash;
-    }
-
-    public static ResourcePack build(Iterable<? extends FileTreeWriter> writers) {
-
-        MessageDigest digest;
-
-        try {
-            digest = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("Cannot find SHA-1 algorithm");
-        }
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        try (FileTree tree = FileTree.zip(new ZipOutputStream(new DigestOutputStream(output, digest)))) {
-            for (FileTreeWriter writer : writers) {
-                writer.write(tree);
-            }
-        }
-
-        byte[] hash = digest.digest();
-        StringBuilder hexHash = new StringBuilder(hash.length * 2);
-        for (byte b : hash) {
-            int part1 = (b >> 4) & 0xF;
-            int part2 = b & 0xF;
-            hexHash
-                    .append(hex(part1))
-                    .append(hex(part2));
-        }
-
-        return new ResourcePack(output.toByteArray(), hexHash.toString());
-    }
-
-    public static ResourcePack build(FileTreeWriter... writers) {
-        return build(Arrays.asList(writers));
-    }
-
-    @Deprecated
-    public static ResourcePack build() {
-        return build(Collections.emptyList());
-    }
-
-    private static char hex(int c) {
-        return "0123456789abcdef".charAt(c);
     }
 
 }
