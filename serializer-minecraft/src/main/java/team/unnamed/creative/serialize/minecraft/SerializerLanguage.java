@@ -23,30 +23,50 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Key;
 import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
-final class SerializerLanguage {
+final class SerializerLanguage extends LazyTypeAdapter<Language> {
 
     static final SerializerLanguage INSTANCE = new SerializerLanguage();
 
-    public void write(Language language, FileTreeWriter tree) throws IOException {
-        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(language))) {
-            // {
-            //   "key.1": "value 1",
-            //   "key.2": "value 2"
-            // }
-            writer.beginObject();
-            for (Map.Entry<String, String> entry : language.translations().entrySet()) {
-                writer.name(entry.getKey())
-                        .value(entry.getValue());
-            }
-            writer.endObject();
+    @Override
+    public void write(JsonWriter writer, Language language) throws IOException {
+        // {
+        //   "key.1": "value 1",
+        //   "key.2": "value 2"
+        // }
+        writer.beginObject();
+        for (Map.Entry<String, String> entry : language.translations().entrySet()) {
+            writer.name(entry.getKey()).value(entry.getValue());
         }
+        writer.endObject();
+    }
+
+    public Language readFromTree(JsonElement node, Key key) throws IOException {
+        JsonObject objectNode = node.getAsJsonObject();
+        Map<String, String> translations = new HashMap<>();
+
+        for (Map.Entry<String, JsonElement> translationEntry : objectNode.entrySet()) {
+            String translationKey = translationEntry.getKey();
+            String translationValue = translationEntry.getValue().getAsString();
+
+            translations.put(translationKey, translationValue);
+        }
+
+        return Language.of(key, translations);
+    }
+
+    @Override
+    public Language readFromTree(JsonElement element) throws IOException {
+        throw new UnsupportedOperationException("We require a key!");
     }
 
 }

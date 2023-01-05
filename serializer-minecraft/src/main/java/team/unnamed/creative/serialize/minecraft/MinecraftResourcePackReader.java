@@ -27,6 +27,7 @@ import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.METADATA_EXTENSION;
+import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.OBJECT_EXTENSION;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.TEXTURE_EXTENSION;
 
 public final class MinecraftResourcePackReader {
@@ -217,6 +219,20 @@ public final class MinecraftResourcePackReader {
                         break;
                     }
                     case MinecraftResourcePackStructure.LANGUAGES_FOLDER: {
+                        String keyValue = String.join("/", tokens);
+
+                        if (!keyValue.endsWith(OBJECT_EXTENSION)) {
+                            System.err.println("Language file doesn't have a JSON extension");
+                            break;
+                        }
+
+                        Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
+                        Language language = SerializerLanguage.INSTANCE.readFromTree(
+                                LazyTypeAdapter.PARSER.parse(new JsonReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))),
+                                key
+                        );
+                        output.language(language);
+                        System.out.println("Read language " + key + " with " + language.translations().size() + " translations");
                         break;
                     }
                     case MinecraftResourcePackStructure.BLOCKSTATES_FOLDER: {
