@@ -71,7 +71,7 @@ final class SerializerFont {
     public Font readFont(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         List<FontProvider> providers = new ArrayList<>();
-        for (JsonElement providerNode : objectNode.getAsJsonArray()) {
+        for (JsonElement providerNode : objectNode.getAsJsonArray("providers")) {
             JsonObject providerObjectNode = providerNode.getAsJsonObject();
             String type = providerObjectNode.get("type").getAsString();
             switch (type) {

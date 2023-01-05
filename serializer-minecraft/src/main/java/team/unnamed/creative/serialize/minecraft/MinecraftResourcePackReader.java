@@ -23,16 +23,21 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.model.Model;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
+import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
@@ -48,9 +53,12 @@ import java.util.Queue;
 
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.METADATA_EXTENSION;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.OBJECT_EXTENSION;
+import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.SOUND_EXTENSION;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.TEXTURE_EXTENSION;
 
 public final class MinecraftResourcePackReader {
+
+    private static final JsonParser PARSER = new JsonParser();
 
     private MinecraftResourcePackReader() {
     }
@@ -78,7 +86,7 @@ public final class MinecraftResourcePackReader {
                 switch (tokens.poll()) {
                     case MinecraftResourcePackStructure.PACK_METADATA_FILE: {
 
-                        Metadata metadata = SerializerMetadata.INSTANCE.read(new JsonReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)));
+                        Metadata metadata = SerializerMetadata.INSTANCE.readFromTree(PARSER.parse(reader(inputStream)));
 
                         // pack meta read
                         PackMeta packMeta = metadata.meta(PackMeta.class);
@@ -144,9 +152,8 @@ public final class MinecraftResourcePackReader {
                 if (tokens.isEmpty()) {
                     if (category.equals("sounds.json")) {
                         SoundRegistry soundRegistry = SerializerSoundRegistry.INSTANCE.readFromTree(
-                                LazyTypeAdapter.PARSER.parse(new JsonReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))),
-                                namespace
-                        );
+                                PARSER.parse(reader(inputStream)),
+                                namespace);
                         output.sounds(soundRegistry);
                         System.out.println("Found sounds.json file for namespace "
                                 + namespace + " with " + soundRegistry.sounds().size() + " sound entries");
@@ -160,7 +167,12 @@ public final class MinecraftResourcePackReader {
                 switch (category) {
                     case MinecraftResourcePackStructure.MODELS_FOLDER: {
                         String keyValue = String.join("/", tokens);
-                        Key key = Key.key(namespace, keyValue);
+                        if (!keyValue.endsWith(OBJECT_EXTENSION)) {
+                            throw new IllegalStateException("model extension is not JSON!");
+                        }
+                        Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
+                        Model model = SerializerModel.INSTANCE.readModel(PARSER.parse(reader(inputStream)), key);
+                        output.model(model);
                         System.out.println("Found a model with key: " + key);
                         break;
                     }
@@ -169,7 +181,7 @@ public final class MinecraftResourcePackReader {
                         if (keyValue.endsWith(METADATA_EXTENSION)) {
                             // a metadata file
                             Key key = Key.key(keyValue.substring(0, keyValue.length() - METADATA_EXTENSION.length()));
-                            Metadata meta = SerializerMetadata.INSTANCE.read(new JsonReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)));
+                            Metadata meta = SerializerMetadata.INSTANCE.readFromTree(PARSER.parse(reader(inputStream)));
                             Texture texture = waitingForMeta.remove(key);
 
                             if (texture != null) {
@@ -213,9 +225,27 @@ public final class MinecraftResourcePackReader {
                         break;
                     }
                     case MinecraftResourcePackStructure.SOUNDS_FOLDER: {
+                        String keyValue = String.join("/", tokens);
+                        if (!keyValue.endsWith(SOUND_EXTENSION)) {
+                            throw new IllegalStateException("Sound not ending with its valid extension");
+                        }
+                        Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - SOUND_EXTENSION.length()));
+                        Sound.File sound = Sound.File.of(key, Writable.copyInputStream(inputStream));
+                        output.sound(sound);
+                        System.out.println("Loaded sound " + key);
                         break;
                     }
                     case MinecraftResourcePackStructure.FONTS_FOLDER: {
+                        String keyValue = String.join("/", tokens);
+                        if (!keyValue.endsWith(OBJECT_EXTENSION)) {
+                            throw new IllegalStateException("Font not ending with its valid extension");
+                        }
+                        Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
+                        Font font = SerializerFont.INSTANCE.readFont(
+                                PARSER.parse(reader(inputStream)),
+                                key
+                        );
+                        System.out.println("Loaded font " + font.key());
                         break;
                     }
                     case MinecraftResourcePackStructure.LANGUAGES_FOLDER: {
@@ -228,7 +258,7 @@ public final class MinecraftResourcePackReader {
 
                         Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
                         Language language = SerializerLanguage.INSTANCE.readFromTree(
-                                LazyTypeAdapter.PARSER.parse(new JsonReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))),
+                                PARSER.parse(reader(inputStream)),
                                 key
                         );
                         output.language(language);
@@ -236,6 +266,20 @@ public final class MinecraftResourcePackReader {
                         break;
                     }
                     case MinecraftResourcePackStructure.BLOCKSTATES_FOLDER: {
+                        String keyValue = String.join("/", tokens);
+
+                        if (!keyValue.endsWith(OBJECT_EXTENSION)) {
+                            System.err.println("Blockstate file doesn't have a JSON extension");
+                            break;
+                        }
+
+                        Key key = Key.key(namespace, keyValue.substring(0, keyValue.length() - OBJECT_EXTENSION.length()));
+                        BlockState blockState = SerializerBlockState.INSTANCE.readFromTree(
+                                PARSER.parse(reader(inputStream)),
+                                key
+                        );
+                        output.blockState(blockState);
+                        System.out.println("Read blockstate " + key);
                         break;
                     }
                     default: {
@@ -260,6 +304,10 @@ public final class MinecraftResourcePackReader {
                 System.err.println("Found an unpaired texture metadata file for: " + texture.key());
             }
         }
+    }
+
+    private static JsonReader reader(InputStream input) {
+        return new JsonReader(new InputStreamReader(input, StandardCharsets.UTF_8));
     }
 
     public static MinecraftResourcePackReader minecraft() {
