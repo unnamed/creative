@@ -23,8 +23,13 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.base.Vector3Float;
@@ -37,10 +42,12 @@ import team.unnamed.creative.model.ItemPredicate;
 import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -49,62 +56,115 @@ final class SerializerModel {
 
     static final SerializerModel INSTANCE = new SerializerModel();
 
-    public void write(Model model, FileTreeWriter tree) throws IOException {
-        try (JsonWriter writer = tree.openJsonWriter(MinecraftResourcePackStructure.pathOf(model))) {
-            writer.beginObject();
+    public void write(JsonWriter writer, Model model) throws IOException {
+        writer.beginObject();
 
-            // parent
-            Key parent = model.parent();
-            if (parent != null) {
-                writer.name("parent").value(Keys.toString(parent));
-            }
+        // parent
+        Key parent = model.parent();
+        if (parent != null) {
+            writer.name("parent").value(Keys.toString(parent));
+        }
 
-            // display
-            Map<ItemTransform.Type, ItemTransform> display = model.display();
-            if (!display.isEmpty()) {
-                writer.name("display").beginObject();
-                for (Map.Entry<ItemTransform.Type, ItemTransform> entry : display.entrySet()) {
-                    writer.name(entry.getKey().name().toLowerCase(Locale.ROOT));
-                    writeItemTransform(writer, entry.getValue());
-                }
-                writer.endObject();
-            }
-
-            // elements
-            List<Element> elements = model.elements();
-            if (!elements.isEmpty()) {
-                writer.name("elements").beginArray();
-                for (Element element : elements) {
-                    writeElement(writer, element);
-                }
-                writer.endArray();
-            }
-
-            boolean ambientOcclusion = model.ambientOcclusion();
-            if (ambientOcclusion != Model.DEFAULT_AMBIENT_OCCLUSION) {
-                // only write if not default value
-                writer.name("ambientocclusion").value(ambientOcclusion);
-            }
-
-            writer.name("textures");
-            writeTexture(writer, model.textures());
-
-            Model.GuiLight guiLight = model.guiLight();
-            if (guiLight != null) {
-                // only write if not default
-                writer.name("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
-            }
-
-            List<ItemOverride> overrides = model.overrides();
-            if (!overrides.isEmpty()) {
-                writer.name("overrides").beginArray();
-                for (ItemOverride override : overrides) {
-                    writeItemOverride(writer, override);
-                }
-                writer.endArray();
+        // display
+        Map<ItemTransform.Type, ItemTransform> display = model.display();
+        if (!display.isEmpty()) {
+            writer.name("display").beginObject();
+            for (Map.Entry<ItemTransform.Type, ItemTransform> entry : display.entrySet()) {
+                writer.name(entry.getKey().name().toLowerCase(Locale.ROOT));
+                writeItemTransform(writer, entry.getValue());
             }
             writer.endObject();
         }
+
+        // elements
+        List<Element> elements = model.elements();
+        if (!elements.isEmpty()) {
+            writer.name("elements").beginArray();
+            for (Element element : elements) {
+                writeElement(writer, element);
+            }
+            writer.endArray();
+        }
+
+        boolean ambientOcclusion = model.ambientOcclusion();
+        if (ambientOcclusion != Model.DEFAULT_AMBIENT_OCCLUSION) {
+            // only write if not default value
+            writer.name("ambientocclusion").value(ambientOcclusion);
+        }
+
+        writer.name("textures");
+        writeTexture(writer, model.textures());
+
+        Model.GuiLight guiLight = model.guiLight();
+        if (guiLight != null) {
+            // only write if not default
+            writer.name("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
+        }
+
+        List<ItemOverride> overrides = model.overrides();
+        if (!overrides.isEmpty()) {
+            writer.name("overrides").beginArray();
+            for (ItemOverride override : overrides) {
+                writeItemOverride(writer, override);
+            }
+            writer.endArray();
+        }
+        writer.endObject();
+    }
+
+    public Model readModel(JsonElement node, Key key) {
+
+        JsonObject objectNode = node.getAsJsonObject();
+
+        // parent
+        Key parent = null;
+        if (objectNode.has("parent")) {
+            parent = Key.key(objectNode.get("parent").getAsString());
+        }
+
+        // display
+        Map<ItemTransform.Type, ItemTransform> display = new HashMap<>();
+        if (objectNode.has("display")) {
+            JsonObject displayNode = objectNode.getAsJsonObject("display");
+            for (Map.Entry<String, JsonElement> entry : displayNode.entrySet()) {
+                ItemTransform.Type type = ItemTransform.Type.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
+                display.put(type, readItemTransform(entry.getValue()));
+            }
+        }
+
+        // elements
+        List<Element> elements = new ArrayList<>();
+        if (objectNode.has("elements")) {
+            for (JsonElement elementNode : objectNode.getAsJsonArray("elements")) {
+                elements.add(readElement(elementNode));
+            }
+        }
+
+        ModelTexture texture = readTexture(objectNode.get("textures"));
+
+        Model.GuiLight guiLight = null;
+        if (objectNode.has("gui_light")) {
+            // only write if not default
+            guiLight = Model.GuiLight.valueOf(objectNode.get("gui_light").getAsString().toUpperCase(Locale.ROOT));
+        }
+
+        List<ItemOverride> overrides = new ArrayList<>();
+        if (objectNode.has("overrides")) {
+            for (JsonElement overrideNode : objectNode.getAsJsonArray("overrides")) {
+                overrides.add(readItemOverride(overrideNode));
+            }
+        }
+
+        return Model.builder()
+                .key(key)
+                .parent(parent)
+                .display(display)
+                .elements(elements)
+                .ambientOcclusion(GsonUtil.getBoolean(objectNode, "ambientocclusion", Model.DEFAULT_AMBIENT_OCCLUSION))
+                .textures(texture)
+                .guiLight(guiLight)
+                .overrides(overrides)
+                .build();
     }
 
     private static void writeElement(JsonWriter writer, Element element) throws IOException {
@@ -158,6 +218,49 @@ final class SerializerModel {
         writer.endObject().endObject();
     }
 
+    private static Element readElement(JsonElement node) {
+        JsonObject objectNode = node.getAsJsonObject();
+        ElementRotation rotation = null;
+
+        if (objectNode.has("rotation")) {
+            rotation = readElementRotation(objectNode.get("rotation"));
+        }
+
+        Map<CubeFace, ElementFace> faces = new HashMap<>();
+        for (Map.Entry<String, JsonElement> entry : objectNode.getAsJsonObject("faces").entrySet()) {
+            CubeFace face = CubeFace.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
+            JsonObject elementFaceNode = entry.getValue().getAsJsonObject();
+            Vector4Float uv = null;
+            if (elementFaceNode.has("uv")) {
+                uv = readVector4Float(elementFaceNode.get("uv")).multiply(1F / ElementFace.MINECRAFT_UV_UNIT);
+            }
+
+            CubeFace cullFace = null;
+            if (elementFaceNode.has("cullface")) {
+                cullFace = CubeFace.valueOf(elementFaceNode.get("cullface").getAsString().toUpperCase(Locale.ROOT));
+            }
+
+            faces.put(
+                    face,
+                    ElementFace.builder()
+                            .uv(uv)
+                            .texture(elementFaceNode.get("texture").getAsString())
+                            .cullFace(cullFace)
+                            .rotation(GsonUtil.getInt(elementFaceNode, "rotation", ElementFace.DEFAULT_ROTATION))
+                            .tintIndex(GsonUtil.getInt(elementFaceNode, "tintindex", ElementFace.DEFAULT_TINT_INDEX))
+                            .build()
+            );
+        }
+
+        return Element.builder()
+                .from(readVector3Float(objectNode.get("from")))
+                .to(readVector3Float(objectNode.get("to")))
+                .rotation(rotation)
+                .shade(GsonUtil.getBoolean(objectNode, "shade", Element.DEFAULT_SHADE))
+                .faces(faces)
+                .build();
+    }
+
     private static void writeElementRotation(JsonWriter writer, ElementRotation rotation) throws IOException {
         writer.beginObject()
                 .name("origin");
@@ -173,6 +276,16 @@ final class SerializerModel {
         writer.endObject();
     }
 
+    private static ElementRotation readElementRotation(JsonElement node) {
+        JsonObject objectNode = node.getAsJsonObject();
+        return ElementRotation.builder()
+                .origin(readVector3Float(objectNode.get("origin")))
+                .axis(Axis3D.valueOf(objectNode.get("axis").getAsString().toUpperCase(Locale.ROOT)))
+                .angle(objectNode.get("angle").getAsFloat())
+                .rescale(GsonUtil.getBoolean(objectNode, "rescale", ElementRotation.DEFAULT_RESCALE))
+                .build();
+    }
+
     private static void writeItemOverride(JsonWriter writer, ItemOverride override) throws IOException {
         writer.beginObject()
                 .name("predicate").beginObject();
@@ -182,6 +295,31 @@ final class SerializerModel {
         writer.endObject()
                 .name("model").value(Keys.toString(override.model()))
                 .endObject();
+    }
+
+    private static ItemOverride readItemOverride(JsonElement node) {
+        JsonObject objectNode = node.getAsJsonObject();
+        Key key = Key.key(objectNode.get("model").getAsString());
+        List<ItemPredicate> predicates = new ArrayList<>();
+        for (Map.Entry<String, JsonElement> predicateEntry : objectNode.getAsJsonObject("predicate").entrySet()) {
+            JsonElement value = predicateEntry.getValue();
+            // TODO: better transformation
+            Object object;
+            if (value.isJsonPrimitive()) {
+                JsonPrimitive primitive = value.getAsJsonPrimitive();
+                if (primitive.isNumber()) {
+                    object = primitive.getAsNumber();
+                } else if (primitive.isBoolean()) {
+                    object = primitive.getAsBoolean();
+                } else {
+                    object = primitive.getAsString();
+                }
+            } else {
+                object = value.getAsString();
+            }
+            predicates.add(ItemPredicate.custom(predicateEntry.getKey(), object));
+        }
+        return ItemOverride.of(key, predicates);
     }
 
     private static void writeItemTransform(JsonWriter writer, ItemTransform transform) throws IOException {
@@ -204,6 +342,23 @@ final class SerializerModel {
         writer.endObject();
     }
 
+    private static ItemTransform readItemTransform(JsonElement node) {
+        JsonObject objectNode = node.getAsJsonObject();
+        Vector3Float rotation = ItemTransform.DEFAULT_ROTATION;
+        Vector3Float translation = ItemTransform.DEFAULT_TRANSLATION;
+        Vector3Float scale = ItemTransform.DEFAULT_SCALE;
+        if (objectNode.has("rotation")) {
+            rotation = readVector3Float(objectNode.get("rotation"));
+        }
+        if (objectNode.has("translation")) {
+            translation = readVector3Float(objectNode.get("translation"));
+        }
+        if (objectNode.has("scale")) {
+            scale = readVector3Float(objectNode.get("scale"));
+        }
+        return ItemTransform.of(rotation, translation, scale);
+    }
+
     private static void writeTexture(JsonWriter writer, ModelTexture texture) throws IOException {
         writer.beginObject();
         Key particle = texture.particle();
@@ -218,6 +373,35 @@ final class SerializerModel {
             writer.name(variable.getKey()).value(Keys.toString(variable.getValue()));
         }
         writer.endObject();
+    }
+
+    private static ModelTexture readTexture(JsonElement node) {
+
+        JsonObject objectNode = node.getAsJsonObject();
+        Key particle = null;
+        List<Key> layers = new ArrayList<>(objectNode.entrySet().size());
+        Map<String, Key> variables = new HashMap<>();
+
+        for (Map.Entry<String, JsonElement> entry : objectNode.entrySet()) {
+            String key = entry.getKey();
+            Key value = Key.key(entry.getValue().getAsString());
+
+            if ("particle".equals(key)) {
+                particle = value;
+            } else if (key.startsWith("layer")) {
+                int layer = Integer.parseInt(key.substring("layer".length()));
+                // TODO: Fix
+                layers.add(value);
+            } else {
+                variables.put(key, value);
+            }
+        }
+
+        return ModelTexture.builder()
+                .particle(particle)
+                .layers(layers)
+                .variables(variables)
+                .build();
     }
 
     private static void writeVector3Float(JsonWriter writer, Vector3Float vector) throws IOException {
@@ -242,6 +426,25 @@ final class SerializerModel {
         writer.value(vector.x2());
         writer.value(vector.y2());
         writer.endArray();
+    }
+
+   private static Vector3Float readVector3Float(JsonElement element) {
+       JsonArray array = element.getAsJsonArray();
+       return new Vector3Float(
+               (float) array.get(0).getAsDouble(),
+               (float) array.get(1).getAsDouble(),
+               (float) array.get(2).getAsDouble()
+       );
+   }
+
+    private static Vector4Float readVector4Float(JsonElement element) {
+        JsonArray array = element.getAsJsonArray();
+        return new Vector4Float(
+                (float) array.get(0).getAsDouble(),
+                (float) array.get(1).getAsDouble(),
+                (float) array.get(2).getAsDouble(),
+                (float) array.get(3).getAsDouble()
+        );
     }
 
 }
