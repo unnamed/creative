@@ -118,7 +118,7 @@ public final class MinecraftResourcePackReader {
                         break;
                     }
                     default: {
-                        System.out.println("Unknown top level file: " + path);
+                        System.err.println("Unknown top level file: " + path);
                         // unknown top-level file, maybe some
                         // credits.txt file?
                         output.file(path, Writable.copyInputStream(inputStream));
@@ -286,7 +286,7 @@ public final class MinecraftResourcePackReader {
                         break;
                     }
                     default: {
-                        System.out.println("Unknown category: " + category);
+                        System.err.println("Unknown category: " + category);
                     }
                 }
             } else {
