@@ -31,13 +31,14 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.metadata.Metadatable;
 
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class Texture implements Keyed, Examinable {
+public class Texture implements Keyed, Examinable, Metadatable {
 
     private final Key key;
     private final Writable data;
@@ -62,6 +63,7 @@ public class Texture implements Keyed, Examinable {
         return data;
     }
 
+    @Override
     public Metadata meta() {
         return meta;
     }
