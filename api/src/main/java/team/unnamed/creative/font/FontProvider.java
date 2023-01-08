@@ -77,11 +77,13 @@ public interface FontProvider extends Examinable {
      * @param sizes Location to the file that specifies the
      *              character sizes
      * @param template Location of the file that specifies
-     *                 the character textures
+     *                 the character textures, it is a string
+     *                 template and MUST contain a single '%s'
+     *                 that will be replaced by the unicode page
      * @return A new {@link LegacyUnicodeFontProvider} font
      * @since 1.0.0
      */
-    static LegacyUnicodeFontProvider legacyUnicode(Key sizes, Key template) {
+    static LegacyUnicodeFontProvider legacyUnicode(Key sizes, String template) {
         return new LegacyUnicodeFontProvider(sizes, template);
     }
 

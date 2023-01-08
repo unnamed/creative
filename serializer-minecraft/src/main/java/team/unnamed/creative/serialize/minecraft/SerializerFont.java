@@ -143,7 +143,7 @@ final class SerializerFont {
         writer.beginObject()
                 .name("type").value("legacy_unicode")
                 .name("sizes").value(Keys.toString(provider.sizes()))
-                .name("template").value(Keys.toString(provider.template()))
+                .name("template").value(provider.template())
                 .endObject();
     }
 
@@ -151,7 +151,7 @@ final class SerializerFont {
         // TODO: Should not be keys, they are formatted using String#format(...)
         return FontProvider.legacyUnicode(
                 Key.key(node.get("sizes").getAsString()),
-                Key.key(node.get("template").getAsString())
+                node.get("template").getAsString()
         );
     }
 
