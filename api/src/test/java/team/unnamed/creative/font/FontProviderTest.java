@@ -30,8 +30,6 @@ import team.unnamed.creative.file.ResourceAssertions;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,11 +38,9 @@ public class FontProviderTest {
     @Test
     @DisplayName("Test that full space font serialization works")
     public void test_space_font_provider_serialization() {
-        Map<Character, Integer> advances = new HashMap<>();
-        advances.put("a".charAt(0),4);
-        advances.put("b".charAt(0),8);
         FontProvider fontProvider = FontProvider.space()
-                .advances(advances)
+                .advance("a", 4)
+                .advance("b", 8)
                 .build();
 
         ResourceAssertions.assertSerializedResult(

@@ -100,6 +100,7 @@ public interface FontProvider extends SerializableResource {
      * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
      * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
      * @return the newly created builder
+     * @sincePackFormat 9
      */
     static SpaceFontProvider.Builder space() {
         return new SpaceFontProvider.Builder();
@@ -112,8 +113,9 @@ public interface FontProvider extends SerializableResource {
      * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
      * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
      * @return the newly created builder
+     * @sincePackFormat 9
      */
-    static SpaceFontProvider space(Map<Character, Integer> advances) {
+    static SpaceFontProvider space(Map<String, Integer> advances) {
         return new SpaceFontProvider(advances);
     }
 

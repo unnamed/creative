@@ -42,13 +42,15 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  * This font provider consists of a map of codepoints (characters) and integers (how many pixels to shift by)
  * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
  * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
+ *
+ * @sincePackFormat 9
  */
 public class SpaceFontProvider implements FontProvider {
 
-    private final Map<Character, Integer> advances;
+    private final Map<String, Integer> advances;
 
     protected SpaceFontProvider(
-            Map<Character, Integer> advances
+            Map<String, Integer> advances
     ) {
         requireNonNull(advances,"advances");
         this.advances = immutableMapOf(advances);
@@ -56,20 +58,20 @@ public class SpaceFontProvider implements FontProvider {
     }
 
     private void validate() {
-        for (Map.Entry<Character, Integer> entry : advances.entrySet()) {
-            Character character = entry.getKey();
+        for (Map.Entry<String, Integer> entry : advances.entrySet()) {
+            String character = entry.getKey();
             Integer offset = entry.getValue();
-            Validate.isNotNull(character, "An element from the character list is null");
-            Validate.isNotNull(offset, "Integer object is null");
+            Validate.isNotNull(character, "A key from the 'advances' map is null");
+            Validate.isNotNull(offset, "The advanced pixels value for '%s' character is null", character);
         }
     }
 
-    public Map<Character, Integer> advances() {
+    public Map<String, Integer> advances() {
         return advances;
     }
 
-    public SpaceFontProvider advances(Map<Character, Integer> advances) {
-        return new SpaceFontProvider(advances);
+    public SpaceFontProvider advances(Map<String, Integer> advances) {
+        return toBuilder().advances(advances).build();
     }
 
     @Override
@@ -87,8 +89,8 @@ public class SpaceFontProvider implements FontProvider {
         writer.startObject()
                 .key("type").value("space")
                 .key("advances").startObject();
-        for (Map.Entry<Character, Integer> entry : advances.entrySet()) {
-            writer.key(Character.toString(entry.getKey())).value(entry.getValue());
+        for (Map.Entry<String, Integer> entry : advances.entrySet()) {
+            writer.key(entry.getKey()).value(entry.getValue());
         }
         writer.endObject().endObject();
     }
@@ -124,23 +126,30 @@ public class SpaceFontProvider implements FontProvider {
      */
     public static class Builder {
 
-        private Map<Character, Integer> advances;
+        private Map<String, Integer> advances;
 
         protected Builder() {
         }
 
-        public Builder advances(Map<Character, Integer> entries) {
+        public Builder advances(Map<String, Integer> entries) {
             requireNonNull(entries, "entries");
             advances = entries;
             return this;
         }
 
-        public Builder advance(char key, int value) {
+        public Builder advance(String character, int value) {
             if (this.advances == null) {
                 this.advances = new HashMap<>();
             }
-            this.advances.put(key, value);
+            this.advances.put(character, value);
             return this;
+        }
+
+        public Builder advance(int codePoint, int value) {
+            return advance(
+                    new StringBuilder().appendCodePoint(codePoint).toString(),
+                    value
+            );
         }
 
         /**
