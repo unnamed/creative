@@ -42,11 +42,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-final class SerializerBlockState {
+final class SerializerBlockState implements JsonFileStreamWriter<BlockState>, JsonFileTreeReader.Keyed<BlockState> {
 
     static final SerializerBlockState INSTANCE = new SerializerBlockState();
 
-    public void write(JsonWriter writer, BlockState state) throws IOException {
+    @Override
+    public void serialize(BlockState state, JsonWriter writer) throws IOException {
         writer.beginObject();
 
         // write "variants" part if not empty
@@ -73,6 +74,7 @@ final class SerializerBlockState {
         writer.endObject();
     }
 
+    @Override
     public BlockState readFromTree(JsonElement node, Key key) {
 
         JsonObject objectNode = node.getAsJsonObject();

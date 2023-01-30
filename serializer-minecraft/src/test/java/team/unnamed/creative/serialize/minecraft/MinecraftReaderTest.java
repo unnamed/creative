@@ -24,7 +24,7 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import org.junit.jupiter.api.Test;
-import team.unnamed.creative.ResourcePackBuilder;
+import team.unnamed.creative.serialize.ResourcePackBuilder;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 

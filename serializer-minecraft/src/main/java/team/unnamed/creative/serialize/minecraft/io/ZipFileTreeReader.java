@@ -21,27 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import team.unnamed.creative.ResourcePack;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.NoSuchElementException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import java.util.function.Consumer;
+final class ZipFileTreeReader implements FileTreeReader {
 
-/**
- * @since 1.0.0
- */
-public interface ResourcePackSerializer<I, O> {
+    private final ZipInputStream zip;
+    private ZipEntry entry;
 
-    ResourcePackBuilder builder();
+    public ZipFileTreeReader(ZipInputStream zip) {
+        this.zip = zip;
+    }
 
-    // deserialization
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
+    @Override
+    public boolean hasNext() {
+        try {
+            do {
+                entry = zip.getNextEntry();
+            } while (entry != null && entry.isDirectory());
+            return entry != null;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
-    ResourcePackBuilder deserialize(I dataSource);
+    @Override
+    public String next() {
+        if (entry == null) throw new NoSuchElementException();
+        return entry.getName();
+    }
 
-    // serialization
-    void serialize(ResourcePackInput resourcePack, O output);
+    @Override
+    public InputStream input() {
+        return zip;
+    }
 
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
+    @Override
+    public void close() throws IOException {
+        zip.close();
+    }
 
 }

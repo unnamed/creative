@@ -73,15 +73,6 @@ final class MinecraftResourcePackStructure {
     private MinecraftResourcePackStructure() {
     }
 
-    // 1. Metadata
-    //2. BlockState
-    //3. Font
-    //4. Language
-    //5. Model
-    //6. Sound Registry
-    //7. Sound Files
-    //8. Texture
-
     public static String pathOf(BlockState blockState) {
         // assets/<namespace>/blockstates/<path>.json
         return withCategory(BLOCKSTATES_FOLDER, blockState, OBJECT_EXTENSION);

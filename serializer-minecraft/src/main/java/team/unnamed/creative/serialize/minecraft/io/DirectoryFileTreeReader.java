@@ -21,27 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import team.unnamed.creative.ResourcePack;
+import java.io.IOException;
+import java.io.InputStream;
 
-import java.util.function.Consumer;
+final class DirectoryFileTreeReader implements FileTreeReader {
 
-/**
- * @since 1.0.0
- */
-public interface ResourcePackSerializer<I, O> {
+    @Override
+    public boolean hasNext() {
+        return false;
+    }
 
-    ResourcePackBuilder builder();
+    @Override
+    public String next() {
+        return null;
+    }
 
-    // deserialization
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
+    @Override
+    public InputStream input() {
+        return null;
+    }
 
-    ResourcePackBuilder deserialize(I dataSource);
+    @Override
+    public void close() throws IOException {
 
-    // serialization
-    void serialize(ResourcePackInput resourcePack, O output);
-
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
+    }
 
 }

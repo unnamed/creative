@@ -44,11 +44,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class SerializerFont {
+final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeReader.Keyed<Font> {
 
     static final SerializerFont INSTANCE = new SerializerFont();
 
-    public void write(JsonWriter writer, Font font) throws IOException {
+    @Override
+    public void serialize(Font font, JsonWriter writer) throws IOException {
         writer.beginObject()
                 .name("providers")
                 .beginArray();
@@ -68,7 +69,8 @@ final class SerializerFont {
         writer.endArray().endObject();
     }
 
-    public Font readFont(JsonElement node, Key key) {
+    @Override
+    public Font readFromTree(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         List<FontProvider> providers = new ArrayList<>();
         for (JsonElement providerNode : objectNode.getAsJsonArray("providers")) {

@@ -50,7 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-final class SerializerMetadata {
+final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
 
     static final SerializerMetadata INSTANCE = new SerializerMetadata();
 
@@ -61,7 +61,8 @@ final class SerializerMetadata {
     static final String TEXTURE_FIELD = "texture";
     static final String VILLAGER_FIELD = "villager";
 
-    public void write(JsonWriter writer, Metadata metadata) throws IOException {
+    @Override
+    public void serialize(Metadata metadata, JsonWriter writer) throws IOException {
         writer.beginObject();
         for (MetadataPart part : metadata.parts()) {
             if (part instanceof AnimationMeta) {

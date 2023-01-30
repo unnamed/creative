@@ -42,38 +42,7 @@ public interface FileTreeReader extends AutoCloseable {
     void close() throws IOException;
 
     static FileTreeReader zip(ZipInputStream zip) {
-        return new FileTreeReader() {
-
-            private ZipEntry entry;
-
-            @Override
-            public boolean hasNext() {
-                try {
-                    do {
-                        entry = zip.getNextEntry();
-                    } while (entry != null && entry.isDirectory());
-                    return entry != null;
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            }
-
-            @Override
-            public String next() {
-                if (entry == null) throw new NoSuchElementException();
-                return entry.getName();
-            }
-
-            @Override
-            public InputStream input() {
-                return zip;
-            }
-
-            @Override
-            public void close() throws IOException {
-                zip.close();
-            }
-        };
+        return new ZipFileTreeReader(zip);
     }
 
 }

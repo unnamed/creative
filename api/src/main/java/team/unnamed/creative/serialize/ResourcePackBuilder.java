@@ -23,25 +23,9 @@
  */
 package team.unnamed.creative.serialize;
 
-import team.unnamed.creative.ResourcePack;
-
-import java.util.function.Consumer;
-
-/**
- * @since 1.0.0
- */
-public interface ResourcePackSerializer<I, O> {
-
-    ResourcePackBuilder builder();
-
-    // deserialization
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
-
-    ResourcePackBuilder deserialize(I dataSource);
-
-    // serialization
-    void serialize(ResourcePackInput resourcePack, O output);
-
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
+public interface ResourcePackBuilder extends
+        ResourcePackInput,
+        ResourcePackWriter<ResourcePackBuilder>,
+        ResourcePackWriter.Extra<ResourcePackBuilder> {
 
 }

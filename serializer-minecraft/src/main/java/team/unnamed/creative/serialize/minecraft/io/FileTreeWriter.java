@@ -55,11 +55,10 @@ public interface FileTreeWriter extends AutoCloseable {
 
     /**
      * Opens the file at the given path and starts
-     * to write it using the {@link ResourceWriter}
-     * class
+     * to write it
      *
      * @param path The file path
-     * @return A new {@link ResourceWriter} for the
+     * @return A new {@link OutputStream} for the
      * given file
      * @since 1.0.0
      */

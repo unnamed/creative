@@ -40,11 +40,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerSoundRegistry {
+final class SerializerSoundRegistry implements JsonFileStreamWriter<SoundRegistry>, JsonFileTreeReader.Namespaced<SoundRegistry> {
 
     static final SerializerSoundRegistry INSTANCE = new SerializerSoundRegistry();
 
-    public void write(JsonWriter writer, SoundRegistry registry) throws IOException {
+    @Override
+    public void serialize(SoundRegistry registry, JsonWriter writer) throws IOException {
         writer.beginObject();
         for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
             SoundEvent event = entry.getValue();
@@ -112,6 +113,7 @@ final class SerializerSoundRegistry {
         writer.endObject();
     }
 
+    @Override
     public SoundRegistry readFromTree(JsonElement node, String namespace) {
         Map<String, SoundEvent> soundEvents = new HashMap<>();
         JsonObject objectNode = node.getAsJsonObject();

@@ -53,11 +53,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerModel {
+final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTreeReader.Keyed<Model> {
 
     static final SerializerModel INSTANCE = new SerializerModel();
 
-    public void write(JsonWriter writer, Model model) throws IOException {
+    @Override
+    public void serialize(Model model, JsonWriter writer) throws IOException {
         writer.beginObject();
 
         // parent
@@ -113,7 +114,8 @@ final class SerializerModel {
         writer.endObject();
     }
 
-    public Model readModel(JsonElement node, Key key) {
+    @Override
+    public Model readFromTree(JsonElement node, Key key) {
 
         JsonObject objectNode = node.getAsJsonObject();
 

@@ -24,138 +24,141 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
-import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.PackMeta;
-import team.unnamed.creative.metadata.filter.FilterMeta;
-import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
+import team.unnamed.creative.serialize.ResourcePackInput;
+import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.sound.Sound;
+import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Map;
 
-final class MinecraftResourcePackWriter {
+final class MinecraftResourcePackWriter implements ResourcePackWriter<MinecraftResourcePackWriter> {
 
-    private MinecraftResourcePackWriter() {
+    private final FileTreeWriter target;
+
+    private MinecraftResourcePackWriter(FileTreeWriter target) {
+        this.target = target;
     }
 
-    public static void write(ResourcePackBuilder resourcePack, FileTreeWriter writer) {
-        try {
-            _write(resourcePack, writer);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    static void write(ResourcePackInput resourcePack, FileTreeWriter writer) {
 
-    public static void _write(ResourcePackBuilder resourcePack, FileTreeWriter writer) throws IOException {
-
-        // write metadata
-        {
-            Metadata.Builder metadata = Metadata.builder();
-            PackMeta packMeta = resourcePack.meta();
-            if (packMeta != null) {
-                metadata.add(packMeta);
-            }
-            LanguageMeta languageMeta = resourcePack.languageRegistry();
-            if (languageMeta != null) {
-                metadata.add(languageMeta);
-            }
-            FilterMeta filterMeta = resourcePack.filter();
-            if (filterMeta != null) {
-                metadata.add(filterMeta);
-            }
-
-            try (JsonWriter jsonWriter = writer.openJsonWriter(MinecraftResourcePackStructure.PACK_METADATA_FILE)) {
-                SerializerMetadata.INSTANCE.write(jsonWriter, metadata.build());
-            }
-            System.out.println(" [INFO] Written resource-pack metadata");
-        }
-
-        // write icon
-        {
-            Writable icon = resourcePack.icon();
-            if (icon != null) {
-                try (OutputStream output = writer.openStream(MinecraftResourcePackStructure.PACK_ICON_FILE)) {
-                    icon.write(output);
-                }
-            }
-            System.out.println(" [INFO] Written resource-pack icon");
-        }
+        ResourcePackWriter<?> resourcePackWriter = new MinecraftResourcePackWriter(writer)
+                .icon(resourcePack.icon());
+                // TODO: .metadata(resourcePack.metadata());
 
         // write languages
-        {
-            for (Language language : resourcePack.languages()) {
-                try (JsonWriter jsonWriter = writer.openJsonWriter(MinecraftResourcePackStructure.pathOf(language))) {
-                    SerializerLanguage.INSTANCE.write(jsonWriter, language);
-                }
-            }
-            System.out.println(" [INFO] Written " + resourcePack.languages().size() + " languages");
+        for (Language language : resourcePack.languages()) {
+            resourcePackWriter.language(language);
         }
 
         // write block states
-        {
-            for (BlockState blockState : resourcePack.blockStates()) {
-                try (JsonWriter jsonWriter = writer.openJsonWriter(MinecraftResourcePackStructure.pathOf(blockState))) {
-                    SerializerBlockState.INSTANCE.write(jsonWriter, blockState);
-                }
-            }
-            System.out.println(" [INFO] Written " + resourcePack.blockStates().size() + " block states");
+        for (BlockState blockState : resourcePack.blockStates()) {
+            resourcePackWriter.blockState(blockState);
         }
 
         // write fonts
-        {
-            for (Font font : resourcePack.fonts()) {
-                try (JsonWriter jsonWriter = writer.openJsonWriter(MinecraftResourcePackStructure.pathOf(font))) {
-                    SerializerFont.INSTANCE.write(jsonWriter, font);
-                }
-            }
-            System.out.println(" [INFO] Written " + resourcePack.fonts().size() + " fonts");
+        for (Font font : resourcePack.fonts()) {
+            resourcePackWriter.font(font);
         }
 
         // write models
-        {
-            for (Model model : resourcePack.models()) {
-                try (JsonWriter jsonWriter = writer.openJsonWriter(MinecraftResourcePackStructure.pathOf(model))) {
-                    SerializerModel.INSTANCE.write(jsonWriter, model);
-                }
-            }
-            System.out.println(" [INFO] Written " + resourcePack.models().size() + " models");
+        for (Model model : resourcePack.models()) {
+            resourcePackWriter.model(model);
         }
 
         // write textures
-        {
-            for (Texture texture : resourcePack.textures()) {
-                try (OutputStream stream = writer.openStream(MinecraftResourcePackStructure.pathOf(texture))) {
-                    texture.data().write(stream);
-                }
-
-                Metadata metadata = texture.meta();
-                if (!metadata.parts().isEmpty()) {
-                    try (JsonWriter jsonWriter = writer.openJsonWriter(MinecraftResourcePackStructure.pathOfMeta(texture))) {
-                        SerializerMetadata.INSTANCE.write(jsonWriter, metadata);
-                    }
-                }
-            }
-            System.out.println(" [INFO] Written " + resourcePack.textures().size() + " textures");
+        for (Texture texture : resourcePack.textures()) {
+            resourcePackWriter.texture(texture);
         }
 
-        // write extra files
-        {
-            for (Map.Entry<String, Writable> entry : resourcePack.extraFiles().entrySet()) {
-                // System.out.println(" [INFO] Extra file --> " + entry.getKey());
-                try (OutputStream stream = writer.openStream(entry.getKey())) {
-                    entry.getValue().write(stream);
-                }
-            }
-            System.out.println(" [INFO] Written " + resourcePack.extraFiles().size() + " extra files (unknown)");
+        // write unknown files
+        for (Map.Entry<String, Writable> entry : resourcePack.unknownFiles().entrySet()) {
+            resourcePackWriter.file(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @Override
+    public MinecraftResourcePackWriter icon(Writable icon) {
+        target.write(MinecraftResourcePackStructure.PACK_ICON_FILE, icon);
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter metadata(Metadata metadata) {
+        writeToJson(SerializerMetadata.INSTANCE, metadata, MinecraftResourcePackStructure.PACK_METADATA_FILE);
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter blockState(BlockState state) {
+        writeToJson(SerializerBlockState.INSTANCE, state, MinecraftResourcePackStructure.pathOf(state));
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter font(Font font) {
+        writeToJson(SerializerFont.INSTANCE, font, MinecraftResourcePackStructure.pathOf(font));
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter language(Language language) {
+        writeToJson(SerializerLanguage.INSTANCE, language, MinecraftResourcePackStructure.pathOf(language));
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter model(Model model) {
+        writeToJson(SerializerModel.INSTANCE, model, MinecraftResourcePackStructure.pathOf(model));
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter soundRegistry(SoundRegistry soundRegistry) {
+        writeToJson(SerializerSoundRegistry.INSTANCE, soundRegistry, MinecraftResourcePackStructure.pathOf(soundRegistry));
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter sound(Sound.File soundFile) {
+
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter texture(Texture texture) {
+        target.write(
+                MinecraftResourcePackStructure.pathOf(texture),
+                texture.data()
+        );
+
+        Metadata metadata = texture.meta();
+        if (!metadata.parts().isEmpty()) {
+            writeToJson(SerializerMetadata.INSTANCE, metadata, MinecraftResourcePackStructure.pathOfMeta(texture));
+        }
+        return this;
+    }
+
+    @Override
+    public MinecraftResourcePackWriter file(String path, Writable data) {
+        target.write(path, data);
+        return this;
+    }
+
+    private <T> void writeToJson(JsonFileStreamWriter<T> serializer, T object, String path) {
+        try (JsonWriter jsonWriter = target.openJsonWriter(path)) {
+            serializer.serialize(object, jsonWriter);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to write to " + path, e);
         }
     }
 

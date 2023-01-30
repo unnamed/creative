@@ -27,16 +27,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
-import team.unnamed.creative.ResourcePackBuilder;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.PackMeta;
-import team.unnamed.creative.metadata.filter.FilterMeta;
-import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
+import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -66,18 +63,7 @@ final class MinecraftResourcePackReader {
     private MinecraftResourcePackReader() {
     }
 
-    static void read(FileTreeReader treeReader, ResourcePackBuilder output) {
-        try {
-            _read(treeReader, output);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    private static void _read(
-            FileTreeReader treeReader,
-            ResourcePackBuilder output
-    ) throws IOException {
+    static void read(FileTreeReader treeReader, ResourcePackWriter<?> output) {
 
         Map<Key, Texture> waitingForMeta = new HashMap<>();
         boolean alertOptiFineNotSupported = true;
@@ -98,43 +84,16 @@ final class MinecraftResourcePackReader {
                 switch (tokens.poll()) {
                     // Check for the pack.mcmeta file
                     case MinecraftResourcePackStructure.PACK_METADATA_FILE: {
-
-                        Metadata metadata = SerializerMetadata.INSTANCE.readFromTree(parse(inputStream));
-
-                        // pack meta read
-                        PackMeta packMeta = metadata.meta(PackMeta.class);
-                        if (packMeta == null) {
-                            System.err.println("[ERROR] The pack.mcmeta file didn't contain the 'pack' section (Which is required)");
-                        } else {
-                            output.meta(packMeta);
-                            System.out.println(" [INFO] Loaded pack metadata (pack.mcmeta file). Format: "
-                                    + packMeta.format() + ". Description: '" + packMeta.description() + "'");
-                        }
-
-                        // filter meta read
-                        FilterMeta filterMeta = metadata.meta(FilterMeta.class);
-                        if (filterMeta != null) {
-                            output.filter(filterMeta);
-                        }
-
-                        // language meta read
-                        LanguageMeta languageMeta = metadata.meta(LanguageMeta.class);
-                        if (languageMeta != null) {
-                            output.languageRegistry(languageMeta);
-                        }
-
-                        // todo: check for extra (and invalid) metadata parts
+                        output.metadata(SerializerMetadata.INSTANCE.readFromTree(parse(inputStream)));
                         break;
                     }
                     case MinecraftResourcePackStructure.PACK_ICON_FILE: {
-                        output.icon(Writable.copyInputStream(inputStream));
-                        System.out.println(" [INFO] Loaded resource pack icon (pack.png file)");
+                        output.icon(writableFromInputStreamCopy(inputStream));
                         break;
                     }
                     default: {
-                        System.err.println(" [WARN] Loaded an unknown top level file: " + path);
                         // unknown top-level file, maybe some credits.txt file?
-                        output.file(path, Writable.copyInputStream(inputStream));
+                        output.file(path, writableFromInputStreamCopy(inputStream));
                         break;
                     }
                 }
@@ -147,7 +106,7 @@ final class MinecraftResourcePackReader {
             // not assets?
             if (!folder.equals(MinecraftResourcePackStructure.ASSETS_FOLDER)) {
                 System.err.println(" [WARN] Loaded an unknown file: " + path);
-                output.file(path, Writable.copyInputStream(inputStream));
+                output.file(path, writableFromInputStreamCopy(inputStream));
                 continue;
             }
 
@@ -178,9 +137,7 @@ final class MinecraftResourcePackReader {
             if (tokens.isEmpty()) {
                 if (category.equals(MinecraftResourcePackStructure.SOUNDS_FILE)) {
                     SoundRegistry soundRegistry = SerializerSoundRegistry.INSTANCE.readFromTree(parse(inputStream), namespace);
-                    output.sounds(soundRegistry);
-                    System.out.println(" [INFO] Found sound registry for '" + namespace
-                            + "' with " + soundRegistry.sounds().size() + " sound entries");
+                    output.soundRegistry(soundRegistry);
                 } else {
                     // TODO: gpu_warnlist.json?
                     System.err.println(" [WARN] Found a file in the namespace root folder: " + path);
@@ -194,7 +151,7 @@ final class MinecraftResourcePackReader {
                     System.err.println(" [WARN] Found OptiFine files, remember that creative doesn't currently support them");
                     alertOptiFineNotSupported = false;
                 }
-                output.file(path, Writable.copyInputStream(inputStream));
+                output.file(path, writableFromInputStreamCopy(inputStream));
                 continue;
             }
 
@@ -208,7 +165,7 @@ final class MinecraftResourcePackReader {
                         break;
                     }
 
-                    Model model = SerializerModel.INSTANCE.readModel(
+                    Model model = SerializerModel.INSTANCE.readFromTree(
                             PARSER.parse(reader(inputStream)),
                             Key.key(namespace, stripExtension(value))
                     );
@@ -238,7 +195,7 @@ final class MinecraftResourcePackReader {
                     } else if (value.endsWith(TEXTURE_EXTENSION)) {
                         // a texture file
                         Key key = Key.key(namespace, value.substring(0, value.length() - TEXTURE_EXTENSION.length()));
-                        Writable data = Writable.copyInputStream(inputStream);
+                        Writable data = writableFromInputStreamCopy(inputStream);
 
                         Texture texture = waitingForMeta.remove(key);
 
@@ -268,10 +225,9 @@ final class MinecraftResourcePackReader {
 
                     Sound.File sound = Sound.File.of(
                             Key.key(namespace, value.substring(0, value.length() - SOUND_EXTENSION.length())),
-                            Writable.copyInputStream(inputStream)
+                            writableFromInputStreamCopy(inputStream)
                     );
                     output.sound(sound);
-                    System.out.println(" [INFO] Loaded sound: " + sound.key());
                     break;
                 }
 
@@ -282,7 +238,7 @@ final class MinecraftResourcePackReader {
                         break;
                     }
 
-                    Font font = SerializerFont.INSTANCE.readFont(
+                    Font font = SerializerFont.INSTANCE.readFromTree(
                             PARSER.parse(reader(inputStream)),
                             Key.key(namespace, value.substring(0, value.length() - OBJECT_EXTENSION.length()))
                     );
@@ -321,8 +277,7 @@ final class MinecraftResourcePackReader {
                     break;
                 }
                 default: {
-                    System.err.println(" [WARN] Unknown category: " + category);
-                    output.file(path, Writable.copyInputStream(inputStream));
+                    output.file(path, writableFromInputStreamCopy(inputStream));
                     break;
                 }
             }
@@ -339,13 +294,14 @@ final class MinecraftResourcePackReader {
                 System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
             }
         }
+    }
 
-        System.out.println(" [INFO] Loaded " + output.fonts().size() + " fonts");
-        System.out.println(" [INFO] Loaded " + output.blockStates().size() + " blockstates");
-        System.out.println(" [INFO] Loaded " + output.textures().size() + " textures");
-        System.out.println(" [INFO] Loaded " + output.models().size() + " models");
-        System.out.println(" [INFO] Loaded " + output.languages().size() + " languages");
-        System.out.println(" [INFO] Loaded " + output.extraFiles().size() + " extra files");
+    private static Writable writableFromInputStreamCopy(InputStream inputStream) {
+        try {
+            return Writable.copyInputStream(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to create a Writable instance from an InputStream copy", e);
+        }
     }
 
     private static String stripExtension(String path) {

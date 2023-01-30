@@ -21,27 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft;
 
-import team.unnamed.creative.ResourcePack;
+import com.google.gson.JsonElement;
+import net.kyori.adventure.key.Key;
 
-import java.util.function.Consumer;
+public interface JsonFileTreeReader<T, TId> {
 
-/**
- * @since 1.0.0
- */
-public interface ResourcePackSerializer<I, O> {
+    T readFromTree(JsonElement node, TId id);
 
-    ResourcePackBuilder builder();
+    interface Keyed<T> extends JsonFileTreeReader<T, Key> {
 
-    // deserialization
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
+    }
 
-    ResourcePackBuilder deserialize(I dataSource);
+    interface Namespaced<T> extends JsonFileTreeReader<T, String> {
 
-    // serialization
-    void serialize(ResourcePackInput resourcePack, O output);
-
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
+    }
 
 }

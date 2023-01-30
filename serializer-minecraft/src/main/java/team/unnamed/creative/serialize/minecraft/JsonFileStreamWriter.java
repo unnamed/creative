@@ -21,27 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft;
 
-import team.unnamed.creative.ResourcePack;
+import com.google.gson.stream.JsonWriter;
 
-import java.util.function.Consumer;
+import java.io.IOException;
 
-/**
- * @since 1.0.0
- */
-public interface ResourcePackSerializer<I, O> {
+public interface JsonFileStreamWriter<T> {
 
-    ResourcePackBuilder builder();
-
-    // deserialization
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
-
-    ResourcePackBuilder deserialize(I dataSource);
-
-    // serialization
-    void serialize(ResourcePackInput resourcePack, O output);
-
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
+    void serialize(T object, JsonWriter writer) throws IOException;
 
 }

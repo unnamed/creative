@@ -21,27 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
-
-import team.unnamed.creative.ResourcePack;
-
-import java.util.function.Consumer;
 
 /**
- * @since 1.0.0
+ * The input and output targets for this serializer, the serializer-minecraft
+ * subproject implements the Minecraft Vanilla resource pack format for the
+ * creative classes
+ *
+ * <p>This package contains the input and output targets for Minecraft Vanilla
+ * resource packs (it can use a ZIP/Folder file tree)</p>
  */
-public interface ResourcePackSerializer<I, O> {
-
-    ResourcePackBuilder builder();
-
-    // deserialization
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
-
-    ResourcePackBuilder deserialize(I dataSource);
-
-    // serialization
-    void serialize(ResourcePackInput resourcePack, O output);
-
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
-
-}
+package team.unnamed.creative.serialize.minecraft.io;

@@ -33,11 +33,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-final class SerializerLanguage {
+final class SerializerLanguage implements JsonFileStreamWriter<Language>, JsonFileTreeReader.Keyed<Language> {
 
     static final SerializerLanguage INSTANCE = new SerializerLanguage();
 
-    public void write(JsonWriter writer, Language language) throws IOException {
+    @Override
+    public void serialize(Language language, JsonWriter writer) throws IOException {
         // {
         //   "key.1": "value 1",
         //   "key.2": "value 2"
@@ -49,6 +50,7 @@ final class SerializerLanguage {
         writer.endObject();
     }
 
+    @Override
     public Language readFromTree(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         Map<String, String> translations = new HashMap<>();

@@ -24,7 +24,9 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.ResourcePackBuilder;
+import team.unnamed.creative.serialize.ResourcePackBuilder;
+import team.unnamed.creative.serialize.ResourcePackInput;
+import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.ResourcePackSerializer;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
@@ -47,7 +49,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
     }
 
     @Override
-    public void deserialize(FileTreeReader reader, ResourcePackBuilder output) {
+    public void deserialize(FileTreeReader reader, ResourcePackWriter<?> output) {
         MinecraftResourcePackReader.read(reader, output);
     }
 
@@ -59,7 +61,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
     }
 
     @Override
-    public void serialize(ResourcePackBuilder resourcePack, FileTreeWriter tree) {
+    public void serialize(ResourcePackInput resourcePack, FileTreeWriter tree) {
         MinecraftResourcePackWriter.write(resourcePack, tree);
     }
 

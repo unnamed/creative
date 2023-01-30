@@ -25,7 +25,8 @@ package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.ResourcePackBuilder;
+import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.serialize.ResourcePackBuilder;
 import team.unnamed.creative.base.KeyedMap;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
@@ -34,7 +35,6 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
-import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
@@ -49,7 +49,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
+final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     private static final String BLOCK_STATES = "blockStates";
     private static final String FONTS = "fonts";
@@ -94,6 +94,13 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
         return icon;
     }
     //#endregion
+
+
+    @Override
+    public ResourcePackBuilder metadata(@Nullable Metadata metadata) {
+        // TODO: !
+        return this;
+    }
 
     //#region Metadata methods
     // |-----------------------------------|
@@ -233,7 +240,7 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
     }
 
     @Override
-    public ResourcePackBuilder sounds(SoundRegistry soundRegistry) {
+    public ResourcePackBuilder soundRegistry(SoundRegistry soundRegistry) {
         if (soundRegistries == null) {
             soundRegistries = new HashMap<>();
         }
@@ -270,7 +277,7 @@ public final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
     }
 
     @Override
-    public Map<String, Writable> extraFiles() {
+    public Map<String, Writable> unknownFiles() {
         return extraFiles == null ? Collections.emptyMap() : extraFiles;
     }
 
