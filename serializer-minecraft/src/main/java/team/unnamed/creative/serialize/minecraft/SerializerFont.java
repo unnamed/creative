@@ -101,14 +101,9 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
     }
 
     private static void writeBitMap(JsonWriter writer, BitMapFontProvider provider) throws IOException {
-        String fileValue = Keys.toString(provider.file());
-        if (!fileValue.endsWith(".png")) {
-            fileValue += ".png";
-        }
-
         writer.beginObject()
                 .name("type").value("bitmap")
-                .name("file").value(fileValue);
+                .name("file").value(Keys.toString(provider.file()));
 
         int height = provider.height();
         if (height != BitMapFontProvider.DEFAULT_HEIGHT) {
@@ -134,7 +129,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
         }
 
         return FontProvider.bitMap()
-                .file(Key.key(node.get("file").getAsString())) // TODO: process
+                .file(Key.key(node.get("file").getAsString()))
                 .height(GsonUtil.getInt(node, "height", BitMapFontProvider.DEFAULT_HEIGHT))
                 .ascent(node.get("ascent").getAsInt())
                 .characters(characters)

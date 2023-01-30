@@ -54,7 +54,6 @@ import java.util.regex.Pattern;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.METADATA_EXTENSION;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.OBJECT_EXTENSION;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.SOUND_EXTENSION;
-import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.TEXTURE_EXTENSION;
 
 final class MinecraftResourcePackReader {
 
@@ -174,9 +173,9 @@ final class MinecraftResourcePackReader {
                 }
 
                 case MinecraftResourcePackStructure.TEXTURES_FOLDER: {
-                    if (value.endsWith(TEXTURE_EXTENSION + METADATA_EXTENSION)) {
+                    if (value.endsWith(METADATA_EXTENSION)) {
                         // a metadata file
-                        Key key = Key.key(namespace, value.substring(0, value.length() - TEXTURE_EXTENSION.length() - METADATA_EXTENSION.length()));
+                        Key key = Key.key(namespace, value.substring(0, value.length() - METADATA_EXTENSION.length()));
                         Metadata meta = SerializerMetadata.INSTANCE.readFromTree(PARSER.parse(reader(inputStream)));
                         Texture texture = waitingForMeta.remove(key);
 
@@ -192,9 +191,9 @@ final class MinecraftResourcePackReader {
                                     meta
                             ));
                         }
-                    } else if (value.endsWith(TEXTURE_EXTENSION)) {
+                    } else {
                         // a texture file
-                        Key key = Key.key(namespace, value.substring(0, value.length() - TEXTURE_EXTENSION.length()));
+                        Key key = Key.key(namespace, value.substring(0, value.length()));
                         Writable data = writableFromInputStreamCopy(inputStream);
 
                         Texture texture = waitingForMeta.remove(key);
@@ -210,8 +209,6 @@ final class MinecraftResourcePackReader {
                                     data
                             ));
                         }
-                    } else {
-                        System.err.println(" [WARN] Found an unknown file in textures folder: " + path);
                     }
                     break;
                 }

@@ -72,12 +72,17 @@ public class Texture implements Keyed, Examinable, Metadatable {
     }
 
     /**
-     * Returns this texture's key, textures require a
-     * namespace and a path to exist, the key contains
-     * those properties
+     * Returns this texture's key (location), a key contains
+     * the texture namespace and path, so that the full texture
+     * path is formatted like {@code assets/<namespace>/textures/<path>}
      *
-     * <p>Minecraft textures use {@link Key#MINECRAFT_NAMESPACE}
-     * as namespace value</p>
+     * <p>Example key for a texture: <pre>{@code
+     *
+     *   Key key = Key.key("minecraft", "block/allium.png");
+     * }</pre>
+     * Note that the key value must have the file full path,
+     * this means that the key value must also contain the file
+     * extension, if any.</p>
      *
      * @return The texture key
      */

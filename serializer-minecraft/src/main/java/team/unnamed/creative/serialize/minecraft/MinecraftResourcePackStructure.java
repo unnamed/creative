@@ -104,8 +104,9 @@ final class MinecraftResourcePackStructure {
     }
 
     public static String pathOf(Texture texture) {
-        // assets/<namespace>/textures/<path>.png
-        return withCategory(TEXTURES_FOLDER, texture, TEXTURE_EXTENSION);
+        Key key = texture.key();
+        // assets/<namespace>/textures/<path>
+        return path(ASSETS_FOLDER, key.namespace(), TEXTURES_FOLDER, key.value());
     }
 
     public static String pathOfMeta(Texture texture) {
