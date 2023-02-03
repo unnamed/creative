@@ -51,15 +51,6 @@ import static java.util.Objects.requireNonNull;
 
 final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
-    private static final String BLOCK_STATES = "blockStates";
-    private static final String FONTS = "fonts";
-    private static final String LANGUAGES = "languages";
-    private static final String MODELS = "models";
-    // no key required for sound registries since they are a special case
-    // private static final String SOUND_REGISTRIES = "soundRegistries";
-    private static final String SOUND_FILES = "soundFiles";
-    private static final String TEXTURES = "textures";
-
     private @Nullable Writable icon;
 
     // Metadata

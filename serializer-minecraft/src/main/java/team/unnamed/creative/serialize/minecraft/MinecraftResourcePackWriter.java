@@ -130,7 +130,7 @@ final class MinecraftResourcePackWriter implements ResourcePackWriter<MinecraftR
 
     @Override
     public MinecraftResourcePackWriter sound(Sound.File soundFile) {
-
+        target.write(MinecraftResourcePackStructure.pathOf(soundFile), soundFile.data());
         return this;
     }
 

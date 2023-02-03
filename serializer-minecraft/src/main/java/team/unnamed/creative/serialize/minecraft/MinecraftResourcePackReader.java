@@ -27,12 +27,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
+import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
@@ -45,6 +47,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -55,11 +58,207 @@ import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStr
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.OBJECT_EXTENSION;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.SOUND_EXTENSION;
 
-final class MinecraftResourcePackReader {
+final class MinecraftResourcePackReader implements ResourcePackReader  {
 
     private static final JsonParser PARSER = new JsonParser();
 
-    private MinecraftResourcePackReader() {
+    private final FileTreeReader reader;
+    private @Nullable String current;
+
+    private MinecraftResourcePackReader(FileTreeReader reader) {
+        this.reader = reader;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return reader.hasNext();
+    }
+
+    @Override
+    public void next() {
+        this.current = reader.next();
+    }
+
+    @Override
+    public ElementType type() {
+
+        if (current == null) {
+            throw new IllegalStateException("Execute next() at least once!");
+        }
+
+        Queue<String> tokens = MinecraftResourcePackStructure.tokenize(current);
+
+        if (tokens.isEmpty()) {
+            throw new IllegalStateException("Token collection is empty!");
+        }
+
+        if (tokens.size() == 1) {
+            // top level file
+            switch (tokens.poll()) {
+                case MinecraftResourcePackStructure.PACK_METADATA_FILE:
+                    return ElementType.PACK_METADATA;
+                case MinecraftResourcePackStructure.PACK_ICON_FILE:
+                    return ElementType.PACK_ICON;
+                default:
+                    return ElementType.UNKNOWN;
+            }
+        }
+
+        String folder = tokens.poll();
+
+        if (!folder.equals(MinecraftResourcePackStructure.ASSETS_FOLDER)) {
+            // not assets?
+            return ElementType.UNKNOWN;
+        }
+
+        if (tokens.isEmpty()) {
+            // assets was a file?
+            return ElementType.UNKNOWN;
+        }
+
+        // then the next token is a namespace
+        String namespace = tokens.poll();
+        if (tokens.isEmpty()) {
+            // found a file like assets/<file>
+            // when it should be assets/<namespace>/...
+            return ElementType.UNKNOWN;
+        }
+
+        if (!Keys.isValidNamespace(namespace)) {
+            return ElementType.UNKNOWN;
+        }
+
+        String category = tokens.poll();
+
+        if (tokens.isEmpty()) {
+            // found a file instead of a category folder
+            if (category.equals(MinecraftResourcePackStructure.SOUNDS_FILE)) {
+                return ElementType.SOUND_REGISTRY;
+            } else {
+                // TODO: gpu_warnlist.json?
+                return ElementType.UNKNOWN;
+            }
+        }
+
+        String value = MinecraftResourcePackStructure.path(tokens);
+
+        switch (category) {
+            case MinecraftResourcePackStructure.MODELS_FOLDER: {
+                if (!value.endsWith(OBJECT_EXTENSION)) {
+                    return ElementType.UNKNOWN;
+                } else {
+                    return ElementType.MODEL;
+                }
+            }
+            case MinecraftResourcePackStructure.TEXTURES_FOLDER: {
+                if (value.endsWith(METADATA_EXTENSION)) {
+                    return ElementType.TEXTURE_METADATA;
+                } else {
+                    return ElementType.TEXTURE;
+                }
+            }
+            case MinecraftResourcePackStructure.SOUNDS_FOLDER: {
+                if (!value.endsWith(SOUND_EXTENSION)) {
+                    return ElementType.UNKNOWN;
+                } else {
+                    return ElementType.SOUND;
+                }
+            }
+            case MinecraftResourcePackStructure.FONTS_FOLDER: {
+                if (!value.endsWith(OBJECT_EXTENSION)) {
+                    return ElementType.UNKNOWN;
+                } else {
+                    return ElementType.FONT;
+                }
+            }
+            case MinecraftResourcePackStructure.LANGUAGES_FOLDER: {
+                if (!value.endsWith(OBJECT_EXTENSION)) {
+                    return ElementType.UNKNOWN;
+                } else {
+                    return ElementType.LANGUAGE;
+                }
+            }
+
+            case MinecraftResourcePackStructure.BLOCKSTATES_FOLDER: {
+                if (!value.endsWith(OBJECT_EXTENSION)) {
+                    return ElementType.UNKNOWN;
+                } else {
+                    return ElementType.BLOCK_STATE;
+                }
+            }
+            default:
+                return ElementType.UNKNOWN;
+        }
+    }
+
+    @Override
+    public Writable icon() {
+        return copyCurrentData();
+    }
+
+    @Override
+    public Metadata metadata() {
+        return SerializerMetadata.INSTANCE.readFromTree(parse(reader.input()));
+    }
+
+    @Override
+    public BlockState blockState() {
+        return SerializerBlockState.INSTANCE.readFromTree(
+                parse(reader.input()),
+                key
+        );
+    }
+
+    @Override
+    public Font font() {
+        return SerializerFont.INSTANCE.readFromTree(
+                parse(reader.input()),
+                key
+        );
+    }
+
+    @Override
+    public Language language() {
+        return SerializerLanguage.INSTANCE.readFromTree(
+                parse(reader.input()),
+                key
+        );
+    }
+
+    @Override
+    public Model model() {
+        return SerializerLanguage.INSTANCE.readFromTree(
+                parse(reader.input()),
+                key
+        );
+    }
+
+    @Override
+    public SoundRegistry soundRegistry() {
+        return SerializerSoundRegistry.INSTANCE.readFromTree(
+                parse(reader.input()),
+                namespace
+        );
+    }
+
+    @Override
+    public Sound.File sound() {
+        return Sound.File.of(key, copyCurrentData());
+    }
+
+    @Override
+    public Texture texture() {
+        return Texture.of(key, copyCurrentData());
+    }
+
+    @Override
+    public Metadata textureMetadata() {
+        return SerializerMetadata.INSTANCE.readFromTree(parse(reader.input()));
+    }
+
+    @Override
+    public Map.Entry<String, Writable> unknown() {
+        return new AbstractMap.SimpleEntry<>(current, copyCurrentData());
     }
 
     static void read(FileTreeReader treeReader, ResourcePackWriter<?> output) {
@@ -291,6 +490,10 @@ final class MinecraftResourcePackReader {
                 System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
             }
         }
+    }
+
+    private Writable copyCurrentData() {
+        return writableFromInputStreamCopy(reader.input());
     }
 
     private static Writable writableFromInputStreamCopy(InputStream inputStream) {
