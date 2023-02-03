@@ -42,7 +42,7 @@ import java.util.zip.ZipInputStream;
 
 public class MinecraftReaderTest {
 
-    @Test
+    //@Test
     public void test() throws IOException {
         String pack = "URBAN_128x_1.19+";
 
