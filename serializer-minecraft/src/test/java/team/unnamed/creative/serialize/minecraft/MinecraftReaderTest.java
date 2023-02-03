@@ -24,35 +24,97 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import org.junit.jupiter.api.Test;
-import team.unnamed.creative.serialize.ResourcePackBuilder;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.font.Font;
+import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.model.Model;
+import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.sound.Sound;
+import team.unnamed.creative.sound.SoundRegistry;
+import team.unnamed.creative.texture.Texture;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 public class MinecraftReaderTest {
 
     @Test
     public void test() throws IOException {
-        String pack = "barelydefault";
-        ResourcePackBuilder builder;
+        String pack = "URBAN_128x_1.19+";
 
         System.out.println(" [INFO] ------------------------------");
         System.out.println(" [INFO]    Starting deserialization   ");
         System.out.println(" [INFO] ------------------------------");
-        try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/" + pack + ".zip")))) {
-            builder = MinecraftResourcePackSerializer.minecraft().deserialize(treeReader);
-        }
 
-        System.out.println(" [INFO] ------------------------------");
-        System.out.println(" [INFO]     Starting serialization    ");
-        System.out.println(" [INFO] ------------------------------");
-        try (FileTreeWriter treeWriter = FileTreeWriter.zip(new ZipOutputStream(new FileOutputStream("/home/nd/Desktop/" + pack + "-output.zip")))) {
-            MinecraftResourcePackSerializer.minecraft().serialize(builder, treeWriter);
+        try (FileTreeReader treeReader = FileTreeReader.zip(new ZipInputStream(new FileInputStream("/home/nd/Desktop/" + pack + ".zip")))) {
+            MinecraftResourcePackSerializer.minecraft().pipe(
+                    MinecraftResourcePackSerializer.minecraft().reader(treeReader),
+                    new ResourcePackWriter<MinecraftResourcePackWriter>() {
+                        @Override
+                        public MinecraftResourcePackWriter icon(Writable icon) {
+                            System.out.println("ICON!");
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter metadata(Metadata metadata) {
+                            System.out.println("METADATA!");
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter blockState(BlockState state) {
+                            System.out.println("BLOCK STATE! " + state.key());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter font(Font font) {
+                            System.out.println("FONT! " + font.key());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter language(Language language) {
+                            System.out.println("LANGUAGE! " + language.key());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter model(Model model) {
+                            System.out.println("MODEL! " + model.key());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter soundRegistry(SoundRegistry soundRegistry) {
+                            System.out.println("SOUND REGISTRY! " + soundRegistry.namespace());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter sound(Sound.File soundFile) {
+                            System.out.println("SOUND! " + soundFile.key());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter texture(Texture texture) {
+                            System.out.println("TEXTURE! " + texture.key() + " WITH META " + texture.meta().parts().size());
+                            return null;
+                        }
+
+                        @Override
+                        public MinecraftResourcePackWriter file(String path, Writable data) {
+                            System.out.println("UNKNOWN " + path);
+                            return null;
+                        }
+                    }
+            );
         }
     }
 

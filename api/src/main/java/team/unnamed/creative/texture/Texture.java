@@ -117,6 +117,11 @@ public class Texture implements Keyed, Examinable, Metadatable {
         return meta;
     }
 
+    @Override
+    public Texture meta(Metadata meta) {
+        return toBuilder().meta(meta).build();
+    }
+
     public Texture.Builder toBuilder() {
         return Texture.builder()
                 .key(key)

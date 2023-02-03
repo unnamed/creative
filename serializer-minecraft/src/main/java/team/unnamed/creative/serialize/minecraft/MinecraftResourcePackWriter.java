@@ -30,7 +30,6 @@ import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
-import team.unnamed.creative.serialize.ResourcePackInput;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
 import team.unnamed.creative.sound.Sound;
@@ -39,51 +38,13 @@ import team.unnamed.creative.texture.Texture;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Map;
 
 final class MinecraftResourcePackWriter implements ResourcePackWriter<MinecraftResourcePackWriter> {
 
     private final FileTreeWriter target;
 
-    private MinecraftResourcePackWriter(FileTreeWriter target) {
+    MinecraftResourcePackWriter(FileTreeWriter target) {
         this.target = target;
-    }
-
-    static void write(ResourcePackInput resourcePack, FileTreeWriter writer) {
-
-        ResourcePackWriter<?> resourcePackWriter = new MinecraftResourcePackWriter(writer)
-                .icon(resourcePack.icon());
-                // TODO: .metadata(resourcePack.metadata());
-
-        // write languages
-        for (Language language : resourcePack.languages()) {
-            resourcePackWriter.language(language);
-        }
-
-        // write block states
-        for (BlockState blockState : resourcePack.blockStates()) {
-            resourcePackWriter.blockState(blockState);
-        }
-
-        // write fonts
-        for (Font font : resourcePack.fonts()) {
-            resourcePackWriter.font(font);
-        }
-
-        // write models
-        for (Model model : resourcePack.models()) {
-            resourcePackWriter.model(model);
-        }
-
-        // write textures
-        for (Texture texture : resourcePack.textures()) {
-            resourcePackWriter.texture(texture);
-        }
-
-        // write unknown files
-        for (Map.Entry<String, Writable> entry : resourcePack.unknownFiles().entrySet()) {
-            resourcePackWriter.file(entry.getKey(), entry.getValue());
-        }
     }
 
     @Override

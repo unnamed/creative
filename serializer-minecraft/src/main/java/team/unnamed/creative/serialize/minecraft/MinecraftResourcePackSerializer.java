@@ -23,18 +23,28 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.font.Font;
+import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.model.Model;
 import team.unnamed.creative.serialize.ResourcePackBuilder;
-import team.unnamed.creative.serialize.ResourcePackInput;
+import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.ResourcePackSerializer;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.texture.Texture;
 
 import java.io.ByteArrayOutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.zip.ZipOutputStream;
 
@@ -44,25 +54,133 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
     }
 
     @Override
+    public ResourcePackReader reader(FileTreeReader input) {
+        return new MinecraftResourcePackReader(input);
+    }
+
+    @Override
+    public ResourcePackWriter<?> writer(FileTreeWriter output) {
+        return new MinecraftResourcePackWriter(output);
+    }
+
+    @Override
     public ResourcePackBuilder builder() {
         return MinecraftResourcePackBuilder.minecraft();
     }
 
     @Override
-    public void deserialize(FileTreeReader reader, ResourcePackWriter<?> output) {
-        MinecraftResourcePackReader.read(reader, output);
+    public void pipe(ResourcePackReader reader, ResourcePackWriter<?> writer) {
+        Map<Key, Texture> waitingForMeta = new HashMap<>();
+        while (reader.hasNext()) {
+            reader.next();
+            try {
+                switch (reader.type()) {
+                    case PACK_ICON: {
+                        writer.icon(reader.icon());
+                        break;
+                    }
+                    case PACK_METADATA: {
+                        writer.metadata(reader.metadata());
+                        break;
+                    }
+                    case LANGUAGE: {
+                        writer.language(reader.language());
+                        break;
+                    }
+                    case BLOCK_STATE: {
+                        writer.blockState(reader.blockState());
+                        break;
+                    }
+                    case FONT: {
+                        writer.font(reader.font());
+                        break;
+                    }
+                    case MODEL: {
+                        writer.model(reader.model());
+                        break;
+                    }
+                    case TEXTURE: {
+                        // a texture file
+                        Texture read = reader.texture();
+                        Texture texture = waitingForMeta.remove(read.key());
+
+                        if (texture != null) {
+                            // meta was found first
+                            writer.texture(read.meta(texture.meta()));
+                        } else {
+                            // texture was found first
+                            waitingForMeta.put(read.key(), read);
+                        }
+                        break;
+                    }
+                    case TEXTURE_METADATA: {
+                        Map.Entry<Key, Metadata> entry = reader.textureMetadata();
+                        Key key = entry.getKey();
+                        Metadata meta = entry.getValue();
+                        Texture texture = waitingForMeta.remove(key);
+
+                        if (texture != null) {
+                            // texture was found first
+                            writer.texture(texture.meta(meta));
+                        } else {
+                            // meta was found first, wait
+                            waitingForMeta.put(key, Texture.of(key, Writable.EMPTY, meta));
+                        }
+                        break;
+                    }
+                    case UNKNOWN: {
+                        Map.Entry<String, Writable> file = reader.unknown();
+                        writer.file(file.getKey(), file.getValue());
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage() + " for " + reader.type());
+            }
+        }
+
+        // write textures that do not have metadata (they waited and didn't found a meta :c)
+        for (Texture texture : waitingForMeta.values()) {
+            Metadata metadata = texture.meta();
+            if (metadata.parts().isEmpty()) {
+                // expected
+                writer.texture(texture);
+            } else {
+                // in this metadata is not empty and texture is, weird!
+                System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
+            }
+        }
     }
 
     @Override
-    public ResourcePackBuilder deserialize(FileTreeReader treeReader) {
-        ResourcePackBuilder builder = MinecraftResourcePackBuilder.minecraft();
-        deserialize(treeReader, builder);
-        return builder;
-    }
+    public void pipe(ResourcePackBuilder builder, ResourcePackWriter<?> writer) {
+        writer.icon(builder.icon());
+        writer.metadata(builder.metadata());
 
-    @Override
-    public void serialize(ResourcePackInput resourcePack, FileTreeWriter tree) {
-        MinecraftResourcePackWriter.write(resourcePack, tree);
+        for (Language language : builder.languages()) {
+            writer.language(language);
+        }
+
+        for (BlockState blockState : builder.blockStates()) {
+            writer.blockState(blockState);
+        }
+
+        for (Font font : builder.fonts()) {
+            writer.font(font);
+        }
+
+        for (Model model : builder.models()) {
+            writer.model(model);
+        }
+
+        for (Texture texture : builder.textures()) {
+            writer.texture(texture);
+        }
+
+        // write unknown files
+        for (Map.Entry<String, Writable> entry : builder.unknownFiles().entrySet()) {
+            writer.file(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override

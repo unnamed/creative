@@ -27,4 +27,6 @@ public interface Metadatable {
 
     Metadata meta();
 
+    Metadatable meta(Metadata meta);
+
 }

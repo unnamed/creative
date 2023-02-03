@@ -53,14 +53,9 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     private @Nullable Writable icon;
 
-    // Metadata
-    private @Nullable PackMeta packMeta;
-    private @Nullable LanguageMeta languageMeta;
-    private @Nullable FilterMeta filterMeta;
-    private @Nullable Map<String, MetadataPart> customMetadataParts;
+    private Metadata metadata = Metadata.EMPTY;
 
     private @Nullable Map<String, SoundRegistry> soundRegistries;
-
     private @Nullable Map<String, Writable> extraFiles;
 
     // Objects
@@ -86,11 +81,15 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
     }
     //#endregion
 
-
     @Override
     public ResourcePackBuilder metadata(@Nullable Metadata metadata) {
-        // TODO: !
+        this.metadata = metadata;
         return this;
+    }
+
+    @Override
+    public Metadata metadata() {
+        return metadata;
     }
 
     //#region Metadata methods
@@ -99,30 +98,31 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
     // |-----------------------------------|
     @Override
     public ResourcePackBuilder meta(PackMeta meta) {
-        this.packMeta = requireNonNull(meta, "meta");
+        metadata = metadata.toBuilder().add(meta).build();
         return this;
     }
 
     @Override
     public @Nullable PackMeta meta() {
-        return packMeta;
+        return metadata.meta(PackMeta.class);
     }
 
     @Override
     public ResourcePackBuilder languageRegistry(LanguageMeta meta) {
-        this.languageMeta = meta;
+        metadata = metadata.toBuilder().add(meta).build();
         return this;
     }
 
     @Override
     public @Nullable LanguageMeta languageRegistry() {
-        return languageMeta;
+        return metadata.meta(LanguageMeta.class);
     }
 
     @Override
     public ResourcePackBuilder languageEntry(Key key, LanguageEntry languageEntry) {
 
         Map<Key, LanguageEntry> languages = new HashMap<>();
+        LanguageMeta languageMeta = languageRegistry();
 
         if (languageMeta == null) {
             languages.put(key, languageEntry);
@@ -131,12 +131,13 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
             languages.put(key, languageEntry);
         }
 
-        languageMeta = LanguageMeta.of(languages);
+        languageRegistry(LanguageMeta.of(languages));
         return this;
     }
 
     @Override
     public @Nullable LanguageEntry languageEntry(Key key) {
+        LanguageMeta languageMeta = languageRegistry();
         if (languageMeta == null) {
             return null;
         }
@@ -145,6 +146,7 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     @Override
     public Collection<LanguageEntry> languageEntries() {
+        LanguageMeta languageMeta = languageRegistry();
         if (languageMeta == null) {
             return Collections.emptySet();
         }
@@ -153,21 +155,19 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     @Override
     public ResourcePackBuilder filter(FilterMeta filter) {
-        this.filterMeta = filter;
+        metadata = metadata.toBuilder().add(filter).build();
         return this;
     }
 
     @Override
     public @Nullable FilterMeta filter() {
-        return filterMeta;
+        return metadata.meta(FilterMeta.class);
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public ResourcePackBuilder customMetaPart(MetadataPart part) {
-        if (customMetadataParts == null) {
-            customMetadataParts = new HashMap<>();
-        }
-        customMetadataParts.put(part.name(), part);
+        this.metadata = metadata.toBuilder().add((Class) part.getClass(), part).build();
         return this;
     }
     //#endregion

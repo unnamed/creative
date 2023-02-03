@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize;
 
+import net.kyori.adventure.key.Key;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
@@ -61,7 +62,8 @@ public interface ResourcePackReader {
 
     Texture texture();
 
-    Metadata textureMetadata();
+    // TODO:
+    Map.Entry<Key, Metadata> textureMetadata();
 
     Map.Entry<String, Writable> unknown();
 

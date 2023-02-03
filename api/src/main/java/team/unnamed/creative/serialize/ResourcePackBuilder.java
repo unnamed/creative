@@ -23,9 +23,132 @@
  */
 package team.unnamed.creative.serialize;
 
+import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.font.Font;
+import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.metadata.PackMeta;
+import team.unnamed.creative.metadata.filter.FilterMeta;
+import team.unnamed.creative.metadata.language.LanguageEntry;
+import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.model.Model;
+import team.unnamed.creative.texture.Texture;
+
+import java.util.Collection;
+import java.util.Map;
+
 public interface ResourcePackBuilder extends
-        ResourcePackInput,
         ResourcePackWriter<ResourcePackBuilder>,
         ResourcePackWriter.Extra<ResourcePackBuilder> {
+
+    // |--------------------------------------|
+    // |--------- RESOURCE PACK ICON ---------|
+    // |--------------------------------------|
+    /**
+     * Returns the resource pack icon image (must
+     * be a PNG file), it may be null
+     *
+     * @return The resource pack icon image, null if
+     * not set
+     */
+    @Nullable Writable icon();
+
+
+
+    // |--------------------------------------|
+    // |-------------- METADATA --------------|
+    // |--------------------------------------|
+    Metadata metadata();
+
+    // ----- Pack Meta -----
+    @Nullable PackMeta meta();
+
+    default int format() {
+        PackMeta meta = meta();
+        if (meta == null) {
+            return -1;
+        } else {
+            return meta.format();
+        }
+    }
+
+    default @Nullable String description() {
+        PackMeta meta = meta();
+        if (meta == null) {
+            return null;
+        } else {
+            return meta.description();
+        }
+    }
+
+
+    // ----- Language Meta -----
+    @Nullable LanguageMeta languageRegistry();
+
+    @Nullable LanguageEntry languageEntry(Key key);
+
+    Collection<LanguageEntry> languageEntries();
+
+
+    // ----- Filter Meta -----
+    @Nullable FilterMeta filter();
+
+
+
+    // |-------------------------------------|
+    // |------------ BLOCK STATE ------------|
+    // |-------------------------------------|
+    @Nullable BlockState blockState(Key key);
+
+    Collection<BlockState> blockStates();
+
+
+
+    // |-------------------------------------|
+    // |--------------- FONTS ---------------|
+    // |-------------------------------------|
+    @Nullable Font font(Key key);
+
+    Collection<Font> fonts();
+
+
+
+    // |-------------------------------------|
+    // |------------- LANGUAGES -------------|
+    // |-------------------------------------|
+    Collection<Language> languages();
+
+
+
+    // |--------------------------------------|
+    // |--------------- MODELS ---------------|
+    // |--------------------------------------|
+    Collection<Model> models();
+
+
+
+    // |--------------------------------------|
+    // |--------------- SOUNDS ---------------|
+    // |--------------------------------------|
+    //SoundRegistry soundRegistry();
+
+    //Collection<Sound.File> sounds();
+
+
+
+    // |--------------------------------------|
+    // |-------------- TEXTURES --------------|
+    // |--------------------------------------|
+    Collection<Texture> textures();
+
+
+
+    // |--------------------------------------|
+    // |---------------- OTHER ---------------|
+    // |--------------------------------------|
+    Map<String, Writable> unknownFiles();
 
 }
