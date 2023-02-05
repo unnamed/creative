@@ -35,7 +35,6 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.font.LegacyUnicodeFontProvider;
 import team.unnamed.creative.font.SpaceFontProvider;
 import team.unnamed.creative.font.TrueTypeFontProvider;
-import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;

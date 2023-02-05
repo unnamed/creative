@@ -32,7 +32,6 @@ import team.unnamed.creative.blockstate.Condition;
 import team.unnamed.creative.blockstate.MultiVariant;
 import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
-import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;

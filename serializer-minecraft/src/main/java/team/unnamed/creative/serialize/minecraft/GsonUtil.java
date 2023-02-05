@@ -1,4 +1,3 @@
-
 /*
  * This file is part of creative, licensed under the MIT license
  *
@@ -22,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.io;
+package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

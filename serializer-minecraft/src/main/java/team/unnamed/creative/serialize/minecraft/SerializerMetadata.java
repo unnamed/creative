@@ -39,7 +39,6 @@ import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
-import team.unnamed.creative.serialize.minecraft.io.GsonUtil;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
