@@ -21,37 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.io;
+package team.unnamed.creative.serialize.minecraft.fs;
 
-import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
 
-final class Streams {
+public interface FileTreeReader extends AutoCloseable {
 
-    private Streams() {
-    }
+    boolean hasNext();
 
-    public static void closeUnchecked(Closeable closeable) {
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    String next();
 
-    public static void deleteContents(File folder) {
-        File[] children = folder.listFiles();
-        if (children != null) {
-            for (File child : children) {
-                if (!Files.isSymbolicLink(child.toPath())) {
-                    deleteContents(child);
-                    child.delete();
-                }
-            }
-        }
+    InputStream input();
+
+    @Override
+    void close() throws IOException;
+
+    static FileTreeReader zip(ZipInputStream zip) {
+        return new ZipFileTreeReader(zip);
     }
 
 }

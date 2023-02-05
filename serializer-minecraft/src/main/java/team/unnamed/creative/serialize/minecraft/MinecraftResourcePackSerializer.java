@@ -35,8 +35,8 @@ import team.unnamed.creative.serialize.ResourcePackBuilder;
 import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.ResourcePackSerializer;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
+import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.texture.Texture;
 
 import java.io.ByteArrayOutputStream;

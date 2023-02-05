@@ -21,28 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.io;
+package team.unnamed.creative.serialize.minecraft.fs;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
-import java.util.NoSuchElementException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-public interface FileTreeReader extends AutoCloseable {
-
-    boolean hasNext();
-
-    String next();
-
-    InputStream input();
+final class DirectoryFileTreeReader implements FileTreeReader {
 
     @Override
-    void close() throws IOException;
+    public boolean hasNext() {
+        return false;
+    }
 
-    static FileTreeReader zip(ZipInputStream zip) {
-        return new ZipFileTreeReader(zip);
+    @Override
+    public String next() {
+        return null;
+    }
+
+    @Override
+    public InputStream input() {
+        return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 
 }

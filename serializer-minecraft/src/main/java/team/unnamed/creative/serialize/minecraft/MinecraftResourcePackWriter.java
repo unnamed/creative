@@ -31,7 +31,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.serialize.ResourcePackWriter;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;

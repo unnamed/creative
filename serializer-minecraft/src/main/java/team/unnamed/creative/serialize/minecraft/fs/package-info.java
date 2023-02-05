@@ -21,31 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-final class DirectoryFileTreeReader implements FileTreeReader {
-
-    @Override
-    public boolean hasNext() {
-        return false;
-    }
-
-    @Override
-    public String next() {
-        return null;
-    }
-
-    @Override
-    public InputStream input() {
-        return null;
-    }
-
-    @Override
-    public void close() throws IOException {
-
-    }
-
-}
+/**
+ * The input and output targets for this serializer, the serializer-minecraft
+ * subproject implements the Minecraft Vanilla resource pack format for the
+ * creative classes
+ *
+ * <p>This package contains the input and output targets for Minecraft Vanilla
+ * resource packs (it can use a ZIP/Folder file tree)</p>
+ */
+package team.unnamed.creative.serialize.minecraft.fs;

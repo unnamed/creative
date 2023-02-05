@@ -21,50 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.io;
+package team.unnamed.creative.serialize.minecraft.fs;
 
+import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.NoSuchElementException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.nio.file.Files;
 
-final class ZipFileTreeReader implements FileTreeReader {
+final class Streams {
 
-    private final ZipInputStream zip;
-    private ZipEntry entry;
-
-    public ZipFileTreeReader(ZipInputStream zip) {
-        this.zip = zip;
+    private Streams() {
     }
 
-    @Override
-    public boolean hasNext() {
+    public static void closeUnchecked(Closeable closeable) {
         try {
-            do {
-                entry = zip.getNextEntry();
-            } while (entry != null && entry.isDirectory());
-            return entry != null;
+            closeable.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    @Override
-    public String next() {
-        if (entry == null) throw new NoSuchElementException();
-        return entry.getName();
-    }
-
-    @Override
-    public InputStream input() {
-        return zip;
-    }
-
-    @Override
-    public void close() throws IOException {
-        zip.close();
+    public static void deleteContents(File folder) {
+        File[] children = folder.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (!Files.isSymbolicLink(child.toPath())) {
+                    deleteContents(child);
+                    child.delete();
+                }
+            }
+        }
     }
 
 }

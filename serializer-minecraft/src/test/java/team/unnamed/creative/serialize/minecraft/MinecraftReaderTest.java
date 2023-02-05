@@ -23,7 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
@@ -31,7 +30,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.serialize.ResourcePackWriter;
-import team.unnamed.creative.serialize.minecraft.io.FileTreeReader;
+import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;

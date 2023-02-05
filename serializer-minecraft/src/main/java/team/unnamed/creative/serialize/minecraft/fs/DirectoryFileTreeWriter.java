@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.io;
+package team.unnamed.creative.serialize.minecraft.fs;
 
 import team.unnamed.creative.base.Writable;
 
