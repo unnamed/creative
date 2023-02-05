@@ -96,6 +96,18 @@ public interface Writable {
     }
 
     /**
+     * Converts this {@link Writable} instance to an UTF-8
+     * string, it is not recommended invoking this method so
+     * often, it exists only for easing debugging
+     *
+     * @return This writable instance as an UTF-8 string
+     * @throws IOException If conversion fails
+     */
+    default String toUTF8String() throws IOException {
+        return new String(toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    /**
      * Creates a new {@link Writable} instance that represents
      * the named resource at the specified class loader
      *
@@ -255,6 +267,11 @@ public interface Writable {
             @Override
             public byte[] toByteArray() {
                 return bytes;
+            }
+
+            @Override
+            public String toUTF8String() {
+                return string;
             }
 
             @Override

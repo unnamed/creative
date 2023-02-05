@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
@@ -40,6 +41,10 @@ public interface FileTreeReader extends AutoCloseable {
 
     static FileTreeReader zip(ZipInputStream zip) {
         return new ZipFileTreeReader(zip);
+    }
+
+    static FileTreeReader directory(File root) {
+        return new DirectoryFileTreeReader(root);
     }
 
 }

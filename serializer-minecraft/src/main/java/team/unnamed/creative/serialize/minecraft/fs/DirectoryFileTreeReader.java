@@ -23,10 +23,17 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 final class DirectoryFileTreeReader implements FileTreeReader {
+
+    private final File root;
+
+    DirectoryFileTreeReader(File root) {
+        this.root = root;
+    }
 
     @Override
     public boolean hasNext() {
