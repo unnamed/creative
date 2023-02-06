@@ -45,6 +45,10 @@ public interface FileTreeReaderTest {
         try (FileTreeReader reader = createReader()) {
             Map<String, Writable> files = new HashMap<>();
 
+            for (int i = 0; i < 20; i++) {
+                Assertions.assertTrue(reader.hasNext(), "Reader must have next");
+            }
+
             while (reader.hasNext()) {
                 String path = reader.next();
                 InputStream input = reader.input();
@@ -52,6 +56,10 @@ public interface FileTreeReaderTest {
                         files.putIfAbsent(path, Writable.copyInputStream(input)),
                         "Path was repeated: " + path
                 );
+            }
+
+            for (int i = 0; i < 20; i++) {
+                Assertions.assertFalse(reader.hasNext(), "Reader must not have next");
             }
 
             assertEquals(4, files.size());
