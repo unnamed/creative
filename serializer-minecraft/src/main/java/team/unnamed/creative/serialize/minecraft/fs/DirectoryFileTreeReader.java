@@ -41,7 +41,6 @@ final class DirectoryFileTreeReader implements FileTreeReader {
     private File @Nullable [] files;
     private int fileCursor;
 
-    private File current;
     private InputStream currentStream;
 
     DirectoryFileTreeReader(File root) {
@@ -92,7 +91,7 @@ final class DirectoryFileTreeReader implements FileTreeReader {
         if (files == null || fileCursor >= files.length) {
             throw new NoSuchElementException("No more elements");
         } else {
-            current = files[fileCursor++];
+            File current = files[fileCursor++];
             try {
                 currentStream = new FileInputStream(current);
             } catch (IOException e) {
