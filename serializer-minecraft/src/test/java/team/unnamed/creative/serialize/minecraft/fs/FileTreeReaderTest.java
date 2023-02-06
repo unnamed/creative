@@ -31,9 +31,13 @@ import team.unnamed.creative.base.Writable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public interface FileTreeReaderTest {
 
@@ -67,6 +71,25 @@ public interface FileTreeReaderTest {
             assertEquals("This is the second file", files.get("dir/file2.txt").toUTF8String());
             assertEquals("This is the third file", files.get("dir/subdir/file3.txt").toUTF8String());
             assertEquals("This is a file without extension", files.get("dir/subdir/filenoext").toUTF8String());
+        }
+
+        try (FileTreeReader reader = createReader()) {
+            // Test that reader works only using next()
+            Set<String> output = new HashSet<>();
+
+            output.add(reader.next());
+            output.add(reader.next());
+            output.add(reader.next());
+            output.add(reader.next());
+
+            assertEquals(4, output.size());
+            assertTrue(output.contains("file.txt"));
+            assertTrue(output.contains("dir/file2.txt"));
+            assertTrue(output.contains("dir/subdir/file3.txt"));
+            assertTrue(output.contains("dir/subdir/filenoext"));
+
+            // calling next() again should throw NoSuchElementException
+            Assertions.assertThrows(NoSuchElementException.class, reader::next);
         }
     }
 
