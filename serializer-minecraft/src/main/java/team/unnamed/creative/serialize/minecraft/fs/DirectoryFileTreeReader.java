@@ -23,36 +23,111 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 final class DirectoryFileTreeReader implements FileTreeReader {
 
     private final File root;
+    private final List<File> folders = new ArrayList<>();
+    private int folderCursor;
+    private File @Nullable [] files;
+    private int fileCursor;
+
+    private File current;
+    private InputStream currentStream;
 
     DirectoryFileTreeReader(File root) {
         this.root = root;
+        folders.add(root);
     }
 
     @Override
     public boolean hasNext() {
-        return false;
+        while (true) {
+            if (files == null) {
+                // we must look for a folder and make
+                // files be equal to its children
+                if (folderCursor >= folders.size()) {
+                    // no more folders
+                    return false;
+                }
+
+                File folder = folders.get(folderCursor++);
+                files = folder.listFiles();
+
+                if (files == null) {
+                    throw new IllegalStateException("Null children from file " + folder);
+                }
+            }
+
+            while (fileCursor < files.length) {
+                File file = files[fileCursor];
+                if (file.isDirectory()) {
+                    folders.add(file);
+                    fileCursor++;
+                } else {
+                    return true;
+                }
+            }
+            files = null;
+            fileCursor = 0;
+        }
     }
 
     @Override
     public String next() {
-        return null;
+        if (currentStream != null) {
+            Streams.closeUnchecked(currentStream);
+            currentStream = null;
+        }
+
+        if (files == null || fileCursor >= files.length) {
+            throw new NoSuchElementException("No more elements");
+        } else {
+            current = files[fileCursor++];
+            try {
+                currentStream = new FileInputStream(current);
+            } catch (IOException e) {
+                throw new IllegalStateException("Couldn't open InputStream for: " + current, e);
+            }
+            return relativize(root, current);
+        }
     }
 
     @Override
     public InputStream input() {
-        return null;
+        return currentStream;
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
+        if (currentStream != null) {
+            Streams.closeUnchecked(currentStream);
+            currentStream = null;
+        }
+    }
 
+    private static String relativize(File parent, File child) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(child.getName());
+
+        while ((child = child.getParentFile()) != null) {
+            if (parent.equals(child)) {
+                // finished!
+                return builder.toString();
+            }
+            // prepend current folder to the string builder
+            builder.insert(0, child.getName() + File.separator);
+        }
+        throw new IllegalStateException("");
     }
 
 }
