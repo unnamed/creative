@@ -74,10 +74,8 @@ final class ZipFileTreeReader implements FileTreeReader {
 
     @Override
     public String next() {
-        if (current == null) {
-            if (!hasNext()) {
-                throw new NoSuchElementException("No more elements");
-            }
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more elements");
         }
         consumed = true;
         return current.getName();

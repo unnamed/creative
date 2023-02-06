@@ -83,6 +83,10 @@ final class DirectoryFileTreeReader implements FileTreeReader {
 
     @Override
     public String next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more elements");
+        }
+
         if (currentStream != null) {
             Streams.closeUnchecked(currentStream);
             currentStream = null;
