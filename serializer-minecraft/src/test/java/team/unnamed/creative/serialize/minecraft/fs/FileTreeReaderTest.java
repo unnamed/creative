@@ -28,56 +28,38 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Writable;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FileTreeReaderTest {
+public interface FileTreeReaderTest {
+
+    FileTreeReader createReader() throws IOException;
 
     @Test
-    @DisplayName("Test Zip FileTree reader")
-    public void test_zip_file_tree_reading() throws IOException {
-        try (FileTreeReader reader = FileTreeReader.zip(new ZipInputStream(
-                Objects.requireNonNull(FileTreeReaderTest.class.getClassLoader().getResourceAsStream("ziptree.zip"), "InputStream is null"),
-                StandardCharsets.UTF_8
-        ))) {
-            test_file_tree_reading(reader);
+    @DisplayName("Test FileTreeReader implementation")
+    default void test_file_tree_reading() throws IOException {
+        try (FileTreeReader reader = createReader()) {
+            Map<String, Writable> files = new HashMap<>();
+
+            while (reader.hasNext()) {
+                String path = reader.next();
+                InputStream input = reader.input();
+                Assertions.assertNull(
+                        files.putIfAbsent(path, Writable.copyInputStream(input)),
+                        "Path was repeated: " + path
+                );
+            }
+
+            assertEquals(4, files.size());
+            assertEquals("Hello, this is a cool file", files.get("file.txt").toUTF8String());
+            assertEquals("This is the second file", files.get("dir/file2.txt").toUTF8String());
+            assertEquals("This is the third file", files.get("dir/subdir/file3.txt").toUTF8String());
+            assertEquals("This is a file without extension", files.get("dir/subdir/filenoext").toUTF8String());
         }
-    }
-
-    @Test
-    @DisplayName("Test Directory FileTree reader")
-    public void test_dir_file_tree_reading() throws IOException {
-        File folder = new File("src/test/resources/folder");
-        try (FileTreeReader reader = FileTreeReader.directory(folder)) {
-            test_file_tree_reading(reader);
-        }
-    }
-
-    private void test_file_tree_reading(FileTreeReader reader) throws IOException {
-        Map<String, Writable> files = new HashMap<>();
-
-        while (reader.hasNext()) {
-            String path = reader.next();
-            InputStream input = reader.input();
-            Assertions.assertNull(
-                    files.putIfAbsent(path, Writable.copyInputStream(input)),
-                    "Path was repeated: " + path
-            );
-        }
-
-        assertEquals(4, files.size());
-        assertEquals("Hello, this is a cool file", files.get("file.txt").toUTF8String());
-        assertEquals("This is the second file", files.get("dir/file2.txt").toUTF8String());
-        assertEquals("This is the third file", files.get("dir/subdir/file3.txt").toUTF8String());
-        assertEquals("This is a file without extension", files.get("dir/subdir/filenoext").toUTF8String());
     }
 
 }
