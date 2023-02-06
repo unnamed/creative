@@ -154,8 +154,14 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
 
     @Override
     public void pipe(ResourcePackBuilder builder, ResourcePackWriter<?> writer) {
-        writer.icon(builder.icon());
-        writer.metadata(builder.metadata());
+        Writable icon = builder.icon();
+        if (icon != null) {
+            writer.icon(icon);
+        }
+        Metadata metadata = builder.metadata();
+        if (metadata.parts().size() > 0) {
+            writer.metadata(metadata);
+        }
 
         for (Language language : builder.languages()) {
             writer.language(language);
