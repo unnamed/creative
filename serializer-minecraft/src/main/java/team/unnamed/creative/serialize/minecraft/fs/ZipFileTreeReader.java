@@ -33,28 +33,54 @@ import java.util.zip.ZipInputStream;
 final class ZipFileTreeReader implements FileTreeReader {
 
     private final ZipInputStream zip;
-    private ZipEntry entry;
+    private ZipEntry current;
+    private boolean consumed;
 
     public ZipFileTreeReader(ZipInputStream zip) {
         this.zip = zip;
     }
 
-    @Override
-    public boolean hasNext() {
+    private void nextEntry() {
         try {
+            ZipEntry entry;
             do {
                 entry = zip.getNextEntry();
             } while (entry != null && entry.isDirectory());
-            return entry != null;
+            current = entry;
+            consumed = false;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     @Override
+    public boolean hasNext() {
+        if (current == null) {
+            if (consumed) {
+                return false;
+            } else {
+                nextEntry();
+                return current != null;
+            }
+        } else if (consumed) {
+            nextEntry();
+            return current != null;
+        } else {
+            // not null and not consumed, can call
+            // next() and should remain the same
+            return true;
+        }
+    }
+
+    @Override
     public String next() {
-        if (entry == null) throw new NoSuchElementException();
-        return entry.getName();
+        if (current == null) {
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements");
+            }
+        }
+        consumed = true;
+        return current.getName();
     }
 
     @Override
