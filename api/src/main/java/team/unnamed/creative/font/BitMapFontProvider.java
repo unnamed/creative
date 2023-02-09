@@ -28,8 +28,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.util.Keys;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Arrays;
@@ -84,11 +82,6 @@ public class BitMapFontProvider implements FontProvider {
             Validate.isNotNull(character, "An element from the character list is null");
             Validate.isTrue(character.length() == sample.length(), "Elements of character list must have the same length");
         }
-    }
-
-    @Override
-    public String name() {
-        return "bitmap";
     }
 
     /**
@@ -160,27 +153,6 @@ public class BitMapFontProvider implements FontProvider {
                 .height(height)
                 .ascent(ascent)
                 .characters(characters);
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        String fileValue = Keys.toString(file);
-        if (!fileValue.endsWith(".png")) {
-            fileValue += ".png";
-        }
-
-        writer.startObject()
-                .key("type").value("bitmap")
-                .key("file").value(fileValue);
-
-        if (height != BitMapFontProvider.DEFAULT_HEIGHT) {
-            // only write if height is not equal to the default height
-            writer.key("height").value(height);
-        }
-
-        writer.key("ascent").value(ascent)
-                .key("chars").value(characters)
-                .endObject();
     }
 
     @Override

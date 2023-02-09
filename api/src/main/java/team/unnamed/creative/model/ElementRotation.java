@@ -23,16 +23,14 @@
  */
 package team.unnamed.creative.model;
 
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
 import team.unnamed.creative.util.Validate;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -44,7 +42,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class ElementRotation implements SerializableResource {
+public class ElementRotation implements Examinable {
 
     public static final boolean DEFAULT_RESCALE = false;
 
@@ -126,20 +124,6 @@ public class ElementRotation implements SerializableResource {
 
     public ElementRotation rescale(boolean rescale) {
         return new ElementRotation(this.origin, this.axis, this.angle, rescale);
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("origin").value(origin)
-                .key("axis").value(axis.name().toLowerCase(Locale.ROOT))
-                .key("angle").value(angle);
-
-        if (rescale != DEFAULT_RESCALE) {
-            // only write if not equal to default value
-            writer.key("rescale").value(rescale);
-        }
-        writer.endObject();
     }
 
     @Override

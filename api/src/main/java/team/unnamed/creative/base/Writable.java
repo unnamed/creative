@@ -47,6 +47,19 @@ import java.util.concurrent.Callable;
 @FunctionalInterface
 public interface Writable {
 
+    Writable EMPTY = new Writable() {
+
+        @Override
+        public void write(OutputStream output) {
+        }
+
+        @Override
+        public String toString() {
+            return "Writable.EMPTY";
+        }
+
+    };
+
     /**
      * Determines the default buffer size used when
      * copying data from an input stream to an output
@@ -80,6 +93,18 @@ public interface Writable {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         write(output);
         return output.toByteArray();
+    }
+
+    /**
+     * Converts this {@link Writable} instance to an UTF-8
+     * string, it is not recommended invoking this method so
+     * often, it exists only for easing debugging
+     *
+     * @return This writable instance as an UTF-8 string
+     * @throws IOException If conversion fails
+     */
+    default String toUTF8String() throws IOException {
+        return new String(toByteArray(), StandardCharsets.UTF_8);
     }
 
     /**
@@ -155,6 +180,47 @@ public interface Writable {
     }
 
     /**
+     * Creates a new {@link Writable} instance that represents
+     * the given {@link InputStream} data, in order to preserve
+     * the data, it reads the input stream to a byte array when
+     * this method is called
+     *
+     * @param inputStream The input stream to copy
+     * @return The {@link Writable} representation
+     * @throws IOException If reading the input stream fails
+     * @since 1.0.0
+     */
+    static Writable copyInputStream(InputStream inputStream) throws IOException {
+
+        // read input stream data to a byte array
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buf = new byte[DEFAULT_BUFFER_LENGTH];
+        int len;
+        while ((len = inputStream.read(buf)) != -1) {
+            output.write(buf, 0, len);
+        }
+        byte[] bytes = output.toByteArray();
+        return new Writable() {
+
+            @Override
+            public void write(OutputStream output) throws IOException {
+                output.write(bytes);
+            }
+
+            @Override
+            public byte[] toByteArray() {
+                return bytes;
+            }
+
+            @Override
+            public String toString() {
+                return "Writable.copyInputStream";
+            }
+
+        };
+    }
+
+    /**
      * Creates a new {@link Writable} instance representing
      * the given byte array, which is written using the
      * {@link OutputStream#write(byte[])}} method
@@ -201,6 +267,11 @@ public interface Writable {
             @Override
             public byte[] toByteArray() {
                 return bytes;
+            }
+
+            @Override
+            public String toUTF8String() {
+                return string;
             }
 
             @Override

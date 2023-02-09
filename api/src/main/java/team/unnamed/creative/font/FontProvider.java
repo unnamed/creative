@@ -24,7 +24,7 @@
 package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
-import team.unnamed.creative.file.SerializableResource;
+import net.kyori.examination.Examinable;
 
 import java.util.List;
 import java.util.Map;
@@ -36,16 +36,7 @@ import java.util.Map;
  * @since 1.0.0
  * @see Font
  */
-public interface FontProvider extends SerializableResource {
-
-    /**
-     * Returns the font name used in the resulting
-     * resource pack, e.g. "bitmap", "ttf", "legacy_unicode",
-     * "space"
-     *
-     * @return The font provider name
-     */
-    String name();
+public interface FontProvider extends Examinable {
 
     /**
      * Creates a new bit-map font from the provided values
@@ -86,11 +77,13 @@ public interface FontProvider extends SerializableResource {
      * @param sizes Location to the file that specifies the
      *              character sizes
      * @param template Location of the file that specifies
-     *                 the character textures
+     *                 the character textures, it is a string
+     *                 template and MUST contain a single '%s'
+     *                 that will be replaced by the unicode page
      * @return A new {@link LegacyUnicodeFontProvider} font
      * @since 1.0.0
      */
-    static LegacyUnicodeFontProvider legacyUnicode(Key sizes, Key template) {
+    static LegacyUnicodeFontProvider legacyUnicode(Key sizes, String template) {
         return new LegacyUnicodeFontProvider(sizes, template);
     }
 

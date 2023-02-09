@@ -41,7 +41,7 @@ public class KeyCompactionTest {
     }
 
     @Test
-    @DisplayName("Test that keys withot default namespace are not compacted")
+    @DisplayName("Test that keys without default namespace are not compacted")
     public void test_custom_namespace() {
         assertEquals("creative:test", Keys.toString(Key.key("creative:test")));
         assertEquals("creative:test_separate", Keys.toString(Key.key("creative", "test_separate")));

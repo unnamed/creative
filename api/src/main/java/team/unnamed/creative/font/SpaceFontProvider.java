@@ -26,7 +26,6 @@ package team.unnamed.creative.font;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.util.Validate;
 
 import java.util.HashMap;
@@ -74,25 +73,9 @@ public class SpaceFontProvider implements FontProvider {
         return toBuilder().advances(advances).build();
     }
 
-    @Override
-    public String name() {
-        return "space";
-    }
-
     public SpaceFontProvider.Builder toBuilder() {
         return FontProvider.space()
                 .advances(advances);
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("type").value("space")
-                .key("advances").startObject();
-        for (Map.Entry<String, Integer> entry : advances.entrySet()) {
-            writer.key(entry.getKey()).value(entry.getValue());
-        }
-        writer.endObject().endObject();
     }
 
     @Override

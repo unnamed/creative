@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeAll;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.PackMeta;
+import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackSerializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,11 +47,8 @@ public class LocalHttpTestBase {
 
     @BeforeAll
     public static void setup() throws Exception {
-        resourcePack = ResourcePack.build(tree ->
-                tree.write(Metadata.builder()
-                        .add(PackMeta.of(8, "Resource pack!"))
-                        .build())
-        );
+        resourcePack = MinecraftResourcePackSerializer.minecraft().build(builder ->
+                builder.meta(8, "Resource pack!"));
         server = ResourcePackServer.builder()
                 .address(new InetSocketAddress(PORT))
                 .pack(resourcePack, true)

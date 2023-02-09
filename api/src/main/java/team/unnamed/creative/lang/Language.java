@@ -25,15 +25,14 @@ package team.unnamed.creative.lang;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.FileResource;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.language.LanguageEntry;
-import team.unnamed.creative.file.ResourceWriter;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -48,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Language implements Keyed, FileResource {
+public class Language implements Keyed, Examinable {
 
     private final Key key;
     private final Map<String, String> translations;
@@ -85,20 +84,6 @@ public class Language implements Keyed, FileResource {
      */
     public Map<String, String> translations() {
         return translations;
-    }
-
-    @Override
-    public String path() {
-        return "assets/" + key.namespace() + "/lang/" + key.value() + ".json";
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        for (Map.Entry<String, String> entry : translations.entrySet()) {
-            writer.key(entry.getKey()).value(entry.getValue());
-        }
-        writer.endObject();
     }
 
     @Override
@@ -166,7 +151,7 @@ public class Language implements Keyed, FileResource {
             requireNonNull(key, "key");
             requireNonNull(value, "value");
             if (this.translations == null) {
-                this.translations = new HashMap<>();
+                this.translations = new LinkedHashMap<>();
             }
             this.translations.put(key, value);
             return this;

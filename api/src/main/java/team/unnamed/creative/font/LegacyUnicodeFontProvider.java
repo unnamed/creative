@@ -27,8 +27,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.file.ResourceWriter;
 
+import java.util.IllegalFormatException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -43,23 +43,29 @@ import static java.util.Objects.requireNonNull;
 public class LegacyUnicodeFontProvider implements FontProvider {
 
     private final Key sizes;
-    private final Key template;
+    private final String template;
 
-    protected LegacyUnicodeFontProvider(Key sizes, Key template) {
+    protected LegacyUnicodeFontProvider(Key sizes, String template) {
         this.sizes = requireNonNull(sizes, "sizes");
         this.template = requireNonNull(template, "template");
+        validate();
     }
 
-    @Override
-    public String name() {
-        return "legacy_unicode";
+    private void validate() {
+        try {
+            String.format(template, "");
+        } catch (IllegalFormatException e) {
+            throw new IllegalArgumentException("Invalid 'template' unicode " +
+                    "font value, must contain a '%s': " + template);
+        }
     }
 
     /**
-     * Returns the resource location inside assets/&lt;namespace&gt;/font
-     * describing a binary file describing the horizontal start and
-     * end positions for each character from 0 to 15. The file extension
-     * of the target file should be .bin
+     * Returns the resource location inside assets/&lt;namespace&gt;/
+     * of a binary file describing the horizontal start and
+     * end positions for each character from 0 to 15
+     *
+     * <p>The target file extension must be {@code .bin}</p>
      *
      * @return The font character sizes
      */
@@ -69,23 +75,15 @@ public class LegacyUnicodeFontProvider implements FontProvider {
 
     /**
      * Returns the resource location inside assets/&lt;namespace&gt;/textures
-     * that leads to the texture files that should be used for this provider.
-     * The game replaces %s from the value of this tag with the first two characters
-     * of the hex code of the replaced characters, so a single provider of this type
-     * can point into multiple texture files.
+     * that leads to the texture files that should be used for this provider
      *
-     * @return The template file location
+     * <p>The game replaces %s from the value of this tag with the first two
+     * characters of the hex code of the replaced characters</p>
+     *
+     * @return The resource location template
      */
-    public Key template() {
+    public String template() {
         return template;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject()
-                .key("sizes").value(sizes)
-                .key("template").value(template)
-                .endObject();
     }
 
     @Override

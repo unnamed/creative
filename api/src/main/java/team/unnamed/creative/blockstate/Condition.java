@@ -23,8 +23,14 @@
  */
 package team.unnamed.creative.blockstate;
 
-import team.unnamed.creative.file.ResourceWriter;
-import team.unnamed.creative.file.SerializableResource;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Represents a {@link Selector} condition, may be used
@@ -34,57 +40,105 @@ import team.unnamed.creative.file.SerializableResource;
  * @see Selector
  * @since 1.0.0
  */
-public interface Condition extends SerializableResource {
+public interface Condition extends Examinable {
 
-    Condition NONE = (tree, topLevel) -> {};
+    Condition NONE = new Condition() {
 
-    void serialize(ResourceWriter writer, boolean topLevel);
+        @Override
+        public String toString() {
+            return "Condition.NONE";
+        }
 
-    @Override
-    default void serialize(ResourceWriter writer) {
-        serialize(writer, false);
-    }
+    };
 
     static Condition and(Condition... conditions) {
-        return (writer, topLevel) -> {
-            if (topLevel || conditions.length == 1) {
-                // single condition, just delegate serialization
-                for (Condition condition : conditions) {
-                    condition.serialize(writer);
-                }
-                return;
-            }
+        return new Condition.And(Arrays.asList(conditions));
+    }
 
-            writer.key("AND").startArray();
-            for (Condition condition : conditions) {
-                writer.startObject();
-                condition.serialize(writer);
-                writer.endObject();
-            }
-            writer.endArray();
-        };
+    static Condition and(List<Condition> conditions) {
+        return new Condition.And(new ArrayList<>(conditions));
     }
 
     static Condition or(Condition... conditions) {
-        return (writer, topLevel) -> {
-            if (conditions.length == 1) {
-                // single condition, just delegate serialization
-                conditions[0].serialize(writer);
-                return;
-            }
+        return new Condition.Or(Arrays.asList(conditions));
+    }
 
-            writer.key("OR").startArray();
-            for (Condition condition : conditions) {
-                writer.startObject();
-                condition.serialize(writer);
-                writer.endObject();
-            }
-            writer.endArray();
-        };
+    static Condition or(List<Condition> conditions) {
+        return new Condition.Or(new ArrayList<>(conditions));
     }
 
     static Condition match(String key, Object value) {
-        return (writer, topLevel) -> writer.key(key).value(value);
+        return new Condition.Match(key, value);
+    }
+
+    class And implements Condition {
+
+        private final List<Condition> conditions;
+
+        private And(List<Condition> conditions) {
+            this.conditions = conditions;
+        }
+
+        public List<Condition> conditions() {
+            return conditions;
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("conditions", conditions)
+            );
+        }
+
+    }
+
+    class Or implements Condition {
+
+        private final List<Condition> conditions;
+
+        private Or(List<Condition> conditions) {
+            this.conditions = conditions;
+        }
+
+        public List<Condition> conditions() {
+            return conditions;
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("conditions", conditions)
+            );
+        }
+
+    }
+
+    class Match implements Condition {
+
+        private final String key;
+        private final Object value;
+
+        private Match(String key, Object value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        public Object value() {
+            return value;
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("key", key),
+                    ExaminableProperty.of("value", value)
+            );
+        }
+
     }
 
 }

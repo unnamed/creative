@@ -28,9 +28,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.file.FileResource;
-import team.unnamed.creative.file.ResourceWriter;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
+import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 
 import java.util.Collection;
@@ -48,7 +47,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  * metadata-able resource, or a top level metadata file
  * (pack.mcmeta)
  */
-public class Metadata implements FileResource, Examinable {
+public class Metadata implements Examinable {
 
     public static final Metadata EMPTY = new Metadata(Collections.emptyMap());
 
@@ -69,30 +68,16 @@ public class Metadata implements FileResource, Examinable {
         return part;
     }
 
-    @Override
-    public String path() {
-        return "pack.mcmeta";
-    }
-
-    @Override
-    public String metaPath() {
-        return "pack.mcmeta";
-    }
-
-    @Override
-    public Metadata meta() {
-        // Metadata does not have metadata!
-        return Metadata.EMPTY;
-    }
-
-    @Override
-    public void serialize(ResourceWriter writer) {
-        writer.startObject();
-        for (MetadataPart part : parts.values()) {
-            writer.key(part.name());
-            part.serialize(writer);
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Metadata.Builder toBuilder() {
+        Metadata.Builder builder = Metadata.builder();
+        for (Map.Entry<Class<?>, MetadataPart> entry : parts.entrySet()) {
+            builder.add(
+                    (Class) entry.getKey(),
+                    entry.getValue()
+            );
         }
-        writer.endObject();
+        return builder;
     }
 
     @Override
@@ -157,6 +142,10 @@ public class Metadata implements FileResource, Examinable {
 
         public Builder add(VillagerMeta meta) {
             return add(VillagerMeta.class, meta);
+        }
+
+        public Builder add(FilterMeta meta) {
+            return add(FilterMeta.class, meta);
         }
 
         public Metadata build() {
