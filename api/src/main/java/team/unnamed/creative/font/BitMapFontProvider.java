@@ -78,9 +78,13 @@ public class BitMapFontProvider implements FontProvider {
         Validate.isTrue(!characters.isEmpty(), "Character list is empty");
 
         String sample = characters.get(0);
+        int codePointCount = sample.codePointCount(0, sample.length());
         for (String character : characters) {
             Validate.isNotNull(character, "An element from the character list is null");
-            Validate.isTrue(character.length() == sample.length(), "Elements of character list must have the same length");
+            Validate.isTrue(
+                    character.codePointCount(0, character.length()) == codePointCount,
+                    "Elements of character list must have the same codepoint count"
+            );
         }
     }
 
