@@ -23,13 +23,11 @@
  */
 package team.unnamed.creative.metadata.language;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.MetadataPart;
-import team.unnamed.creative.util.Keys;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Map;
@@ -49,20 +47,20 @@ public class LanguageMeta implements MetadataPart {
 
     public static final int MAX_LANGUAGE_LENGTH = 16;
 
-    @Unmodifiable private final Map<Key, LanguageEntry> languages;
+    @Unmodifiable private final Map<String, LanguageEntry> languages;
 
-    private LanguageMeta(Map<Key, LanguageEntry> languages) {
+    private LanguageMeta(Map<String, LanguageEntry> languages) {
         requireNonNull(languages, "languages");
         this.languages = immutableMapOf(languages);
         validate();
     }
 
     private void validate() {
-        for (Map.Entry<Key, LanguageEntry> language : languages.entrySet()) {
-            Key key = language.getKey();
-            Validate.isNotNull(key, "Key is null");
-            Validate.isNotNull(language.getValue(), "Language entry for %s is null", key);
-            Validate.isTrue(Keys.toString(key).length() <= MAX_LANGUAGE_LENGTH,
+        for (Map.Entry<String, LanguageEntry> language : languages.entrySet()) {
+            String code = language.getKey();
+            Validate.isNotNull(code, "Language code is null");
+            Validate.isNotNull(language.getValue(), "Language entry for %s is null", code);
+            Validate.isTrue(code.length() <= MAX_LANGUAGE_LENGTH,
                     "Language code is more than %s characters long", MAX_LANGUAGE_LENGTH);
         }
     }
@@ -78,7 +76,7 @@ public class LanguageMeta implements MetadataPart {
      *
      * @return The registered languages
      */
-    public @Unmodifiable Map<Key, LanguageEntry> languages() {
+    public @Unmodifiable Map<String, LanguageEntry> languages() {
         return languages;
     }
 
@@ -115,7 +113,7 @@ public class LanguageMeta implements MetadataPart {
      * @return A new {@link LanguageMeta} instance
      * @since 1.0.0
      */
-    public static LanguageMeta of(Map<Key, LanguageEntry> languages) {
+    public static LanguageMeta of(Map<String, LanguageEntry> languages) {
         return new LanguageMeta(languages);
     }
 

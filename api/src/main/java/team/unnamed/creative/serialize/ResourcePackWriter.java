@@ -114,7 +114,7 @@ public interface ResourcePackWriter<R extends ResourcePackWriter<R>> {
         // ----- Language Meta -----
         R languageRegistry(LanguageMeta meta);
 
-        R languageEntry(Key key, LanguageEntry languageEntry);
+        R languageEntry(String code, LanguageEntry languageEntry);
 
         // ----- Filter Meta -----
         R filter(FilterMeta filter);

@@ -39,7 +39,6 @@ import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
-import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -237,9 +236,9 @@ final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
     //#region Language metadata section serialization
     private static void writeLanguage(JsonWriter writer, LanguageMeta language) throws IOException {
         writer.beginObject();
-        for (Map.Entry<Key, LanguageEntry> entry : language.languages().entrySet()) {
+        for (Map.Entry<String, LanguageEntry> entry : language.languages().entrySet()) {
             LanguageEntry value = entry.getValue();
-            writer.name(Keys.toString(entry.getKey()))
+            writer.name(entry.getKey())
                     .beginObject()
                     .name("name").value(value.name())
                     .name("region").value(value.region());
@@ -254,10 +253,10 @@ final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
     }
 
     private static LanguageMeta readLanguage(JsonObject node) {
-        Map<Key, LanguageEntry> languages = new HashMap<>();
+        Map<String, LanguageEntry> languages = new HashMap<>();
 
         for (Map.Entry<String, JsonElement> entry : node.entrySet()) {
-            Key key = Key.key(entry.getKey());
+            String code = entry.getKey();
             JsonObject languageEntryNode = entry.getValue().getAsJsonObject();
 
             LanguageEntry languageEntry = LanguageEntry.builder()
@@ -265,7 +264,7 @@ final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
                     .region(languageEntryNode.get("region").getAsString())
                     .bidirectional(GsonUtil.getBoolean(languageEntryNode, "bidirectional", LanguageEntry.DEFAULT_BIDIRECTIONAL))
                     .build();
-            languages.put(key, languageEntry);
+            languages.put(code, languageEntry);
         }
         return LanguageMeta.of(languages);
     }

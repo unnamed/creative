@@ -119,17 +119,15 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
     }
 
     @Override
-    public ResourcePackBuilder languageEntry(Key key, LanguageEntry languageEntry) {
+    public ResourcePackBuilder languageEntry(String code, LanguageEntry languageEntry) {
 
-        Map<Key, LanguageEntry> languages = new HashMap<>();
+        Map<String, LanguageEntry> languages = new HashMap<>();
         LanguageMeta languageMeta = languageRegistry();
 
-        if (languageMeta == null) {
-            languages.put(key, languageEntry);
-        } else {
+        if (languageMeta != null) {
             languages.putAll(languageMeta.languages());
-            languages.put(key, languageEntry);
         }
+        languages.put(code, languageEntry);
 
         languageRegistry(LanguageMeta.of(languages));
         return this;
