@@ -65,11 +65,6 @@ public class LanguageMeta implements MetadataPart {
         }
     }
 
-    @Override
-    public String name() {
-        return "language";
-    }
-
     /**
      * Returns an unmodifiable map of the registered
      * custom languages

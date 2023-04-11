@@ -26,8 +26,6 @@ package team.unnamed.creative.server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.PackMeta;
 import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackSerializer;
 
 import java.io.ByteArrayOutputStream;

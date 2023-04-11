@@ -31,7 +31,7 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
-import team.unnamed.creative.metadata.PackMeta;
+import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;

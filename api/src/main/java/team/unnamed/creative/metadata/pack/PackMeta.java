@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.metadata;
+package team.unnamed.creative.metadata.pack;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -49,11 +50,6 @@ public class PackMeta implements MetadataPart {
     ) {
         this.format = format;
         this.description = requireNonNull(description, "description");
-    }
-
-    @Override
-    public String name() {
-        return "pack";
     }
 
     /**

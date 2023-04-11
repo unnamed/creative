@@ -31,6 +31,9 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.metadata.pack.PackMeta;
+import team.unnamed.creative.metadata.texture.TextureMeta;
+import team.unnamed.creative.metadata.villager.VillagerMeta;
 
 import java.util.Collection;
 import java.util.Collections;

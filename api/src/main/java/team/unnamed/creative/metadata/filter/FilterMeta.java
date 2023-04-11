@@ -67,11 +67,6 @@ public class FilterMeta implements MetadataPart {
         }
     }
 
-    @Override
-    public String name() {
-        return "filter";
-    }
-
     /**
      * Returns the list of key patterns to block from
      * resource packs that are below this one.

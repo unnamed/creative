@@ -34,7 +34,4 @@ import net.kyori.examination.Examinable;
  * @since 1.0.0
  */
 public interface MetadataPart extends Examinable {
-
-    String name();
-
 }

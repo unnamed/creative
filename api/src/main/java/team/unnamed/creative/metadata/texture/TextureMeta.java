@@ -21,49 +21,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.metadata;
+package team.unnamed.creative.metadata.texture;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-
 /**
- * Villager textures (from entity/villager and entity/zombie_villager)
- * support a .MCMETA file containing additional effects to apply to the
- * hat layer
+ * Represents meta-data applicable to textures
  *
  * @since 1.0.0
  */
-public class VillagerMeta implements MetadataPart {
+public class TextureMeta implements MetadataPart {
 
-    private final Hat hat;
+    public static final boolean DEFAULT_BLUR = false;
+    public static final boolean DEFAULT_CLAMP = false;
 
-    private VillagerMeta(Hat hat) {
-        this.hat = requireNonNull(hat, "hat");
-    }
+    private final boolean blur;
+    private final boolean clamp;
 
-    @Override
-    public String name() {
-        return "villager";
+    private TextureMeta(
+            boolean blur,
+            boolean clamp
+    ) {
+        this.blur = blur;
+        this.clamp = clamp;
     }
 
     /**
-     * Determines how the villager hat should render
-     * ("none", "partial", "full")
+     * Determines whether the texture will be
+     * blur-ed when viewed from close up
+     *
+     * @return True to blur texture
      */
-    public Hat hat() {
-        return hat;
+    public boolean blur() {
+        return blur;
+    }
+
+    /**
+     * Determines whether the texture should be stretched
+     * instead of tiled in cases where it otherwise would,
+     * such as on the shadow
+     *
+     * @return True to clamp
+     */
+    public boolean clamp() {
+        return clamp;
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("hat", hat)
+                ExaminableProperty.of("blur", blur),
+                ExaminableProperty.of("clamp", clamp)
         );
     }
 
@@ -76,31 +90,29 @@ public class VillagerMeta implements MetadataPart {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VillagerMeta that = (VillagerMeta) o;
-        return Objects.equals(hat, that.hat);
+        TextureMeta that = (TextureMeta) o;
+        return blur == that.blur
+                && clamp == that.clamp;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hat);
+        return Objects.hash(blur, clamp);
     }
 
     /**
-     * Creates a new {@link VillagerMeta} instance
-     * from the given values
+     * Creates a new {@link TextureMeta} instance to
+     * be applied to a texture
      *
-     * @param hat Hat mode
-     * @return A new instance of {@link VillagerMeta}
-     * @since 1.0.0
+     * @param blur To make the texture blur
+     * @param clamp To stretch the texture
+     * @return A new texture metadata instance
      */
-    public static VillagerMeta of(Hat hat) {
-        return new VillagerMeta(hat);
-    }
-
-    public enum Hat {
-        NONE, // default
-        PARTIAL,
-        FULL
+    public static TextureMeta of(
+            boolean blur,
+            boolean clamp
+    ) {
+        return new TextureMeta(blur, clamp);
     }
 
 }

@@ -32,8 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.Metadatable;
-import team.unnamed.creative.metadata.TextureMeta;
-import team.unnamed.creative.metadata.VillagerMeta;
+import team.unnamed.creative.metadata.texture.TextureMeta;
+import team.unnamed.creative.metadata.villager.VillagerMeta;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 
 import java.util.Objects;
