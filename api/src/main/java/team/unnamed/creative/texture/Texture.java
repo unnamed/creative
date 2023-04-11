@@ -31,7 +31,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.Metadatable;
 import team.unnamed.creative.metadata.texture.TextureMeta;
 import team.unnamed.creative.metadata.villager.VillagerMeta;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
@@ -55,20 +54,17 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Texture implements Keyed, Examinable, Metadatable {
+public class Texture implements Keyed, Examinable {
 
     private final Key key;
     private final Writable data;
-    private final Metadata meta;
 
     private Texture(
             Key key,
-            Writable data,
-            Metadata meta
+            Writable data
     ) {
         this.key = requireNonNull(key, "key");
         this.data = requireNonNull(data, "data");
-        this.meta = requireNonNull(meta, "meta");
     }
 
     /**
@@ -112,29 +108,27 @@ public class Texture implements Keyed, Examinable, Metadatable {
      * @return The metadata container
      * @since 1.0.0
      */
-    @Override
-    public Metadata meta() {
-        return meta;
-    }
+    //@Override
+    //public Metadata meta() {
+    //    return meta;
+    // }
 
-    @Override
-    public Texture meta(Metadata meta) {
-        return toBuilder().meta(meta).build();
-    }
+    //@Override
+    //public Texture meta(Metadata meta) {
+    //    return toBuilder().meta(meta).build();
+    //}
 
     public Texture.Builder toBuilder() {
         return Texture.builder()
                 .key(key)
-                .data(data)
-                .meta(meta);
+                .data(data);
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("key", key),
-                ExaminableProperty.of("data", data),
-                ExaminableProperty.of("meta", meta)
+                ExaminableProperty.of("data", data)
         );
     }
 
@@ -149,21 +143,16 @@ public class Texture implements Keyed, Examinable, Metadatable {
         if (o == null || getClass() != o.getClass()) return false;
         Texture texture = (Texture) o;
         return key.equals(texture.key)
-                && data.equals(texture.data)
-                && meta.equals(texture.meta);
+                && data.equals(texture.data);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, data, meta);
-    }
-
-    public static Texture of(Key key, Writable data, Metadata meta) {
-        return new Texture(key, data, meta);
+        return Objects.hash(key, data);
     }
 
     public static Texture of(Key key, Writable data) {
-        return new Texture(key, data, Metadata.EMPTY);
+        return new Texture(key, data);
     }
 
     public static Builder builder() {
@@ -197,11 +186,6 @@ public class Texture implements Keyed, Examinable, Metadatable {
             return data;
         }
 
-        public Builder meta(Metadata meta) {
-            this.meta = meta;
-            return this;
-        }
-
         public Builder animationMeta(AnimationMeta animationMeta) {
             this.meta = meta.toBuilder().add(animationMeta).build();
             return this;
@@ -217,12 +201,8 @@ public class Texture implements Keyed, Examinable, Metadatable {
             return this;
         }
 
-        public Metadata meta() {
-            return meta;
-        }
-
         public Texture build() {
-            return new Texture(key, data, meta);
+            return new Texture(key, data);
         }
 
     }
