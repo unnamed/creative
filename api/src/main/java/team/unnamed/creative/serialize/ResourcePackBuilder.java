@@ -30,6 +30,8 @@ import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.metadata.MetadataPart;
+import team.unnamed.creative.metadata.filter.FilterPattern;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageEntry;
@@ -38,11 +40,10 @@ import team.unnamed.creative.model.Model;
 import team.unnamed.creative.texture.Texture;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
-public interface ResourcePackBuilder extends
-        ResourcePackWriter<ResourcePackBuilder>,
-        ResourcePackWriter.Extra<ResourcePackBuilder> {
+public interface ResourcePackBuilder extends ResourcePackWriter<ResourcePackBuilder> {
 
     // |--------------------------------------|
     // |--------- RESOURCE PACK ICON ---------|
@@ -150,5 +151,31 @@ public interface ResourcePackBuilder extends
     // |---------------- OTHER ---------------|
     // |--------------------------------------|
     Map<String, Writable> unknownFiles();
+
+    // ----- Pack Meta -----
+    ResourcePackBuilder meta(PackMeta meta);
+
+    default ResourcePackBuilder meta(int format, String description) {
+        return meta(PackMeta.of(format, description));
+    }
+
+    // ----- Language Meta -----
+    ResourcePackBuilder languageRegistry(LanguageMeta meta);
+
+    ResourcePackBuilder languageEntry(String code, LanguageEntry languageEntry);
+
+    // ----- Filter Meta -----
+    ResourcePackBuilder filter(FilterMeta filter);
+
+    default ResourcePackBuilder filter(FilterPattern... patterns) {
+        return filter(FilterMeta.of(patterns));
+    }
+
+    default ResourcePackBuilder filter(List<FilterPattern> patterns) {
+        return filter(FilterMeta.of(patterns));
+    }
+
+    // ----- Custom Meta -----
+    ResourcePackBuilder customMetaPart(MetadataPart part);
 
 }

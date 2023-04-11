@@ -53,7 +53,7 @@ final class MinecraftResourcePackBuilder implements ResourcePackBuilder {
 
     private @Nullable Writable icon;
 
-    private Metadata metadata = Metadata.EMPTY;
+    private Metadata metadata = null;
 
     private @Nullable Map<String, SoundRegistry> soundRegistries;
     private @Nullable Map<String, Writable> extraFiles;

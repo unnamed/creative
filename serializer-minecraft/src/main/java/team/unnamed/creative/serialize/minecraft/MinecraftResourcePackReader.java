@@ -193,7 +193,11 @@ final class MinecraftResourcePackReader implements ResourcePackReader  {
 
     @Override
     public Metadata metadata() {
-        return SerializerMetadata.INSTANCE.readFromTree(parse(reader.input()));
+        // currentKey(TEXTURES_FOLDER, METADATA_EXTENSION)
+        return SerializerMetadata.INSTANCE.readFromTree(
+                parse(reader.input()),
+                currentKey(null, METADATA_EXTENSION)
+        );
     }
 
     @Override
@@ -253,14 +257,6 @@ final class MinecraftResourcePackReader implements ResourcePackReader  {
     }
 
     @Override
-    public Map.Entry<Key, Metadata> textureMetadata() {
-        return new AbstractMap.SimpleEntry<>(
-                currentKey(TEXTURES_FOLDER, METADATA_EXTENSION),
-                SerializerMetadata.INSTANCE.readFromTree(parse(reader.input()))
-        );
-    }
-
-    @Override
     public Map.Entry<String, Writable> unknown() {
         return new AbstractMap.SimpleEntry<>(current, copyCurrentData());
     }
@@ -294,7 +290,7 @@ final class MinecraftResourcePackReader implements ResourcePackReader  {
         return currentNamespace(tokens());
     }
 
-    private Key currentKey(String category, @Nullable String extension) {
+    private Key currentKey(@Nullable String category, @Nullable String extension) {
         Queue<String> tokens = tokens();
         @Subst("minecraft")
         String namespace = currentNamespace(tokens);

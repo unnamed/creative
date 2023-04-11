@@ -70,7 +70,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
 
     @Override
     public void pipe(ResourcePackReader reader, ResourcePackWriter<?> writer) {
-        Map<Key, Texture> waitingForMeta = new HashMap<>();
+        // Map<Key, Texture> waitingForMeta = new HashMap<>();
         while (reader.hasNext()) {
             reader.next();
             try {
@@ -101,31 +101,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
                     }
                     case TEXTURE: {
                         // a texture file
-                        Texture read = reader.texture();
-                        Texture texture = waitingForMeta.remove(read.key());
-
-                        if (texture != null) {
-                            // meta was found first
-                            writer.texture(read.meta(texture.meta()));
-                        } else {
-                            // texture was found first
-                            waitingForMeta.put(read.key(), read);
-                        }
-                        break;
-                    }
-                    case TEXTURE_METADATA: {
-                        Map.Entry<Key, Metadata> entry = reader.textureMetadata();
-                        Key key = entry.getKey();
-                        Metadata meta = entry.getValue();
-                        Texture texture = waitingForMeta.remove(key);
-
-                        if (texture != null) {
-                            // texture was found first
-                            writer.texture(texture.meta(meta));
-                        } else {
-                            // meta was found first, wait
-                            waitingForMeta.put(key, Texture.of(key, Writable.EMPTY, meta));
-                        }
+                        writer.texture(reader.texture());
                         break;
                     }
                     case UNKNOWN: {
@@ -140,16 +116,16 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
         }
 
         // write textures that do not have metadata (they waited and didn't found a meta :c)
-        for (Texture texture : waitingForMeta.values()) {
-            Metadata metadata = texture.meta();
-            if (metadata.parts().isEmpty()) {
-                // expected
-                writer.texture(texture);
-            } else {
-                // in this metadata is not empty and texture is, weird!
-                System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
-            }
-        }
+//        for (Texture texture : waitingForMeta.values()) {
+//            Metadata metadata = texture.meta();
+//            if (metadata.parts().isEmpty()) {
+//                // expected
+//                writer.texture(texture);
+//            } else {
+//                // in this metadata is not empty and texture is, weird!
+//                System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
+//            }
+//        }
     }
 
     @Override

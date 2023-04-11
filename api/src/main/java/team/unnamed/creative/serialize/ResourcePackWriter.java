@@ -30,12 +30,6 @@ import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.metadata.MetadataPart;
-import team.unnamed.creative.metadata.pack.PackMeta;
-import team.unnamed.creative.metadata.filter.FilterMeta;
-import team.unnamed.creative.metadata.filter.FilterPattern;
-import team.unnamed.creative.metadata.language.LanguageEntry;
-import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -101,35 +95,5 @@ public interface ResourcePackWriter<R extends ResourcePackWriter<R>> {
     //#endregion
 
     R file(String path, Writable data);
-
-    interface Extra<R extends Extra<R>> {
-
-        // ----- Pack Meta -----
-        R meta(PackMeta meta);
-
-        default R meta(int format, String description) {
-            return meta(PackMeta.of(format, description));
-        }
-
-        // ----- Language Meta -----
-        R languageRegistry(LanguageMeta meta);
-
-        R languageEntry(String code, LanguageEntry languageEntry);
-
-        // ----- Filter Meta -----
-        R filter(FilterMeta filter);
-
-        default R filter(FilterPattern... patterns) {
-            return filter(FilterMeta.of(patterns));
-        }
-
-        default R filter(List<FilterPattern> patterns) {
-            return filter(FilterMeta.of(patterns));
-        }
-
-        // ----- Custom Meta -----
-        R customMetaPart(MetadataPart part);
-
-    }
 
 }
