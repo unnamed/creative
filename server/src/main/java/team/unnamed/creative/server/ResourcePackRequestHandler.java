@@ -25,7 +25,7 @@ package team.unnamed.creative.server;
 
 import com.sun.net.httpserver.HttpExchange;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.BuiltResourcePack;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -76,7 +76,7 @@ public interface ResourcePackRequestHandler {
         exchange.getResponseBody().write(response);
     }
 
-    static ResourcePackRequestHandler of(ResourcePack pack, boolean validOnly) {
+    static ResourcePackRequestHandler of(BuiltResourcePack pack, boolean validOnly) {
         return new ResourcePackRequestHandler() {
 
             @Override
@@ -98,7 +98,7 @@ public interface ResourcePackRequestHandler {
         };
     }
 
-    static ResourcePackRequestHandler of(ResourcePack pack) {
+    static ResourcePackRequestHandler of(BuiltResourcePack pack) {
         return of(pack, false);
     }
 

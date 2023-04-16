@@ -29,7 +29,7 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.BuiltResourcePack;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -199,12 +199,12 @@ public final class ResourcePackServer {
             return this;
         }
 
-        public Builder pack(ResourcePack pack, boolean validOnly) {
+        public Builder pack(BuiltResourcePack pack, boolean validOnly) {
             this.handler = ResourcePackRequestHandler.of(pack, validOnly);
             return this;
         }
 
-        public Builder pack(ResourcePack pack) {
+        public Builder pack(BuiltResourcePack pack) {
             this.handler = ResourcePackRequestHandler.of(pack);
             return this;
         }

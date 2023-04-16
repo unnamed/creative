@@ -23,7 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
@@ -102,7 +102,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
     }
 
     @Override
-    public ResourcePack build(Consumer<ResourcePackBuilder> builder) {
+    public BuiltResourcePack build(Consumer<ResourcePackBuilder> builder) {
 
         // build resource-pack
         ResourcePackBuilder resourcePack = builder();
@@ -124,7 +124,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
         byte[] bytes = output.toByteArray();
         String hash = hex(digest);
 
-        return ResourcePack.of(bytes, hash);
+        return BuiltResourcePack.of(bytes, hash);
     }
 
     private static String hex(MessageDigest digest) {

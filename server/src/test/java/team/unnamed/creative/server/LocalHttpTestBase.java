@@ -25,7 +25,7 @@ package team.unnamed.creative.server;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackSerializer;
 
 import java.io.ByteArrayOutputStream;
@@ -40,7 +40,7 @@ public class LocalHttpTestBase {
 
     private static final int PORT = 7270;
 
-    protected static ResourcePack resourcePack;
+    protected static BuiltResourcePack resourcePack;
     private static ResourcePackServer server;
 
     @BeforeAll

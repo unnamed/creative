@@ -23,7 +23,7 @@
  */
 package team.unnamed.creative.serialize;
 
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.BuiltResourcePack;
 
 import java.util.function.Consumer;
 
@@ -50,6 +50,6 @@ public interface ResourcePackSerializer<I, O> {
         pipe(resourcePack, writer(output));
     }
 
-    ResourcePack build(Consumer<ResourcePackBuilder> consumer);
+    BuiltResourcePack build(Consumer<ResourcePackBuilder> consumer);
 
 }

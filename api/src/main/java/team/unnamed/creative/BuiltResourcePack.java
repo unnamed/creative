@@ -33,12 +33,12 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public final class ResourcePack {
+public final class BuiltResourcePack {
 
     private final byte[] bytes;
     private final String hash;
 
-    private ResourcePack(
+    private BuiltResourcePack(
             byte[] bytes,
             String hash
     ) {
@@ -67,8 +67,8 @@ public final class ResourcePack {
         return hash;
     }
 
-    public static ResourcePack of(byte[] bytes, String hash) {
-        return new ResourcePack(bytes, hash);
+    public static BuiltResourcePack of(byte[] bytes, String hash) {
+        return new BuiltResourcePack(bytes, hash);
     }
 
 }
