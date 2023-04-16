@@ -23,77 +23,10 @@
  */
 package team.unnamed.creative.serialize;
 
-import net.kyori.adventure.key.Key;
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.font.Font;
-import team.unnamed.creative.font.FontProvider;
-import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.model.Model;
-import team.unnamed.creative.sound.Sound;
-import team.unnamed.creative.sound.SoundRegistry;
-import team.unnamed.creative.texture.Texture;
+import team.unnamed.creative.ResourcePack;
 
-import java.util.List;
+public interface ResourcePackWriter<T> {
 
-public interface ResourcePackWriter<R extends ResourcePackWriter<R>> {
-
-    /**
-     * Sets the resource pack icon image
-     * (must be a PNG file)
-     *
-     * @param icon The icon (PNG image)
-     */
-    R icon(Writable icon);
-
-    /**
-     * Sets the resource pack metadata
-     *
-     * @param metadata The metadata
-     */
-    R metadata(Metadata metadata);
-
-    R blockState(BlockState state);
-
-    R font(Font font);
-
-    //#region Font helpers
-    default R font(Key key, FontProvider... providers) {
-        return font(Font.of(key, providers));
-    }
-
-    default R font(Key key, List<FontProvider> providers) {
-        return font(Font.of(key, providers));
-    }
-    //#endregion
-
-    R language(Language language);
-
-    R model(Model model);
-
-    R soundRegistry(SoundRegistry soundRegistry);
-
-    R sound(Sound.File soundFile);
-
-    //#region Sound helpers
-    default R sound(Key key, Writable data) {
-        return sound(Sound.File.of(key, data));
-    }
-    //#endregion
-
-    R texture(Texture texture);
-
-    //#region Texture helpers
-    default R texture(Key key, Writable data) {
-        return texture(Texture.of(key, data));
-    }
-
-    default R texture(Key key, Writable data, Metadata meta) {
-        return texture(Texture.of(key, data, meta));
-    }
-    //#endregion
-
-    R file(String path, Writable data);
+    void write(T target, ResourcePack resourcePack);
 
 }

@@ -26,7 +26,6 @@ package team.unnamed.creative.serialize.minecraft;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.serialize.ResourcePackBuilder;
 import team.unnamed.creative.base.KeyedMap;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;

@@ -23,33 +23,10 @@
  */
 package team.unnamed.creative.serialize;
 
-import team.unnamed.creative.BuiltResourcePack;
+import team.unnamed.creative.ResourcePack;
 
-import java.util.function.Consumer;
+public interface ResourcePackReader<T> {
 
-/**
- * @since 1.0.0
- */
-public interface ResourcePackSerializer<I, O> {
-
-    ResourcePackWriter<?> writer(O output);
-
-    ResourcePackBuilder builder();
-
-    void pipe(ResourcePackBuilder builder, ResourcePackWriter<?> writer);
-
-    void deserialize(I dataSource, ResourcePackWriter<?> into);
-
-    default ResourcePackBuilder deserialize(I dataSource) {
-        ResourcePackBuilder builder = builder();
-        deserialize(dataSource, builder);
-        return builder;
-    }
-
-    default void serialize(ResourcePackBuilder resourcePack, O output) {
-        pipe(resourcePack, writer(output));
-    }
-
-    BuiltResourcePack build(Consumer<ResourcePackBuilder> consumer);
+    ResourcePack read(T source);
 
 }
