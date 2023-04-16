@@ -23,103 +23,44 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import com.google.gson.stream.JsonWriter;
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.font.Font;
-import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.model.Model;
+import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
-import team.unnamed.creative.sound.Sound;
-import team.unnamed.creative.sound.SoundRegistry;
-import team.unnamed.creative.texture.Texture;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.zip.ZipOutputStream;
 
-final class MinecraftResourcePackWriter implements ResourcePackWriter<MinecraftResourcePackWriter> {
-
-    private final FileTreeWriter target;
-
-    MinecraftResourcePackWriter(FileTreeWriter target) {
-        this.target = target;
-    }
+public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTreeWriter> {
 
     @Override
-    public MinecraftResourcePackWriter icon(Writable icon) {
-        target.write(MinecraftResourcePackStructure.PACK_ICON_FILE, icon);
-        return this;
-    }
+    void write(FileTreeWriter tree, ResourcePack resourcePack);
 
-    @Override
-    public MinecraftResourcePackWriter metadata(Metadata metadata) {
-        writeToJson(SerializerMetadata.INSTANCE, metadata, MinecraftResourcePackStructure.PACK_METADATA_FILE);
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter blockState(BlockState state) {
-        writeToJson(SerializerBlockState.INSTANCE, state, MinecraftResourcePackStructure.pathOf(state));
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter font(Font font) {
-        writeToJson(SerializerFont.INSTANCE, font, MinecraftResourcePackStructure.pathOf(font));
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter language(Language language) {
-        writeToJson(SerializerLanguage.INSTANCE, language, MinecraftResourcePackStructure.pathOf(language));
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter model(Model model) {
-        writeToJson(SerializerModel.INSTANCE, model, MinecraftResourcePackStructure.pathOf(model));
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter soundRegistry(SoundRegistry soundRegistry) {
-        writeToJson(SerializerSoundRegistry.INSTANCE, soundRegistry, MinecraftResourcePackStructure.pathOf(soundRegistry));
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter sound(Sound.File soundFile) {
-        target.write(MinecraftResourcePackStructure.pathOf(soundFile), soundFile.data());
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter texture(Texture texture) {
-        target.write(
-                MinecraftResourcePackStructure.pathOf(texture),
-                texture.data()
-        );
-
-        Metadata metadata = texture.meta();
-        if (!metadata.parts().isEmpty()) {
-            writeToJson(SerializerMetadata.INSTANCE, metadata, MinecraftResourcePackStructure.pathOfMeta(texture));
-        }
-        return this;
-    }
-
-    @Override
-    public MinecraftResourcePackWriter file(String path, Writable data) {
-        target.write(path, data);
-        return this;
-    }
-
-    private <T> void writeToJson(JsonFileStreamWriter<T> serializer, T object, String path) {
-        try (JsonWriter jsonWriter = target.openJsonWriter(path)) {
-            serializer.serialize(object, jsonWriter);
+    default void writeToZipFile(Path path, ResourcePack resourcePack) {
+        try (ZipOutputStream outputStream = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(path)))) {
+            write(FileTreeWriter.zip(outputStream), resourcePack);
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("Failed to write resource pack to zip file: File not found: " + path, e);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to write to " + path, e);
+            throw new UncheckedIOException(e);
         }
+    }
+
+    default void writeToZipFile(File zipFile, ResourcePack resourcePack) {
+        writeToZipFile(zipFile.toPath(), resourcePack);
+    }
+
+    default void writeToDirectory(File directory, ResourcePack resourcePack) {
+        write(FileTreeWriter.directory(directory), resourcePack);
+    }
+
+    static MinecraftResourcePackWriter minecraft() {
+        return MinecraftResourcePackWriterImpl.INSTANCE;
     }
 
 }

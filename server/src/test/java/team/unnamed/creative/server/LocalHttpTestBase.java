@@ -26,7 +26,6 @@ package team.unnamed.creative.server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import team.unnamed.creative.BuiltResourcePack;
-import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackSerializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
