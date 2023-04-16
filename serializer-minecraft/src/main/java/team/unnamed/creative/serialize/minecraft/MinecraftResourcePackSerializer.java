@@ -23,7 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
@@ -32,7 +31,6 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.serialize.ResourcePackBuilder;
-import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.ResourcePackSerializer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
@@ -43,7 +41,6 @@ import java.io.ByteArrayOutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.zip.ZipOutputStream;
@@ -51,11 +48,6 @@ import java.util.zip.ZipOutputStream;
 public final class MinecraftResourcePackSerializer implements ResourcePackSerializer<FileTreeReader, FileTreeWriter> {
 
     private MinecraftResourcePackSerializer() {
-    }
-
-    @Override
-    public ResourcePackReader reader(FileTreeReader input) {
-        return new MinecraftResourcePackReader(input);
     }
 
     @Override
@@ -69,63 +61,7 @@ public final class MinecraftResourcePackSerializer implements ResourcePackSerial
     }
 
     @Override
-    public void pipe(ResourcePackReader reader, ResourcePackWriter<?> writer) {
-        // Map<Key, Texture> waitingForMeta = new HashMap<>();
-        while (reader.hasNext()) {
-            reader.next();
-            try {
-                switch (reader.type()) {
-                    case PACK_ICON: {
-                        writer.icon(reader.icon());
-                        break;
-                    }
-                    case PACK_METADATA: {
-                        writer.metadata(reader.metadata());
-                        break;
-                    }
-                    case LANGUAGE: {
-                        writer.language(reader.language());
-                        break;
-                    }
-                    case BLOCK_STATE: {
-                        writer.blockState(reader.blockState());
-                        break;
-                    }
-                    case FONT: {
-                        writer.font(reader.font());
-                        break;
-                    }
-                    case MODEL: {
-                        writer.model(reader.model());
-                        break;
-                    }
-                    case TEXTURE: {
-                        // a texture file
-                        writer.texture(reader.texture());
-                        break;
-                    }
-                    case UNKNOWN: {
-                        Map.Entry<String, Writable> file = reader.unknown();
-                        writer.file(file.getKey(), file.getValue());
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-                System.err.println(e.getMessage() + " for " + reader.type());
-            }
-        }
-
-        // write textures that do not have metadata (they waited and didn't found a meta :c)
-//        for (Texture texture : waitingForMeta.values()) {
-//            Metadata metadata = texture.meta();
-//            if (metadata.parts().isEmpty()) {
-//                // expected
-//                writer.texture(texture);
-//            } else {
-//                // in this metadata is not empty and texture is, weird!
-//                System.err.println("[ERROR] Found an unpaired texture metadata file for: " + texture.key());
-//            }
-//        }
+    public void deserialize(FileTreeReader reader, ResourcePackWriter<?> writer) {
     }
 
     @Override

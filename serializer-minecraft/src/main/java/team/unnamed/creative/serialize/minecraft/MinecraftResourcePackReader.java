@@ -35,7 +35,6 @@ import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
-import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -48,7 +47,10 @@ import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
@@ -59,6 +61,8 @@ final class MinecraftResourcePackReader implements ResourcePackReader  {
 
     private final FileTreeReader reader;
     private @Nullable String current;
+    private final Map<Key, Texture> texturesWaitingMetadata = new HashMap<>();
+    private @Nullable Texture currentTexture = null;
 
     MinecraftResourcePackReader(FileTreeReader reader) {
         this.reader = reader;
@@ -66,12 +70,20 @@ final class MinecraftResourcePackReader implements ResourcePackReader  {
 
     @Override
     public boolean hasNext() {
-        return reader.hasNext();
+        return reader.hasNext() || !texturesWaitingMetadata.isEmpty();
     }
 
     @Override
     public void next() {
-        this.current = reader.next();
+        if (reader.hasNext()) {
+            this.current = reader.next();
+        } else if (texturesWaitingMetadata.isEmpty()) {
+            throw new NoSuchElementException("No more elements");
+        } else {
+            Iterator<Texture> textures = texturesWaitingMetadata.values().iterator();
+            this.currentTexture = textures.next();
+            textures.remove();
+        }
     }
 
     @Override
@@ -79,6 +91,10 @@ final class MinecraftResourcePackReader implements ResourcePackReader  {
 
         if (current == null) {
             throw new IllegalStateException("Execute next() at least once!");
+        }
+
+        if (currentTexture != null) {
+            return ElementType.TEXTURE;
         }
 
         Queue<String> tokens = MinecraftResourcePackStructure.tokenize(current);

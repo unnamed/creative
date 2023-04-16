@@ -32,23 +32,17 @@ import java.util.function.Consumer;
  */
 public interface ResourcePackSerializer<I, O> {
 
-    ResourcePackReader reader(I input);
-
     ResourcePackWriter<?> writer(O output);
 
     ResourcePackBuilder builder();
 
-    void pipe(ResourcePackReader reader, ResourcePackWriter<?> writer);
-
     void pipe(ResourcePackBuilder builder, ResourcePackWriter<?> writer);
 
-    default void deserialize(I dataSource, ResourcePackWriter<?> into) {
-        pipe(reader(dataSource), into);
-    }
+    void deserialize(I dataSource, ResourcePackWriter<?> into);
 
     default ResourcePackBuilder deserialize(I dataSource) {
         ResourcePackBuilder builder = builder();
-        pipe(reader(dataSource), builder);
+        deserialize(dataSource, builder);
         return builder;
     }
 

@@ -21,62 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
+package team.unnamed.creative.serialize.minecraft.fs;
 
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.font.Font;
-import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.model.Model;
-import team.unnamed.creative.sound.Sound;
-import team.unnamed.creative.sound.SoundRegistry;
-import team.unnamed.creative.texture.Texture;
-
+import java.util.HashMap;
 import java.util.Map;
 
-public interface ResourcePackReader {
+import static java.util.Objects.requireNonNull;
 
-    boolean hasNext();
+public final class FileTree {
 
-    void next();
+    private final Map<String, byte[]> data;
 
-    ElementType type();
+    private FileTree(Map<String, byte[]> data) {
+        requireNonNull(data, "data");
+        this.data = data;
+    }
 
-    Writable icon();
+    public static FileTree read(FileTreeReader reader) {
+        Map<String, byte[]> data = new HashMap<>();
 
-    Metadata metadata();
-
-    BlockState blockState();
-
-    Font font();
-
-    Language language();
-
-    Model model();
-
-    SoundRegistry soundRegistry();
-
-    Sound.File sound();
-
-    Texture texture();
-
-    Map.Entry<String, Writable> unknown();
-
-    enum ElementType {
-        // pack.png
-        PACK_ICON,
-        // pack.mcmeta
-        PACK_METADATA,
-
-        BLOCK_STATE,
-        FONT,
-        LANGUAGE,
-        MODEL,
-        SOUND_REGISTRY,
-        SOUND,
-        TEXTURE,
-        UNKNOWN
+        return new FileTree(data);
     }
 
 }
