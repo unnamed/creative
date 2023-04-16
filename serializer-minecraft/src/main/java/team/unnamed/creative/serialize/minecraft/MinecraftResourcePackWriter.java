@@ -23,17 +23,23 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.function.Consumer;
 import java.util.zip.ZipOutputStream;
 
 public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTreeWriter> {
@@ -57,6 +63,46 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
 
     default void writeToDirectory(File directory, ResourcePack resourcePack) {
         write(FileTreeWriter.directory(directory), resourcePack);
+    }
+
+    default BuiltResourcePack build(ResourcePack resourcePack) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Cannot find SHA-1 algorithm");
+        }
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        // write resource to zip
+        try (FileTreeWriter writer = FileTreeWriter.zip(new ZipOutputStream(new DigestOutputStream(output, digest)))) {
+            write(writer, resourcePack);
+        }
+
+        byte[] bytes = output.toByteArray();
+        String hash;
+
+        // stringify SHA-1 hash
+        {
+            byte[] hashBytes = digest.digest();
+            StringBuilder builder = new StringBuilder(hashBytes.length * 2);
+            for (byte b : hashBytes) {
+                int part1 = (b >> 4) & 0xF;
+                int part2 = b & 0xF;
+                builder
+                        .append(Character.forDigit(part1, 16))
+                        .append(Character.forDigit(part2, 16));
+            }
+            hash = builder.toString();
+        }
+
+        return BuiltResourcePack.of(bytes, hash);
+    }
+
+    default BuiltResourcePack build(Consumer<ResourcePack> consumer) {
+        ResourcePack resourcePack = ResourcePack.create();
+        consumer.accept(resourcePack);
+        return build(resourcePack);
     }
 
     static MinecraftResourcePackWriter minecraft() {
