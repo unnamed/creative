@@ -15,3 +15,5 @@ Language language = Language.of(
     )
 );
 ```
+
+Then you can add the language using `ResourcePack#language(Language)`

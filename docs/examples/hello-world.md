@@ -1,18 +1,17 @@
 ## Hello World
 
 Let's create a simple and empty resource-pack using `creative-api`
+and `creative-serializer-minecraft`
 
 ```java
-try (FileTree tree = FileTree.directory(new File("folder"))) {
-    int packFormat = 12;
-    
-    // We write the pack.mcmeta file
-    tree.write(
-            Metadata.builder()
-                .add(PackMeta.of(packFormat, "Resource pack description"))
-                .build()
-    );
-}
+ResourcePack resourcePack = ResourcePack.create();
+
+// Here we specify the resource-pack format (12) and description (Hello world!)
+resourcePack.packMeta(12, "Hello world!");
+
+// Then we write the resource-pack to a folder
+MinecraftResourcePackWriter.minecraft()
+    .writeToDirectory(new File("folder"), resourcePack);
 ```
 
 The code above writes the resource-pack to a folder named 'folder', its content
@@ -28,7 +27,7 @@ Where `pack.mcmeta` file has the following content (but minimized):
 {
     "pack": {
         "pack_format": 12,
-        "description": "Resource pack description"
+        "description": "Hello world!"
     }
 }
 ```

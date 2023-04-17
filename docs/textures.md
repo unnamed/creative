@@ -25,3 +25,5 @@ Texture texture = Texture.builder()
     )
     .build();
 ```
+
+Then you can add the texture using `ResourcePack#texture(Texture)`

@@ -3,7 +3,7 @@
 Minecraft supports adding and modifying fonts. We can do a lot of
 customization using this, such as:
 
-- Adding emojis to the Minecraft chat *(And our plugin [µŋglyphs](https://github.com/unnamed/emojis)
+- Adding emojis to the Minecraft chat *(And our plugin [µŋemojis](https://github.com/unnamed/emojis)
 is an example)*
 - Creating custom inventories
 - And more...!

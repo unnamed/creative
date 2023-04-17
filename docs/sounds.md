@@ -1,7 +1,5 @@
 ## Sounds
 
-*This is not currently done like this, but it is planned*
-
 Create a sound using the creative's `Sound` class
 
 ```java

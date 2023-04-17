@@ -13,7 +13,13 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("team.unnamed:creative-api:0.4.1-SNAPSHOT")
+    implementation("team.unnamed:creative-api:0.6.0-SNAPSHOT")
+    
+    // Serializer for Minecraft format (ZIP / Folder)
+    implementation("team.unnamed:creative-serializer-minecraft:0.6.0-SNAPSHOT")
+    
+    // Resource Pack server
+    implementation("team.unnamed:creative-server:0.6.0-SNAPSHOT")
 }
 ```
 
@@ -30,6 +36,6 @@ dependencies {
 <dependency>
     <groupId>team.unnamed</groupId>
     <artifactId>creative-api</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
 </dependency>
 ```
