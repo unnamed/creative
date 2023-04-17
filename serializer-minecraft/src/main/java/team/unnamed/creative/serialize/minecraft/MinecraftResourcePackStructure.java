@@ -80,7 +80,7 @@ final class MinecraftResourcePackStructure {
 
     public static String pathOf(Font font) {
         // assets/<namespace>/font/<path>.json
-        return withCategory(ASSETS_FOLDER, font, OBJECT_EXTENSION);
+        return withCategory(FONTS_FOLDER, font, OBJECT_EXTENSION);
     }
 
     public static String pathOf(Language language) {
