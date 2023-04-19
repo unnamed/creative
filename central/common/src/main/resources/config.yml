@@ -1,0 +1,4 @@
+pack:
+    meta:
+        format-version: ${{DETECTED_SERVER_FORMAT_VERSION}}
+        description: A creative resource pack

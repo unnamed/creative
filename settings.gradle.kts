@@ -5,6 +5,7 @@ includePrefixed("server")
 includePrefixed("serializer-minecraft")
 
 includePrefixed("central:api")
+includePrefixed("central:common")
 includePrefixed("central:bukkit")
 
 fun includePrefixed(name: String) {

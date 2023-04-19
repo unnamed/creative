@@ -21,26 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.export;
 
-import team.unnamed.creative.ResourcePack;
+import static java.util.Objects.requireNonNull;
 
-/**
- * An event called when we want plugins/extensions to register
- * their own resources in our unified resource pack (for the
- * entire server)
- *
- * @since 1.0.0
- */
-public interface ResourcePackGenerateEvent {
+public final class ResourcePackLocation {
 
-    /**
-     * Returns the mutable resource pack instance
-     * being generated and that can be edited when
-     * listening to this event
-     *
-     * @return The resource pack
-     */
-    ResourcePack resourcePack();
+    private final String url;
+    private final String hash;
+
+    private ResourcePackLocation(String url, String hash) {
+        this.url = requireNonNull(url, "url");
+        this.hash = requireNonNull(hash, "hash");
+    }
+
+    public String url() {
+        return url;
+    }
+
+    public String hash() {
+        return hash;
+    }
+
+    public static ResourcePackLocation of(String url, String hash) {
+        return new ResourcePackLocation(url, hash);
+    }
 
 }
