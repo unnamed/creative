@@ -4,7 +4,13 @@ includePrefixed("api")
 includePrefixed("server")
 includePrefixed("serializer-minecraft")
 
+includePrefixed("central:api")
+includePrefixed("central:bukkit")
+
 fun includePrefixed(name: String) {
-    include("creative-$name")
-    project(":creative-$name").projectDir = file(name)
+    val kebabName = name.replace(':', '-')
+    val path = name.replace(':', '/')
+
+    include("creative-$kebabName")
+    project(":creative-$kebabName").projectDir = file(path)
 }
