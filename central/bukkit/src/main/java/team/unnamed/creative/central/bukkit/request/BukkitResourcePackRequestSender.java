@@ -123,7 +123,7 @@ public final class BukkitResourcePackRequestSender implements ResourcePackReques
     }
 
     public static ResourcePackRequestSender bukkit() {
-        return new BukkitResourcePackRequestSender();
+        return INSTANCE;
     }
 
 }
