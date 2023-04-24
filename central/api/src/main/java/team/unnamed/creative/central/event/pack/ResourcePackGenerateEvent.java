@@ -21,21 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.event.pack;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
+import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.central.event.Event;
+
+import static java.util.Objects.requireNonNull;
 
 /**
+ * An event called when we want plugins/extensions to register
+ * their own resources in our unified resource pack (for the
+ * entire server)
+ *
  * @since 1.0.0
  */
-public interface CreativeCentral {
+public final class ResourcePackGenerateEvent implements Event {
 
-    CentralResourcePackServer server();
+    private final ResourcePack resourcePack;
 
-    ResourcePackRequestSender requestSender();
+    public ResourcePackGenerateEvent(ResourcePack resourcePack) {
+        this.resourcePack = requireNonNull(resourcePack, "resourcePack");
+    }
 
-    EventBus eventBus();
+    /**
+     * Returns the mutable resource pack instance
+     * being generated and that can be edited when
+     * listening to this event
+     *
+     * @return The resource pack
+     */
+    public ResourcePack resourcePack() {
+        return resourcePack;
+    }
 
 }

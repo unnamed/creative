@@ -21,21 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
-
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
+package team.unnamed.creative.central.event;
 
 /**
+ * Marker interface for events in the creative-central
+ * API
+ *
  * @since 1.0.0
  */
-public interface CreativeCentral {
-
-    CentralResourcePackServer server();
-
-    ResourcePackRequestSender requestSender();
-
-    EventBus eventBus();
-
+public interface Event {
 }

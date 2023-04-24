@@ -21,21 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.event.pack;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
+import team.unnamed.creative.central.event.Event;
+import team.unnamed.creative.central.pack.ResourcePackStatus;
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+import static java.util.Objects.requireNonNull;
 
-    CentralResourcePackServer server();
+public final class ResourcePackStatusEvent implements Event {
 
-    ResourcePackRequestSender requestSender();
+    private final Object player;
+    private final ResourcePackStatus status;
 
-    EventBus eventBus();
+    public ResourcePackStatusEvent(Object player, ResourcePackStatus status) {
+        this.player = requireNonNull(player, "player");
+        this.status = requireNonNull(status, "status");
+    }
+
+    public Object player() {
+        return player;
+    }
+
+    public ResourcePackStatus status() {
+        return status;
+    }
+
+    @Override
+    public String toString() {
+        return "ResourcePackStatusEvent{" +
+                "player=" + player +
+                ", status=" + status +
+                '}';
+    }
 
 }

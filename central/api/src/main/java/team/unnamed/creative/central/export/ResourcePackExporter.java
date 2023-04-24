@@ -25,8 +25,10 @@ package team.unnamed.creative.central.export;
 
 import team.unnamed.creative.ResourcePack;
 
+import java.io.IOException;
+
 public interface ResourcePackExporter {
 
-    ResourcePackLocation export(ResourcePack resourcePack);
+    ResourcePackLocation export(ResourcePack resourcePack) throws IOException;
 
 }

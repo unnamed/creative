@@ -21,21 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.common.util;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
 
-    CentralResourcePackServer server();
+public final class LocalAddressProvider {
 
-    ResourcePackRequestSender requestSender();
+    private LocalAddressProvider() {
+    }
 
-    EventBus eventBus();
+    public static @Nullable String getLocalAddress(List<String> whatIsMyIpServicesAddresses) throws IOException {
+        for (String serviceAddress : whatIsMyIpServicesAddresses) {
+            URL url = new URL(serviceAddress);
+            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+
+            try (InputStream input = httpUrlConnection.getInputStream()) {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                byte[] buf = new byte[32];
+                int read;
+                while ((read = input.read(buf)) != -1) {
+                    output.write(buf, 0, read);
+                }
+
+                return output.toString();
+            } catch (IOException ignored) {
+            }
+        }
+        return null;
+    }
 
 }

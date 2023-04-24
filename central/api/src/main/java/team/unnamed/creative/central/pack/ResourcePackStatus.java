@@ -21,21 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.pack;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
-
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
-
-    CentralResourcePackServer server();
-
-    ResourcePackRequestSender requestSender();
-
-    EventBus eventBus();
-
+public enum ResourcePackStatus {
+    LOADED,
+    DECLINED,
+    FAILED,
+    ACCEPTED
 }

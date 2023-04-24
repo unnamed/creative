@@ -21,21 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.event;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
+public interface EventBus {
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+    <E extends Event> void listen(Object plugin, Class<E> eventType, EventListener<E> listener);
 
-    CentralResourcePackServer server();
-
-    ResourcePackRequestSender requestSender();
-
-    EventBus eventBus();
+    <E extends Event> void call(Class<E> eventType, E event);
 
 }

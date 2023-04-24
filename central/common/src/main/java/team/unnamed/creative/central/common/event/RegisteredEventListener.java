@@ -21,26 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central.generate;
+package team.unnamed.creative.central.common.event;
 
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.central.event.Event;
+import team.unnamed.creative.central.event.EventListener;
 
-/**
- * An event called when we want plugins/extensions to register
- * their own resources in our unified resource pack (for the
- * entire server)
- *
- * @since 1.0.0
- */
-public interface ResourcePackGenerateEvent {
+public class RegisteredEventListener<E extends Event> {
 
-    /**
-     * Returns the mutable resource pack instance
-     * being generated and that can be edited when
-     * listening to this event
-     *
-     * @return The resource pack
-     */
-    ResourcePack resourcePack();
+    private final Object plugin;
+    private final EventListener<E> listener;
+
+    public RegisteredEventListener(Object plugin, EventListener<E> listener) {
+        this.plugin = plugin;
+        this.listener = listener;
+    }
+
+    public Object plugin() {
+        return plugin;
+    }
+
+    public EventListener<E> listener() {
+        return listener;
+    }
+
 
 }

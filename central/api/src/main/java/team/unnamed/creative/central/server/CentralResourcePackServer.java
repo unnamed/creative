@@ -23,5 +23,19 @@
  */
 package team.unnamed.creative.central.server;
 
-public interface CentralResourcePackServer {
+import team.unnamed.creative.BuiltResourcePack;
+
+import java.io.Closeable;
+import java.io.IOException;
+
+public interface CentralResourcePackServer extends Closeable {
+
+    BuiltResourcePack resourcePack();
+
+    void resourcePack(BuiltResourcePack resourcePack);
+
+    boolean isOpen();
+
+    void open(String address, int port) throws IOException;
+
 }

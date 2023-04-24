@@ -21,16 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central.generate;
+package team.unnamed.creative.central.event;
 
-import team.unnamed.creative.ResourcePack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
+@FunctionalInterface
+public interface EventListener<E extends Event> extends Comparable<EventListener<E>> {
 
-public interface ResourcePipeline {
+    void on(E event);
 
-    void listen(Object plugin, Consumer<ResourcePackGenerateEvent> listener);
+    default Priority priority() {
+        return Priority.NORMAL;
+    }
 
-    void execute(ResourcePack resourcePack);
+    @Override
+    default int compareTo(@NotNull EventListener<E> o) {
+        return priority().compareTo(o.priority());
+    }
+
+    enum Priority {
+        LOWEST,
+        LOW,
+        NORMAL,
+        HIGH,
+        HIGHEST
+    }
 
 }
