@@ -72,11 +72,11 @@ export:
     # |
     # |--> 'file' (non hosted)
     # |     Writes the generated resource pack to a ZIP file in the plugin
-    # |     folder (/plugins/unemojis/resource-pack.zip)
+    # |     folder (/plugins/creative-central/output.zip)
     # |
     # |--> 'folder' (non hosted)
     # |     Writes the generated resource pack to a folder in the plugin
-    # |     folder (/plugins/unemojis/resource-pack/)
+    # |     folder (/plugins/creative-central/output/)
     #
     # | Note: The plugin will not prompt players to download the resource
     # |       pack if the export method is not hosted, this is because
