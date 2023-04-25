@@ -34,13 +34,19 @@ import team.unnamed.creative.central.CreativeCentralProvider;
 import team.unnamed.creative.central.bukkit.listener.ResourcePackStatusListener;
 import team.unnamed.creative.central.bukkit.request.BukkitResourcePackRequestSender;
 import team.unnamed.creative.central.common.event.EventBusImpl;
+import team.unnamed.creative.central.common.export.MCPacksHttpExporter;
 import team.unnamed.creative.central.common.server.CommonResourcePackServer;
+import team.unnamed.creative.central.common.util.Streams;
 import team.unnamed.creative.central.event.EventBus;
 import team.unnamed.creative.central.event.pack.ResourcePackGenerateEvent;
 import team.unnamed.creative.central.request.ResourcePackRequestSender;
 import team.unnamed.creative.central.server.CentralResourcePackServer;
+import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackReader;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.logging.Level;
 
 @SuppressWarnings("unused") // instantiated via reflection by the server
@@ -73,10 +79,40 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
                 return;
             }
 
-            ResourcePack resourcePack = ResourcePack.create();
-            // TODO: Load from the initial resources folder
+            File resourcesFolder = new File(getDataFolder(), "resources");
+            if (!resourcesFolder.exists()) {
+                resourcesFolder.mkdirs();
+                // copy pack.mcmeta and pack.png inside resources
+                try {
+                    try (InputStream meta = getResource("resources/pack.mcmeta")) {
+                        Streams.pipeToFile(meta, new File(resourcesFolder, "pack.mcmeta"));
+                    }
+
+                    try (InputStream icon = getResource("resources/pack.png")) {
+                        Streams.pipeToFile(icon, new File(resourcesFolder, "pack.png"));
+                    }
+
+                    getLogger().info("Successfully generated resources folder");
+                } catch (IOException e) {
+                    getLogger().log(Level.WARNING, "Failed to copy pack.mcmeta and pack.png files" +
+                            " inside the resources folder", e);
+                }
+            }
+
+            ResourcePack resourcePack = resourcesFolder.exists()
+                    ? MinecraftResourcePackReader.minecraft().readFromDirectory(resourcesFolder)
+                    : ResourcePack.create();
+
+            getLogger().info("The initial resource pack resources have been loaded");
+
             eventBus.call(ResourcePackGenerateEvent.class, new ResourcePackGenerateEvent(resourcePack));
             getLogger().info("The resource pack has been generated successfully");
+
+            try {
+                new MCPacksHttpExporter(getLogger()).export(resourcePack);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }, 1L);
     }
 

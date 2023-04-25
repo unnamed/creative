@@ -8,6 +8,7 @@ repositories {
 
 dependencies {
     implementation(project(":creative-central-api"))
+    implementation(project(":creative-serializer-minecraft"))
     implementation(project(":creative-central-common"))
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 }
