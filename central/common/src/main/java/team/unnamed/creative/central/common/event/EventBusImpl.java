@@ -80,7 +80,14 @@ public final class EventBusImpl<T> implements EventBus {
             try {
                 listener.listener().on(event);
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "An exception was caught when trying to call ", e);
+                logger.log(
+                        Level.SEVERE,
+                        "Unhandled exception caught when calling event\n"
+                                + "    Event: " + eventType.getName() + "\n"
+                                + "    For listener: " + listener.listener() + "\n"
+                                + "    Of plugin: " + listener.plugin(),
+                        e
+                );
             }
         }
     }

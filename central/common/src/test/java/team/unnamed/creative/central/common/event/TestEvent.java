@@ -21,28 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central.event;
+package team.unnamed.creative.central.common.event;
 
-import java.util.function.Consumer;
+import org.junit.jupiter.api.Assertions;
+import team.unnamed.creative.central.event.Event;
 
-public interface EventBus {
+public final class TestEvent implements Event {
 
-    <E extends Event> void listen(Object plugin, Class<E> eventType, EventListener<E> listener);
+    private int counter = 0;
 
-    default <E extends Event> void listen(Object plugin, Class<E> eventType, EventListener.Priority priority, Consumer<E> listener) {
-        listen(plugin, eventType, new EventListener<E>() {
-            @Override
-            public void on(E event) {
-                listener.accept(event);
-            }
-
-            @Override
-            public Priority priority() {
-                return priority;
-            }
-        });
+    public int counter() {
+        return counter;
     }
 
-    <E extends Event> void call(Class<E> eventType, E event);
+    public void counter(int counter) {
+        this.counter = counter;
+    }
+
+    public int increment() {
+        return ++counter;
+    }
+
+    public void assertAndIncrement(int expected) {
+        Assertions.assertEquals(expected, counter, "Counter is not equal to expected value");
+        ++counter;
+    }
 
 }
