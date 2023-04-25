@@ -1,3 +1,4 @@
 main: team.unnamed.creative.central.bukkit.CreativeCentralPlugin
 name: creative-central
 version: ${project.version}
+api-version: 1.13
