@@ -21,24 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.bukkit.util;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
-import team.unnamed.creative.central.server.ServeOptions;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+public final class Components {
 
-    CentralResourcePackServer server();
+    private Components() {
+    }
 
-    ServeOptions serveOptions();
-
-    ResourcePackRequestSender requestSender();
-
-    EventBus eventBus();
+    public static Component deserialize(String src) {
+        return MiniMessage.miniMessage().deserialize(src);
+    }
 
 }

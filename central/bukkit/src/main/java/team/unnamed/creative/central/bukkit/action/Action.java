@@ -21,24 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.bukkit.action;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
-import team.unnamed.creative.central.server.ServeOptions;
+import org.bukkit.entity.Player;
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+public interface Action {
 
-    CentralResourcePackServer server();
-
-    ServeOptions serveOptions();
-
-    ResourcePackRequestSender requestSender();
-
-    EventBus eventBus();
+    void execute(Player player);
 
 }

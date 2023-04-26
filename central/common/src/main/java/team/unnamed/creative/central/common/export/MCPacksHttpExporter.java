@@ -62,9 +62,13 @@ public class MCPacksHttpExporter implements ResourcePackExporter {
     private final Logger logger;
     private final URL url;
 
-    public MCPacksHttpExporter(Logger logger) throws MalformedURLException {
+    public MCPacksHttpExporter(Logger logger) {
         this.logger = logger;
-        this.url = new URL(UPLOAD_URL);
+        try {
+            this.url = new URL(UPLOAD_URL);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException("Malformed url constant: " + UPLOAD_URL, e);
+        }
     }
 
     @Override

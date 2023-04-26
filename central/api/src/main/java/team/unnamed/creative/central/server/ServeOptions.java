@@ -21,24 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.server;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
-import team.unnamed.creative.central.server.ServeOptions;
+import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.central.request.ResourcePackRequest;
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+public final class ServeOptions {
 
-    CentralResourcePackServer server();
+    private @Nullable ResourcePackRequest request = null;
+    private int delay = 0;
+    private boolean serve = true;
 
-    ServeOptions serveOptions();
+    public @Nullable ResourcePackRequest request() {
+        return request;
+    }
 
-    ResourcePackRequestSender requestSender();
+    public void request(@Nullable ResourcePackRequest request) {
+        this.request = request;
+    }
 
-    EventBus eventBus();
+    public int delay() {
+        return delay;
+    }
+
+    public void delay(int delay) {
+        this.delay = delay;
+    }
+
+    public boolean serve() {
+        return serve;
+    }
+
+    public void serve(boolean serve) {
+        this.serve = serve;
+    }
 
 }

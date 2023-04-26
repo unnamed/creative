@@ -39,14 +39,22 @@ send:
 ## download the server resource pack
 ##
 feedback:
+    success:
+        - title:
+              title: '<#ff8df8><bold>Welcome!'
+              subtitle: '<gray>Enjoy your stay in this creative server!'
+              fade-in: 10
+              stay: 50
+              fade-out: 10
+        - message: '<green>Hey! Welcome to this creative server. Enjoy your stay!'
     accepted:
         - title:
-              title: '<#ff8df8><bold>Welcome to the server!'
-              subtitle: '<gray>Enjoy your stay!'
-              fade-in: 10
-              stay: 40
-              fade-out: 10
-        - message: '<green>You have accepted the resource pack!'
+              title: '<gray>Loading...'
+              subtitle: '<gray>Downloading the resource pack...'
+              fade-in: 0
+              stay: 90
+              fade-out: 0
+        - message: '<green>Downloading the resource pack...'
     declined:
         - kick: '<red>Please accept the server resource pack'
     failed:

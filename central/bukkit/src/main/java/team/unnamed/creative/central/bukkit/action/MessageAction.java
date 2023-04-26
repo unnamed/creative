@@ -21,24 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central;
+package team.unnamed.creative.central.bukkit.action;
 
-import team.unnamed.creative.central.event.EventBus;
-import team.unnamed.creative.central.request.ResourcePackRequestSender;
-import team.unnamed.creative.central.server.CentralResourcePackServer;
-import team.unnamed.creative.central.server.ServeOptions;
+import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
+import team.unnamed.creative.central.bukkit.util.Components;
 
-/**
- * @since 1.0.0
- */
-public interface CreativeCentral {
+public class MessageAction implements Action {
 
-    CentralResourcePackServer server();
+    public static final String IDENTIFIER = "message";
 
-    ServeOptions serveOptions();
+    private final Component message;
 
-    ResourcePackRequestSender requestSender();
+    public MessageAction(Component message) {
+        this.message = message;
+    }
 
-    EventBus eventBus();
+    @Override
+    public void execute(Player player) {
+        player.sendMessage(message);
+    }
+
+    public static Action deserialize(Object src) {
+        return new MessageAction(Components.deserialize(src.toString()));
+    }
 
 }
