@@ -38,6 +38,8 @@ import static java.util.Objects.requireNonNull;
 public final class CommonResourcePackServer implements CentralResourcePackServer, ResourcePackRequestHandler {
 
     private @Nullable ResourcePackServer server;
+    private @Nullable String address;
+    private int port = -1;
     private BuiltResourcePack resourcePack;
     private boolean open;
 
@@ -66,11 +68,24 @@ public final class CommonResourcePackServer implements CentralResourcePackServer
             throw new IllegalStateException("The resource pack is not set yet!");
         }
 
+        this.address = address;
+        this.port = port;
+
         server = ResourcePackServer.builder()
                 .address(address, port)
                 .handler(this)
                 .build();
         server.start();
+    }
+
+    @Override
+    public @Nullable String address() {
+        return address;
+    }
+
+    @Override
+    public int port() {
+        return port;
     }
 
     @Override
@@ -92,6 +107,8 @@ public final class CommonResourcePackServer implements CentralResourcePackServer
         if (server != null) {
             server.stop(0);
         }
+        address = null;
+        port = -1;
         open = false;
         server = null;
     }

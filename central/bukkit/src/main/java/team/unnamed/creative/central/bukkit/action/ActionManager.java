@@ -21,34 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central.export;
+package team.unnamed.creative.central.bukkit.action;
 
-import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.ResourcePack;
+import org.bukkit.configuration.ConfigurationSection;
+import team.unnamed.creative.central.pack.ResourcePackStatus;
 
-import java.io.IOException;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Interface for exporting resource packs to different
- * targets like files, external servers (like MCPacks,
- * Polymath, Dropbox, etc.) or a local server
- *
- * @since 1.0.0
- */
-public interface ResourcePackExporter {
+public class ActionManager {
 
-    /**
-     * Exports the given {@code resourcePack} to the
-     * target of this exporter, returning the location
-     * of the exported resource pack, or {@code null}
-     * if the exporting method is not hosted
-     *
-     * @param resourcePack The resource pack to export
-     * @return The location of the exported resource pack,
-     * null if the exporting method is not hosted
-     * @throws IOException If the exporting process fails
-     * @since 1.0.0
-     */
-    @Nullable ResourcePackLocation export(ResourcePack resourcePack) throws IOException;
+    private final Map<ResourcePackStatus, List<Action>> actionsByStatus = new EnumMap<>(ResourcePackStatus.class);
+
+    public void load(ConfigurationSection config) {
+        actionsByStatus.put(ResourcePackStatus.DECLINED, ActionParser.parse(config, "declined"));
+        actionsByStatus.put(ResourcePackStatus.ACCEPTED, ActionParser.parse(config, "accepted"));
+        actionsByStatus.put(ResourcePackStatus.FAILED, ActionParser.parse(config, "failed"));
+        actionsByStatus.put(ResourcePackStatus.LOADED, ActionParser.parse(config, "success"));
+    }
+
+    public List<Action> actions(ResourcePackStatus status) {
+        return actionsByStatus.getOrDefault(status, Collections.emptyList());
+    }
 
 }

@@ -2,3 +2,11 @@ main: team.unnamed.creative.central.bukkit.CreativeCentralPlugin
 name: creative-central
 version: ${project.version}
 api-version: 1.13
+description: Creative central, the resource-pack unifier
+author: Unnamed Team
+website: https://unnamed.team/docs/creative/central/creative-central
+commands:
+    central:
+        description: The central main command, used to manage the plugin
+        usage: /<command> [reload]
+        permission: creative.central.admin

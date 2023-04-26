@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.central.server;
 
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.BuiltResourcePack;
 
 import java.io.Closeable;
@@ -37,5 +38,9 @@ public interface CentralResourcePackServer extends Closeable {
     boolean isOpen();
 
     void open(String address, int port) throws IOException;
+
+    @Nullable String address();
+
+    int port();
 
 }

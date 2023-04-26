@@ -76,7 +76,7 @@ export:
     # |--> 'localhost' (hosted)
     # |     Opens a local HTTP server to serve resource packs, no third parties,
     # |     extra configuration is required (you need to open a new port in
-    # |     your server)
+    # |     your server and enable the 'localhost' setting, see below)
     # |
     # |--> 'file' (non hosted)
     # |     Writes the generated resource pack to a ZIP file in the plugin
@@ -92,8 +92,14 @@ export:
     # |       to download the resource pack
     type: 'mcpacks'
 
-    # Configuration if type is 'localhost'
+    # Configuration for locally hosting resource packs
     localhost:
+        # True to enable and start the HTTP server, false to disable it
+        #
+        # IMPORTANT: Note that setting the export type to 'localhost' will not
+        # automatically enable the HTTP server, you need to set this to true
+        enabled: false
+
         # Put your server's public IP address or let the plugin
         # detect it by using an external "what is my ip" service
         # (See the --what-is-my-ip-services setting)

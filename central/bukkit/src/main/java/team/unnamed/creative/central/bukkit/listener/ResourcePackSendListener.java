@@ -56,7 +56,7 @@ public class ResourcePackSendListener implements Listener {
         }
 
         int delay = options.delay();
-        if (delay == 0) {
+        if (delay <= 0) {
             // send the resource pack request immediately
             plugin.requestSender().send(player, request);
         } else {

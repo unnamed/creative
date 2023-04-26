@@ -21,34 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.central.export;
+package team.unnamed.creative.central.bukkit.action;
 
-import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.ResourcePack;
-
-import java.io.IOException;
-
-/**
- * Interface for exporting resource packs to different
- * targets like files, external servers (like MCPacks,
- * Polymath, Dropbox, etc.) or a local server
- *
- * @since 1.0.0
- */
-public interface ResourcePackExporter {
-
-    /**
-     * Exports the given {@code resourcePack} to the
-     * target of this exporter, returning the location
-     * of the exported resource pack, or {@code null}
-     * if the exporting method is not hosted
-     *
-     * @param resourcePack The resource pack to export
-     * @return The location of the exported resource pack,
-     * null if the exporting method is not hosted
-     * @throws IOException If the exporting process fails
-     * @since 1.0.0
-     */
-    @Nullable ResourcePackLocation export(ResourcePack resourcePack) throws IOException;
-
+public class ActionRegistry {
 }
