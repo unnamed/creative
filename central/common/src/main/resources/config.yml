@@ -26,7 +26,7 @@ send:
         # (Optional) Message shown to players when they join for the first time
         # They are asked to use the server resource pack and this message is
         # shown in the screen (1.17 and above, versions before 1.17 don't have this)
-        prompt: '<green>Please accept the server resource pack'
+        prompt: '<#ff8df8>Creative Central <dark_gray>| <gray>Please accept the server resource pack to enjoy the full server experience'
 
     # Determines how much time to wait before sending the resource pack
     # to the player. Set to 0 or less to send immediately.
@@ -46,7 +46,7 @@ feedback:
               fade-in: 10
               stay: 50
               fade-out: 10
-        - message: '<green>Hey! Welcome to this creative server. Enjoy your stay!'
+        - message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>The resource pack has been downloaded correctly...'
     accepted:
         - title:
               title: '<gray>Loading...'
@@ -54,11 +54,46 @@ feedback:
               fade-in: 0
               stay: 90
               fade-out: 0
-        - message: '<green>Downloading the resource pack...'
+        - message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>Downloading the resource pack...'
     declined:
-        - kick: '<red>Please accept the server resource pack'
+        - kick: |-
+              <#ff8df8><bold>Creative Central</bold></#ff8df8>
+              <dark_gray>Kicked from the server</dark_gray>
+              
+              <red>Resource Pack Rejected</red>
+
+              <gray>Accepting the server's resource-pack is
+              necessary to play in this server, you can't
+              play if you don't accept it.
+
+              <dark_gray>How can I fix this?
+              <dark_gray>1. <gray>Go back to your server list
+              <dark_gray>2. <gray>Select our server and click <i>'Edit'</i>
+              <dark_gray>3. <gray>Set the <i>'Server Resource Packs'</i> setting to
+              <i>'Enabled'</i> or <i>'Prompt'</i>
+
+              <dark_gray>That's it!
+              <#ff8df8>See you soon!
+              <dark_gray>- The server administrators -
     failed:
-        - kick: '<red>Failed to download the server resource pack'
+        - kick: |-
+              <#ff8df8><bold>Creative Central</bold></#ff8df8>
+              <dark_gray>Kicked from the server</dark_gray>
+            
+              <red>Failed to download</red>
+            
+              <gray>Accepting the server's resource-pack is
+              necessary to play in this server, it seems
+              like your client failed to download it
+            
+              <dark_gray>How can I fix this?
+              <gray>Go back to your server list and re-join
+              our server, if the issue persists, feel free
+              to contact us.
+            
+              <dark_gray>That's it!
+              <#ff8df8>See you soon!
+              <dark_gray>- The server administrators -
 
 
 
