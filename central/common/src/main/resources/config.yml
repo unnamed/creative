@@ -10,10 +10,30 @@
 ##                                                  plugin by unnamed
 ##
 
+#
+# Welcome to the creative-central configuration!
+#
+#
+# A few notes before you start:
+#
+#   -   If you want to use special characters in the config file, you need
+#       to save the file using UTF-8, not ANSI or any other encoding
+#
+#   -   We use MiniMessage for all messages, for more information visit:
+#       https://docs.advntr.dev/minimessage/index.html
+#
+#
+# If you need help with the configuration, feel free to contact us on
+#   -   Discord: https://discord.gg/xbba2fy
+#
+
 ##
-## Settings for Resource Pack sending
+## Settings for the resource pack sending. In this section, we specify
+## some options for the resource pack request and some extra options on
+## how and when to send the resource pack to the player
 ##
 send:
+    # Options for the resource pack download request
     request:
         # True to tell the player that they need to accept the resource-pack, false if the
         # resource-pack installation is optional
@@ -35,18 +55,18 @@ send:
 
 
 ##
-## Specify what to do when the player accepts, declines or fails to
-## download the server resource pack
+## In this section, we specify the actions to perform when the player
+## accepts, declines, loads or fails to download the resource pack
+##
+## Currently, the following actions are supported:
+## - title:     Shows a title to the player (subtitle, fade-in, stay and fade-out options are supported as well)
+## - message:   Sends a message to the player
+## - kick:      Kicks the player from the server with a custom reason message
 ##
 feedback:
-    success:
-        - title:
-              title: '<#ff8df8><bold>Welcome!'
-              subtitle: '<gray>Enjoy your stay in this creative server!'
-              fade-in: 10
-              stay: 50
-              fade-out: 10
-        - message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>The resource pack has been downloaded correctly...'
+    # Actions to perform when the player accepts the resource pack and starts downloading it
+    # These actions will be performed instantly after the player clicks the "Yes" button
+    # in the resource pack download screen
     accepted:
         - title:
               title: '<gray>Loading...'
@@ -55,8 +75,25 @@ feedback:
               stay: 90
               fade-out: 0
         - message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>Downloading the resource pack...'
+
+    # Actions to perform when the player successfully finishes downloading the resource pack
+    # These actions will be performed after the (resource pack download) loading screen on the
+    # client disappears
+    success:
+        -   title:
+                title: '<#ff8df8><bold>Welcome!'
+                subtitle: '<gray>Enjoy your stay in this creative server!'
+                fade-in: 10
+                stay: 50
+                fade-out: 10
+        -   message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>The resource pack has been downloaded correctly...'
+
+    # Actions to perform when the player declines the resource pack
+    # These actions will be performed after the player clicks the "No" button
+    # in the resource pack download screen
     declined:
         - kick: |-
+              
               <#ff8df8><bold>Creative Central</bold></#ff8df8>
               <dark_gray>Kicked from the server</dark_gray>
               
@@ -75,8 +112,11 @@ feedback:
               <dark_gray>That's it!
               <#ff8df8>See you soon!
               <dark_gray>- The server administrators -
+
+    # Actions to perform when the player fails to download the resource pack
     failed:
         - kick: |-
+              
               <#ff8df8><bold>Creative Central</bold></#ff8df8>
               <dark_gray>Kicked from the server</dark_gray>
             
@@ -98,7 +138,8 @@ feedback:
 
 
 ##
-## Settings for Resource Pack exporting
+## Settings for Resource Pack exporting, in this section we specify
+## how to export the generated resource pack
 ##
 export:
     #
