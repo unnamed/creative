@@ -209,7 +209,7 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
                     location.url(),
                     location.hash(),
                     required,
-                    Component.text(prompt)
+                    Components.deserialize(prompt)
             ));
         } catch (IOException e) {
             getLogger().log(Level.SEVERE, "Failed to export resource pack", e);
