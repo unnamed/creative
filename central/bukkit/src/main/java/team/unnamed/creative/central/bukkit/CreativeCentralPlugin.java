@@ -25,6 +25,7 @@ package team.unnamed.creative.central.bukkit;
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -35,6 +36,7 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.central.CreativeCentral;
 import team.unnamed.creative.central.CreativeCentralProvider;
 import team.unnamed.creative.central.bukkit.action.ActionManager;
+import team.unnamed.creative.central.bukkit.command.MainCommand;
 import team.unnamed.creative.central.bukkit.listener.CreativeResourcePackStatusListener;
 import team.unnamed.creative.central.bukkit.listener.ResourcePackSendListener;
 import team.unnamed.creative.central.bukkit.listener.ResourcePackStatusListener;
@@ -62,6 +64,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressWarnings("unused") // instantiated via reflection by the server
 public final class CreativeCentralPlugin extends JavaPlugin implements CreativeCentral {
 
@@ -88,6 +92,13 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
                 new ResourcePackStatusListener(this),
                 new ResourcePackSendListener(this)
         );
+
+        // register our command
+        PluginCommand command = getCommand("central");
+        requireNonNull(command, "Command 'central' not found!");
+        MainCommand mainCommandHandler = new MainCommand(this);
+        command.setExecutor(mainCommandHandler);
+        command.setTabCompleter(mainCommandHandler);
 
         // load actions
         ActionManager actionManager = new ActionManager();

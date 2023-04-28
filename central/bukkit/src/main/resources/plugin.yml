@@ -8,5 +8,17 @@ website: https://unnamed.team/docs/creative/central/creative-central
 commands:
     central:
         description: The central main command, used to manage the plugin
-        usage: /<command> [reload]
-        permission: creative.central.admin
+        usage: /<command> [help|reload|apply]
+permissions:
+    creative-central.command.help:
+        description: Permission to use the help command
+        default: true
+    creative-central.command.reload:
+        description: Permission to reload the plugin
+        default: op
+    creative-central.command.apply:
+        description: Permission to apply the resource-pack to yourself
+        default: true
+    creative-central.command.apply.others:
+        description: Permission to apply the resource-pack to others
+        default: op

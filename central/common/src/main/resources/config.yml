@@ -186,6 +186,38 @@ export:
 
 
 
+command:
+    # Messages sent to the player when they execute any subcommand under
+    # the '/creative' command, and they don't have permission. For more
+    # customization, there are messages for each subcommand
+    no-permission:
+        help: "<red>You don't have permission to use this command."
+        reload: "<red>You don't have permission to use this command."
+        apply:
+            self: "<red>You don't have permission to use this command."
+            others: "<red>You don't have permission to send the resource-pack to other players. You can only use '/central apply'"
+    usage:
+        unknown: "<red>Unknown subcommand. Type '/central help' for help."
+        help: "<red>Correct usage: /central [help|?]"
+        reload: "<red>Correct usage: /central reload"
+        apply:
+            self: "<red>Correct usage: /central apply"
+            others: "<red>Correct usage: /central apply [target]"
+    apply:
+        no-resource-pack: "<red>It seems like the resource-pack is not ready. This may be because the resource-pack export method is not **hosted** or the plugin is not fully enabled yet"
+        no-player: "<red>You must be a player to use this command"
+        player-not-found: "<red>No player found with that name"
+        no-players: "<red>There aren't any players online"
+    feedback:
+        reload: "<green>Configuration reloaded successfully."
+        apply: "<green>Resource pack sent!"
+    help: |-
+        /central help - Shows this help message
+        /central apply [target] - Sends the resource pack to the target player (or yourself if no target is specified)
+        /central reload - Reloads the plugin configuration, regenerates, exports and sends the resource pack
+
+
+
 ##
 ## (ADVANCED AND INTERNAL SETTINGS)
 ## You probably don't want to touch anything below
