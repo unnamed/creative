@@ -23,10 +23,10 @@
  */
 package team.unnamed.creative.central.bukkit;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
@@ -101,7 +101,7 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
         // register service providers
         registerService();
 
-        Bukkit.getScheduler().runTaskLater(this, this::callGenerate, 1L);
+        Bukkit.getScheduler().runTaskLater(this, this::generate, 1L);
     }
 
     private void registerService() {
@@ -145,11 +145,11 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
         }
     }
 
-    private void callGenerate() {
+    @Override
+    public ResourcePack generate() {
         if (eventBus == null) {
-            getLogger().warning("Unexpected status, event bus was null when trying to" +
+            throw new IllegalStateException("Unexpected status, event bus was null when trying to" +
                     " generate the resource pack. Is the server shutting down?");
-            return;
         }
 
         String exportType = getConfig().getString("export.type", "mcpacks");
@@ -211,9 +211,16 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
                     required,
                     Components.deserialize(prompt)
             ));
+
+            // try to apply the resource-pack to online players
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                requestSender.send(player, serveOptions.request());
+            }
         } catch (IOException e) {
             getLogger().log(Level.SEVERE, "Failed to export resource pack", e);
         }
+
+        return resourcePack;
     }
 
     @Override

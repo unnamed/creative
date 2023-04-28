@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.central;
 
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.central.event.EventBus;
 import team.unnamed.creative.central.request.ResourcePackRequestSender;
 import team.unnamed.creative.central.server.CentralResourcePackServer;
@@ -40,5 +41,7 @@ public interface CreativeCentral {
     ResourcePackRequestSender requestSender();
 
     EventBus eventBus();
+
+    ResourcePack generate();
 
 }
