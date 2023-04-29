@@ -32,6 +32,7 @@ import team.unnamed.creative.server.ResourcePackRequestHandler;
 import team.unnamed.creative.server.ResourcePackServer;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,17 +41,16 @@ public final class CommonResourcePackServer implements CentralResourcePackServer
     private @Nullable ResourcePackServer server;
     private @Nullable String address;
     private int port = -1;
-    private BuiltResourcePack resourcePack;
+    private @Nullable BuiltResourcePack resourcePack;
     private boolean open;
 
     @Override
-    public BuiltResourcePack resourcePack() {
+    public @Nullable BuiltResourcePack resourcePack() {
         return resourcePack;
     }
 
     @Override
-    public void resourcePack(BuiltResourcePack resourcePack) {
-        requireNonNull(resourcePack, "resourcePack");
+    public void resourcePack(@Nullable BuiltResourcePack resourcePack) {
         this.resourcePack = resourcePack;
     }
 
@@ -64,12 +64,10 @@ public final class CommonResourcePackServer implements CentralResourcePackServer
         if (open) {
             throw new IllegalStateException("The resource pack server is already open!");
         }
-        if (resourcePack == null) {
-            throw new IllegalStateException("The resource pack is not set yet!");
-        }
 
         this.address = address;
         this.port = port;
+        this.open = true;
 
         server = ResourcePackServer.builder()
                 .address(address, port)
@@ -90,6 +88,15 @@ public final class CommonResourcePackServer implements CentralResourcePackServer
 
     @Override
     public void onRequest(@Nullable ResourcePackRequest request, HttpExchange exchange) throws IOException {
+
+        if (resourcePack == null) {
+            byte[] response = "The resource-pack is not loaded yet, please wait...".getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/plain");
+            exchange.sendResponseHeaders(400, response.length);
+            exchange.getResponseBody().write(response);
+            return;
+        }
+
         byte[] data = resourcePack.bytes();
         exchange.getResponseHeaders().set("Content-Type", "application/zip");
         exchange.sendResponseHeaders(200, data.length);

@@ -31,9 +31,9 @@ import java.io.IOException;
 
 public interface CentralResourcePackServer extends Closeable {
 
-    BuiltResourcePack resourcePack();
+    @Nullable BuiltResourcePack resourcePack();
 
-    void resourcePack(BuiltResourcePack resourcePack);
+    void resourcePack(@Nullable BuiltResourcePack resourcePack);
 
     boolean isOpen();
 
