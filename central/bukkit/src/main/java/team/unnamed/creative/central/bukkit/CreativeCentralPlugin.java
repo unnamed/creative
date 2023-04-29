@@ -32,6 +32,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.central.CreativeCentral;
 import team.unnamed.creative.central.CreativeCentralProvider;
@@ -62,6 +63,7 @@ import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 import static java.util.Objects.requireNonNull;
@@ -129,42 +131,45 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
         ConfigurationSection config = getConfig().getConfigurationSection("export.localhost");
         boolean enabled = config != null && config.getBoolean("enabled");
 
-        if (enabled) {
-            String address = getConfig().getString("export.localhost.address", "");
-            int port = getConfig().getInt("export.localhost.port");
+        if (!enabled) {
+            return;
+        }
 
-            // if address is empty, automatically detect the server's address
-            if (address.trim().isEmpty()) {
-                try {
-                    address = LocalAddressProvider.getLocalAddress(getConfig().getStringList("--what-is-my-ip-services"));
-                } catch (IOException e) {
-                    getLogger().log(Level.SEVERE, "An exception was caught when trying to get the local server address", e);
-                }
+        getLogger().info("Resource-pack server enabled, starting...");
 
-                if (address == null) {
-                    getLogger().log(Level.SEVERE, "Couldn't get the local server address");
-                }
+        String address = getConfig().getString("export.localhost.address", "");
+        int port = getConfig().getInt("export.localhost.port");
+
+        // if address is empty, automatically detect the server's address
+        if (address.trim().isEmpty()) {
+            try {
+                address = LocalAddressProvider.getLocalAddress(getConfig().getStringList("--what-is-my-ip-services"));
+            } catch (IOException e) {
+                getLogger().log(Level.SEVERE, "An exception was caught when trying to get the local server address", e);
             }
 
-            if (address != null) {
-                try {
-                    resourcePackServer.open(address, port);
-                } catch (IOException e) {
-                    getLogger().log(Level.SEVERE, "Failed to open the resource pack server", e);
-                }
+            if (address == null) {
+                getLogger().log(Level.SEVERE, "Couldn't get the local server address");
+            }
+        }
+
+        if (address != null) {
+            try {
+                resourcePackServer.open(address, port);
+                getLogger().info("Successfully started the resource-pack server, listening on port " + port);
+            } catch (IOException e) {
+                getLogger().log(Level.SEVERE, "Failed to open the resource pack server", e);
             }
         }
     }
 
-    @Override
-    public ResourcePack generate() {
+    public ResourcePack generateSync() {
         if (eventBus == null) {
             throw new IllegalStateException("Unexpected status, event bus was null when trying to" +
                     " generate the resource pack. Is the server shutting down?");
         }
 
-        String exportType = getConfig().getString("export.type", "mcpacks");
-        ResourcePackExporter exporter = ResourcePackExporterFactory.create(exportType, getDataFolder(), resourcePackServer, getLogger());
+        getLogger().info("Generating resource-pack...");
 
         File resourcesFolder = new File(getDataFolder(), "resources");
         if (!resourcesFolder.exists()) {
@@ -207,31 +212,58 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
             }
         }
 
-        getLogger().info("The initial resource pack resources have been loaded");
+        getLogger().info("Successfully loaded resources from 'resources' folder");
 
         eventBus.call(ResourcePackGenerateEvent.class, new ResourcePackGenerateEvent(resourcePack));
         getLogger().info("The resource pack has been generated successfully");
 
-        try {
-            ResourcePackLocation location = exporter.export(resourcePack);
-            boolean required = getConfig().getBoolean("send.request.required");
-            String prompt = getConfig().getString("send.request.prompt");
+        // export resource-pack
+        @Nullable ResourcePackLocation location = null;
+        {
+            getLogger().info("Exporting resource pack...");
+            String exportType = getConfig().getString("export.type", "mcpacks");
+            ResourcePackExporter exporter = ResourcePackExporterFactory.create(exportType, getDataFolder(), resourcePackServer, getLogger());
+            try {
+                location = exporter.export(resourcePack);
+            } catch (IOException e) {
+                getLogger().log(Level.SEVERE, "Failed to export resource pack", e);
+            }
+        }
+
+        if (location != null) {
             serveOptions.request(ResourcePackRequest.of(
                     location.url(),
                     location.hash(),
-                    required,
-                    Components.deserialize(prompt)
+                    getConfig().getBoolean("send.request.required"),
+                    Components.deserialize(getConfig().getString("send.request.prompt", "prompt"))
             ));
+        } else {
+            serveOptions.request(null);
+            getLogger().warning("Resource-pack has not been exported to a hosted server, the"
+                    + " resource-pack will not be automatically sent to players.");
+        }
 
-            // try to apply the resource-pack to online players
+        if (location != null) {
+            // apply the resource-pack to online players
             for (Player player : Bukkit.getOnlinePlayers()) {
                 requestSender.send(player, serveOptions.request());
             }
-        } catch (IOException e) {
-            getLogger().log(Level.SEVERE, "Failed to export resource pack", e);
         }
 
         return resourcePack;
+    }
+
+    @Override
+    public CompletableFuture<ResourcePack> generate() {
+        if (eventBus == null) {
+            throw new IllegalStateException("Unexpected status, event bus was null when trying to" +
+                    " generate the resource pack. Is the server shutting down?");
+        }
+
+        return CompletableFuture.supplyAsync(
+                this::generateSync,
+                task -> Bukkit.getScheduler().runTaskAsynchronously(this, task)
+        );
     }
 
     @Override

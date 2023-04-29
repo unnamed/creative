@@ -30,7 +30,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.central.bukkit.CreativeCentralPlugin;
 import team.unnamed.creative.central.bukkit.util.Components;
@@ -78,8 +77,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
                 central.reloadConfig();
                 messageCache.clear();
-                central.generate();
-                send(sender, "command.feedback.reload");
+                central.generate().thenAccept(resourcePack ->
+                    send(sender, "command.feedback.reload"));
             }
 
             case "apply" -> {

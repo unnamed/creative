@@ -29,6 +29,8 @@ import team.unnamed.creative.central.request.ResourcePackRequestSender;
 import team.unnamed.creative.central.server.CentralResourcePackServer;
 import team.unnamed.creative.central.server.ServeOptions;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * @since 1.0.0
  */
@@ -42,6 +44,6 @@ public interface CreativeCentral {
 
     EventBus eventBus();
 
-    ResourcePack generate();
+    CompletableFuture<ResourcePack> generate();
 
 }
