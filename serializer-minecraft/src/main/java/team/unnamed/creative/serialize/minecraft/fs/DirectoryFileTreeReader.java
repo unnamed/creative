@@ -128,7 +128,7 @@ final class DirectoryFileTreeReader implements FileTreeReader {
                 return builder.toString();
             }
             // prepend current folder to the string builder
-            builder.insert(0, child.getName() + File.separator);
+            builder.insert(0, child.getName() + "/");
         }
         throw new IllegalStateException("");
     }

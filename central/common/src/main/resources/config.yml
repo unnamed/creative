@@ -1,0 +1,231 @@
+##
+##           the creative              /$$                        /$$
+##                                    | $$                       | $$
+##      /$$$$$$$  /$$$$$$  /$$$$$$$  /$$$$$$    /$$$$$$  /$$$$$$ | $$
+##     /$$_____/ /$$__  $$| $$__  $$|_  $$_/   /$$__  $$|____  $$| $$
+##    | $$      | $$$$$$$$| $$  \ $$  | $$    | $$  \__/ /$$$$$$$| $$
+##    | $$      | $$_____/| $$  | $$  | $$ /$$| $$      /$$__  $$| $$
+##    |  $$$$$$$|  $$$$$$$| $$  | $$  |  $$$$/| $$     |  $$$$$$$| $$
+##    \_______/ \_______/|__/  |__/   \___/  |__/      \_______/|__/
+##                                                  plugin by unnamed
+##
+
+#
+# Welcome to the creative-central configuration!
+#
+#
+# A few notes before you start:
+#
+#   -   If you want to use special characters in the config file, you need
+#       to save the file using UTF-8, not ANSI or any other encoding
+#
+#   -   We use MiniMessage for all messages, for more information visit:
+#       https://docs.advntr.dev/minimessage/index.html
+#
+#
+# If you need help with the configuration, feel free to contact us on
+#   -   Discord: https://discord.gg/xbba2fy
+#
+
+##
+## Settings for the resource pack sending. In this section, we specify
+## some options for the resource pack request and some extra options on
+## how and when to send the resource pack to the player
+##
+send:
+    # Options for the resource pack download request
+    request:
+        # True to tell the player that they need to accept the resource-pack, false if the
+        # resource-pack installation is optional
+        #
+        # IMPORTANT: Please note that this is purely client-side, the server will not necessarily
+        #    kick the player if they don't accept the resource pack, you need to configure that in
+        #    the 'feedback' section, specifically in the 'declined' section
+        required: true
+
+        # (Optional) Message shown to players when they join for the first time
+        # They are asked to use the server resource pack and this message is
+        # shown in the screen (1.17 and above, versions before 1.17 don't have this)
+        prompt: '<#ff8df8>Creative Central <dark_gray>| <gray>Please accept the server resource pack to enjoy the full server experience'
+
+    # Determines how much time to wait before sending the resource pack
+    # to the player. Set to 0 or less to send immediately.
+    delay: 0
+
+
+
+##
+## In this section, we specify the actions to perform when the player
+## accepts, declines, loads or fails to download the resource pack
+##
+## Currently, the following actions are supported:
+## - title:     Shows a title to the player (subtitle, fade-in, stay and fade-out options are supported as well)
+## - message:   Sends a message to the player
+## - kick:      Kicks the player from the server with a custom reason message
+##
+feedback:
+    # Actions to perform when the player accepts the resource pack and starts downloading it
+    # These actions will be performed instantly after the player clicks the "Yes" button
+    # in the resource pack download screen
+    accepted:
+        - title:
+              title: '<gray>Loading...'
+              subtitle: '<gray>Downloading the resource pack...'
+              fade-in: 0
+              stay: 90
+              fade-out: 0
+        - message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>Downloading the resource pack...'
+
+    # Actions to perform when the player successfully finishes downloading the resource pack
+    # These actions will be performed after the (resource pack download) loading screen on the
+    # client disappears
+    success:
+        -   title:
+                title: '<#ff8df8><bold>Welcome!'
+                subtitle: '<gray>Enjoy your stay in this creative server!'
+                fade-in: 10
+                stay: 50
+                fade-out: 10
+        -   message: '<#ff8df8>Creative Central <dark_gray>| <green>Info <dark_gray>| <gray>The resource pack has been downloaded correctly...'
+
+    # Actions to perform when the player declines the resource pack
+    # These actions will be performed after the player clicks the "No" button
+    # in the resource pack download screen
+    declined:
+        - kick: |-
+              
+              <#ff8df8><bold>Creative Central</bold></#ff8df8>
+              <dark_gray>Kicked from the server</dark_gray>
+              
+              <red>Resource Pack Rejected</red>
+
+              <gray>Accepting the server's resource-pack is
+              necessary to play in this server, you can't
+              play if you don't accept it.
+
+              <dark_gray>How can I fix this?
+              <dark_gray>1. <gray>Go back to your server list
+              <dark_gray>2. <gray>Select our server and click <i>'Edit'</i>
+              <dark_gray>3. <gray>Set the <i>'Server Resource Packs'</i> setting to
+              <i>'Enabled'</i> or <i>'Prompt'</i>
+
+              <dark_gray>That's it!
+              <#ff8df8>See you soon!
+              <dark_gray>- The server administrators -
+
+    # Actions to perform when the player fails to download the resource pack
+    failed:
+        - kick: |-
+              
+              <#ff8df8><bold>Creative Central</bold></#ff8df8>
+              <dark_gray>Kicked from the server</dark_gray>
+            
+              <red>Failed to download</red>
+            
+              <gray>Accepting the server's resource-pack is
+              necessary to play in this server, it seems
+              like your client failed to download it
+            
+              <dark_gray>How can I fix this?
+              <gray>Go back to your server list and re-join
+              our server, if the issue persists, feel free
+              to contact us.
+            
+              <dark_gray>That's it!
+              <#ff8df8>See you soon!
+              <dark_gray>- The server administrators -
+
+
+
+##
+## Settings for Resource Pack exporting, in this section we specify
+## how to export the generated resource pack
+##
+export:
+    #
+    # How should we export the generated resource pack?
+    # |
+    # |--> 'mcpacks' (default) (hosted)
+    # |     Uploads the generated resource pack to https://mc-packs.net/,
+    # |     a free resource pack hosting service (Consider donating to them)
+    # |
+    # |--> 'localhost' (hosted)
+    # |     Opens a local HTTP server to serve resource packs, no third parties,
+    # |     extra configuration is required (you need to open a new port in
+    # |     your server and enable the 'localhost' setting, see below)
+    # |
+    # |--> 'file' (non hosted)
+    # |     Writes the generated resource pack to a ZIP file in the plugin
+    # |     folder (/plugins/creative-central/output.zip)
+    # |
+    # |--> 'folder' (non hosted)
+    # |     Writes the generated resource pack to a folder in the plugin
+    # |     folder (/plugins/creative-central/output/)
+    #
+    # | Note: The plugin will not prompt players to download the resource
+    # |       pack if the export method is not hosted, this is because
+    # |       Minecraft requires an URL to be sent to the player in order
+    # |       to download the resource pack
+    type: 'mcpacks'
+
+    # Configuration for locally hosting resource packs
+    localhost:
+        # True to enable and start the HTTP server, false to disable it
+        #
+        # IMPORTANT: Note that setting the export type to 'localhost' will not
+        # automatically enable the HTTP server, you need to set this to true
+        enabled: false
+
+        # Put your server's public IP address or let the plugin
+        # detect it by using an external "what is my ip" service
+        # (See the --what-is-my-ip-services setting)
+        address: ''
+
+        # The resource pack host port
+        port: 7270
+
+
+
+command:
+    # Messages sent to the player when they execute any subcommand under
+    # the '/creative' command, and they don't have permission. For more
+    # customization, there are messages for each subcommand
+    no-permission:
+        help: "<red>You don't have permission to use this command."
+        reload: "<red>You don't have permission to use this command."
+        apply:
+            self: "<red>You don't have permission to use this command."
+            others: "<red>You don't have permission to send the resource-pack to other players. You can only use '/central apply'"
+    usage:
+        unknown: "<red>Unknown subcommand. Type '/central help' for help."
+        help: "<red>Correct usage: /central [help|?]"
+        reload: "<red>Correct usage: /central reload"
+        apply:
+            self: "<red>Correct usage: /central apply"
+            others: "<red>Correct usage: /central apply [target]"
+    apply:
+        no-resource-pack: "<red>It seems like the resource-pack is not ready. This may be because the resource-pack export method is not **hosted** or the plugin is not fully enabled yet"
+        no-player: "<red>You must be a player to use this command"
+        player-not-found: "<red>No player found with that name"
+        no-players: "<red>There aren't any players online"
+    feedback:
+        reload: "<green>Configuration reloaded successfully."
+        apply: "<green>Resource pack sent!"
+    help: |-
+        /central help - Shows this help message
+        /central apply [target] - Sends the resource pack to the target player (or yourself if no target is specified)
+        /central reload - Reloads the plugin configuration, regenerates, exports and sends the resource pack
+
+
+
+##
+## (ADVANCED AND INTERNAL SETTINGS)
+## You probably don't want to touch anything below
+##
+
+# This setting specifies what "What is my ip" services we can use in order to obtain
+# the server's IP address (which is sent to the client to download the resource pack)
+--what-is-my-ip-services:
+    - 'https://api.ipify.org'
+    - 'https://api4.my-ip.io/ip'
+    - 'https://api-ipv4.ip.sb/ip'
