@@ -114,7 +114,13 @@ public final class CreativeCentralPlugin extends JavaPlugin implements CreativeC
         // register service providers
         registerService();
 
-        Bukkit.getScheduler().runTaskLater(this, this::generate, 1L);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            this.generate().whenComplete((pack, throwable) -> {
+                if (throwable != null) {
+                    getLogger().log(Level.SEVERE, "Error while generating resource pack", throwable);
+                }
+            });
+        }, 1L);
     }
 
     private void registerService() {
