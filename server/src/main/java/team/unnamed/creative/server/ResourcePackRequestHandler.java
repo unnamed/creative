@@ -72,7 +72,8 @@ public interface ResourcePackRequestHandler {
      * @see HttpExchange
      */
     default void onInvalidRequest(HttpExchange exchange) throws IOException {
-        byte[] response = "Please use a Minecraft client".getBytes(StandardCharsets.UTF_8);
+        byte[] response = "Please use a Minecraft client\n".getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", "text/plain");
         exchange.sendResponseHeaders(400, response.length);
         try (OutputStream responseStream = exchange.getResponseBody()) {
             responseStream.write(response);
@@ -100,6 +101,15 @@ public interface ResourcePackRequestHandler {
             public void onInvalidRequest(HttpExchange exchange) throws IOException {
                 onRequest(null, exchange);
             }
+
+            @Override
+            public String toString() {
+                return "BuiltResourcePackRequestHandler{"
+                        + "pack=" + pack
+                        + ", validOnly=" + validOnly
+                        + '}';
+            }
+
         };
     }
 
