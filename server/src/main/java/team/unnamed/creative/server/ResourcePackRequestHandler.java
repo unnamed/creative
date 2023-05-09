@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.BuiltResourcePack;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -73,7 +74,9 @@ public interface ResourcePackRequestHandler {
     default void onInvalidRequest(HttpExchange exchange) throws IOException {
         byte[] response = "Please use a Minecraft client".getBytes(StandardCharsets.UTF_8);
         exchange.sendResponseHeaders(400, response.length);
-        exchange.getResponseBody().write(response);
+        try (OutputStream responseStream = exchange.getResponseBody()) {
+            responseStream.write(response);
+        }
     }
 
     static ResourcePackRequestHandler of(BuiltResourcePack pack, boolean validOnly) {
@@ -85,7 +88,9 @@ public interface ResourcePackRequestHandler {
                     byte[] data = pack.bytes();
                     exchange.getResponseHeaders().set("Content-Type", "application/zip");
                     exchange.sendResponseHeaders(200, data.length);
-                    exchange.getResponseBody().write(data);
+                    try (OutputStream responseStream = exchange.getResponseBody()) {
+                        responseStream.write(data);
+                    }
                 } else {
                     ResourcePackRequestHandler.super.onInvalidRequest(exchange);
                 }
