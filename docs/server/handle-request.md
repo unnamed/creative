@@ -27,8 +27,8 @@ the response information
 Example:
 
 ```java
-ResourcePack pack8 = ResourcePack.build(this::createPack8);
-ResorucePack pack9 = ResourcePack.build(this::createPack9);
+BuiltResourcePack pack8 = MinecraftResourcePackWriter.minecraft().build(this::createPack8);
+BuiltResorucePack pack9 = MinecraftResourcePackWriter.minecraft().build(this::createPack9);
 
 ResourcePackRequestHandler handler = (request, exchange) -> {
     // available methods:
@@ -39,7 +39,7 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
     // - request.packFormat()
         
     int expectedPackFormat = request.packFormat();
-    ResourcePack pack;
+    BuiltResourcePack pack;
     
     if (expectedPackFormat == 9) {
         pack = pack9;
@@ -49,7 +49,9 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
         // no pack with this format :(
         byte[] response = "No pack for u".getBytes(StandardCharsets.UTF_8);
         exchange.sendResponseHeaders(400, response.length);
-        exchange.getResponseBody().write(response);
+        try (OutputStream responseStream = exchange.getResponseBody()) {
+            responseStream.write(response);
+        }
         return;
     }
 
@@ -57,7 +59,9 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
     byte[] data = pack.bytes();
     exchange.getResponseHeaders().set("Content-Type", "application/zip");
     exchange.sendResponseHeaders(200, data.length);
-    exchange.getResponseBody().write(data);
+    try (OutputStream responseStream = exchange.getResponseBody()) {
+        responseStream.write(data);
+    }
 };
 ```
 

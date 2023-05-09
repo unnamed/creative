@@ -3,10 +3,10 @@
 From our Minecraft server we must ask the player to download our
 resource-pack, this is platform-dependent, but it commonly takes
 the resource-pack server address and the resource-pack SHA-1 hash
-(which can be taken from `ResourcePack#hash()`)
+(which can be taken from `BuiltResourcePack#hash()`)
 
 ```java
-ResourcePack pack = ...;
+BuiltResourcePack pack = ...;
 
 String hash = pack.hash();
 
