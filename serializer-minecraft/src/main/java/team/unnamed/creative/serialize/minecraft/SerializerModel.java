@@ -296,7 +296,23 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         writer.beginObject()
                 .name("predicate").beginObject();
         for (ItemPredicate predicate : override.predicate()) {
-            writer.name(predicate.name()).value(predicate.value().toString()); // TODO:!
+            writer.name(predicate.name());
+            Object value = predicate.value();
+
+            // match the type of the value and write it
+            if (value instanceof Long) {
+                writer.value((long) value);
+            } else if (value instanceof Float || value instanceof Double) {
+                writer.value((double) value);
+            } else if (value instanceof Number) {
+                writer.value((Number) value);
+            } else if (value instanceof String) {
+                writer.value((String) value);
+            } else if (value instanceof Boolean) {
+                writer.value((boolean) value);
+            } else {
+                throw new IOException("Unknown predicate value type: " + value.getClass().getName());
+            }
         }
         writer.endObject()
                 .name("model").value(Keys.toString(override.model()))
