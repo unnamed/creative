@@ -6,7 +6,7 @@ e.g.
 
 ```java
 Texture texture = Texture.builder()
-    .key(Key.key("namespace", "my_texture"))
+    .key(Key.key("namespace", "my_texture.png"))
     .data(Writable.file(new File("exampleTexture.png")))
     .build();
 ```
@@ -16,7 +16,7 @@ specific metadata sections to it, e.g. animating a texture
 
 ```java
 Texture texture = Texture.builder()
-    .key(Key.key("namespace", "my_texture"))
+    .key(Key.key("namespace", "my_texture.png"))
     .data(Writable.file(new File("exampleTexture.png")))
     .meta(
         Metadata.builder()
