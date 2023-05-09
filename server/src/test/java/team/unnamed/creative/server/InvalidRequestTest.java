@@ -64,7 +64,7 @@ public class InvalidRequestTest extends LocalHttpTestBase {
             Assertions.fail("Response was valid!");
         } catch (IOException e) {
             String errorResponse = streamToString(connection.getErrorStream());
-            Assertions.assertEquals("Please use a Minecraft client", errorResponse);
+            Assertions.assertEquals("Please use a Minecraft client\n", errorResponse);
         }
     }
 
