@@ -20,7 +20,7 @@ central.eventBus().listen(plugin, ResourcePackGenerateEvent.class, event -> {
         
     // here we create the texture for the minecraft note block
     Texture texture = Texture.builder()
-        .key(Key.key("minecraft:block/note_block"))
+        .key(Key.key("minecraft:block/note_block.png"))
         .data(Writable.file(new File("path/to/texture.png"))
         .build();
         

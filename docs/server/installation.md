@@ -13,7 +13,7 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("team.unnamed:creative-server:0.3.0-SNAPSHOT")
+    implementation("team.unnamed:creative-server:%%REPLACE_latestReleaseOrSnapshot{team.unnamed:creative-server}%%")
 }
 ```
 
@@ -30,6 +30,6 @@ dependencies {
 <dependency>
     <groupId>team.unnamed</groupId>
     <artifactId>creative-server</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>%%REPLACE_latestReleaseOrSnapshot{team.unnamed:creative-server}%%</version>
 </dependency>
 ```

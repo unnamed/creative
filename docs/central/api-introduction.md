@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("team.unnamed:creative-central-api:0.7.0-SNAPSHOT")
+    compileOnly("team.unnamed:creative-central-api:%%REPLACE_latestReleaseOrSnapshot{team.unnamed:creative-central-api}%%")
 }
 ```
 
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly "team.unnamed:creative-central-api:0.7.0-SNAPSHOT"
+    compileOnly "team.unnamed:creative-central-api:%%REPLACE_latestReleaseOrSnapshot{team.unnamed:creative-central-api}%%"
 }
 ```
 
@@ -47,7 +47,7 @@ to your `pom.xml`
     <dependency>
         <groupId>team.unnamed</groupId>
         <artifactId>creative-central-api</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>%%REPLACE_latestReleaseOrSnapshot{team.unnamed:creative-central-api}%%</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
