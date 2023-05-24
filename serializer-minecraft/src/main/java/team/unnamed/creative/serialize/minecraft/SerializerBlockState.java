@@ -223,7 +223,7 @@ final class SerializerBlockState implements JsonFileStreamWriter<BlockState>, Js
 
             writer.name("AND").beginArray();
             for (Condition child : conditions) {
-                writer.beginArray();
+                writer.beginObject();
                 writeCondition(writer, child);
                 writer.endObject();
             }
