@@ -70,6 +70,10 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
 
     @Override
     public Font readFromTree(JsonElement node, Key key) {
+        return readFromTree(node, key, false);
+    }
+
+    public Font readFromTree(JsonElement node, Key key, boolean fixBadValues) {
         JsonObject objectNode = node.getAsJsonObject();
         List<FontProvider> providers = new ArrayList<>();
         for (JsonElement providerNode : objectNode.getAsJsonArray("providers")) {
@@ -77,7 +81,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
             String type = providerObjectNode.get("type").getAsString();
             switch (type) {
                 case "bitmap": {
-                    providers.add(readBitMap(providerObjectNode));
+                    providers.add(readBitMap(providerObjectNode, fixBadValues));
                     break;
                 }
                 case "legacy_unicode": {
@@ -121,7 +125,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 .endObject();
     }
 
-    private static BitMapFontProvider readBitMap(JsonObject node) {
+    private static BitMapFontProvider readBitMap(JsonObject node, boolean fixBadValues) {
         List<String> characters = new ArrayList<>();
         for (JsonElement line : node.getAsJsonArray("chars")) {
             characters.add(line.getAsString());
@@ -132,6 +136,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 .height(GsonUtil.getInt(node, "height", BitMapFontProvider.DEFAULT_HEIGHT))
                 .ascent(node.get("ascent").getAsInt())
                 .characters(characters)
+                .coerce(fixBadValues)
                 .build();
     }
 

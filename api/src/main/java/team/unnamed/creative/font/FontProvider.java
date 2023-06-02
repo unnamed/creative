@@ -54,7 +54,7 @@ public interface FontProvider extends Examinable {
             int ascent,
             List<String> characters
     ) {
-        return new BitMapFontProvider(file, height, ascent, characters);
+        return new BitMapFontProvider(file, height, ascent, characters, false);
     }
 
     /**

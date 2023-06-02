@@ -60,4 +60,6 @@ public interface MinecraftResourcePackReader extends ResourcePackReader<FileTree
         return MinecraftResourcePackReaderImpl.INSTANCE;
     }
 
+    @SuppressWarnings("PatternValidation")
+    ResourcePack read(FileTreeReader reader, boolean fixBadValues);
 }

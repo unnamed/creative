@@ -62,13 +62,18 @@ public class BitMapFontProvider implements FontProvider {
             Key file,
             int height,
             int ascent,
-            List<String> characters
+            List<String> characters,
+            boolean coerce
     ) {
         requireNonNull(file, "file");
         requireNonNull(characters, "characters");
         this.file = file;
         this.height = height;
-        this.ascent = ascent;
+        if (coerce) {
+            this.ascent = Math.max(ascent, height);
+        } else {
+            this.ascent = ascent;
+        }
         this.characters = immutableListOf(characters);
         validate();
     }
@@ -99,7 +104,7 @@ public class BitMapFontProvider implements FontProvider {
     }
 
     public BitMapFontProvider file(Key newFile) {
-        return new BitMapFontProvider(newFile, height, ascent, characters);
+        return new BitMapFontProvider(newFile, height, ascent, characters, false);
     }
 
     /**
@@ -115,7 +120,7 @@ public class BitMapFontProvider implements FontProvider {
     }
 
     public BitMapFontProvider height(int newHeight) {
-        return new BitMapFontProvider(file, newHeight, ascent, characters);
+        return new BitMapFontProvider(file, newHeight, ascent, characters, false);
     }
 
     /**
@@ -130,7 +135,7 @@ public class BitMapFontProvider implements FontProvider {
     }
 
     public BitMapFontProvider ascent(int newAscent) {
-        return new BitMapFontProvider(file, height, newAscent, characters);
+        return new BitMapFontProvider(file, height, newAscent, characters, false);
     }
 
     /**
@@ -148,7 +153,7 @@ public class BitMapFontProvider implements FontProvider {
     }
 
     public BitMapFontProvider characters(List<String> newCharacters) {
-        return new BitMapFontProvider(file, height, ascent, newCharacters);
+        return new BitMapFontProvider(file, height, ascent, newCharacters, false);
     }
 
     public BitMapFontProvider.Builder toBuilder() {
@@ -202,6 +207,7 @@ public class BitMapFontProvider implements FontProvider {
         private int ascent;
         private Key file;
         private List<String> characters = Collections.emptyList();
+        private boolean coerce = false;
 
         protected Builder() {
         }
@@ -232,6 +238,11 @@ public class BitMapFontProvider implements FontProvider {
             return this;
         }
 
+        public Builder coerce(boolean coerce) {
+            this.coerce = coerce;
+            return this;
+        }
+
         /**
          * Finishes building the {@link BitMapFontProvider} instance,
          * this method may fail if values were not correctly
@@ -240,7 +251,7 @@ public class BitMapFontProvider implements FontProvider {
          * @return The recently created font
          */
         public BitMapFontProvider build() {
-            return new BitMapFontProvider(file, height, ascent, characters);
+            return new BitMapFontProvider(file, height, ascent, characters, coerce);
         }
 
     }

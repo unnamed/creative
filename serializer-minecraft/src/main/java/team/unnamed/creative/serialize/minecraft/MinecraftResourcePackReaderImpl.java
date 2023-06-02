@@ -57,8 +57,13 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
     }
 
     @Override
-    @SuppressWarnings("PatternValidation")
     public ResourcePack read(FileTreeReader reader) {
+        return read(reader, false);
+    }
+
+    @Override
+    @SuppressWarnings("PatternValidation")
+    public ResourcePack read(FileTreeReader reader, boolean fixBadValues) {
         ResourcePack resourcePack = ResourcePack.create();
 
         // textures that are waiting for metadata, or metadata
@@ -174,7 +179,8 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                     resourcePack.model(SerializerModel.INSTANCE.readFromTree(
                             parse(input),
-                            Key.key(namespace, keyValue)
+                            Key.key(namespace, keyValue),
+                            fixBadValues
                     ));
                     continue;
                 }
@@ -232,7 +238,8 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                     resourcePack.font(SerializerFont.INSTANCE.readFromTree(
                             parse(input),
-                            Key.key(namespace, keyValue)
+                            Key.key(namespace, keyValue),
+                            fixBadValues
                     ));
                     continue;
                 }

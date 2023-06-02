@@ -52,6 +52,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Vector3Float;
+import team.unnamed.creative.util.Range;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -83,25 +84,29 @@ public class ItemTransform implements Examinable {
     private ItemTransform(
             Vector3Float rotation,
             Vector3Float translation,
-            Vector3Float scale
+            Vector3Float scale,
+            boolean coerce
     ) {
         this.rotation = requireNonNull(rotation, "rotation");
-        this.translation = requireNonNull(translation, "translation");
-        this.scale = requireNonNull(scale, "scale");
+        requireNonNull(translation, "translation");
+        requireNonNull(scale, "scale");
+        if (coerce) {
+            this.translation = Range.coerceIn(translation, MIN_TRANSLATION, MAX_TRANSLATION);
+            this.scale = Range.coerceIn(scale, MIN_SCALE, MAX_SCALE);
+        } else {
+            this.translation = translation;
+            this.scale = scale;
+        }
         validate();
     }
 
     private void validate() {
-        if (translation.x() < MIN_TRANSLATION || translation.x() > MAX_TRANSLATION
-                || translation.y() < MIN_TRANSLATION || translation.y() > MAX_TRANSLATION
-                || translation.z() < MIN_TRANSLATION || translation.z() > MAX_TRANSLATION) {
+        if (!Range.isBetween(translation, MIN_TRANSLATION, MAX_TRANSLATION)) {
             throw new IllegalArgumentException("Invalid translation (" + translation + ")" +
                     ", out of bounds (" + MIN_TRANSLATION + " to " + MAX_TRANSLATION + ")");
         }
 
-        if (scale.x() < MIN_SCALE || scale.x() > MAX_SCALE
-                || scale.y() < MIN_SCALE || scale.y() > MAX_SCALE
-                || scale.z() < MIN_SCALE || scale.z() > MAX_SCALE) {
+        if (!Range.isBetween(scale, MIN_SCALE, MAX_SCALE)) {
             throw new IllegalArgumentException("Invalid scale (" + scale + ")" +
                     ", out of bounds (" + MIN_SCALE + " to " + MAX_SCALE + ")");
         }
@@ -190,9 +195,9 @@ public class ItemTransform implements Examinable {
      * Creates a new {@link ItemTransform} instance from
      * the given values
      *
-     * @param rotation The display rotation
+     * @param rotation    The display rotation
      * @param translation The display translation [-80, 80]
-     * @param scale The display scale [0, 4]
+     * @param scale       The display scale [0, 4]
      * @return A new {@link ItemTransform} instance
      * @since 1.0.0
      */
@@ -201,7 +206,27 @@ public class ItemTransform implements Examinable {
             Vector3Float translation,
             Vector3Float scale
     ) {
-        return new ItemTransform(rotation, translation, scale);
+        return new ItemTransform(rotation, translation, scale, false);
+    }
+
+    /**
+     * Creates a new {@link ItemTransform} instance from
+     * the given values
+     *
+     * @param rotation    The display rotation
+     * @param translation The display translation [-80, 80]
+     * @param scale       The display scale [0, 4]
+     * @param coerce      Automatically limit bad values
+     * @return A new {@link ItemTransform} instance
+     * @since 1.0.0
+     */
+    public static ItemTransform of(
+            Vector3Float rotation,
+            Vector3Float translation,
+            Vector3Float scale,
+            boolean coerce
+    ) {
+        return new ItemTransform(rotation, translation, scale, coerce);
     }
 
     /**
@@ -227,6 +252,7 @@ public class ItemTransform implements Examinable {
         private Vector3Float rotation = DEFAULT_ROTATION;
         private Vector3Float translation = DEFAULT_TRANSLATION;
         private Vector3Float scale = DEFAULT_SCALE;
+        private boolean coerce = false;
 
         private Builder() {
         }
@@ -246,6 +272,11 @@ public class ItemTransform implements Examinable {
             return this;
         }
 
+        public Builder coerce(boolean coerce) {
+            this.coerce = coerce;
+            return this;
+        }
+
         /**
          * Finished building the {@link ItemTransform} instance
          * using the previously set values
@@ -253,9 +284,8 @@ public class ItemTransform implements Examinable {
          * @return A new {@link ItemTransform} instance
          */
         public ItemTransform build() {
-            return new ItemTransform(rotation, translation, scale);
+            return new ItemTransform(rotation, translation, scale, coerce);
         }
-
     }
 
 }
