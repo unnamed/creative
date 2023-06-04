@@ -43,6 +43,7 @@ import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
+import team.unnamed.creative.serialize.minecraft.errorHandler.DeserializationErrorHandler;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -114,7 +115,12 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
     }
 
     @Override
-    public Model readFromTree(JsonElement node, Key key) {
+    public Model readFromTree(JsonElement parse, Key key) {
+        return readFromTree(parse, key, DeserializationErrorHandler.defaultHandler());
+    }
+
+
+    public Model readFromTree(JsonElement node, Key key, DeserializationErrorHandler errorHandler) {
 
         JsonObject objectNode = node.getAsJsonObject();
 
@@ -130,7 +136,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
             JsonObject displayNode = objectNode.getAsJsonObject("display");
             for (Map.Entry<String, JsonElement> entry : displayNode.entrySet()) {
                 ItemTransform.Type type = ItemTransform.Type.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
-                display.put(type, readItemTransform(entry.getValue()));
+                display.put(type, readItemTransform(entry.getValue(), errorHandler));
             }
         }
 
@@ -364,7 +370,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         writer.endObject();
     }
 
-    private static ItemTransform readItemTransform(JsonElement node) {
+    private static ItemTransform readItemTransform(JsonElement node, DeserializationErrorHandler errorHandler) {
         JsonObject objectNode = node.getAsJsonObject();
         Vector3Float rotation = ItemTransform.DEFAULT_ROTATION;
         Vector3Float translation = ItemTransform.DEFAULT_TRANSLATION;
@@ -378,7 +384,13 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         if (objectNode.has("scale")) {
             scale = readVector3Float(objectNode.get("scale"));
         }
-        return ItemTransform.of(rotation, translation, scale);
+        ItemTransform transform = ItemTransform.unsafe(rotation, translation, scale);
+        try {
+            transform.validate();
+        } catch (RuntimeException e) {
+            transform = errorHandler.onUnsafeItemTransform(transform, e);
+        }
+        return transform;
     }
 
     private static void writeTextures(JsonWriter writer, ModelTextures texture) throws IOException {
@@ -482,5 +494,4 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
                 (float) array.get(3).getAsDouble()
         );
     }
-
 }

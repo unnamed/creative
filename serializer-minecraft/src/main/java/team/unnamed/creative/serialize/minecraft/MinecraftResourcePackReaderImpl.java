@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.serialize.minecraft.errorHandler.DeserializationErrorHandler;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.texture.Texture;
@@ -57,8 +58,13 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
     }
 
     @Override
-    @SuppressWarnings("PatternValidation")
     public ResourcePack read(FileTreeReader reader) {
+        return read(reader, DeserializationErrorHandler.defaultHandler());
+    }
+
+    @Override
+    @SuppressWarnings("PatternValidation")
+    public ResourcePack read(FileTreeReader reader, DeserializationErrorHandler errorHandler) {
         ResourcePack resourcePack = ResourcePack.create();
 
         // textures that are waiting for metadata, or metadata
@@ -174,7 +180,8 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                     resourcePack.model(SerializerModel.INSTANCE.readFromTree(
                             parse(input),
-                            Key.key(namespace, keyValue)
+                            Key.key(namespace, keyValue),
+                            errorHandler
                     ));
                     continue;
                 }

@@ -25,6 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.ResourcePackReader;
+import team.unnamed.creative.serialize.minecraft.errorHandler.DeserializationErrorHandler;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 
 import java.io.BufferedInputStream;
@@ -60,4 +61,6 @@ public interface MinecraftResourcePackReader extends ResourcePackReader<FileTree
         return MinecraftResourcePackReaderImpl.INSTANCE;
     }
 
+    @SuppressWarnings("PatternValidation")
+    ResourcePack read(FileTreeReader reader, DeserializationErrorHandler errorHandler);
 }
