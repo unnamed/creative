@@ -116,7 +116,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
 
     @Override
     public Model readFromTree(JsonElement parse, Key key) {
-        return readFromTree(parse, key, DeserializationErrorHandler.defaultHandler());
+        return readFromTree(parse, key, DeserializationErrorHandler.DEFAULT);
     }
 
 

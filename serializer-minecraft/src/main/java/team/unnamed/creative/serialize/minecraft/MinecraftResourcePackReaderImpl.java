@@ -59,7 +59,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
     @Override
     public ResourcePack read(FileTreeReader reader) {
-        return read(reader, DeserializationErrorHandler.defaultHandler());
+        return read(reader, DeserializationErrorHandler.DEFAULT);
     }
 
     @Override
