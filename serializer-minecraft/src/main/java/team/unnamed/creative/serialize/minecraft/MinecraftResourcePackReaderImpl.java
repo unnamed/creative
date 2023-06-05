@@ -48,23 +48,49 @@ import java.util.Queue;
 
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
-final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackReader {
+public final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackReader {
 
     static final MinecraftResourcePackReaderImpl INSTANCE = new MinecraftResourcePackReaderImpl();
 
     private static final JsonParser PARSER = new JsonParser();
 
-    private MinecraftResourcePackReaderImpl() {
+    private final SerializerBlockState serializerBlockState;
+    private final SerializerFont serializerFont;
+    private final SerializerLanguage serializerLanguage;
+    private final SerializerMetadata serializerMetadata;
+    private final SerializerModel serializerModel;
+    private final SerializerSoundRegistry serializerSoundRegistry;
+
+    public MinecraftResourcePackReaderImpl() {
+        this.serializerBlockState = SerializerBlockState.INSTANCE;
+        this.serializerFont = SerializerFont.INSTANCE;
+        this.serializerLanguage = SerializerLanguage.INSTANCE;
+        this.serializerMetadata = SerializerMetadata.INSTANCE;
+        this.serializerModel = SerializerModel.INSTANCE;
+        this.serializerSoundRegistry = SerializerSoundRegistry.INSTANCE;
     }
 
-    @Override
-    public ResourcePack read(FileTreeReader reader) {
-        return read(reader, DeserializationErrorHandler.DEFAULT);
+    public MinecraftResourcePackReaderImpl(SerializerBlockState serializerBlockState, SerializerFont serializerFont, SerializerLanguage serializerLanguage, SerializerMetadata serializerMetadata, SerializerModel serializerModel, SerializerSoundRegistry serializerSoundRegistry) {
+        this.serializerBlockState = serializerBlockState;
+        this.serializerFont = serializerFont;
+        this.serializerLanguage = serializerLanguage;
+        this.serializerMetadata = serializerMetadata;
+        this.serializerModel = serializerModel;
+        this.serializerSoundRegistry = serializerSoundRegistry;
+    }
+
+    public MinecraftResourcePackReaderImpl(DeserializationErrorHandler deserializationErrorHandler) {
+        this.serializerBlockState = SerializerBlockState.INSTANCE;
+        this.serializerFont = SerializerFont.INSTANCE;
+        this.serializerLanguage = SerializerLanguage.INSTANCE;
+        this.serializerMetadata = SerializerMetadata.INSTANCE;
+        this.serializerModel = new SerializerModel(deserializationErrorHandler);
+        this.serializerSoundRegistry = SerializerSoundRegistry.INSTANCE;
     }
 
     @Override
     @SuppressWarnings("PatternValidation")
-    public ResourcePack read(FileTreeReader reader, DeserializationErrorHandler errorHandler) {
+    public ResourcePack read(FileTreeReader reader) {
         ResourcePack resourcePack = ResourcePack.create();
 
         // textures that are waiting for metadata, or metadata
@@ -92,7 +118,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 switch (tokens.poll()) {
                     case PACK_METADATA_FILE: {
                         // found pack.mcmeta file, deserialize and add
-                        Metadata metadata = SerializerMetadata.INSTANCE.readFromTree(parse(input));
+                        Metadata metadata = serializerMetadata.readFromTree(parse(input));
                         resourcePack.metadata(metadata);
                         continue;
                     }
@@ -154,7 +180,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 // (remember: last tokens are always files)
                 if (category.equals(SOUNDS_FILE)) {
                     // found a sound registry!
-                    resourcePack.soundRegistry(SerializerSoundRegistry.INSTANCE.readFromTree(
+                    resourcePack.soundRegistry(serializerSoundRegistry.readFromTree(
                             parse(input),
                             namespace
                     ));
@@ -178,10 +204,9 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         // unknown
                         break;
                     }
-                    resourcePack.model(SerializerModel.INSTANCE.readFromTree(
+                    resourcePack.model(serializerModel.readFromTree(
                             parse(input),
-                            Key.key(namespace, keyValue),
-                            errorHandler
+                            Key.key(namespace, keyValue)
                     ));
                     continue;
                 }
@@ -190,7 +215,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     if (keyOfMetadata != null) {
                         // found metadata for texture
                         Key key = Key.key(namespace, keyOfMetadata);
-                        Metadata metadata = SerializerMetadata.INSTANCE.readFromTree(parse(input));
+                        Metadata metadata = serializerMetadata.readFromTree(parse(input));
 
                         Texture texture = incompleteTextures.remove(key);
                         if (texture == null) {
@@ -237,7 +262,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         // unknown
                         break;
                     }
-                    resourcePack.font(SerializerFont.INSTANCE.readFromTree(
+                    resourcePack.font(serializerFont.readFromTree(
                             parse(input),
                             Key.key(namespace, keyValue)
                     ));
@@ -249,7 +274,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         // unknown
                         break;
                     }
-                    resourcePack.language(SerializerLanguage.INSTANCE.readFromTree(
+                    resourcePack.language(serializerLanguage.readFromTree(
                             parse(input),
                             Key.key(namespace, keyValue)
                     ));
@@ -261,7 +286,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         // unknown
                         break;
                     }
-                    resourcePack.blockState(SerializerBlockState.INSTANCE.readFromTree(
+                    resourcePack.blockState(serializerBlockState.readFromTree(
                             parse(input),
                             Key.key(namespace, keyValue)
                     ));

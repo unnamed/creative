@@ -56,6 +56,16 @@ import java.util.Map;
 final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTreeReader.Keyed<Model> {
 
     static final SerializerModel INSTANCE = new SerializerModel();
+    private final DeserializationErrorHandler deserializationErrorHandler;
+
+    SerializerModel(DeserializationErrorHandler deserializationErrorHandler) {
+        this.deserializationErrorHandler = deserializationErrorHandler;
+    }
+
+    SerializerModel() {
+        this.deserializationErrorHandler = DeserializationErrorHandler.DEFAULT;
+    }
+
 
     @Override
     public void serialize(Model model, JsonWriter writer) throws IOException {
@@ -115,12 +125,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
     }
 
     @Override
-    public Model readFromTree(JsonElement parse, Key key) {
-        return readFromTree(parse, key, DeserializationErrorHandler.DEFAULT);
-    }
-
-
-    public Model readFromTree(JsonElement node, Key key, DeserializationErrorHandler errorHandler) {
+    public Model readFromTree(JsonElement node, Key key) {
 
         JsonObject objectNode = node.getAsJsonObject();
 
@@ -136,7 +141,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
             JsonObject displayNode = objectNode.getAsJsonObject("display");
             for (Map.Entry<String, JsonElement> entry : displayNode.entrySet()) {
                 ItemTransform.Type type = ItemTransform.Type.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
-                display.put(type, readItemTransform(entry.getValue(), errorHandler));
+                display.put(type, readItemTransform(entry.getValue(), deserializationErrorHandler));
             }
         }
 
