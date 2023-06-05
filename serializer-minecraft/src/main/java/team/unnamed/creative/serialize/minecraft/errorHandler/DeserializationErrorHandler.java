@@ -28,5 +28,8 @@ import team.unnamed.creative.model.ItemTransform;
 public interface DeserializationErrorHandler {
     DefaultDeserializationErrorHandler DEFAULT = new DefaultDeserializationErrorHandler();
     FixDeserializationErrorHandler FIX = new FixDeserializationErrorHandler();
-    void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error);
+
+    default void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error) {
+        throw error;
+    }
 }
