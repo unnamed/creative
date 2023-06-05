@@ -26,8 +26,6 @@ package team.unnamed.creative.serialize.minecraft.errorHandler;
 import team.unnamed.creative.model.ItemTransform;
 
 public interface DeserializationErrorHandler {
-    ItemTransform onUnsafeItemTransform(ItemTransform itemTransform, RuntimeException error);
-
     DefaultDeserializationErrorHandler DEFAULT = new DefaultDeserializationErrorHandler();
-    IgnoreDeserializationErrorHandler IGNORE = new IgnoreDeserializationErrorHandler();
+    void onUnsafeItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error);
 }

@@ -83,16 +83,15 @@ public class ItemTransform implements Examinable {
     private ItemTransform(
             Vector3Float rotation,
             Vector3Float translation,
-            Vector3Float scale,
-            boolean validate
+            Vector3Float scale
     ) {
         this.rotation = requireNonNull(rotation, "rotation");
         this.translation = requireNonNull(translation, "translation");
         this.scale = requireNonNull(scale, "scale");
-        if (validate) validate();
+        validate();
     }
 
-    public void validate() {
+    private void validate() {
         if (translation.x() < MIN_TRANSLATION || translation.x() > MAX_TRANSLATION
                 || translation.y() < MIN_TRANSLATION || translation.y() > MAX_TRANSLATION
                 || translation.z() < MIN_TRANSLATION || translation.z() > MAX_TRANSLATION) {
@@ -202,15 +201,7 @@ public class ItemTransform implements Examinable {
             Vector3Float translation,
             Vector3Float scale
     ) {
-        return new ItemTransform(rotation, translation, scale, true);
-    }
-
-    public static ItemTransform unsafe(
-            Vector3Float rotation,
-            Vector3Float translation,
-            Vector3Float scale
-    ) {
-        return new ItemTransform(rotation, translation, scale, false);
+        return new ItemTransform(rotation, translation, scale);
     }
 
     /**
@@ -262,7 +253,7 @@ public class ItemTransform implements Examinable {
          * @return A new {@link ItemTransform} instance
          */
         public ItemTransform build() {
-            return new ItemTransform(rotation, translation, scale, true);
+            return new ItemTransform(rotation, translation, scale);
         }
 
     }

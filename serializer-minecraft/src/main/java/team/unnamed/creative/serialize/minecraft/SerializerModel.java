@@ -384,13 +384,16 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         if (objectNode.has("scale")) {
             scale = readVector3Float(objectNode.get("scale"));
         }
-        ItemTransform transform = ItemTransform.unsafe(rotation, translation, scale);
+        ItemTransform.Builder builder = ItemTransform.builder()
+                .rotation(rotation)
+                .translation(translation)
+                .scale(scale);
         try {
-            transform.validate();
+            return builder.build();
         } catch (RuntimeException e) {
-            transform = errorHandler.onUnsafeItemTransform(transform, e);
+            errorHandler.onUnsafeItemTransform(builder, e);
         }
-        return transform;
+        return builder.build();
     }
 
     private static void writeTextures(JsonWriter writer, ModelTextures texture) throws IOException {
