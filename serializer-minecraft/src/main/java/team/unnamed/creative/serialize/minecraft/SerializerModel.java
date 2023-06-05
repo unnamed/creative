@@ -391,7 +391,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         try {
             return builder.build();
         } catch (RuntimeException e) {
-            errorHandler.onUnsafeItemTransform(builder, e);
+            errorHandler.onInvalidItemTransform(builder, e);
         }
         return builder.build();
     }

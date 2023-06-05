@@ -246,6 +246,18 @@ public class ItemTransform implements Examinable {
             return this;
         }
 
+        public Vector3Float getRotation() {
+            return rotation;
+        }
+
+        public Vector3Float getTranslation() {
+            return translation;
+        }
+
+        public Vector3Float getScale() {
+            return scale;
+        }
+
         /**
          * Finished building the {@link ItemTransform} instance
          * using the previously set values

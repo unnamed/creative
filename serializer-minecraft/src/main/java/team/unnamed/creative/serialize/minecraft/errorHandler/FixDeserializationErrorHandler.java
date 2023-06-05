@@ -24,11 +24,12 @@
 package team.unnamed.creative.serialize.minecraft.errorHandler;
 
 import team.unnamed.creative.model.ItemTransform;
+import team.unnamed.creative.util.Range;
 
-public class DefaultDeserializationErrorHandler implements DeserializationErrorHandler {
-
+public class FixDeserializationErrorHandler implements DeserializationErrorHandler {
     @Override
     public void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error) {
-        throw error;
+        itemTransformBuilder.translation(Range.coerceIn(itemTransformBuilder.getTranslation(), ItemTransform.MIN_TRANSLATION, ItemTransform.MAX_TRANSLATION));
+        itemTransformBuilder.scale(Range.coerceIn(itemTransformBuilder.getScale(), ItemTransform.MIN_SCALE, ItemTransform.MAX_SCALE));
     }
 }
