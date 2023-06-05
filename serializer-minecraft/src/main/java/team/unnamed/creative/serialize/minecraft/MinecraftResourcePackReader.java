@@ -60,4 +60,12 @@ public interface MinecraftResourcePackReader extends ResourcePackReader<FileTree
     static MinecraftResourcePackReader minecraft() {
         return MinecraftResourcePackReaderImpl.INSTANCE;
     }
+
+    static MinecraftResourcePackReader minecraft(SerializerBlockState serializerBlockState, SerializerFont serializerFont, SerializerLanguage serializerLanguage, SerializerMetadata serializerMetadata, SerializerModel serializerModel, SerializerSoundRegistry serializerSoundRegistry) {
+        return new MinecraftResourcePackReaderImpl(serializerBlockState, serializerFont, serializerLanguage, serializerMetadata, serializerModel, serializerSoundRegistry);
+    }
+
+    static MinecraftResourcePackReader minecraft(DeserializationErrorHandler deserializationErrorHandler) {
+        return new MinecraftResourcePackReaderImpl(deserializationErrorHandler);
+    }
 }

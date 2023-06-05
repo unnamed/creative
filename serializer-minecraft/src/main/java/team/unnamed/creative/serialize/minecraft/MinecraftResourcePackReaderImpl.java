@@ -48,7 +48,7 @@ import java.util.Queue;
 
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
-public final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackReader {
+final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackReader {
 
     static final MinecraftResourcePackReaderImpl INSTANCE = new MinecraftResourcePackReaderImpl();
 
@@ -61,7 +61,7 @@ public final class MinecraftResourcePackReaderImpl implements MinecraftResourceP
     private final SerializerModel serializerModel;
     private final SerializerSoundRegistry serializerSoundRegistry;
 
-    public MinecraftResourcePackReaderImpl() {
+    MinecraftResourcePackReaderImpl() {
         this.serializerBlockState = SerializerBlockState.INSTANCE;
         this.serializerFont = SerializerFont.INSTANCE;
         this.serializerLanguage = SerializerLanguage.INSTANCE;
@@ -70,7 +70,7 @@ public final class MinecraftResourcePackReaderImpl implements MinecraftResourceP
         this.serializerSoundRegistry = SerializerSoundRegistry.INSTANCE;
     }
 
-    public MinecraftResourcePackReaderImpl(SerializerBlockState serializerBlockState, SerializerFont serializerFont, SerializerLanguage serializerLanguage, SerializerMetadata serializerMetadata, SerializerModel serializerModel, SerializerSoundRegistry serializerSoundRegistry) {
+    MinecraftResourcePackReaderImpl(SerializerBlockState serializerBlockState, SerializerFont serializerFont, SerializerLanguage serializerLanguage, SerializerMetadata serializerMetadata, SerializerModel serializerModel, SerializerSoundRegistry serializerSoundRegistry) {
         this.serializerBlockState = serializerBlockState;
         this.serializerFont = serializerFont;
         this.serializerLanguage = serializerLanguage;
@@ -79,7 +79,7 @@ public final class MinecraftResourcePackReaderImpl implements MinecraftResourceP
         this.serializerSoundRegistry = serializerSoundRegistry;
     }
 
-    public MinecraftResourcePackReaderImpl(DeserializationErrorHandler deserializationErrorHandler) {
+    MinecraftResourcePackReaderImpl(DeserializationErrorHandler deserializationErrorHandler) {
         this.serializerBlockState = SerializerBlockState.INSTANCE;
         this.serializerFont = SerializerFont.INSTANCE;
         this.serializerLanguage = SerializerLanguage.INSTANCE;
