@@ -52,6 +52,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Vector3Float;
+import team.unnamed.creative.util.Range;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -92,16 +93,12 @@ public class ItemTransform implements Examinable {
     }
 
     private void validate() {
-        if (translation.x() < MIN_TRANSLATION || translation.x() > MAX_TRANSLATION
-                || translation.y() < MIN_TRANSLATION || translation.y() > MAX_TRANSLATION
-                || translation.z() < MIN_TRANSLATION || translation.z() > MAX_TRANSLATION) {
+        if (Range.isBetween(translation, MIN_TRANSLATION, MAX_TRANSLATION)) {
             throw new IllegalArgumentException("Invalid translation (" + translation + ")" +
                     ", out of bounds (" + MIN_TRANSLATION + " to " + MAX_TRANSLATION + ")");
         }
 
-        if (scale.x() < MIN_SCALE || scale.x() > MAX_SCALE
-                || scale.y() < MIN_SCALE || scale.y() > MAX_SCALE
-                || scale.z() < MIN_SCALE || scale.z() > MAX_SCALE) {
+        if (Range.isBetween(scale, MIN_SCALE, MAX_SCALE)) {
             throw new IllegalArgumentException("Invalid scale (" + scale + ")" +
                     ", out of bounds (" + MIN_SCALE + " to " + MAX_SCALE + ")");
         }
