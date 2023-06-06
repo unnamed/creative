@@ -243,15 +243,15 @@ public class ItemTransform implements Examinable {
             return this;
         }
 
-        public Vector3Float getRotation() {
+        public Vector3Float rotation() {
             return rotation;
         }
 
-        public Vector3Float getTranslation() {
+        public Vector3Float translation() {
             return translation;
         }
 
-        public Vector3Float getScale() {
+        public Vector3Float scale() {
             return scale;
         }
 

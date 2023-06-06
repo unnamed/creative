@@ -29,7 +29,7 @@ import team.unnamed.creative.util.Range;
 public class ResolveDeserializationErrorHandler implements DeserializationErrorHandler {
     @Override
     public void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error) {
-        itemTransformBuilder.translation(Range.coerceIn(itemTransformBuilder.getTranslation(), ItemTransform.MIN_TRANSLATION, ItemTransform.MAX_TRANSLATION));
-        itemTransformBuilder.scale(Range.coerceIn(itemTransformBuilder.getScale(), ItemTransform.MIN_SCALE, ItemTransform.MAX_SCALE));
+        itemTransformBuilder.translation(Range.coerceIn(itemTransformBuilder.translation(), ItemTransform.MIN_TRANSLATION, ItemTransform.MAX_TRANSLATION));
+        itemTransformBuilder.scale(Range.coerceIn(itemTransformBuilder.scale(), ItemTransform.MIN_SCALE, ItemTransform.MAX_SCALE));
     }
 }
