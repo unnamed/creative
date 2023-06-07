@@ -70,15 +70,6 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         this.serializerSoundRegistry = SerializerSoundRegistry.INSTANCE;
     }
 
-    MinecraftResourcePackReaderImpl(SerializerBlockState serializerBlockState, SerializerFont serializerFont, SerializerLanguage serializerLanguage, SerializerMetadata serializerMetadata, SerializerModel serializerModel, SerializerSoundRegistry serializerSoundRegistry) {
-        this.serializerBlockState = serializerBlockState;
-        this.serializerFont = serializerFont;
-        this.serializerLanguage = serializerLanguage;
-        this.serializerMetadata = serializerMetadata;
-        this.serializerModel = serializerModel;
-        this.serializerSoundRegistry = serializerSoundRegistry;
-    }
-
     MinecraftResourcePackReaderImpl(DeserializationErrorHandler deserializationErrorHandler) {
         this.serializerBlockState = SerializerBlockState.INSTANCE;
         this.serializerFont = SerializerFont.INSTANCE;
