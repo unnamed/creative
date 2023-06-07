@@ -25,7 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.ResourcePackReader;
-import team.unnamed.creative.serialize.minecraft.errorHandler.DeserializationErrorHandler;
+import team.unnamed.creative.serialize.DeserializationErrorHandler;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 
 import java.io.BufferedInputStream;

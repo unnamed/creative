@@ -43,7 +43,7 @@ import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
-import team.unnamed.creative.serialize.minecraft.errorHandler.DeserializationErrorHandler;
+import team.unnamed.creative.serialize.DeserializationErrorHandler;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;

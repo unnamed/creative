@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.serialize.minecraft.errorHandler.DeserializationErrorHandler;
+import team.unnamed.creative.serialize.DeserializationErrorHandler;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.texture.Texture;

@@ -21,16 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.errorHandler;
+package team.unnamed.creative.serialize;
 
 import team.unnamed.creative.model.ItemTransform;
+import team.unnamed.creative.util.Range;
 
-public interface DeserializationErrorHandler {
-    DeserializationErrorHandler DEFAULT = new DeserializationErrorHandler() {
-    };
-    DeserializationErrorHandler RESOLVE = new ResolveDeserializationErrorHandler();
-
-    default void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error) {
-        throw error;
+class ResolveDeserializationErrorHandler implements DeserializationErrorHandler {
+    @Override
+    public void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error) {
+        itemTransformBuilder.translation(Range.coerceIn(itemTransformBuilder.translation(), ItemTransform.MIN_TRANSLATION, ItemTransform.MAX_TRANSLATION));
+        itemTransformBuilder.scale(Range.coerceIn(itemTransformBuilder.scale(), ItemTransform.MIN_SCALE, ItemTransform.MAX_SCALE));
     }
 }
