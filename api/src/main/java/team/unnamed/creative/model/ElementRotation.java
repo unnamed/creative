@@ -228,6 +228,22 @@ public class ElementRotation implements Examinable {
             return this;
         }
 
+        public Vector3Float origin() {
+            return origin;
+        }
+
+        public Axis3D axis() {
+            return axis;
+        }
+
+        public float angle() {
+            return angle;
+        }
+
+        public boolean rescale() {
+            return rescale;
+        }
+
         /**
          * Finishes building the {@link ElementRotation}
          * instance, this method can be invoked multiple

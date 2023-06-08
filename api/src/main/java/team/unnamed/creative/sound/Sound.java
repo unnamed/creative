@@ -462,6 +462,34 @@ public class Sound implements Keyed, Examinable {
             return this;
         }
 
+        public float volume() {
+            return volume;
+        }
+
+        public float pitch() {
+            return pitch;
+        }
+
+        public int weight() {
+            return weight;
+        }
+
+        public boolean stream() {
+            return stream;
+        }
+
+        public int attenuationDistance() {
+            return attenuationDistance;
+        }
+
+        public boolean preload() {
+            return preload;
+        }
+
+        public Type type() {
+            return type;
+        }
+
         /**
          * Finishes building the {@link Sound} instance,
          * this method may fail if values were not correctly

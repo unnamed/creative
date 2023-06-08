@@ -47,6 +47,7 @@ public class Range {
     }
 
     public static Vector2Float coerceIn(Vector2Float value, float min, float max) {
+        if (value == null) return null;
         return new Vector2Float(
                 coerceIn(value.x(), min, max),
                 coerceIn(value.y(), min, max)
@@ -54,6 +55,7 @@ public class Range {
     }
 
     public static Vector2Float coerceIn(Vector2Float value, Vector2Float min, Vector2Float max) {
+        if (value == null) return null;
         return new Vector2Float(
                 coerceIn(value.x(), min.x(), max.x()),
                 coerceIn(value.y(), min.y(), max.y())
@@ -61,6 +63,7 @@ public class Range {
     }
 
     public static Vector3Float coerceIn(Vector3Float value, float min, float max) {
+        if (value == null) return null;
         return new Vector3Float(
                 coerceIn(value.x(), min, max),
                 coerceIn(value.y(), min, max),
@@ -69,6 +72,7 @@ public class Range {
     }
 
     public static Vector3Float coerceIn(Vector3Float value, Vector3Float min, Vector3Float max) {
+        if (value == null) return null;
         return new Vector3Float(
                 coerceIn(value.x(), min.x(), max.x()),
                 coerceIn(value.y(), min.y(), max.y()),
@@ -77,6 +81,7 @@ public class Range {
     }
 
     public static Vector4Float coerceIn(Vector4Float value, float min, float max) {
+        if (value == null) return null;
         return new Vector4Float(
                 coerceIn(value.x(), min, max),
                 coerceIn(value.y(), min, max),
@@ -86,6 +91,7 @@ public class Range {
     }
 
     public static Vector4Float coerceIn(Vector4Float value, Vector4Float min, Vector4Float max) {
+        if (value == null) return null;
         return new Vector4Float(
                 coerceIn(value.x(), min.x(), max.x()),
                 coerceIn(value.y(), min.y(), max.y()),

@@ -290,6 +290,26 @@ public class ElementFace implements Examinable {
             return this;
         }
 
+        public @Nullable Vector4Float uv() {
+            return uv;
+        }
+
+        public String texture() {
+            return texture;
+        }
+
+        public @Nullable CubeFace cullFace() {
+            return cullFace;
+        }
+
+        public int rotation() {
+            return rotation;
+        }
+
+        public int tintIndex() {
+            return tintIndex;
+        }
+
         /**
          * Finishes building the {@link ElementFace}
          * instance with the previously set values

@@ -35,6 +35,7 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.font.LegacyUnicodeFontProvider;
 import team.unnamed.creative.font.SpaceFontProvider;
 import team.unnamed.creative.font.TrueTypeFontProvider;
+import team.unnamed.creative.serialize.DeserializationErrorHandler;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -45,7 +46,13 @@ import java.util.Map;
 
 final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeReader.Keyed<Font> {
 
-    static final SerializerFont INSTANCE = new SerializerFont();
+    static final SerializerFont INSTANCE = new SerializerFont(DeserializationErrorHandler.DEFAULT);
+
+    private final DeserializationErrorHandler deserializationErrorHandler;
+
+    SerializerFont(DeserializationErrorHandler deserializationErrorHandler) {
+        this.deserializationErrorHandler = deserializationErrorHandler;
+    }
 
     @Override
     public void serialize(Font font, JsonWriter writer) throws IOException {
@@ -77,7 +84,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
             String type = providerObjectNode.get("type").getAsString();
             switch (type) {
                 case "bitmap": {
-                    providers.add(readBitMap(providerObjectNode));
+                    providers.add(readBitMap(providerObjectNode, deserializationErrorHandler));
                     break;
                 }
                 case "legacy_unicode": {
@@ -121,18 +128,24 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 .endObject();
     }
 
-    private static BitMapFontProvider readBitMap(JsonObject node) {
+    private static BitMapFontProvider readBitMap(JsonObject node, DeserializationErrorHandler deserializationErrorHandler) {
         List<String> characters = new ArrayList<>();
         for (JsonElement line : node.getAsJsonArray("chars")) {
             characters.add(line.getAsString());
         }
 
-        return FontProvider.bitMap()
+        BitMapFontProvider.Builder builder = FontProvider.bitMap()
                 .file(Key.key(node.get("file").getAsString()))
                 .height(GsonUtil.getInt(node, "height", BitMapFontProvider.DEFAULT_HEIGHT))
                 .ascent(node.get("ascent").getAsInt())
-                .characters(characters)
-                .build();
+                .characters(characters);
+
+        try {
+            return builder.build();
+        } catch (RuntimeException e) {
+            deserializationErrorHandler.onInvalidBitMapFontProvider(builder, e);
+            return builder.build();
+        }
     }
 
     private static void writeLegacyUnicode(JsonWriter writer, LegacyUnicodeFontProvider provider) throws IOException {

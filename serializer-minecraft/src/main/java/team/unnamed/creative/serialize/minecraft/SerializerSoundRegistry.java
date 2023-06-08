@@ -27,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.serialize.DeserializationErrorHandler;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -41,7 +42,13 @@ import java.util.Map;
 
 final class SerializerSoundRegistry implements JsonFileStreamWriter<SoundRegistry>, JsonFileTreeReader.Namespaced<SoundRegistry> {
 
-    static final SerializerSoundRegistry INSTANCE = new SerializerSoundRegistry();
+    static final SerializerSoundRegistry INSTANCE = new SerializerSoundRegistry(DeserializationErrorHandler.DEFAULT);
+
+    private final DeserializationErrorHandler deserializationErrorHandler;
+
+    SerializerSoundRegistry(DeserializationErrorHandler deserializationErrorHandler) {
+        this.deserializationErrorHandler = deserializationErrorHandler;
+    }
 
     @Override
     public void serialize(SoundRegistry registry, JsonWriter writer) throws IOException {
@@ -136,7 +143,7 @@ final class SerializerSoundRegistry implements JsonFileStreamWriter<SoundRegistr
                         // complete sound object
                         JsonObject soundObjectNode = soundNode.getAsJsonObject();
 
-                        Sound.Builder sound = Sound.builder()
+                        Sound.Builder builder = Sound.builder()
                                 .key(Key.key(soundObjectNode.get("name").getAsString()))
                                 .volume(GsonUtil.getFloat(soundObjectNode, "volume", Sound.DEFAULT_VOLUME))
                                 .pitch(GsonUtil.getFloat(soundObjectNode, "pitch", Sound.DEFAULT_PITCH))
@@ -148,15 +155,25 @@ final class SerializerSoundRegistry implements JsonFileStreamWriter<SoundRegistr
                         if (soundObjectNode.has("type")) {
                             String typeName = soundObjectNode.get("type").getAsString();
                             Sound.Type type = Sound.Type.valueOf(typeName.toUpperCase(Locale.ROOT));
-                            sound.type(type);
+                            builder.type(type);
                         }
-                        sounds.add(sound.build());
+                        try {
+                            sounds.add(builder.build());
+                        } catch (RuntimeException e) {
+                            deserializationErrorHandler.onInvalidSound(builder, e);
+                            sounds.add(builder.build());
+                        }
                     } else {
                         // everything is default, just read the name
-                        sounds.add(Sound.builder()
+                        Sound.Builder builder = Sound.builder()
                                 .key(Key.key(soundNode.getAsString()))
-                                .type(Sound.Type.FILE)
-                                .build());
+                                .type(Sound.Type.FILE);
+                        try {
+                            sounds.add(builder.build());
+                        } catch (RuntimeException e) {
+                            deserializationErrorHandler.onInvalidSound(builder, e);
+                            sounds.add(builder.build());
+                        }
                     }
                 }
 

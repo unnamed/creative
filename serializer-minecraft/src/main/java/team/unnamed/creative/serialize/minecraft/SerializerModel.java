@@ -55,17 +55,12 @@ import java.util.Map;
 
 final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTreeReader.Keyed<Model> {
 
-    static final SerializerModel INSTANCE = new SerializerModel();
+    static final SerializerModel INSTANCE = new SerializerModel(DeserializationErrorHandler.DEFAULT);
     private final DeserializationErrorHandler deserializationErrorHandler;
 
     SerializerModel(DeserializationErrorHandler deserializationErrorHandler) {
         this.deserializationErrorHandler = deserializationErrorHandler;
     }
-
-    SerializerModel() {
-        this.deserializationErrorHandler = DeserializationErrorHandler.DEFAULT;
-    }
-
 
     @Override
     public void serialize(Model model, JsonWriter writer) throws IOException {
@@ -149,7 +144,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         List<Element> elements = new ArrayList<>();
         if (objectNode.has("elements")) {
             for (JsonElement elementNode : objectNode.getAsJsonArray("elements")) {
-                elements.add(readElement(elementNode));
+                elements.add(readElement(elementNode, deserializationErrorHandler));
             }
         }
 
@@ -235,12 +230,12 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         writer.endObject().endObject();
     }
 
-    private static Element readElement(JsonElement node) {
+    private static Element readElement(JsonElement node, DeserializationErrorHandler deserializationErrorHandler) {
         JsonObject objectNode = node.getAsJsonObject();
         ElementRotation rotation = null;
 
         if (objectNode.has("rotation")) {
-            rotation = readElementRotation(objectNode.get("rotation"));
+            rotation = readElementRotation(objectNode.get("rotation"), deserializationErrorHandler);
         }
 
         Map<CubeFace, ElementFace> faces = new HashMap<>();
@@ -257,25 +252,33 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
                 cullFace = CubeFace.valueOf(elementFaceNode.get("cullface").getAsString().toUpperCase(Locale.ROOT));
             }
 
-            faces.put(
-                    face,
-                    ElementFace.builder()
-                            .uv(uv)
-                            .texture(elementFaceNode.get("texture").getAsString())
-                            .cullFace(cullFace)
-                            .rotation(GsonUtil.getInt(elementFaceNode, "rotation", ElementFace.DEFAULT_ROTATION))
-                            .tintIndex(GsonUtil.getInt(elementFaceNode, "tintindex", ElementFace.DEFAULT_TINT_INDEX))
-                            .build()
-            );
+            ElementFace.Builder builder = ElementFace.builder()
+                    .uv(uv)
+                    .texture(elementFaceNode.get("texture").getAsString())
+                    .cullFace(cullFace)
+                    .rotation(GsonUtil.getInt(elementFaceNode, "rotation", ElementFace.DEFAULT_ROTATION))
+                    .tintIndex(GsonUtil.getInt(elementFaceNode, "tintindex", ElementFace.DEFAULT_TINT_INDEX));
+            try {
+                faces.put(face, builder.build());
+            } catch (RuntimeException e) {
+                deserializationErrorHandler.onInvalidElementFace(builder, e);
+                faces.put(face, builder.build());
+            }
+
         }
 
-        return Element.builder()
+        Element.Builder builder = Element.builder()
                 .from(readVector3Float(objectNode.get("from")))
                 .to(readVector3Float(objectNode.get("to")))
                 .rotation(rotation)
                 .shade(GsonUtil.getBoolean(objectNode, "shade", Element.DEFAULT_SHADE))
-                .faces(faces)
-                .build();
+                .faces(faces);
+        try {
+            return builder.build();
+        } catch (RuntimeException e) {
+            deserializationErrorHandler.onInvalidElement(builder, e);
+            return builder.build();
+        }
     }
 
     private static void writeElementRotation(JsonWriter writer, ElementRotation rotation) throws IOException {
@@ -293,14 +296,19 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
         writer.endObject();
     }
 
-    private static ElementRotation readElementRotation(JsonElement node) {
+    private static ElementRotation readElementRotation(JsonElement node, DeserializationErrorHandler deserializationErrorHandler) {
         JsonObject objectNode = node.getAsJsonObject();
-        return ElementRotation.builder()
+        ElementRotation.Builder builder = ElementRotation.builder()
                 .origin(readVector3Float(objectNode.get("origin")))
                 .axis(Axis3D.valueOf(objectNode.get("axis").getAsString().toUpperCase(Locale.ROOT)))
                 .angle(objectNode.get("angle").getAsFloat())
-                .rescale(GsonUtil.getBoolean(objectNode, "rescale", ElementRotation.DEFAULT_RESCALE))
-                .build();
+                .rescale(GsonUtil.getBoolean(objectNode, "rescale", ElementRotation.DEFAULT_RESCALE));
+        try {
+            return builder.build();
+        } catch (RuntimeException e) {
+            deserializationErrorHandler.onInvalidElementRotation(builder, e);
+            return builder.build();
+        }
     }
 
     private static void writeItemOverride(JsonWriter writer, ItemOverride override) throws IOException {
@@ -397,8 +405,8 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
             return builder.build();
         } catch (RuntimeException e) {
             errorHandler.onInvalidItemTransform(builder, e);
+            return builder.build();
         }
-        return builder.build();
     }
 
     private static void writeTextures(JsonWriter writer, ModelTextures texture) throws IOException {

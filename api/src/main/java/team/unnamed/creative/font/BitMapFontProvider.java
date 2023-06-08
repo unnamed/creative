@@ -232,6 +232,22 @@ public class BitMapFontProvider implements FontProvider {
             return this;
         }
 
+        public int height() {
+            return height;
+        }
+
+        public int ascent() {
+            return ascent;
+        }
+
+        public Key file() {
+            return file;
+        }
+
+        public List<String> characters() {
+            return characters;
+        }
+
         /**
          * Finishes building the {@link BitMapFontProvider} instance,
          * this method may fail if values were not correctly

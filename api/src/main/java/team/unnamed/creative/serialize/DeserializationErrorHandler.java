@@ -23,14 +23,39 @@
  */
 package team.unnamed.creative.serialize;
 
+import team.unnamed.creative.font.BitMapFontProvider;
+import team.unnamed.creative.model.Element;
+import team.unnamed.creative.model.ElementFace;
+import team.unnamed.creative.model.ElementRotation;
 import team.unnamed.creative.model.ItemTransform;
+import team.unnamed.creative.sound.Sound;
 
 public interface DeserializationErrorHandler {
     DeserializationErrorHandler DEFAULT = new DeserializationErrorHandler() {
     };
     DeserializationErrorHandler RESOLVE = new ResolveDeserializationErrorHandler();
 
-    default void onInvalidItemTransform(ItemTransform.Builder itemTransformBuilder, RuntimeException error) {
-        throw error;
+    default void onInvalidItemTransform(ItemTransform.Builder builder, RuntimeException exception) {
+        throw exception;
+    }
+
+    default void onInvalidBitMapFontProvider(BitMapFontProvider.Builder builder, RuntimeException exception) {
+        throw exception;
+    }
+
+    default void onInvalidElement(Element.Builder builder, RuntimeException exception) {
+        throw exception;
+    }
+
+    default void onInvalidElementRotation(ElementRotation.Builder builder, RuntimeException exception) {
+        throw exception;
+    }
+
+    default void onInvalidElementFace(ElementFace.Builder builder, RuntimeException exception) {
+        throw exception;
+    }
+
+    default void onInvalidSound(Sound.Builder builder, RuntimeException exception) {
+        throw exception;
     }
 }

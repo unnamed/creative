@@ -82,8 +82,6 @@ public class Element implements Examinable {
     private void validateBound(float value, String axisName) {
         Validate.isTrue(value >= MIN_EXTENT && value <= MAX_EXTENT,
                 "Value at %s axis (%s) is out of bounds", axisName, value);
-        Validate.isTrue(faces.size() <= 6,
-                "Invalid amount of faces (%s)", faces.size());
     }
 
     private void validateBound(Vector3Float vec) {
@@ -95,6 +93,8 @@ public class Element implements Examinable {
     private void validate() {
         validateBound(from);
         validateBound(to);
+        Validate.isTrue(faces.size() <= 6,
+                "Invalid amount of faces (%s)", faces.size());
     }
 
     /**
@@ -227,6 +227,26 @@ public class Element implements Examinable {
             }
             this.faces.put(type, face);
             return this;
+        }
+
+        public Vector3Float from() {
+            return from;
+        }
+
+        public Vector3Float to() {
+            return to;
+        }
+
+        public @Nullable ElementRotation rotation() {
+            return rotation;
+        }
+
+        public boolean shade() {
+            return shade;
+        }
+
+        public Map<CubeFace, ElementFace> faces() {
+            return faces;
         }
 
         public Element build() {
