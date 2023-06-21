@@ -123,4 +123,8 @@ public interface FontProvider extends Examinable {
         return new TrueTypeFontProvider.Builder();
     }
 
+    static ReferenceFontProvider reference(Key id) {
+        return ReferenceFontProvider.of(id);
+    }
+
 }
