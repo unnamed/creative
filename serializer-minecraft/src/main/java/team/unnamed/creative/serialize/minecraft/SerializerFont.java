@@ -91,6 +91,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 }
                 case "reference": {
                     providers.add(readReference(providerObjectNode));
+                    break;
                 }
                 default:
                     throw new IllegalStateException("Unknown font provider type: " + type);
