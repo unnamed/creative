@@ -25,7 +25,6 @@ package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.string.StringExaminer;
-import team.unnamed.creative.model.ModelTexture;
 
 import java.util.Objects;
 
