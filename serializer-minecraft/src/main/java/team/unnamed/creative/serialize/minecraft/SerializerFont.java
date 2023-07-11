@@ -29,12 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.base.Vector2Float;
-import team.unnamed.creative.font.BitMapFontProvider;
-import team.unnamed.creative.font.Font;
-import team.unnamed.creative.font.FontProvider;
-import team.unnamed.creative.font.LegacyUnicodeFontProvider;
-import team.unnamed.creative.font.SpaceFontProvider;
-import team.unnamed.creative.font.TrueTypeFontProvider;
+import team.unnamed.creative.font.*;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -61,6 +56,8 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 writeSpace(writer, (SpaceFontProvider) provider);
             } else if (provider instanceof TrueTypeFontProvider) {
                 writeTrueType(writer, (TrueTypeFontProvider) provider);
+            } else if (provider instanceof ReferenceFontProvider) {
+                writeReference(writer, (ReferenceFontProvider) provider);
             } else {
                 throw new IllegalStateException("Unknown font provider type: " + provider);
             }
@@ -90,6 +87,10 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 }
                 case "ttf": {
                     providers.add(readTrueType(providerObjectNode));
+                    break;
+                }
+                case "reference": {
+                    providers.add(readReference(providerObjectNode));
                     break;
                 }
                 default:
@@ -248,4 +249,14 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 .build();
     }
 
+    private static void writeReference(JsonWriter writer, ReferenceFontProvider provider) throws IOException {
+        writer.beginObject();
+        writer.name("type").value("reference");
+        writer.name("id").value(Keys.toString(provider.id()));
+        writer.endObject();
+    }
+
+    private static ReferenceFontProvider readReference(JsonObject node) {
+        return FontProvider.reference(Key.key(node.get("id").getAsString()));
+    }
 }

@@ -111,7 +111,7 @@ final class MinecraftResourcePackStructure {
 
     public static String pathOfMeta(Texture texture) {
         // assets/<namespace>/textures/<path>.png.mcmeta
-        return withCategory(TEXTURES_FOLDER, texture, TEXTURE_EXTENSION + METADATA_EXTENSION);
+        return withCategory(TEXTURES_FOLDER, texture, METADATA_EXTENSION);
     }
 
     public static Queue<String> tokenize(String path) {
