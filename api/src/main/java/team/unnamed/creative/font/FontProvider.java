@@ -71,8 +71,9 @@ public interface FontProvider extends Examinable {
     /**
      * Creates a new legacy unicode font from the provided
      * values, this font type should not be used since it
-     * is deprecated and is only prioritized when the "Force
-     * Unicode Font" option is turned on
+     * is deprecated (now removed since Minecraft 1.20) and
+     * is only prioritized when the "Force Unicode Font" option
+     * is turned on
      *
      * @param sizes Location to the file that specifies the
      *              character sizes
@@ -82,7 +83,9 @@ public interface FontProvider extends Examinable {
      *                 that will be replaced by the unicode page
      * @return A new {@link LegacyUnicodeFontProvider} font
      * @since 1.0.0
+     * @deprecated Removed on Minecraft 1.20
      */
+    @Deprecated
     static LegacyUnicodeFontProvider legacyUnicode(Key sizes, String template) {
         return new LegacyUnicodeFontProvider(sizes, template);
     }

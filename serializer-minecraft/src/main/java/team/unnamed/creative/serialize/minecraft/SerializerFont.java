@@ -50,7 +50,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
         for (FontProvider provider : font.providers()) {
             if (provider instanceof BitMapFontProvider) {
                 writeBitMap(writer, (BitMapFontProvider) provider);
-            } else if (provider instanceof LegacyUnicodeFontProvider) {
+            } else if (provider instanceof LegacyUnicodeFontProvider) { // TODO: Should we warn about deprecated stuff?
                 writeLegacyUnicode(writer, (LegacyUnicodeFontProvider) provider);
             } else if (provider instanceof SpaceFontProvider) {
                 writeSpace(writer, (SpaceFontProvider) provider);

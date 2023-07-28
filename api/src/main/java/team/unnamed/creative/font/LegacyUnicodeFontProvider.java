@@ -35,11 +35,17 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A legacy unicode font. This format is deprecated and only
- * prioritized when the "Force Unicode Font" option is turned on.
+ * A unicode font.
+ *
+ * <p><strong>Removed on Minecraft 1.20</strong></p>
+ *
+ * <p>A legacy unicode font. This format is deprecated and only
+ * prioritized when the "Force Unicode Font" option is turned on</p>
  *
  * @since 1.0.0
+ * @deprecated Removed on Minecraft 1.20
  */
+@Deprecated
 public class LegacyUnicodeFontProvider implements FontProvider {
 
     private final Key sizes;
