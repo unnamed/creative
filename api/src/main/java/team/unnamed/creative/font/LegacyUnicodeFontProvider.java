@@ -38,12 +38,14 @@ import static java.util.Objects.requireNonNull;
  * A unicode font.
  *
  * <p><strong>Removed on Minecraft 1.20</strong></p>
+ * <p>The functionality has been replaced by {@link UnihexFontProvider}</p>
  *
  * <p>A legacy unicode font. This format is deprecated and only
  * prioritized when the "Force Unicode Font" option is turned on</p>
  *
  * @since 1.0.0
  * @deprecated Removed on Minecraft 1.20
+ * @see UnihexFontProvider
  */
 @Deprecated
 public class LegacyUnicodeFontProvider implements FontProvider {

@@ -108,6 +108,7 @@ public interface FontProvider extends Examinable {
      * This font provider consists of a map of codepoints (characters) and integers (how many pixels to shift by)
      * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
      * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
+     *
      * @return the newly created builder
      * @sincePackFormat 9
      */
@@ -126,8 +127,42 @@ public interface FontProvider extends Examinable {
         return new TrueTypeFontProvider.Builder();
     }
 
+    /**
+     * Creates a new {@link ReferenceFontProvider} instance that
+     * refers to the provided {@code id} provider
+     *
+     * @param id The referred provider
+     * @return A new instance of {@link ReferenceFontProvider}
+     * @since 1.0.0
+     * @sincePackFormat 15
+     */
     static ReferenceFontProvider reference(Key id) {
         return ReferenceFontProvider.of(id);
+    }
+
+    /**
+     * Creates a new instance of {@link UnihexFontProvider}
+     *
+     * @param file The zip file containing the HEX files
+     * @param sizes The size overrides
+     * @return A new font provider instance
+     * @since 1.0.0
+     * @sincePackFormat 15
+     */
+    static UnihexFontProvider unihex(Key file, List<UnihexFontProvider.SizeOverride> sizes) {
+        return new UnihexFontProvider(file, sizes);
+    }
+
+    /**
+     * Creates a new builder for {@link UnihexFontProvider}
+     * instances
+     *
+     * @return A new builder instance
+     * @since 1.0.0
+     * @sincePackFormat 15
+     */
+    static UnihexFontProvider.Builder unihex() {
+        return new UnihexFontProvider.Builder();
     }
 
 }

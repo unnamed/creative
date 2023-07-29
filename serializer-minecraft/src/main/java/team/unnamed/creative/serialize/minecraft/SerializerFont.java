@@ -58,6 +58,8 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 writeTrueType(writer, (TrueTypeFontProvider) provider);
             } else if (provider instanceof ReferenceFontProvider) {
                 writeReference(writer, (ReferenceFontProvider) provider);
+            } else if (provider instanceof UnihexFontProvider) {
+                writeUnihex(writer, (UnihexFontProvider) provider);
             } else {
                 throw new IllegalStateException("Unknown font provider type: " + provider);
             }
@@ -91,6 +93,10 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
                 }
                 case "reference": {
                     providers.add(readReference(providerObjectNode));
+                    break;
+                }
+                case "unihex": {
+                    providers.add(readUnihex(providerObjectNode));
                     break;
                 }
                 default:
@@ -171,6 +177,39 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
             advances.put(character, advance);
         }
         return FontProvider.space(advances);
+    }
+
+    private static void writeUnihex(JsonWriter writer, UnihexFontProvider provider) throws IOException {
+        writer.beginObject()
+                .name("type").value("unihex")
+                .name("hex_file").value(Keys.toString(provider.file()))
+                .name("size_overrides").beginArray();
+        for (UnihexFontProvider.SizeOverride sizeOverride : provider.sizes()) {
+            writer.beginObject()
+                    .name("from").value(sizeOverride.from())
+                    .name("to").value(sizeOverride.to())
+                    .name("left").value(sizeOverride.left())
+                    .name("right").value(sizeOverride.right())
+                    .endObject();
+        }
+        writer.endArray().endObject();
+    }
+
+    private static UnihexFontProvider readUnihex(JsonObject node) {
+        List<UnihexFontProvider.SizeOverride> sizes = new ArrayList<>();
+        for (JsonElement element : node.getAsJsonArray("size_overrides")) {
+            JsonObject overrideNode = element.getAsJsonObject();
+            sizes.add(UnihexFontProvider.SizeOverride.of(
+                    overrideNode.get("from").getAsInt(),
+                    overrideNode.get("to").getAsInt(),
+                    overrideNode.get("left").getAsInt(),
+                    overrideNode.get("right").getAsInt()
+            ));
+        }
+        return FontProvider.unihex()
+                .file(Key.key(node.get("hex_file").getAsString()))
+                .sizes(sizes)
+                .build();
     }
 
     private static void writeTrueType(JsonWriter writer, TrueTypeFontProvider provider) throws IOException {
