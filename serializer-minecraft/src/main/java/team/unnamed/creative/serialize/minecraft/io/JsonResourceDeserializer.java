@@ -21,24 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.sound;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
-import team.unnamed.creative.sound.Sound;
+import com.google.gson.JsonElement;
+import net.kyori.adventure.key.Key;
 
-@ApiStatus.Internal
-public class SoundSerializer {
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
-    public static final ResourceCategory<Sound.File> CATEGORY = new ResourceCategory<>(
-            "sounds",
-            ".ogg",
-            ResourcePack::sound,
-            ResourcePack::sounds,
-            (input, key) -> Sound.File.of(key, Writable.copyInputStream(input)),
-            (sound, output) -> sound.data().write(output)
-    );
+public interface JsonResourceDeserializer<T> extends ResourceDeserializer<T> {
+
+    T deserializeFromJson(JsonElement node, Key key) throws IOException;
+
+    @Override
+    default T deserialize(InputStream input, Key key) throws IOException {
+        try (Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+            return deserializeFromJson(JsonParserHolder.INSTANCE.parse(reader), key);
+        }
+    }
 
 }

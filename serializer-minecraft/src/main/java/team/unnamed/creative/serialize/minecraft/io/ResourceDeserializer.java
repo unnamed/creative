@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Key;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-public interface JsonFileStreamWriter<T> {
+public interface ResourceDeserializer<T> {
 
-    void serialize(T object, JsonWriter writer) throws IOException;
+    T deserialize(InputStream input, Key key) throws IOException;
 
 }

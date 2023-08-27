@@ -23,9 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.ApiStatus;
@@ -34,23 +31,16 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
 import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
+import team.unnamed.creative.serialize.minecraft.io.ResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.io.ResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
 import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @ApiStatus.Internal
@@ -67,21 +57,21 @@ public class ResourceCategory<T extends Keyed> {
         registerCategory(FontSerializer.CATEGORY);
     }
 
-    private static final JsonParser PARSER = new JsonParser();
-
     private final String folder;
     private final String extension;
     private final BiConsumer<ResourcePack, T> setter;
-    private final BiFunction<Key, InputStream, T> deserializer;
     private final Function<ResourcePack, Collection<T>> lister;
-    private final BiConsumer<T, OutputStream> serializer;
+
+    private final ResourceDeserializer<T> deserializer;
+    private final ResourceSerializer<T> serializer;
 
     public ResourceCategory(
             String folder,
             String extension,
             BiConsumer<ResourcePack, T> setter,
-            Function<ResourcePack, Collection<T>> lister, BiFunction<Key, InputStream, T> deserializer,
-            BiConsumer<T, OutputStream> serializer
+            Function<ResourcePack, Collection<T>> lister,
+            ResourceDeserializer<T> deserializer,
+            ResourceSerializer<T> serializer
     ) {
         this.folder = folder;
         this.extension = extension;
@@ -103,7 +93,7 @@ public class ResourceCategory<T extends Keyed> {
         return setter;
     }
 
-    public BiFunction<Key, InputStream, T> deserializer() {
+    public ResourceDeserializer<T> deserializer() {
         return deserializer;
     }
 
@@ -111,40 +101,14 @@ public class ResourceCategory<T extends Keyed> {
         return lister;
     }
 
-    public BiConsumer<T, OutputStream> serializer() {
+    public ResourceSerializer<T> serializer() {
         return serializer;
     }
 
     public String pathOf(T resource) {
         Key key = resource.key();
-        // assets/<namespace>/<category>/<path>.<extension>
-        return path("assets", key.namespace(), this.folder, key.value() + extension);
-    }
-
-    private static String path(String... path) {
-        StringJoiner joiner = new StringJoiner("/");
-        for (String part : path) {
-            joiner.add(part);
-        }
-        return joiner.toString();
-    }
-
-    public static <T> BiFunction<Key, InputStream, T> parseAsJsonElement(JsonFileTreeReader<T, Key> function) {
-        return (key, input) -> function.readFromTree(PARSER.parse(reader(input)), key);
-    }
-
-    public static <T> BiConsumer<T, OutputStream> writingAsjson(JsonFileStreamWriter<T> writer) {
-        return (object, output) -> {
-            try (JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(output))) {
-                writer.serialize(object, jsonWriter);
-            } catch (IOException e) {
-                throw new UncheckedIOException("Failed to write", e);
-            }
-        };
-    }
-
-    private static JsonReader reader(InputStream input) {
-        return new JsonReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        // assets/<namespace>/<category>/<path><extension>
+        return "assets/" + key.namespace() + "/" + this.folder + "/" + key.value() + extension;
     }
 
     private static void registerCategory(ResourceCategory<?> category) {

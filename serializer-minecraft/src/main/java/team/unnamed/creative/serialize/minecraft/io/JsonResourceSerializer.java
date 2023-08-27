@@ -21,21 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import com.google.gson.JsonElement;
-import net.kyori.adventure.key.Key;
+import com.google.gson.stream.JsonWriter;
 
-public interface JsonFileTreeReader<T, TId> {
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
-    T readFromTree(JsonElement node, TId id);
+public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
 
-    interface Keyed<T> extends JsonFileTreeReader<T, Key> {
+    void serializeToJson(T object, JsonWriter writer) throws IOException;
 
-    }
-
-    interface Namespaced<T> extends JsonFileTreeReader<T, String> {
-
+    @Override
+    default void serialize(T object, OutputStream output) throws IOException {
+        try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(output))) {
+            serializeToJson(object, writer);
+        }
     }
 
 }

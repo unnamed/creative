@@ -31,13 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
-import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
-import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
-import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
-import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
-import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
 import team.unnamed.creative.texture.Texture;
 import team.unnamed.creative.util.Keys;
 
@@ -57,8 +51,6 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
     static final MinecraftResourcePackReaderImpl INSTANCE = new MinecraftResourcePackReaderImpl();
 
     private static final JsonParser PARSER = new JsonParser();
-
-    private final Map<String, ResourceCategory<?>> categories = new HashMap<>();
 
     private MinecraftResourcePackReaderImpl() {
     }
@@ -148,12 +140,12 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             // the namespace folder always have a "category", e.g. textures,
             // lang, font, etc. But not always! There is sounds.json file and
             // gpu_warnlist.json file
-            String category = tokens.poll();
+            String categoryName = tokens.poll();
 
             if (tokens.isEmpty()) {
                 // this means "category" is a file
                 // (remember: last tokens are always files)
-                if (category.equals(SOUNDS_FILE)) {
+                if (categoryName.equals(SOUNDS_FILE)) {
                     // found a sound registry!
                     resourcePack.soundRegistry(SerializerSoundRegistry.INSTANCE.readFromTree(
                             parse(input),
@@ -172,7 +164,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             // path inside the category
             String categoryPath = path(tokens);
 
-            switch (category) {
+            switch (categoryName) {
                 case TEXTURES_FOLDER: {
                     String keyOfMetadata = withoutExtension(categoryPath, METADATA_EXTENSION);
                     if (keyOfMetadata != null) {
@@ -208,16 +200,22 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     continue;
                 }
                 default: {
-                    ResourceCategory cat = categories.get(category);
-                    if (cat == null) {
+                    ResourceCategory category = ResourceCategory.getByFolder(categoryName);
+                    if (category == null) {
                         // unknown category!
                         break;
                     }
-                    String keyValue = withoutExtension(categoryPath, cat.extension());
+                    String keyValue = withoutExtension(categoryPath, category.extension());
                     if (keyValue == null) {
                         break;
                     }
-                    cat.setter().accept(resourcePack, cat.deserializer().apply(Key.key(namespace, keyValue), input));
+                    Key key = Key.key(namespace, keyValue);
+                    try {
+                        Object resource = category.deserializer().deserialize(input, key);
+                        category.setter().accept(resourcePack, resource);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException("Failed to deserialize resource at: '" + path + "'", e);
+                    }
                     continue;
                 }
             }

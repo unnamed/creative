@@ -29,29 +29,29 @@ import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.serialize.minecraft.JsonFileStreamWriter;
-import team.unnamed.creative.serialize.minecraft.JsonFileTreeReader;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class LanguageSerializer implements JsonFileStreamWriter<Language>, JsonFileTreeReader.Keyed<Language> {
+public final class LanguageSerializer implements JsonResourceSerializer<Language>, JsonResourceDeserializer<Language> {
 
     public static final ResourceCategory<Language> CATEGORY = new ResourceCategory<>(
             "lang",
             ".json",
             ResourcePack::language,
             ResourcePack::languages,
-            ResourceCategory.parseAsJsonElement(LanguageSerializer.INSTANCE),
-            ResourceCategory.writingAsjson(LanguageSerializer.INSTANCE)
+            LanguageSerializer.INSTANCE,
+            LanguageSerializer.INSTANCE
     );
 
     static final LanguageSerializer INSTANCE = new LanguageSerializer();
 
     @Override
-    public void serialize(Language language, JsonWriter writer) throws IOException {
+    public void serializeToJson(Language language, JsonWriter writer) throws IOException {
         // {
         //   "key.1": "value 1",
         //   "key.2": "value 2"
@@ -64,7 +64,7 @@ public final class LanguageSerializer implements JsonFileStreamWriter<Language>,
     }
 
     @Override
-    public Language readFromTree(JsonElement node, Key key) {
+    public Language deserializeFromJson(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         Map<String, String> translations = new HashMap<>();
 

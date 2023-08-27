@@ -46,8 +46,8 @@ import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.JsonFileStreamWriter;
-import team.unnamed.creative.serialize.minecraft.JsonFileTreeReader;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.util.Keys;
 
@@ -59,20 +59,21 @@ import java.util.Locale;
 import java.util.Map;
 
 @ApiStatus.Internal
-public final class ModelSerializer implements JsonFileStreamWriter<Model>, JsonFileTreeReader.Keyed<Model> {
+public final class ModelSerializer implements JsonResourceSerializer<Model>, JsonResourceDeserializer<Model> {
 
     public static final ResourceCategory<Model> CATEGORY = new ResourceCategory<>(
             "models",
             ".json",
             ResourcePack::model,
-            ResourcePack::models, ResourceCategory.parseAsJsonElement(ModelSerializer.INSTANCE),
-            ResourceCategory.writingAsjson(ModelSerializer.INSTANCE)
+            ResourcePack::models,
+            ModelSerializer.INSTANCE,
+            ModelSerializer.INSTANCE
     );
 
     static final ModelSerializer INSTANCE = new ModelSerializer();
 
     @Override
-    public void serialize(Model model, JsonWriter writer) throws IOException {
+    public void serializeToJson(Model model, JsonWriter writer) throws IOException {
         writer.beginObject();
 
         // parent
@@ -129,7 +130,7 @@ public final class ModelSerializer implements JsonFileStreamWriter<Model>, JsonF
     }
 
     @Override
-    public Model readFromTree(JsonElement node, Key key) {
+    public Model deserializeFromJson(JsonElement node, Key key) {
 
         JsonObject objectNode = node.getAsJsonObject();
 

@@ -30,8 +30,8 @@ import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
-import team.unnamed.creative.serialize.minecraft.JsonFileStreamWriter;
-import team.unnamed.creative.serialize.minecraft.JsonFileTreeReader;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 
 import java.io.IOException;
@@ -39,15 +39,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApiStatus.Internal
-public final class AtlasSerializer implements JsonFileStreamWriter<Atlas>, JsonFileTreeReader.Keyed<Atlas> {
+public final class AtlasSerializer implements JsonResourceSerializer<Atlas>, JsonResourceDeserializer<Atlas> {
 
     public static final AtlasSerializer INSTANCE = new AtlasSerializer();
     public static final ResourceCategory<Atlas> CATEGORY = new ResourceCategory<>(
             "atlases",
             ".json",
             ResourcePack::atlas,
-            ResourcePack::atlases, ResourceCategory.parseAsJsonElement(AtlasSerializer.INSTANCE),
-            ResourceCategory.writingAsjson(AtlasSerializer.INSTANCE)
+            ResourcePack::atlases,
+            AtlasSerializer.INSTANCE,
+            AtlasSerializer.INSTANCE
     );
 
     private static final String SOURCES_FIELD = "sources";
@@ -64,7 +65,7 @@ public final class AtlasSerializer implements JsonFileStreamWriter<Atlas>, JsonF
     // }
 
     @Override
-    public void serialize(Atlas object, JsonWriter writer) throws IOException {
+    public void serializeToJson(Atlas object, JsonWriter writer) throws IOException {
         writer.beginObject()
                 .name(SOURCES_FIELD)
                 .beginArray();
@@ -75,7 +76,7 @@ public final class AtlasSerializer implements JsonFileStreamWriter<Atlas>, JsonF
     }
 
     @Override
-    public Atlas readFromTree(JsonElement node, Key key) {
+    public Atlas deserializeFromJson(JsonElement node, Key key) {
         List<AtlasSource> sources = new ArrayList<>();
         for (JsonElement sourceElement : node.getAsJsonObject().getAsJsonArray(SOURCES_FIELD)) {
             sources.add(AtlasSourceSerializer.deserialize(sourceElement.getAsJsonObject()));

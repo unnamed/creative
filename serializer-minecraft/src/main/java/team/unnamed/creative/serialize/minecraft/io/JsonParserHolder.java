@@ -21,24 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.sound;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
-import team.unnamed.creative.sound.Sound;
+import com.google.gson.JsonParser;
 
-@ApiStatus.Internal
-public class SoundSerializer {
+final class JsonParserHolder {
 
-    public static final ResourceCategory<Sound.File> CATEGORY = new ResourceCategory<>(
-            "sounds",
-            ".ogg",
-            ResourcePack::sound,
-            ResourcePack::sounds,
-            (input, key) -> Sound.File.of(key, Writable.copyInputStream(input)),
-            (sound, output) -> sound.data().write(output)
-    );
+    static final JsonParser INSTANCE = new JsonParser();
+
+    private JsonParserHolder() {
+    }
 
 }

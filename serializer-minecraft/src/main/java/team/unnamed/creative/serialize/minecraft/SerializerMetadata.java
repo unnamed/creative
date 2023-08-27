@@ -26,7 +26,6 @@ package team.unnamed.creative.serialize.minecraft;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
-import org.intellij.lang.annotations.RegExp;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.pack.PackMeta;
@@ -39,6 +38,7 @@ import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,9 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
+final class SerializerMetadata implements JsonResourceSerializer<Metadata> {
 
     static final SerializerMetadata INSTANCE = new SerializerMetadata();
 
@@ -60,7 +59,7 @@ final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
     static final String VILLAGER_FIELD = "villager";
 
     @Override
-    public void serialize(Metadata metadata, JsonWriter writer) throws IOException {
+    public void serializeToJson(Metadata metadata, JsonWriter writer) throws IOException {
         writer.beginObject();
         for (MetadataPart part : metadata.parts()) {
             if (part instanceof AnimationMeta) {

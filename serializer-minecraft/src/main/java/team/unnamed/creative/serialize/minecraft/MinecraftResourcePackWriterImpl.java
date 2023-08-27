@@ -29,6 +29,7 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
@@ -51,7 +52,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
         for (T resource : category.lister().apply(resourcePack)) {
             String path = category.pathOf(resource);
             try (OutputStream output = target.openStream(path)) {
-                category.serializer().accept(resource, output);
+                category.serializer().serialize(resource, output);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
@@ -104,9 +105,9 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
         }
     }
 
-    private <T> void writeToJson(FileTreeWriter writer, JsonFileStreamWriter<T> serializer, T object, String path) {
+    private <T> void writeToJson(FileTreeWriter writer, JsonResourceSerializer<T> serializer, T object, String path) {
         try (JsonWriter jsonWriter = writer.openJsonWriter(path)) {
-            serializer.serialize(object, jsonWriter);
+            serializer.serializeToJson(object, jsonWriter);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write to " + path, e);
         }
