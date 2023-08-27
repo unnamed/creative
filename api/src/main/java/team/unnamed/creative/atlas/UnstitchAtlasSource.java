@@ -112,6 +112,10 @@ public class UnstitchAtlasSource implements AtlasSource {
             return height;
         }
 
+        public static Region of(Key sprite, double x, double y, double width, double height) {
+            return new Region(sprite, x, y, width, height);
+        }
+
     }
 
 }

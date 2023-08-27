@@ -27,6 +27,9 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.KeyPattern;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
@@ -63,6 +66,22 @@ public interface AtlasSource {
      */
     static FilterAtlasSource filter(KeyPattern pattern) {
         return new FilterAtlasSource(pattern);
+    }
+
+    /**
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     */
+    static UnstitchAtlasSource unstitch(Key resource, List<UnstitchAtlasSource.Region> regions, double xDivisor, double yDivisor) {
+        return new UnstitchAtlasSource(resource, regions, xDivisor, yDivisor);
+    }
+
+    /**
+     * @sincePackFormat 13
+     * @sinceMinecraft 1.19.4
+     */
+    static PalettedPermutationsAtlasSource palettedPermutations(List<Key> textures, Key paletteKey, Map<String, Key> permutations) {
+        return new PalettedPermutationsAtlasSource(textures, paletteKey, permutations);
     }
 
 }

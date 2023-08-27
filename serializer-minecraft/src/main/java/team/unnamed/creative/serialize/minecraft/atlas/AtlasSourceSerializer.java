@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft.atlas;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
@@ -31,12 +32,18 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.atlas.DirectoryAtlasSource;
 import team.unnamed.creative.atlas.FilterAtlasSource;
+import team.unnamed.creative.atlas.PalettedPermutationsAtlasSource;
 import team.unnamed.creative.atlas.SingleAtlasSource;
+import team.unnamed.creative.atlas.UnstitchAtlasSource;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 final class AtlasSourceSerializer {
 
@@ -62,6 +69,29 @@ final class AtlasSourceSerializer {
     // {
     //     "type": "filter",
     //     "pattern": <KeyPattern>
+    // },
+    // {
+    //     "type": "unstitch",
+    //     "resource": <key>,
+    //     "regions": [<
+    //         {
+    //             "sprite": <key>,
+    //             "x": <double>,
+    //             "y": <double>,
+    //             "width": <double>,
+    //             "height": <double>
+    //         }
+    //     >],
+    //     "divisor_x": <optional double = 1>,
+    //     "divisor_y": <optional double = 1>
+    // },
+    // {
+    //     "type": "paletted_permutations",
+    //     "textures": [<key>],
+    //     "palette_key": <key>,
+    //     "permutations": <{
+    //         <string>: <key>
+    //     }>
     // }
 
     static void serialize(AtlasSource source, JsonWriter writer) throws IOException {
@@ -87,6 +117,45 @@ final class AtlasSourceSerializer {
                     .name(TYPE_FIELD).value(FILTER_TYPE)
                     .name("pattern");
             KeyPatternSerializer.serialize(filterSource.pattern(), writer);
+        } else if (source instanceof UnstitchAtlasSource) {
+            UnstitchAtlasSource unstitchSource = (UnstitchAtlasSource) source;
+            writer
+                    .name(TYPE_FIELD).value(UNSTITCH_TYPE)
+                    .name("resource").value(Keys.toString(unstitchSource.resource()));
+            double divisorX = unstitchSource.xDivisor();
+            if (divisorX != UnstitchAtlasSource.DEFAULT_X_DIVISOR) {
+                writer.name("divisor_x").value(divisorX);
+            }
+            double divisorY = unstitchSource.yDivisor();
+            if (divisorY != UnstitchAtlasSource.DEFAULT_Y_DIVISOR) {
+                writer.name("divisor_y").value(divisorY);
+            }
+            writer.name("regions").beginArray();
+            for (UnstitchAtlasSource.Region region : unstitchSource.regions()) {
+                writer.beginObject()
+                        .name("sprite").value(Keys.toString(region.sprite()))
+                        .name("x").value(region.x())
+                        .name("y").value(region.y())
+                        .name("width").value(region.width())
+                        .name("height").value(region.height())
+                        .endObject();
+            }
+            writer.endArray();
+        } else if (source instanceof PalettedPermutationsAtlasSource) {
+            PalettedPermutationsAtlasSource ppSource = (PalettedPermutationsAtlasSource) source;
+            writer
+                    .name(TYPE_FIELD).value(PALETTED_PERMUTATIONS_TYPE)
+                    .name("textures").beginArray();
+            for (Key texture : ppSource.textures()) {
+                writer.value(Keys.toString(texture));
+            }
+            writer.endArray();
+            writer.name("palette_key").value(Keys.toString(ppSource.paletteKey()));
+            writer.name("permutations").beginObject();
+            for (Map.Entry<String, Key> entry : ppSource.permutations().entrySet()) {
+                writer.name(entry.getKey()).value(Keys.toString(entry.getValue()));
+            }
+            writer.endObject();
         } else {
             throw new IllegalArgumentException("Unknown atlas source type: '" + source + "'.");
         }
@@ -115,6 +184,45 @@ final class AtlasSourceSerializer {
             case FILTER_TYPE: {
                 KeyPattern pattern = KeyPatternSerializer.deserialize(node.getAsJsonObject("pattern"));
                 return AtlasSource.filter(pattern);
+            }
+            case UNSTITCH_TYPE: {
+                @Subst("minecraft:resource")
+                String resourceStr = node.get("resource").getAsString();
+                Key resource = Key.key(resourceStr);
+                double xDivisor = node.has("divisor_x") ? node.get("divisor_x").getAsDouble() : UnstitchAtlasSource.DEFAULT_X_DIVISOR;
+                double yDivisor = node.has("divisor_y") ? node.get("divisor_y").getAsDouble() : UnstitchAtlasSource.DEFAULT_Y_DIVISOR;
+                List<UnstitchAtlasSource.Region> regions = new ArrayList<>();
+                for (JsonElement regionElement : node.getAsJsonArray("regions")) {
+                    JsonObject regionNode = regionElement.getAsJsonObject();
+                    @Subst("minecraft:resource")
+                    String spriteStr = regionNode.get("sprite").getAsString();
+                    regions.add(UnstitchAtlasSource.Region.of(
+                            Key.key(spriteStr),
+                            regionNode.get("x").getAsDouble(),
+                            regionNode.get("y").getAsDouble(),
+                            regionNode.get("width").getAsDouble(),
+                            regionNode.get("height").getAsDouble()
+                    ));
+                }
+                return AtlasSource.unstitch(resource, regions, xDivisor, yDivisor);
+            }
+            case PALETTED_PERMUTATIONS_TYPE: {
+                List<Key> textures = new ArrayList<>();
+                for (JsonElement keyElement : node.getAsJsonArray("textures")) {
+                    @Subst("minecraft:resource")
+                    String key = keyElement.getAsString();
+                    textures.add(Key.key(key));
+                }
+                @Subst("minecraft:resource")
+                String paletteKeyStr = node.get("palette_key").getAsString();
+                Key paletteKey = Key.key(paletteKeyStr);
+                Map<String, Key> permutations = new HashMap<>();
+                for (Map.Entry<String, JsonElement> entry : node.getAsJsonObject("permutations").entrySet()) {
+                    @Subst("minecraft:resource")
+                    String value = entry.getValue().getAsString();
+                    permutations.put(entry.getKey(), Key.key(value));
+                }
+                return AtlasSource.palettedPermutations(textures, paletteKey, permutations);
             }
             default:
                 throw new IllegalArgumentException("Unknown atlas source type: '" + type + "'.");
