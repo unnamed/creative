@@ -21,37 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.base;
+package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+/**
+ * @sincePackFormat 12
+ * @sinceMinecraft 1.19.3
+ */
+public class SingleAtlasSource implements AtlasSource {
 
-import static java.util.Objects.requireNonNull;
+    private final Key resource;
+    private final @Nullable Key sprite;
 
-public final class KeyedMap<T extends Keyed> {
-
-    private final Map<Key, T> map = new HashMap<>();
-
-    public @Nullable T get(Key key) {
-        requireNonNull(key, "key");
-        return map.get(key);
+    protected SingleAtlasSource(Key resource, @Nullable Key sprite) {
+        this.resource = resource;
+        this.sprite = sprite;
     }
 
-    public T put(T value) {
-        return map.put(value.key(), value);
+    public Key resource() {
+        return resource;
     }
 
-    public T putIfAbsent(T value) {
-        return map.putIfAbsent(value.key(), value);
+    public @Nullable Key sprite() {
+        return sprite;
     }
 
-    public Collection<T> values() {
-        return map.values();
-    }
+    // serialization:
+    // - do not include "sprite" field if it is null
+    // - do not include "sprite" field if it is equal to "resource"
 
 }

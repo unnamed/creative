@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.texture.Texture;
@@ -235,6 +236,17 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                             Key.key(namespace, keyValue)
                     ));
                     continue;
+                }
+                case ATLASES_FOLDER: {
+                    String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);
+                    if (keyValue == null) {
+                        // unknown
+                        break;
+                    }
+                    resourcePack.atlas(AtlasSerializer.INSTANCE.readFromTree(
+                            parse(input),
+                            Key.key(namespace, keyValue)
+                    ));
                 }
                 case LANGUAGES_FOLDER: {
                     String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);

@@ -23,46 +23,28 @@
  */
 package team.unnamed.creative.atlas;
 
-import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.base.KeyPattern;
+import team.unnamed.creative.util.Validate;
 
 /**
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
  */
-public interface AtlasSource {
+public class DirectoryAtlasSource implements AtlasSource {
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static SingleAtlasSource single(Key resource, @Nullable Key sprite) {
-        return new SingleAtlasSource(resource, sprite);
+    private final String source;
+    private final String prefix;
+
+    protected DirectoryAtlasSource(String source, String prefix) {
+        this.source = Validate.isNotNull(source, "source");
+        this.prefix = Validate.isNotEmpty(prefix, "prefix");
     }
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static SingleAtlasSource single(Key resource) {
-        return single(resource, null);
+    public String source() {
+        return source;
     }
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static DirectoryAtlasSource directory(String source, String prefix) {
-        return new DirectoryAtlasSource(source, prefix);
-    }
-
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static FilterAtlasSource filter(KeyPattern pattern) {
-        return new FilterAtlasSource(pattern);
+    public String prefix() {
+        return prefix;
     }
 
 }

@@ -25,12 +25,14 @@ package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
 import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
+import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -65,6 +67,11 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
             Metadata metadata = resourcePack.metadata();
             // TODO: Should we check for pack meta?
             writeToJson(target, SerializerMetadata.INSTANCE, metadata, PACK_METADATA_FILE);
+        }
+
+        // write atlases
+        for (Atlas atlas : resourcePack.atlases()) {
+            writeToJson(target, AtlasSerializer.INSTANCE, atlas, MinecraftResourcePackStructure.pathOf(atlas));
         }
 
         // write block states

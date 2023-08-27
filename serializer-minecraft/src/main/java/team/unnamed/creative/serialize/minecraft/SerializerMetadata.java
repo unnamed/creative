@@ -35,9 +35,10 @@ import team.unnamed.creative.metadata.villager.VillagerMeta;
 import team.unnamed.creative.metadata.animation.AnimationFrame;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
-import team.unnamed.creative.metadata.filter.FilterPattern;
+import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -198,35 +199,16 @@ final class SerializerMetadata implements JsonFileStreamWriter<Metadata> {
         writer.beginObject()
                 .name("block")
                 .beginArray();
-        for (FilterPattern pattern : filter.patterns()) {
-            Pattern namespace = pattern.namespace();
-            Pattern value = pattern.value();
-
-            writer.beginObject();
-            if (namespace != null) {
-                writer.name("namespace").value(namespace.pattern());
-            }
-            if (value != null) {
-                writer.name("path").value(value.pattern());
-            }
-            writer.endObject();
+        for (KeyPattern pattern : filter.patterns()) {
+            KeyPatternSerializer.serialize(pattern, writer);
         }
         writer.endArray().endObject();
     }
 
     private static FilterMeta readFilter(JsonObject node) {
-        List<FilterPattern> patterns = new ArrayList<>();
+        List<KeyPattern> patterns = new ArrayList<>();
         for (JsonElement filterNode : node.getAsJsonArray("block")) {
-            JsonObject filterObjectNode = filterNode.getAsJsonObject();
-            @RegExp String namespace = null;
-            @RegExp String path = null;
-            if (filterObjectNode.has("namespace")) {
-                namespace = filterObjectNode.get("namespace").getAsString();
-            }
-            if (filterObjectNode.has("path")) {
-                path = filterObjectNode.get("path").getAsString();
-            }
-            patterns.add(FilterPattern.of(namespace, path));
+            patterns.add(KeyPatternSerializer.deserialize(filterNode.getAsJsonObject()));
         }
         return FilterMeta.of(patterns);
     }

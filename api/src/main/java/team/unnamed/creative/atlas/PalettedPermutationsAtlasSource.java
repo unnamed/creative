@@ -24,45 +24,48 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.base.KeyPattern;
+import team.unnamed.creative.util.MoreCollections;
+import team.unnamed.creative.util.Validate;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * @sincePackFormat 12
- * @sinceMinecraft 1.19.3
+ * A type of {@link AtlasSource} used to dynamically generate
+ * new textures in memory based on a set of color palettes.
+ *
+ * @sincePackFormat 13
+ * @sinceMinecraft 1.19.4
  */
-public interface AtlasSource {
+public class PalettedPermutationsAtlasSource implements AtlasSource {
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static SingleAtlasSource single(Key resource, @Nullable Key sprite) {
-        return new SingleAtlasSource(resource, sprite);
+    private final List<Key> textures;
+    private final Key paletteKey;
+    private final Map<String, Key> permutations;
+
+    protected PalettedPermutationsAtlasSource(
+            List<Key> textures,
+            Key paletteKey,
+            Map<String, Key> permutations
+    ) {
+        Validate.isNotNull(textures, "textures");
+        Validate.isNotNull(paletteKey, "paletteKey");
+        Validate.isNotNull(permutations, "permutations");
+        this.textures = MoreCollections.immutableListOf(textures);
+        this.paletteKey = paletteKey;
+        this.permutations = MoreCollections.immutableMapOf(permutations);
     }
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static SingleAtlasSource single(Key resource) {
-        return single(resource, null);
+    public List<Key> textures() {
+        return textures;
     }
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static DirectoryAtlasSource directory(String source, String prefix) {
-        return new DirectoryAtlasSource(source, prefix);
+    public Key paletteKey() {
+        return paletteKey;
     }
 
-    /**
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     */
-    static FilterAtlasSource filter(KeyPattern pattern) {
-        return new FilterAtlasSource(pattern);
+    public Map<String, Key> permutations() {
+        return permutations;
     }
 
 }

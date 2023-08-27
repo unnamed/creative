@@ -25,6 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
@@ -62,6 +63,7 @@ final class MinecraftResourcePackStructure {
     public static final String SOUNDS_FILE = "sounds" + OBJECT_EXTENSION;
 
     // resource categories (assets/<namespace>/<category>/...)
+    public static final String ATLASES_FOLDER = "atlases";
     public static final String TEXTURES_FOLDER = "textures";
     public static final String SOUNDS_FOLDER = "sounds";
     public static final String BLOCKSTATES_FOLDER = "blockstates";
@@ -71,6 +73,11 @@ final class MinecraftResourcePackStructure {
     public static final String TEXTS_FOLDER = "texts";
 
     private MinecraftResourcePackStructure() {
+    }
+
+    public static String pathOf(Atlas atlas) {
+        // assets/<namespace>/atlases/<path>.json
+        return withCategory(ATLASES_FOLDER, atlas, OBJECT_EXTENSION);
     }
 
     public static String pathOf(BlockState blockState) {
