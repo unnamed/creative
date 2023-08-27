@@ -66,7 +66,7 @@ public final class AtlasSerializer implements JsonFileStreamWriter<Atlas>, JsonF
     @Override
     public void serialize(Atlas object, JsonWriter writer) throws IOException {
         writer.beginObject()
-                .name("sources")
+                .name(SOURCES_FIELD)
                 .beginArray();
         for (AtlasSource source : object.sources()) {
             AtlasSourceSerializer.serialize(source, writer);

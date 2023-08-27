@@ -29,7 +29,11 @@ import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.AtlasSource;
+import team.unnamed.creative.atlas.DirectoryAtlasSource;
+import team.unnamed.creative.atlas.FilterAtlasSource;
 import team.unnamed.creative.atlas.SingleAtlasSource;
+import team.unnamed.creative.base.KeyPattern;
+import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -37,15 +41,27 @@ import java.io.IOException;
 final class AtlasSourceSerializer {
 
     private static final String TYPE_FIELD = "type";
+
     private static final String SINGLE_TYPE = "single";
+    private static final String DIRECTORY_TYPE = "directory";
+    private static final String FILTER_TYPE = "filter";
+    private static final String UNSTITCH_TYPE = "unstitch";
+    private static final String PALETTED_PERMUTATIONS_TYPE = "paletted_permutations";
 
     // ------- TYPES ---------
     // {
     //     "type": "single",
     //     "resource": <key>,
     //     "sprite": <optional key>
-    // }
+    // },
     // {
+    //     "type": "directory",
+    //     "source": <string>,
+    //     "prefix": <string>
+    // },
+    // {
+    //     "type": "filter",
+    //     "pattern": <KeyPattern>
     // }
 
     static void serialize(AtlasSource source, JsonWriter writer) throws IOException {
@@ -59,6 +75,18 @@ final class AtlasSourceSerializer {
             if (sprite != null && !sprite.equals(resource)) {
                 writer.name("sprite").value(Keys.toString(sprite));
             }
+        } else if (source instanceof DirectoryAtlasSource) {
+            DirectoryAtlasSource dirSource = (DirectoryAtlasSource) source;
+            writer
+                    .name(TYPE_FIELD).value(DIRECTORY_TYPE)
+                    .name("source").value(dirSource.source())
+                    .name("prefix").value(dirSource.prefix());
+        } else if (source instanceof FilterAtlasSource) {
+            FilterAtlasSource filterSource = (FilterAtlasSource) source;
+            writer
+                    .name(TYPE_FIELD).value(FILTER_TYPE)
+                    .name("pattern");
+            KeyPatternSerializer.serialize(filterSource.pattern(), writer);
         } else {
             throw new IllegalArgumentException("Unknown atlas source type: '" + source + "'.");
         }
@@ -78,6 +106,15 @@ final class AtlasSourceSerializer {
                 Key resource = Key.key(resourceStr);
                 @Nullable Key sprite = spriteStr == null ? null : Key.key(spriteStr);
                 return AtlasSource.single(resource, sprite);
+            }
+            case DIRECTORY_TYPE: {
+                String source = node.get("source").getAsString();
+                String prefix = node.get("prefix").getAsString();
+                return AtlasSource.directory(source, prefix);
+            }
+            case FILTER_TYPE: {
+                KeyPattern pattern = KeyPatternSerializer.deserialize(node.getAsJsonObject("pattern"));
+                return AtlasSource.filter(pattern);
             }
             default:
                 throw new IllegalArgumentException("Unknown atlas source type: '" + type + "'.");
