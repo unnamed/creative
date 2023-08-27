@@ -24,21 +24,16 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Keyed;
 import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.base.Writable;
-import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.font.Font;
-import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
-import team.unnamed.creative.model.Model;
-import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
-import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Map;
 
@@ -50,6 +45,17 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
     static final MinecraftResourcePackWriterImpl INSTANCE = new MinecraftResourcePackWriterImpl();
 
     private MinecraftResourcePackWriterImpl() {
+    }
+
+    public <T extends Keyed> void writeFullCategory(ResourcePack resourcePack, FileTreeWriter target, ResourceCategory<T> category) {
+        for (T resource : category.lister().apply(resourcePack)) {
+            String path = category.pathOf(resource);
+            try (OutputStream output = target.openStream(path)) {
+                category.serializer().accept(resource, output);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
     }
 
     @Override
@@ -70,38 +76,13 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
         }
 
         // write atlases
-        for (Atlas atlas : resourcePack.atlases()) {
-            writeToJson(target, AtlasSerializer.INSTANCE, atlas, MinecraftResourcePackStructure.pathOf(atlas));
-        }
-
-        // write block states
-        for (BlockState blockState : resourcePack.blockStates()) {
-            writeToJson(target, SerializerBlockState.INSTANCE, blockState, MinecraftResourcePackStructure.pathOf(blockState));
-        }
-
-        // write fonts
-        for (Font font : resourcePack.fonts()) {
-            writeToJson(target, SerializerFont.INSTANCE, font, MinecraftResourcePackStructure.pathOf(font));
-        }
-
-        // write languages
-        for (Language language : resourcePack.languages()) {
-            writeToJson(target, SerializerLanguage.INSTANCE, language, MinecraftResourcePackStructure.pathOf(language));
-        }
-
-        // write models
-        for (Model model : resourcePack.models()) {
-            writeToJson(target, SerializerModel.INSTANCE, model, MinecraftResourcePackStructure.pathOf(model));
+        for (ResourceCategory<?> category : ResourceCategory.categories()) {
+            writeFullCategory(resourcePack, target, category);
         }
 
         // write sound registries
         for (SoundRegistry soundRegistry : resourcePack.soundRegistries()) {
             writeToJson(target, SerializerSoundRegistry.INSTANCE, soundRegistry, MinecraftResourcePackStructure.pathOf(soundRegistry));
-        }
-
-        // write sounds
-        for (Sound.File sound : resourcePack.sounds()) {
-            target.write(MinecraftResourcePackStructure.pathOf(sound), sound.data());
         }
 
         // write textures

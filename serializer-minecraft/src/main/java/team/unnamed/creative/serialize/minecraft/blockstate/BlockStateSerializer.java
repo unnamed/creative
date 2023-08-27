@@ -21,17 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.blockstate;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.blockstate.Condition;
 import team.unnamed.creative.blockstate.MultiVariant;
 import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
+import team.unnamed.creative.serialize.minecraft.JsonFileStreamWriter;
+import team.unnamed.creative.serialize.minecraft.JsonFileTreeReader;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -41,9 +46,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-final class SerializerBlockState implements JsonFileStreamWriter<BlockState>, JsonFileTreeReader.Keyed<BlockState> {
+public final class BlockStateSerializer implements JsonFileStreamWriter<BlockState>, JsonFileTreeReader.Keyed<BlockState> {
 
-    static final SerializerBlockState INSTANCE = new SerializerBlockState();
+    public static final ResourceCategory<BlockState> CATEGORY = new ResourceCategory<>(
+            "blockstates",
+            ".json",
+            ResourcePack::blockState,
+            ResourcePack::blockStates, ResourceCategory.parseAsJsonElement(BlockStateSerializer.INSTANCE),
+            ResourceCategory.writingAsjson(BlockStateSerializer.INSTANCE)
+    );
+
+    static final BlockStateSerializer INSTANCE = new BlockStateSerializer();
 
     @Override
     public void serialize(BlockState state, JsonWriter writer) throws IOException {

@@ -32,8 +32,12 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
+import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
+import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
-import team.unnamed.creative.sound.Sound;
+import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
+import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
+import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
 import team.unnamed.creative.texture.Texture;
 import team.unnamed.creative.util.Keys;
 
@@ -53,6 +57,8 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
     static final MinecraftResourcePackReaderImpl INSTANCE = new MinecraftResourcePackReaderImpl();
 
     private static final JsonParser PARSER = new JsonParser();
+
+    private final Map<String, ResourceCategory<?>> categories = new HashMap<>();
 
     private MinecraftResourcePackReaderImpl() {
     }
@@ -167,18 +173,6 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             String categoryPath = path(tokens);
 
             switch (category) {
-                case MODELS_FOLDER: {
-                    String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);
-                    if (keyValue == null) {
-                        // unknown
-                        break;
-                    }
-                    resourcePack.model(SerializerModel.INSTANCE.readFromTree(
-                            parse(input),
-                            Key.key(namespace, keyValue)
-                    ));
-                    continue;
-                }
                 case TEXTURES_FOLDER: {
                     String keyOfMetadata = withoutExtension(categoryPath, METADATA_EXTENSION);
                     if (keyOfMetadata != null) {
@@ -213,68 +207,18 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                     continue;
                 }
-                case SOUNDS_FOLDER: {
-                    String keyValue = withoutExtension(categoryPath, SOUND_EXTENSION);
-                    if (keyValue == null) {
-                        // unknown
-                        break;
-                    }
-                    resourcePack.sound(Sound.File.of(
-                            Key.key(namespace, keyValue),
-                            writableFromInputStreamCopy(input)
-                    ));
-                    continue;
-                }
-                case FONTS_FOLDER: {
-                    String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);
-                    if (keyValue == null) {
-                        // unknown
-                        break;
-                    }
-                    resourcePack.font(SerializerFont.INSTANCE.readFromTree(
-                            parse(input),
-                            Key.key(namespace, keyValue)
-                    ));
-                    continue;
-                }
-                case ATLASES_FOLDER: {
-                    String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);
-                    if (keyValue == null) {
-                        // unknown
-                        break;
-                    }
-                    resourcePack.atlas(AtlasSerializer.INSTANCE.readFromTree(
-                            parse(input),
-                            Key.key(namespace, keyValue)
-                    ));
-                }
-                case LANGUAGES_FOLDER: {
-                    String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);
-                    if (keyValue == null) {
-                        // unknown
-                        break;
-                    }
-                    resourcePack.language(SerializerLanguage.INSTANCE.readFromTree(
-                            parse(input),
-                            Key.key(namespace, keyValue)
-                    ));
-                    continue;
-                }
-                case BLOCKSTATES_FOLDER: {
-                    String keyValue = withoutExtension(categoryPath, OBJECT_EXTENSION);
-                    if (keyValue == null) {
-                        // unknown
-                        break;
-                    }
-                    resourcePack.blockState(SerializerBlockState.INSTANCE.readFromTree(
-                            parse(input),
-                            Key.key(namespace, keyValue)
-                    ));
-                    continue;
-                }
                 default: {
-                    // unknown category
-                    break;
+                    ResourceCategory cat = categories.get(category);
+                    if (cat == null) {
+                        // unknown category!
+                        break;
+                    }
+                    String keyValue = withoutExtension(categoryPath, cat.extension());
+                    if (keyValue == null) {
+                        break;
+                    }
+                    cat.setter().accept(resourcePack, cat.deserializer().apply(Key.key(namespace, keyValue), input));
+                    continue;
                 }
             }
 

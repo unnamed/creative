@@ -21,21 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.language;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.serialize.minecraft.JsonFileStreamWriter;
+import team.unnamed.creative.serialize.minecraft.JsonFileTreeReader;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-final class SerializerLanguage implements JsonFileStreamWriter<Language>, JsonFileTreeReader.Keyed<Language> {
+public final class LanguageSerializer implements JsonFileStreamWriter<Language>, JsonFileTreeReader.Keyed<Language> {
 
-    static final SerializerLanguage INSTANCE = new SerializerLanguage();
+    public static final ResourceCategory<Language> CATEGORY = new ResourceCategory<>(
+            "lang",
+            ".json",
+            ResourcePack::language,
+            ResourcePack::languages,
+            ResourceCategory.parseAsJsonElement(LanguageSerializer.INSTANCE),
+            ResourceCategory.writingAsjson(LanguageSerializer.INSTANCE)
+    );
+
+    static final LanguageSerializer INSTANCE = new LanguageSerializer();
 
     @Override
     public void serialize(Language language, JsonWriter writer) throws IOException {

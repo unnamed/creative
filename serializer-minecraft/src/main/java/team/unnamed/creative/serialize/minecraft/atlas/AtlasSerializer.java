@@ -27,10 +27,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.serialize.minecraft.JsonFileStreamWriter;
 import team.unnamed.creative.serialize.minecraft.JsonFileTreeReader;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,13 @@ import java.util.List;
 public final class AtlasSerializer implements JsonFileStreamWriter<Atlas>, JsonFileTreeReader.Keyed<Atlas> {
 
     public static final AtlasSerializer INSTANCE = new AtlasSerializer();
+    public static final ResourceCategory<Atlas> CATEGORY = new ResourceCategory<>(
+            "atlases",
+            ".json",
+            ResourcePack::atlas,
+            ResourcePack::atlases, ResourceCategory.parseAsJsonElement(AtlasSerializer.INSTANCE),
+            ResourceCategory.writingAsjson(AtlasSerializer.INSTANCE)
+    );
 
     private static final String SOURCES_FIELD = "sources";
 
