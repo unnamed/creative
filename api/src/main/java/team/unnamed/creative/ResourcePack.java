@@ -25,6 +25,7 @@ package team.unnamed.creative;
 
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
@@ -66,6 +67,7 @@ public final class ResourcePack {
     private @Nullable Writable icon;
     private Metadata metadata;
 
+    private final Map<Key, Atlas> atlases = new HashMap<>();
     private final Map<Key, BlockState> blockStates = new HashMap<>();
     private final Map<Key, Font> fonts = new HashMap<>();
     private final Map<Key, Language> languages = new HashMap<>();
@@ -182,6 +184,22 @@ public final class ResourcePack {
     }
     //#endregion (Metadata helpers)
     //#endregion (Top level)
+
+    //#region Atlases (Keyed)
+    public void atlas(Atlas atlas) {
+        requireNonNull(atlas, "atlas");
+        atlases.put(atlas.key(), atlas);
+    }
+
+    public @Nullable Atlas atlas(Key key) {
+        requireNonNull(key, "key");
+        return atlases.get(key);
+    }
+
+    public Collection<Atlas> atlases() {
+        return atlases.values();
+    }
+    //#endregion
 
     //#region Block States (Keyed)
     public void blockState(BlockState state) {

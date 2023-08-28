@@ -25,6 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.lang.Language;
@@ -43,7 +44,6 @@ final class MinecraftResourcePackStructure {
     // file extensions
     public static final String TEXTURE_EXTENSION = ".png";
     public static final String METADATA_EXTENSION = ".mcmeta";
-    public static final String SOUND_EXTENSION = ".ogg";
     public static final String OBJECT_EXTENSION = ".json";
 
     public static final String FILE_SEPARATOR = "/";
@@ -63,44 +63,14 @@ final class MinecraftResourcePackStructure {
 
     // resource categories (assets/<namespace>/<category>/...)
     public static final String TEXTURES_FOLDER = "textures";
-    public static final String SOUNDS_FOLDER = "sounds";
-    public static final String BLOCKSTATES_FOLDER = "blockstates";
-    public static final String FONTS_FOLDER = "font";
-    public static final String LANGUAGES_FOLDER = "lang";
-    public static final String MODELS_FOLDER = "models";
     public static final String TEXTS_FOLDER = "texts";
 
     private MinecraftResourcePackStructure() {
     }
 
-    public static String pathOf(BlockState blockState) {
-        // assets/<namespace>/blockstates/<path>.json
-        return withCategory(BLOCKSTATES_FOLDER, blockState, OBJECT_EXTENSION);
-    }
-
-    public static String pathOf(Font font) {
-        // assets/<namespace>/font/<path>.json
-        return withCategory(FONTS_FOLDER, font, OBJECT_EXTENSION);
-    }
-
-    public static String pathOf(Language language) {
-        // assets/<namespace>/lang/<path>.json
-        return withCategory(LANGUAGES_FOLDER, language, OBJECT_EXTENSION);
-    }
-
-    public static String pathOf(Model model) {
-        // assets/<namespace>/models/<path>.json
-        return withCategory(MODELS_FOLDER, model, OBJECT_EXTENSION);
-    }
-
     public static String pathOf(SoundRegistry registry) {
         // assets/<namespace>/sounds.json
         return path(ASSETS_FOLDER, registry.namespace(), SOUNDS_FILE);
-    }
-
-    public static String pathOf(Sound.File sound) {
-        // assets/<namespace>/sounds/<path>.ogg
-        return withCategory(SOUNDS_FOLDER, sound, SOUND_EXTENSION);
     }
 
     public static String pathOf(Texture texture) {
@@ -135,7 +105,7 @@ final class MinecraftResourcePackStructure {
     }
 
     // helper methods
-    private static String withCategory(String categoryFolder, Keyed resource, String extension) {
+    public static String withCategory(String categoryFolder, Keyed resource, String extension) {
         Key key = resource.key();
         // assets/<namespace>/<category>/<path>.<extension>
         return path(ASSETS_FOLDER, key.namespace(), categoryFolder, key.value() + extension);

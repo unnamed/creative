@@ -21,15 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.font;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.font.*;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -38,12 +43,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeReader.Keyed<Font> {
+public final class FontSerializer implements JsonResourceSerializer<Font>, JsonResourceDeserializer<Font> {
 
-    static final SerializerFont INSTANCE = new SerializerFont();
+    public static final ResourceCategory<Font> CATEGORY = new ResourceCategory<>(
+            "font",
+            ".json",
+            ResourcePack::font,
+            ResourcePack::fonts,
+            FontSerializer.INSTANCE,
+            FontSerializer.INSTANCE
+    );
+
+    static final FontSerializer INSTANCE = new FontSerializer();
 
     @Override
-    public void serialize(Font font, JsonWriter writer) throws IOException {
+    public void serializeToJson(Font font, JsonWriter writer) throws IOException {
         writer.beginObject()
                 .name("providers")
                 .beginArray();
@@ -68,7 +82,7 @@ final class SerializerFont implements JsonFileStreamWriter<Font>, JsonFileTreeRe
     }
 
     @Override
-    public Font readFromTree(JsonElement node, Key key) {
+    public Font deserializeFromJson(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         List<FontProvider> providers = new ArrayList<>();
         for (JsonElement providerNode : objectNode.getAsJsonArray("providers")) {

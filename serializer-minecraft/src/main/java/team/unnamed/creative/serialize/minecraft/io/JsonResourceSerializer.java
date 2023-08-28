@@ -21,37 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.base;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.Nullable;
+import com.google.gson.stream.JsonWriter;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
-import static java.util.Objects.requireNonNull;
+public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
 
-public final class KeyedMap<T extends Keyed> {
+    void serializeToJson(T object, JsonWriter writer) throws IOException;
 
-    private final Map<Key, T> map = new HashMap<>();
-
-    public @Nullable T get(Key key) {
-        requireNonNull(key, "key");
-        return map.get(key);
-    }
-
-    public T put(T value) {
-        return map.put(value.key(), value);
-    }
-
-    public T putIfAbsent(T value) {
-        return map.putIfAbsent(value.key(), value);
-    }
-
-    public Collection<T> values() {
-        return map.values();
+    @Override
+    default void serialize(T object, OutputStream output) throws IOException {
+        try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(output))) {
+            serializeToJson(object, writer);
+        }
     }
 
 }

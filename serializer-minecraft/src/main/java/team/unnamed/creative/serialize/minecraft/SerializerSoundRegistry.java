@@ -27,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -39,12 +40,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerSoundRegistry implements JsonFileStreamWriter<SoundRegistry>, JsonFileTreeReader.Namespaced<SoundRegistry> {
+final class SerializerSoundRegistry implements JsonResourceSerializer<SoundRegistry> {
 
     static final SerializerSoundRegistry INSTANCE = new SerializerSoundRegistry();
 
     @Override
-    public void serialize(SoundRegistry registry, JsonWriter writer) throws IOException {
+    public void serializeToJson(SoundRegistry registry, JsonWriter writer) throws IOException {
         writer.beginObject();
         for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
             SoundEvent event = entry.getValue();
@@ -112,7 +113,6 @@ final class SerializerSoundRegistry implements JsonFileStreamWriter<SoundRegistr
         writer.endObject();
     }
 
-    @Override
     public SoundRegistry readFromTree(JsonElement node, String namespace) {
         Map<String, SoundEvent> soundEvents = new HashMap<>();
         JsonObject objectNode = node.getAsJsonObject();

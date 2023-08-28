@@ -21,21 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.atlas;
 
-import com.google.gson.JsonElement;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.Nullable;
 
-public interface JsonFileTreeReader<T, TId> {
+/**
+ * @sincePackFormat 12
+ * @sinceMinecraft 1.19.3
+ */
+public class SingleAtlasSource implements AtlasSource {
 
-    T readFromTree(JsonElement node, TId id);
+    private final Key resource;
+    private final @Nullable Key sprite;
 
-    interface Keyed<T> extends JsonFileTreeReader<T, Key> {
-
+    protected SingleAtlasSource(Key resource, @Nullable Key sprite) {
+        this.resource = resource;
+        this.sprite = sprite;
     }
 
-    interface Namespaced<T> extends JsonFileTreeReader<T, String> {
-
+    public Key resource() {
+        return resource;
     }
+
+    public @Nullable Key sprite() {
+        return sprite;
+    }
+
+    // serialization:
+    // - do not include "sprite" field if it is null
+    // - do not include "sprite" field if it is equal to "resource"
 
 }

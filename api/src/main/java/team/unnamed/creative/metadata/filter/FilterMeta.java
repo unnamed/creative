@@ -26,6 +26,7 @@ package team.unnamed.creative.metadata.filter;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Arrays;
@@ -43,16 +44,16 @@ import static team.unnamed.creative.util.Validate.isTrue;
  *
  * <p>Makes the client ignore the specified files
  * from resource-packs below this one by using
- * {@link FilterPattern filtering patterns}</p>
+ * {@link KeyPattern filtering patterns}</p>
  *
  * @since 1.0.0
  * @sincePackFormat 9
  */
 public class FilterMeta implements MetadataPart {
 
-    private final List<FilterPattern> patterns;
+    private final List<KeyPattern> patterns;
 
-    private FilterMeta(List<FilterPattern> patterns) {
+    private FilterMeta(List<KeyPattern> patterns) {
         isNotNull(patterns, "patterns");
         this.patterns = immutableListOf(patterns);
         validate();
@@ -60,7 +61,7 @@ public class FilterMeta implements MetadataPart {
 
     private void validate() {
         isTrue(patterns.size() > 0, "Patterns list is empty!");
-        for (FilterPattern pattern : patterns) {
+        for (KeyPattern pattern : patterns) {
             if (pattern == null) {
                 throw new NullPointerException("An element in the patterns list is null");
             }
@@ -78,7 +79,7 @@ public class FilterMeta implements MetadataPart {
      * @return The key patterns to filter
      * @since 1.0.0
      */
-    public List<FilterPattern> patterns() {
+    public List<KeyPattern> patterns() {
         return patterns;
     }
 
@@ -115,7 +116,7 @@ public class FilterMeta implements MetadataPart {
      * @return A new {@link FilterMeta} instance
      * @since 1.0.0
      */
-    public static FilterMeta of(List<FilterPattern> patterns) {
+    public static FilterMeta of(List<KeyPattern> patterns) {
         return new FilterMeta(patterns);
     }
 
@@ -127,7 +128,7 @@ public class FilterMeta implements MetadataPart {
      * @return A new {@link FilterMeta} instance
      * @since 1.0.0
      */
-    public static FilterMeta of(FilterPattern... patterns) {
+    public static FilterMeta of(KeyPattern... patterns) {
         return new FilterMeta(Arrays.asList(patterns));
     }
 

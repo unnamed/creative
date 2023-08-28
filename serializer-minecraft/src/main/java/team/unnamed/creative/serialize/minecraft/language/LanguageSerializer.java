@@ -21,24 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.language;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-final class SerializerLanguage implements JsonFileStreamWriter<Language>, JsonFileTreeReader.Keyed<Language> {
+public final class LanguageSerializer implements JsonResourceSerializer<Language>, JsonResourceDeserializer<Language> {
 
-    static final SerializerLanguage INSTANCE = new SerializerLanguage();
+    public static final ResourceCategory<Language> CATEGORY = new ResourceCategory<>(
+            "lang",
+            ".json",
+            ResourcePack::language,
+            ResourcePack::languages,
+            LanguageSerializer.INSTANCE,
+            LanguageSerializer.INSTANCE
+    );
+
+    static final LanguageSerializer INSTANCE = new LanguageSerializer();
 
     @Override
-    public void serialize(Language language, JsonWriter writer) throws IOException {
+    public void serializeToJson(Language language, JsonWriter writer) throws IOException {
         // {
         //   "key.1": "value 1",
         //   "key.2": "value 2"
@@ -51,7 +64,7 @@ final class SerializerLanguage implements JsonFileStreamWriter<Language>, JsonFi
     }
 
     @Override
-    public Language readFromTree(JsonElement node, Key key) {
+    public Language deserializeFromJson(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
         Map<String, String> translations = new HashMap<>();
 

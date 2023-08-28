@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.metadata.filter;
+package team.unnamed.creative.base;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
@@ -42,16 +42,15 @@ import java.util.stream.Stream;
  * and/or {@link Key#value()}'s
  *
  * @since 1.0.0
- * @sincePackFormat 9
  */
-public class FilterPattern implements Examinable {
+public class KeyPattern implements Examinable {
 
-    private static final FilterPattern ANY = new FilterPattern(null, null);
+    private static final KeyPattern ANY = new KeyPattern(null, null);
 
     private final @Nullable Pattern namespace;
     private final @Nullable Pattern value;
 
-    private FilterPattern(
+    private KeyPattern(
             @Nullable Pattern namespace,
             @Nullable Pattern value
     ) {
@@ -114,7 +113,7 @@ public class FilterPattern implements Examinable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FilterPattern that = (FilterPattern) o;
+        KeyPattern that = (KeyPattern) o;
         return Objects.equals(namespace, that.namespace)
                 && Objects.equals(value, that.value);
     }
@@ -125,33 +124,33 @@ public class FilterPattern implements Examinable {
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter keys using the specified
      * namespace pattern and value pattern
      *
      * @param namespace The namespace pattern
      * @param value The value pattern
-     * @return A new {@link FilterPattern} instance
+     * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static FilterPattern of(
+    public static KeyPattern of(
             @Nullable Pattern namespace,
             @Nullable Pattern value
     ) {
-        return new FilterPattern(namespace, value);
+        return new KeyPattern(namespace, value);
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter keys using the specified
      * namespace pattern and value pattern
      *
      * @param namespace The namespace pattern
      * @param value The value pattern
-     * @return A new {@link FilterPattern} instance
+     * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static FilterPattern of(
+    public static KeyPattern of(
             @RegExp @Nullable String namespace,
             @RegExp @Nullable String value
     ) {
@@ -162,65 +161,65 @@ public class FilterPattern implements Examinable {
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter keys using the specified
      * namespace pattern and will filter any value
      *
      * @param namespace The namespace pattern
-     * @return A new {@link FilterPattern} instance
+     * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static FilterPattern ofNamespace(@Nullable Pattern namespace) {
+    public static KeyPattern ofNamespace(@Nullable Pattern namespace) {
         return of(namespace, null);
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter keys using the specified
      * namespace pattern and will filter any value
      *
      * @param namespace The namespace pattern
-     * @return A new {@link FilterPattern} instance
+     * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static FilterPattern ofNamespace(@RegExp @Nullable String namespace) {
+    public static KeyPattern ofNamespace(@RegExp @Nullable String namespace) {
         return of(namespace == null ? null : Pattern.compile(namespace), null);
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter keys using the specified
      * value pattern and will apply to every namespace
      *
      * @param value The value pattern
-     * @return A new {@link FilterPattern} instance
+     * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static FilterPattern ofValue(@Nullable Pattern value) {
+    public static KeyPattern ofValue(@Nullable Pattern value) {
         return of(null, value);
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter keys using the specified
      * value pattern and will apply to every namespace
      *
      * @param value The value pattern
-     * @return A new {@link FilterPattern} instance
+     * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static FilterPattern ofValue(@RegExp @Nullable String value) {
+    public static KeyPattern ofValue(@RegExp @Nullable String value) {
         return of(null, value == null ? null : Pattern.compile(value));
     }
 
     /**
-     * Creates a new {@link FilterPattern} instance
+     * Creates a new {@link KeyPattern} instance
      * that will filter any file
      *
      * @return The filtering pattern
      * @since 1.0.0
      */
-    public static FilterPattern any() {
+    public static KeyPattern any() {
         return ANY;
     }
 

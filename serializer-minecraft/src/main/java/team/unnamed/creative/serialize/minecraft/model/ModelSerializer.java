@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.model;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -29,6 +29,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.ApiStatus;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector2Float;
@@ -43,6 +45,10 @@ import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -52,12 +58,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTreeReader.Keyed<Model> {
+@ApiStatus.Internal
+public final class ModelSerializer implements JsonResourceSerializer<Model>, JsonResourceDeserializer<Model> {
 
-    static final SerializerModel INSTANCE = new SerializerModel();
+    public static final ResourceCategory<Model> CATEGORY = new ResourceCategory<>(
+            "models",
+            ".json",
+            ResourcePack::model,
+            ResourcePack::models,
+            ModelSerializer.INSTANCE,
+            ModelSerializer.INSTANCE
+    );
+
+    static final ModelSerializer INSTANCE = new ModelSerializer();
 
     @Override
-    public void serialize(Model model, JsonWriter writer) throws IOException {
+    public void serializeToJson(Model model, JsonWriter writer) throws IOException {
         writer.beginObject();
 
         // parent
@@ -114,7 +130,7 @@ final class SerializerModel implements JsonFileStreamWriter<Model>, JsonFileTree
     }
 
     @Override
-    public Model readFromTree(JsonElement node, Key key) {
+    public Model deserializeFromJson(JsonElement node, Key key) {
 
         JsonObject objectNode = node.getAsJsonObject();
 
