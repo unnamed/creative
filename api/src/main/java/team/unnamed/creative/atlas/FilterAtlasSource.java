@@ -23,8 +23,12 @@
  */
 package team.unnamed.creative.atlas;
 
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.util.Validate;
+
+import java.util.stream.Stream;
 
 /**
  * @sincePackFormat 12
@@ -41,6 +45,13 @@ public class FilterAtlasSource implements AtlasSource {
 
     public KeyPattern pattern() {
         return pattern;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("pattern", pattern)
+        );
     }
 
 }

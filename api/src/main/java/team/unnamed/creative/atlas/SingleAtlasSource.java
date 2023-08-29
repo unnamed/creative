@@ -24,7 +24,11 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 /**
  * @sincePackFormat 12
@@ -48,8 +52,12 @@ public class SingleAtlasSource implements AtlasSource {
         return sprite;
     }
 
-    // serialization:
-    // - do not include "sprite" field if it is null
-    // - do not include "sprite" field if it is equal to "resource"
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("resource", resource),
+                ExaminableProperty.of("sprite", sprite)
+        );
+    }
 
 }

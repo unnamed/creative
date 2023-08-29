@@ -23,7 +23,11 @@
  */
 package team.unnamed.creative.atlas;
 
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.util.Validate;
+
+import java.util.stream.Stream;
 
 /**
  * @sincePackFormat 12
@@ -45,6 +49,14 @@ public class DirectoryAtlasSource implements AtlasSource {
 
     public String prefix() {
         return prefix;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("source", source),
+                ExaminableProperty.of("prefix", prefix)
+        );
     }
 
 }

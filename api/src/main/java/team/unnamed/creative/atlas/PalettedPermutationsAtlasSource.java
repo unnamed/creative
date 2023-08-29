@@ -24,11 +24,14 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.util.MoreCollections;
 import team.unnamed.creative.util.Validate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * A type of {@link AtlasSource} used to dynamically generate
@@ -66,6 +69,15 @@ public class PalettedPermutationsAtlasSource implements AtlasSource {
 
     public Map<String, Key> permutations() {
         return permutations;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("textures", textures),
+                ExaminableProperty.of("paletteKey", paletteKey),
+                ExaminableProperty.of("permutations", permutations)
+        );
     }
 
 }

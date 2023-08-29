@@ -25,6 +25,8 @@ package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.util.MoreCollections;
@@ -33,12 +35,13 @@ import team.unnamed.creative.util.Validate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
  */
-public class Atlas implements Keyed {
+public class Atlas implements Keyed, Examinable {
 
     public static final Key BLOCKS = Key.key("blocks");
     public static final Key BANNER_PATTERNS = Key.key("banner_patterns");
@@ -70,6 +73,14 @@ public class Atlas implements Keyed {
 
     public @Unmodifiable List<AtlasSource> sources() {
         return sources;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("key", key),
+                ExaminableProperty.of("sources", sources)
+        );
     }
 
     public static Atlas of(Key key, List<AtlasSource> sources) {

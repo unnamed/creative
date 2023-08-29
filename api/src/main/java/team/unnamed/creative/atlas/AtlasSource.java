@@ -24,6 +24,7 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.KeyPattern;
 
@@ -34,7 +35,7 @@ import java.util.Map;
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
  */
-public interface AtlasSource {
+public interface AtlasSource extends Examinable {
 
     /**
      * @sincePackFormat 12

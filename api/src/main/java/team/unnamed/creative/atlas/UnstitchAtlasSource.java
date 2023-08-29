@@ -24,9 +24,13 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.util.Validate;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @sincePackFormat 12
@@ -70,7 +74,17 @@ public class UnstitchAtlasSource implements AtlasSource {
         return yDivisor;
     }
 
-    public static class Region {
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("resource", resource),
+                ExaminableProperty.of("regions", regions),
+                ExaminableProperty.of("xDivisor", xDivisor),
+                ExaminableProperty.of("yDivisor", yDivisor)
+        );
+    }
+
+    public static class Region implements Examinable {
 
         private final Key sprite;
         private final double x;
@@ -110,6 +124,17 @@ public class UnstitchAtlasSource implements AtlasSource {
 
         public double height() {
             return height;
+        }
+
+        @Override
+        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+            return Stream.of(
+                    ExaminableProperty.of("sprite", sprite),
+                    ExaminableProperty.of("x", x),
+                    ExaminableProperty.of("y", y),
+                    ExaminableProperty.of("width", width),
+                    ExaminableProperty.of("height", height)
+            );
         }
 
         public static Region of(Key sprite, double x, double y, double width, double height) {
