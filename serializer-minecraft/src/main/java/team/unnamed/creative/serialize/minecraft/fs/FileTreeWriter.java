@@ -151,12 +151,39 @@ public interface FileTreeWriter extends AutoCloseable {
      * finished ({@link ZipOutputStream#finish()})</p>
      *
      * @param zipStream The underlying zip stream
-     * @param entryFactory The ZIP archive entry factory
+     * @param entryLifecycleHandler The ZIP archive entry lifecycle handler
      * @return The file tree for the given zip output
      * stream
      */
+    static FileTreeWriter zip(ZipOutputStream zipStream, ZipEntryLifecycleHandler entryLifecycleHandler) {
+        return new ZipFileTreeWriter(zipStream, entryLifecycleHandler);
+    }
+
+    /**
+     * Creates a new {@link FileTreeWriter} instance for
+     * the given {@link ZipOutputStream}, will not
+     * be closed
+     *
+     * <p>Note that the created file tree will never
+     * close the given output stream, but it may be
+     * finished ({@link ZipOutputStream#finish()})</p>
+     *
+     * @param zipStream The underlying zip stream
+     * @param entryFactory The ZIP archive entry factory
+     * @return The file tree for the given zip output
+     * stream
+     * @deprecated Use {@link FileTreeWriter#zip(ZipOutputStream, ZipEntryLifecycleHandler)} instead
+     */
+    @Deprecated
     static FileTreeWriter zip(ZipOutputStream zipStream, Function<String, ZipEntry> entryFactory) {
-        return new ZipFileTreeWriter(zipStream, entryFactory);
+        return new ZipFileTreeWriter(zipStream, new ZipEntryLifecycleHandler() {
+
+            @Override
+            public ZipEntry create(String path) {
+                return entryFactory.apply(path);
+            }
+
+        });
     }
 
     /**
@@ -173,16 +200,7 @@ public interface FileTreeWriter extends AutoCloseable {
      * stream
      */
     static FileTreeWriter zip(ZipOutputStream zipStream) {
-        return zip(zipStream, path -> {
-            ZipEntry entry = new ZipEntry(path);
-            // ensures that the resulting zip file is always
-            // the exact same (because of hashes)
-            entry.setTime(0L);
-            // tip: if you want to make the resource pack
-            // harder to open, you can set an asi extra field
-            // using ZipEntry#setExtra(byte[])
-            return entry;
-        });
+        return zip(zipStream, ZipEntryLifecycleHandler.DEFAULT);
     }
 
 }

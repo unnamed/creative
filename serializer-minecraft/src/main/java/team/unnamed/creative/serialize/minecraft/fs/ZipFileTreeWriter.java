@@ -31,7 +31,6 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -39,13 +38,13 @@ final class ZipFileTreeWriter implements FileTreeWriter {
 
     private final Set<String> names = new HashSet<>();
     private final ZipOutputStream output;
-    private final Function<String, ZipEntry> entryFactory;
+    private final ZipEntryLifecycleHandler entryLifecycleHandler;
 
     private ZipEntryOutputStream current;
 
-    ZipFileTreeWriter(ZipOutputStream output, Function<String, ZipEntry> entryFactory) {
+    ZipFileTreeWriter(ZipOutputStream output, ZipEntryLifecycleHandler entryLifecycleHandler) {
         this.output = output;
-        this.entryFactory = entryFactory;
+        this.entryLifecycleHandler = entryLifecycleHandler;
     }
 
     @Override
@@ -64,22 +63,37 @@ final class ZipFileTreeWriter implements FileTreeWriter {
             if (current != null) {
                 // did you forgor to close it?
                 current.close();
+                current = null;
             }
 
-            output.putNextEntry(entryFactory.apply(path));
+            ZipEntry entry = entryLifecycleHandler.create(path);
+            output.putNextEntry(entry);
+            current = new ZipEntryOutputStream(entry);
+            return current; // should be closed when any other method is called
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-
-        return current = new ZipEntryOutputStream();
     }
 
     @Override
     public void write(String path, Writable data) {
+        if (!names.add(path)) {
+            throw new IllegalStateException("File " + path + " already exists!");
+        }
+
         try {
-            output.putNextEntry(entryFactory.apply(path));
+            if (current != null) {
+                current.close();
+                current = null;
+            }
+
+            // no-need to create a ZipEntryOutputStream
+            ZipEntry entry = entryLifecycleHandler.create(path);
+            output.putNextEntry(entry);
             data.write(output);
             names.add(path);
+            output.closeEntry();
+            entryLifecycleHandler.onClose(entry);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -88,6 +102,10 @@ final class ZipFileTreeWriter implements FileTreeWriter {
     @Override
     public void finish() {
         try {
+            if (current != null) {
+                current.close();
+                current = null;
+            }
             output.finish();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -97,6 +115,10 @@ final class ZipFileTreeWriter implements FileTreeWriter {
     @Override
     public void close() {
         try {
+            if (current != null) {
+                current.close();
+                current = null;
+            }
             output.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -105,7 +127,12 @@ final class ZipFileTreeWriter implements FileTreeWriter {
 
     private class ZipEntryOutputStream extends OutputStream {
 
+        private ZipEntry entry;
         private boolean closed;
+
+        private ZipEntryOutputStream(ZipEntry entry) {
+            this.entry = entry;
+        }
 
         @Override
         public void write(byte @NotNull [] b) throws IOException {
@@ -135,7 +162,8 @@ final class ZipFileTreeWriter implements FileTreeWriter {
         public void close() throws IOException {
             if (!closed) {
                 output.closeEntry();
-                current = null;
+                entryLifecycleHandler.onClose(entry);
+                entry = null;
                 closed = true;
             }
         }
