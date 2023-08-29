@@ -45,6 +45,7 @@ import java.util.Map;
 
 public final class FontSerializer implements JsonResourceSerializer<Font>, JsonResourceDeserializer<Font> {
 
+    static final FontSerializer INSTANCE = new FontSerializer();
     public static final ResourceCategory<Font> CATEGORY = new ResourceCategory<>(
             "font",
             ".json",
@@ -53,8 +54,6 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
             FontSerializer.INSTANCE,
             FontSerializer.INSTANCE
     );
-
-    static final FontSerializer INSTANCE = new FontSerializer();
 
     @Override
     public void serializeToJson(Font font, JsonWriter writer) throws IOException {

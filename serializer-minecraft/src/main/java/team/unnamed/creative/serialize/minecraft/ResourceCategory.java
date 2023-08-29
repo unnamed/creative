@@ -46,17 +46,6 @@ import java.util.function.Function;
 @ApiStatus.Internal
 public class ResourceCategory<T extends Keyed> {
 
-    private static final Map<String, ResourceCategory<?>> CATEGORIES = new HashMap<>();
-
-    static {
-        registerCategory(AtlasSerializer.CATEGORY);
-        registerCategory(SoundSerializer.CATEGORY);
-        registerCategory(ModelSerializer.CATEGORY);
-        registerCategory(LanguageSerializer.CATEGORY);
-        registerCategory(BlockStateSerializer.CATEGORY);
-        registerCategory(FontSerializer.CATEGORY);
-    }
-
     private final String folder;
     private final String extension;
     private final BiConsumer<ResourcePack, T> setter;
@@ -109,18 +98,6 @@ public class ResourceCategory<T extends Keyed> {
         Key key = resource.key();
         // assets/<namespace>/<category>/<path><extension>
         return "assets/" + key.namespace() + "/" + this.folder + "/" + key.value() + extension;
-    }
-
-    private static void registerCategory(ResourceCategory<?> category) {
-        CATEGORIES.put(category.folder(), category);
-    }
-
-    public static Collection<ResourceCategory<?>> categories() {
-        return CATEGORIES.values();
-    }
-
-    public static @Nullable ResourceCategory<?> getByFolder(String folder) {
-        return CATEGORIES.get(folder);
     }
 
 }

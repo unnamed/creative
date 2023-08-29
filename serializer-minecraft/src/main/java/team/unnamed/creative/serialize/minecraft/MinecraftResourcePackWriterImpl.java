@@ -77,7 +77,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
         }
 
         // write atlases
-        for (ResourceCategory<?> category : ResourceCategory.categories()) {
+        for (ResourceCategory<?> category : ResourceCategories.categories()) {
             writeFullCategory(resourcePack, target, category);
         }
 

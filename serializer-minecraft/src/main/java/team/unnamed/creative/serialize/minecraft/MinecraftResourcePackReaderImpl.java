@@ -200,7 +200,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     continue;
                 }
                 default: {
-                    ResourceCategory category = ResourceCategory.getByFolder(categoryName);
+                    ResourceCategory category = ResourceCategories.getByFolder(categoryName);
                     if (category == null) {
                         // unknown category!
                         break;
