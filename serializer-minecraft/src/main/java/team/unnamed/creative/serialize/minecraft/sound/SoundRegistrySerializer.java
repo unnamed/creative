@@ -27,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import org.intellij.lang.annotations.Subst;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.sound.SoundEntry;
@@ -36,10 +37,11 @@ import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public final class SoundRegistrySerializer implements JsonResourceSerializer<SoundRegistry> {
 
@@ -48,9 +50,8 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
     @Override
     public void serializeToJson(SoundRegistry registry, JsonWriter writer) throws IOException {
         writer.beginObject();
-        for (Map.Entry<String, SoundEvent> entry : registry.sounds().entrySet()) {
-            SoundEvent event = entry.getValue();
-            writer.name(entry.getKey())
+        for (SoundEvent event : registry.sounds()) {
+            writer.name(event.key().value())
                     .beginObject();
 
             boolean replace = event.replace();
@@ -114,14 +115,16 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
         writer.endObject();
     }
 
-    public SoundRegistry readFromTree(JsonElement node, String namespace) {
-        Map<String, SoundEvent> soundEvents = new HashMap<>();
+    public SoundRegistry readFromTree(JsonElement node, @Subst("minecraft") String namespace) {
+        Set<SoundEvent> soundEvents = new HashSet<>();
         JsonObject objectNode = node.getAsJsonObject();
 
         for (Map.Entry<String, JsonElement> soundEventEntry : objectNode.entrySet()) {
+            @Subst("entity.enderman.stare")
             String eventKey = soundEventEntry.getKey();
             JsonObject eventNode = soundEventEntry.getValue().getAsJsonObject();
-            SoundEvent.Builder event = SoundEvent.builder();
+            SoundEvent.Builder event = SoundEvent.builder()
+                            .key(Key.key(namespace, eventKey));
 
             event.replace(GsonUtil.getBoolean(eventNode, "replace", SoundEvent.DEFAULT_REPLACE));
 
@@ -164,7 +167,7 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
                 event.sounds(sounds);
             }
 
-            soundEvents.put(eventKey, event.build());
+            soundEvents.add(event.build());
         }
         return SoundRegistry.of(namespace, soundEvents);
     }

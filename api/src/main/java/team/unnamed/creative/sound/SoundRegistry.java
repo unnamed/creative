@@ -31,11 +31,16 @@ import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.util.Validate;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -50,15 +55,25 @@ public class SoundRegistry implements Namespaced, Examinable {
 
     @Subst(Key.MINECRAFT_NAMESPACE)
     private final String namespace;
-    private final Map<String, SoundEvent> sounds;
+    private final Map<Key, SoundEvent> sounds;
 
     private SoundRegistry(
             String namespace,
-            Map<String, SoundEvent> sounds
+            Map<Key, SoundEvent> sounds
     ) {
         this.namespace = requireNonNull(namespace, "namespace");
         this.sounds = requireNonNull(sounds, "sounds");
+        validate();
+    }
+
+    private void validate() {
         Keys.validateNamespace(namespace);
+        for (Key key : sounds.keySet()) {
+            Validate.isTrue(
+                    key.namespace().equals(this.namespace),
+                    "Sound events can't have a namespace different from the sound registry namespace!"
+            );
+        }
     }
 
     @Override
@@ -67,8 +82,13 @@ public class SoundRegistry implements Namespaced, Examinable {
         return namespace;
     }
 
-    public Map<String, SoundEvent> sounds() {
-        return sounds;
+    public Collection<SoundEvent> sounds() {
+        return sounds.values();
+    }
+
+    public @Nullable SoundEvent sound(Key key) {
+        requireNonNull(key, "key");
+        return sounds.get(key);
     }
 
     @Override
@@ -107,9 +127,13 @@ public class SoundRegistry implements Namespaced, Examinable {
      */
     public static SoundRegistry of(
             String namespace,
-            Map<String, SoundEvent> sounds
+            Set<SoundEvent> sounds
     ) {
-        return new SoundRegistry(namespace, sounds);
+        Map<Key, SoundEvent> internalMap = new HashMap<>();
+        for (SoundEvent sound : sounds) {
+            internalMap.put(sound.key(), sound);
+        }
+        return new SoundRegistry(namespace, internalMap);
     }
 
     public static Builder builder() {
@@ -119,7 +143,7 @@ public class SoundRegistry implements Namespaced, Examinable {
     public static class Builder {
 
         private String namespace;
-        private Map<String, SoundEvent> sounds;
+        private Set<SoundEvent> sounds;
 
         private Builder() {
         }
@@ -129,20 +153,28 @@ public class SoundRegistry implements Namespaced, Examinable {
             return this;
         }
 
-        public Builder sound(String key, SoundEvent event) {
-            requireNonNull(key, "key");
+        public Builder sound(SoundEvent event) {
             requireNonNull(event, "event");
             if (sounds == null) {
-                sounds = new HashMap<>();
+                sounds = new HashSet<>();
             }
-            sounds.put(key, event);
+            sounds.add(event);
+            return this;
+        }
+
+        public Builder sounds(Collection<? extends SoundEvent> sounds) {
+            requireNonNull(sounds, "sounds");
+            if (this.sounds == null) {
+                this.sounds = new HashSet<>();
+            }
+            this.sounds.addAll(sounds);
             return this;
         }
 
         public SoundRegistry build() {
             requireNonNull(namespace, "namespace");
             requireNonNull(sounds, "sounds");
-            return new SoundRegistry(namespace, sounds);
+            return SoundRegistry.of(namespace, sounds);
         }
 
     }

@@ -1,37 +1,109 @@
 ## Sounds
 
-Create a sound using the creative's `Sound` class
+In Minecraft resource-packs, sounds have different levels of structure
 
+### 1. `Sound`
+
+It is the smallest unit of the sound system, it just represents a sound (`.ogg`)
+file
 ```java
-// where "key" points to an OGG audio file
-Key key = Key.key("namespace", "brrr");
-
-Sound sound = Sound.builder()
-    .nameSound(key)
-    .volume(2.0f)
-    .pitch(2.0f)
-    .attenuationDistance(10)
-    .build();
+Sound sound = Sound.of(
+        // location of the sound file in the resource-pack
+        // (assets/<namespace>/sounds/<name>.ogg)
+        Key.key("creative:meow_1"),
+        
+        // the sound data, check the Writable API,
+        // in this case, the sound data is taken from
+        // a file called "the_sound.ogg"
+        Writable.file(new File("the_sound.ogg"))
+);
 ```
 
-Then assign it to a `SoundEvent`
+Remember that sound files are independently written to the resource-pack, to
+add a sound to a resource-pack, you use:
+```java
+ResourcePack resourcePack = ...;
+resourcePack.sound(sound);
+```
+
+As simple as that!
+
+
+### 2. `SoundEntry`
+
+It is the second-smallest unit of the sound system, there are two types of sound entries:
+
+2.1. `FILE`, which is just configuration for a single `Sound`, it contains options like
+volume, pitch and attenuation distance
+```java
+SoundEntry soundEntry = SoundEntry.builder()
+        .type(SoundEntry.Type.FILE) // <-- Specify type to FILE
+        .key(Key.key("creative:meow_1")) // <-- set the key of a Sound
+        .volume(1.0F)
+        .pitch(1.0F)
+        .weight(1)
+        .stream(false)
+        .attenuationDistance(16)
+        .preload(false)
+        .build();
+```
+
+2.2. `EVENT`, which is configuration for a `SoundEvent` (see below), it allows the same
+options as the FILE type
+```java
+SoundEntry soundEntry = SoundEntry.builder()
+        .type(SoundEntry.Type.EVENT) // <-- Specify type to EVENT
+        .key(Key.key("creative:meow")) // <-- set the key of a SoundEvent
+        .volume(1.0F)
+        .pitch(1.0F)
+        .weight(1)
+        .stream(false)
+        .attenuationDistance(16)
+        .preload(false)
+        .build();
+```
+
+### 3. `SoundEvent`
+
+The `SoundEvent` class represents a named sound, this is the one you will use
+in-game. A sound event is just a named list of `SoundEntry`'s.
+
+From the server, you can't play specific sound entries (`SoundEntry`) or sounds
+(`Sound`), you play/fire sound events (`SoundEvent`)
+
+When a sound event is played/fired, a `SoundEntry` is randomly selected *(based
+on their `weight` property)* and played.
 
 ```java
 SoundEvent soundEvent = SoundEvent.builder()
-    .key(Key.key("namespace", "my_sound"))
-    .sounds(List.of(sound1, sound2, ...))
-    .build();
+        .key(Key.key("creative:creative.cat.meow"))
+        .sounds(
+                soundEntry1,
+                soundEntry2,
+                soundEntry3,
+                ...
+        );
+        .replace(false)
+        .build();
 ```
+
+Now write the `SoundEvent` in the resource-pack:
+
+```java
+ResourcePack resourcePack = ...;
+resourcePack.soundEvent(soundEvent);
+```
+
+And that's it! We are ready to play sounds in the game
 
 
 ### Playing a custom sound
 
-*Using adventure*, you could use
+In **Paper**, you can do the following:
 
 ```java
 SoundEvent soundEvent = ...;
-
 player.playSound(Sound.sound(soundEvent.key(), Sound.Source.AMBIENT, 1f, 1.1f));
 ```
 
-See [their documentation](https://docs.adventure.kyori.net/sound.html)
+See [Adventure documentation](https://docs.adventure.kyori.net/sound.html)

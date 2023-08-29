@@ -29,7 +29,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
@@ -94,6 +93,9 @@ public class SoundEntry implements Keyed, Examinable {
      * Returns the path to this sound file, starting
      * from assets/&lt;namespace&gt;/sounds folder or
      * another sound event key
+     *
+     * <p>If type is FILE, the returned key is a
+     * {@link Sound} key</p>
      *
      * <p>Doesn't include the file extension (.ogg)</p>
      *
@@ -301,6 +303,10 @@ public class SoundEntry implements Keyed, Examinable {
                 path, volume, pitch, weight, stream,
                 attenuationDistance, preload, Type.FILE
         );
+    }
+
+    public static SoundEntry withDefaultValues(Sound sound) {
+        return builder().nameSound(sound.key()).build();
     }
 
     /**

@@ -37,13 +37,16 @@ import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
+import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -290,6 +293,41 @@ public final class ResourcePack {
     public Collection<SoundRegistry> soundRegistries() {
         return soundRegistries.values();
     }
+
+    //#region Sound Events (Keyed, inside Sound Registries)
+    public void soundEvent(SoundEvent soundEvent) {
+        requireNonNull(soundEvent, "soundEvent");
+        String namespace = soundEvent.key().namespace();
+
+        Set<SoundEvent> soundEvents;
+        SoundRegistry soundRegistry = soundRegistry(namespace);
+        if (soundRegistry == null) {
+            soundEvents = new HashSet<>();
+        } else {
+            soundEvents = new HashSet<>(soundRegistry.sounds());
+        }
+
+        soundEvents.add(soundEvent);
+        soundRegistry(SoundRegistry.of(namespace, soundEvents));
+    }
+
+    public @Nullable SoundEvent soundEvent(Key key) {
+        requireNonNull(key, "key");
+        SoundRegistry registry = soundRegistry(key.namespace());
+        if (registry == null) {
+            return null;
+        }
+        return registry.sound(key);
+    }
+
+    public Collection<SoundEvent> soundEvents() {
+        Collection<SoundEvent> soundEvents = new HashSet<>();
+        for (SoundRegistry soundRegistry : soundRegistries()) {
+            soundEvents.addAll(soundRegistry.sounds());
+        }
+        return soundEvents;
+    }
+    //#endregion
     //#endregion
 
     //#region Sounds (Keyed)

@@ -23,6 +23,8 @@
  */
 package team.unnamed.creative.sound;
 
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -45,23 +47,32 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Examinable {
+public class SoundEvent implements Keyed, Examinable {
 
     public static final boolean DEFAULT_REPLACE = false;
 
+    private final Key key;
     private final boolean replace;
     @Nullable private final String subtitle;
     @Unmodifiable private final List<SoundEntry> sounds;
 
     private SoundEvent(
+            Key key,
             boolean replace,
             @Nullable String subtitle,
             List<SoundEntry> sounds
     ) {
+        requireNonNull(key, "key");
         requireNonNull(sounds, "sounds");
+        this.key = key;
         this.replace = replace;
         this.subtitle = subtitle;
         this.sounds = immutableListOf(sounds);
+    }
+
+    @Override
+    public @NotNull Key key() {
+        return key;
     }
 
     /**
@@ -79,7 +90,7 @@ public class SoundEvent implements Examinable {
 
     /**
      * Returns the sound event subtitle, which is translated as the
-     * subtitle of the sound if Show Subtitles" is enabled in-game
+     * subtitle of the sound if "Show Subtitles" is enabled in-game
      *
      * @return The sound subtitle
      */
@@ -130,6 +141,7 @@ public class SoundEvent implements Examinable {
      * Creates a new {@link SoundEvent} from the
      * given values
      *
+     * @param key The sound event's key
      * @param replace True to replace default sounds
      * @param subtitle The sound event subtitle
      * @param sounds The sound event sounds
@@ -137,11 +149,12 @@ public class SoundEvent implements Examinable {
      * @since 1.0.0
      */
     public static SoundEvent of(
+            Key key,
             boolean replace,
             @Nullable String subtitle,
             @Nullable List<SoundEntry> sounds
     ) {
-        return new SoundEvent(replace, subtitle, sounds);
+        return new SoundEvent(key, replace, subtitle, sounds);
     }
 
     /**
@@ -165,11 +178,17 @@ public class SoundEvent implements Examinable {
      */
     public static class Builder {
 
+        private Key key;
         private boolean replace = DEFAULT_REPLACE;
         private String subtitle;
         private List<SoundEntry> sounds = Collections.emptyList();
 
         private Builder() {
+        }
+
+        public Builder key(Key key) {
+            this.key = requireNonNull(key, "key");
+            return this;
         }
 
         public Builder replace(boolean replace) {
@@ -200,7 +219,7 @@ public class SoundEvent implements Examinable {
          * @return A new {@link SoundEvent instance}
          */
         public SoundEvent build() {
-            return new SoundEvent(replace, subtitle, sounds);
+            return new SoundEvent(key, replace, subtitle, sounds);
         }
 
     }
