@@ -32,12 +32,12 @@ import team.unnamed.creative.sound.Sound;
 @ApiStatus.Internal
 public class SoundSerializer {
 
-    public static final ResourceCategory<Sound.File> CATEGORY = new ResourceCategory<>(
+    public static final ResourceCategory<Sound> CATEGORY = new ResourceCategory<>(
             "sounds",
             ".ogg",
             ResourcePack::sound,
             ResourcePack::sounds,
-            (input, key) -> Sound.File.of(key, Writable.copyInputStream(input)),
+            (input, key) -> Sound.of(key, Writable.copyInputStream(input)),
             (sound, output) -> sound.data().write(output)
     );
 

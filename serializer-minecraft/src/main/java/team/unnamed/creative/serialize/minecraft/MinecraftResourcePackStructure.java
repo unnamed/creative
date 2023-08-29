@@ -25,12 +25,6 @@ package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
-import team.unnamed.creative.atlas.Atlas;
-import team.unnamed.creative.blockstate.BlockState;
-import team.unnamed.creative.font.Font;
-import team.unnamed.creative.lang.Language;
-import team.unnamed.creative.model.Model;
-import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 

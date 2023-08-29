@@ -29,7 +29,7 @@ import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
-import team.unnamed.creative.sound.Sound;
+import team.unnamed.creative.sound.SoundEntry;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.util.Keys;
@@ -64,10 +64,10 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
                 writer.name("subtitle").value(subtitle);
             }
 
-            List<Sound> sounds = event.sounds();
+            List<SoundEntry> sounds = event.sounds();
             if (!sounds.isEmpty()) {
                 writer.name("sounds").beginArray();
-                for (Sound sound : sounds) {
+                for (SoundEntry sound : sounds) {
                     // in order to make some optimizations,
                     // we have to do this
                     if (sound.allDefault()) {
@@ -77,31 +77,31 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
                         writer.beginObject()
                                 .name("name").value(Keys.toString(sound.key()));
                         float volume = sound.volume();
-                        if (volume != Sound.DEFAULT_VOLUME) {
+                        if (volume != SoundEntry.DEFAULT_VOLUME) {
                             writer.name("volume").value(volume);
                         }
                         float pitch = sound.pitch();
-                        if (pitch != Sound.DEFAULT_PITCH) {
+                        if (pitch != SoundEntry.DEFAULT_PITCH) {
                             writer.name("pitch").value(pitch);
                         }
                         float weight = sound.weight();
-                        if (weight != Sound.DEFAULT_WEIGHT) {
+                        if (weight != SoundEntry.DEFAULT_WEIGHT) {
                             writer.name("weight").value(weight);
                         }
                         boolean stream = sound.stream();
-                        if (stream != Sound.DEFAULT_STREAM) {
+                        if (stream != SoundEntry.DEFAULT_STREAM) {
                             writer.name("stream").value(stream);
                         }
                         int attenuationDistance = sound.attenuationDistance();
-                        if (attenuationDistance != Sound.DEFAULT_ATTENUATION_DISTANCE) {
+                        if (attenuationDistance != SoundEntry.DEFAULT_ATTENUATION_DISTANCE) {
                             writer.name("attenuation_distance").value(attenuationDistance);
                         }
                         boolean preload = sound.preload();
-                        if (preload != Sound.DEFAULT_PRELOAD) {
+                        if (preload != SoundEntry.DEFAULT_PRELOAD) {
                             writer.name("preload").value(preload);
                         }
-                        Sound.Type type = sound.type();
-                        if (type != Sound.DEFAULT_TYPE) {
+                        SoundEntry.Type type = sound.type();
+                        if (type != SoundEntry.DEFAULT_TYPE) {
                             writer.name("type").value(type.name().toLowerCase(Locale.ROOT));
                         }
                         writer.endObject();
@@ -130,33 +130,33 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
             }
 
             if (eventNode.has("sounds")) {
-                List<Sound> sounds = new ArrayList<>();
+                List<SoundEntry> sounds = new ArrayList<>();
 
                 for (JsonElement soundNode : eventNode.getAsJsonArray("sounds")) {
                     if (soundNode.isJsonObject()) {
                         // complete sound object
                         JsonObject soundObjectNode = soundNode.getAsJsonObject();
 
-                        Sound.Builder sound = Sound.builder()
+                        SoundEntry.Builder sound = SoundEntry.builder()
                                 .key(Key.key(soundObjectNode.get("name").getAsString()))
-                                .volume(GsonUtil.getFloat(soundObjectNode, "volume", Sound.DEFAULT_VOLUME))
-                                .pitch(GsonUtil.getFloat(soundObjectNode, "pitch", Sound.DEFAULT_PITCH))
-                                .weight(GsonUtil.getInt(soundObjectNode, "weight", Sound.DEFAULT_WEIGHT))
-                                .stream(GsonUtil.getBoolean(soundObjectNode, "stream", Sound.DEFAULT_STREAM))
-                                .attenuationDistance(GsonUtil.getInt(soundObjectNode, "attenuation_distance", Sound.DEFAULT_ATTENUATION_DISTANCE))
-                                .preload(GsonUtil.getBoolean(soundObjectNode, "preload", Sound.DEFAULT_PRELOAD));
+                                .volume(GsonUtil.getFloat(soundObjectNode, "volume", SoundEntry.DEFAULT_VOLUME))
+                                .pitch(GsonUtil.getFloat(soundObjectNode, "pitch", SoundEntry.DEFAULT_PITCH))
+                                .weight(GsonUtil.getInt(soundObjectNode, "weight", SoundEntry.DEFAULT_WEIGHT))
+                                .stream(GsonUtil.getBoolean(soundObjectNode, "stream", SoundEntry.DEFAULT_STREAM))
+                                .attenuationDistance(GsonUtil.getInt(soundObjectNode, "attenuation_distance", SoundEntry.DEFAULT_ATTENUATION_DISTANCE))
+                                .preload(GsonUtil.getBoolean(soundObjectNode, "preload", SoundEntry.DEFAULT_PRELOAD));
 
                         if (soundObjectNode.has("type")) {
                             String typeName = soundObjectNode.get("type").getAsString();
-                            Sound.Type type = Sound.Type.valueOf(typeName.toUpperCase(Locale.ROOT));
+                            SoundEntry.Type type = SoundEntry.Type.valueOf(typeName.toUpperCase(Locale.ROOT));
                             sound.type(type);
                         }
                         sounds.add(sound.build());
                     } else {
                         // everything is default, just read the name
-                        sounds.add(Sound.builder()
+                        sounds.add(SoundEntry.builder()
                                 .key(Key.key(soundNode.getAsString()))
-                                .type(Sound.Type.FILE)
+                                .type(SoundEntry.Type.FILE)
                                 .build());
                     }
                 }

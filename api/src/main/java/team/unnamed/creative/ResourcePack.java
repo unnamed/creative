@@ -73,7 +73,7 @@ public final class ResourcePack {
     private final Map<Key, Language> languages = new HashMap<>();
     private final Map<Key, Model> models = new HashMap<>();
     private final Map<String, SoundRegistry> soundRegistries = new HashMap<>();
-    private final Map<Key, Sound.File> sounds = new HashMap<>();
+    private final Map<Key, Sound> sounds = new HashMap<>();
     private final Map<Key, Texture> textures = new HashMap<>();
 
     // Unknown files we don't know how to parse
@@ -293,23 +293,23 @@ public final class ResourcePack {
     //#endregion
 
     //#region Sounds (Keyed)
-    public void sound(Sound.File sound) {
+    public void sound(Sound sound) {
         requireNonNull(sound, "sound");
         sounds.put(sound.key(), sound);
     }
 
-    public @Nullable Sound.File sound(Key key) {
+    public @Nullable Sound sound(Key key) {
         requireNonNull(key, "key");
         return sounds.get(key);
     }
 
-    public Collection<Sound.File> sounds() {
+    public Collection<Sound> sounds() {
         return sounds.values();
     }
 
     //#region Sound helpers
     public void sound(Key key, Writable data) {
-        sound(Sound.File.of(key, data));
+        sound(Sound.of(key, data));
     }
     //#endregion
     //#endregion

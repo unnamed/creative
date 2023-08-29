@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
- * Represents a sound event, a compound of {@link Sound}
+ * Represents a sound event, a compound of {@link SoundEntry}
  * instances
  *
  * @since 1.0.0
@@ -51,12 +51,12 @@ public class SoundEvent implements Examinable {
 
     private final boolean replace;
     @Nullable private final String subtitle;
-    @Unmodifiable private final List<Sound> sounds;
+    @Unmodifiable private final List<SoundEntry> sounds;
 
     private SoundEvent(
             boolean replace,
             @Nullable String subtitle,
-            List<Sound> sounds
+            List<SoundEntry> sounds
     ) {
         requireNonNull(sounds, "sounds");
         this.replace = replace;
@@ -93,7 +93,7 @@ public class SoundEvent implements Examinable {
      *
      * @return An unmodifiable list of the sound that this event uses
      */
-    public @Unmodifiable List<Sound> sounds() {
+    public @Unmodifiable List<SoundEntry> sounds() {
         return sounds;
     }
 
@@ -139,7 +139,7 @@ public class SoundEvent implements Examinable {
     public static SoundEvent of(
             boolean replace,
             @Nullable String subtitle,
-            @Nullable List<Sound> sounds
+            @Nullable List<SoundEntry> sounds
     ) {
         return new SoundEvent(replace, subtitle, sounds);
     }
@@ -167,7 +167,7 @@ public class SoundEvent implements Examinable {
 
         private boolean replace = DEFAULT_REPLACE;
         private String subtitle;
-        private List<Sound> sounds = Collections.emptyList();
+        private List<SoundEntry> sounds = Collections.emptyList();
 
         private Builder() {
         }
@@ -182,12 +182,12 @@ public class SoundEvent implements Examinable {
             return this;
         }
 
-        public Builder sounds(List<Sound> sounds) {
+        public Builder sounds(List<SoundEntry> sounds) {
             this.sounds = requireNonNull(sounds, "sounds");
             return this;
         }
 
-        public Builder sounds(Sound... sounds) {
+        public Builder sounds(SoundEntry... sounds) {
             requireNonNull(sounds, "sounds");
             this.sounds = Arrays.asList(sounds);
             return this;
