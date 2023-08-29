@@ -1,0 +1,19 @@
+{
+    "sources": [
+        {
+            "type": "paletted_permutations",
+            "textures": [
+                "minecraft:item/leather_helmet",
+                "minecraft:item/leather_chestplate",
+                "minecraft:item/leather_leggings",
+                "minecraft:item/leather_boots"
+            ],
+            "palette_key": "minecraft:colormap/color_palettes/leather_armor_color_key",
+            "permutations": {
+                "red": "minecraft:colormap/color_palettes/red",
+                "green": "minecraft:colormap/color_palettes/green",
+                "blue": "minecraft:colormap/color_palettes/blue"
+            }
+        }
+    ]
+}
