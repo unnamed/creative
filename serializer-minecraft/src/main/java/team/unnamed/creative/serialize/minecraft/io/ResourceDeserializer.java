@@ -24,6 +24,7 @@
 package team.unnamed.creative.serialize.minecraft.io;
 
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.base.Readable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,5 +32,11 @@ import java.io.InputStream;
 public interface ResourceDeserializer<T> {
 
     T deserialize(InputStream input, Key key) throws IOException;
+
+    default void deserialize(Readable readable, Key key) throws IOException {
+        try (InputStream input = readable.open()) {
+            deserialize(input, key);
+        }
+    }
 
 }

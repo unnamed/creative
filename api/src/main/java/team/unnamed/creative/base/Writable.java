@@ -209,7 +209,7 @@ public interface Writable {
 
             @Override
             public byte[] toByteArray() {
-                return bytes;
+                return bytes.clone();
             }
 
             @Override
@@ -230,18 +230,23 @@ public interface Writable {
      * @since 1.0.0
      */
     static Writable bytes(byte[] bytes) {
+        byte[] b = bytes.clone();
         return new Writable() {
 
             @Override
             public void write(OutputStream output) throws IOException {
-                output.write(bytes);
+                output.write(b);
             }
 
             @Override
             public byte[] toByteArray() {
-                return bytes;
+                return b.clone();
             }
 
+            @Override
+            public String toUTF8String() {
+                return new String(b, StandardCharsets.UTF_8);
+            }
         };
     }
 
@@ -266,7 +271,7 @@ public interface Writable {
 
             @Override
             public byte[] toByteArray() {
-                return bytes;
+                return bytes.clone();
             }
 
             @Override
