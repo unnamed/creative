@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.sound;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
@@ -40,9 +41,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerSoundRegistry implements JsonResourceSerializer<SoundRegistry> {
+public final class SoundRegistrySerializer implements JsonResourceSerializer<SoundRegistry> {
 
-    static final SerializerSoundRegistry INSTANCE = new SerializerSoundRegistry();
+    public static final SoundRegistrySerializer INSTANCE = new SoundRegistrySerializer();
 
     @Override
     public void serializeToJson(SoundRegistry registry, JsonWriter writer) throws IOException {

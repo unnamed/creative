@@ -32,6 +32,8 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
+import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
+import team.unnamed.creative.serialize.minecraft.sound.SoundRegistrySerializer;
 import team.unnamed.creative.texture.Texture;
 import team.unnamed.creative.util.Keys;
 
@@ -85,7 +87,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 switch (tokens.poll()) {
                     case PACK_METADATA_FILE: {
                         // found pack.mcmeta file, deserialize and add
-                        Metadata metadata = SerializerMetadata.INSTANCE.readFromTree(parse(input));
+                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(input));
                         resourcePack.metadata(metadata);
                         continue;
                     }
@@ -147,7 +149,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 // (remember: last tokens are always files)
                 if (categoryName.equals(SOUNDS_FILE)) {
                     // found a sound registry!
-                    resourcePack.soundRegistry(SerializerSoundRegistry.INSTANCE.readFromTree(
+                    resourcePack.soundRegistry(SoundRegistrySerializer.INSTANCE.readFromTree(
                             parse(input),
                             namespace
                     ));
@@ -170,7 +172,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     if (keyOfMetadata != null) {
                         // found metadata for texture
                         Key key = Key.key(namespace, keyOfMetadata);
-                        Metadata metadata = SerializerMetadata.INSTANCE.readFromTree(parse(input));
+                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(input));
 
                         Texture texture = incompleteTextures.remove(key);
                         if (texture == null) {

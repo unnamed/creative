@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.metadata;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,6 +37,7 @@ import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
@@ -47,16 +48,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-final class SerializerMetadata implements JsonResourceSerializer<Metadata> {
+public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
 
-    static final SerializerMetadata INSTANCE = new SerializerMetadata();
+    public static final MetadataSerializer INSTANCE = new MetadataSerializer();
 
-    static final String ANIMATION_FIELD = "animation";
-    static final String FILTER_FIELD = "filter";
-    static final String LANGUAGE_FIELD = "language";
-    static final String PACK_FIELD = "pack";
-    static final String TEXTURE_FIELD = "texture";
-    static final String VILLAGER_FIELD = "villager";
+    private static final String ANIMATION_FIELD = "animation";
+    private static final String FILTER_FIELD = "filter";
+    private static final String LANGUAGE_FIELD = "language";
+    private static final String PACK_FIELD = "pack";
+    private static final String TEXTURE_FIELD = "texture";
+    private static final String VILLAGER_FIELD = "villager";
 
     @Override
     public void serializeToJson(Metadata metadata, JsonWriter writer) throws IOException {

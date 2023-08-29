@@ -30,6 +30,8 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
+import team.unnamed.creative.serialize.minecraft.sound.SoundRegistrySerializer;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
@@ -73,7 +75,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
         {
             Metadata metadata = resourcePack.metadata();
             // TODO: Should we check for pack meta?
-            writeToJson(target, SerializerMetadata.INSTANCE, metadata, PACK_METADATA_FILE);
+            writeToJson(target, MetadataSerializer.INSTANCE, metadata, PACK_METADATA_FILE);
         }
 
         // write atlases
@@ -83,7 +85,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
 
         // write sound registries
         for (SoundRegistry soundRegistry : resourcePack.soundRegistries()) {
-            writeToJson(target, SerializerSoundRegistry.INSTANCE, soundRegistry, MinecraftResourcePackStructure.pathOf(soundRegistry));
+            writeToJson(target, SoundRegistrySerializer.INSTANCE, soundRegistry, MinecraftResourcePackStructure.pathOf(soundRegistry));
         }
 
         // write textures
@@ -95,7 +97,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
 
             Metadata metadata = texture.meta();
             if (!metadata.parts().isEmpty()) {
-                writeToJson(target, SerializerMetadata.INSTANCE, metadata, MinecraftResourcePackStructure.pathOfMeta(texture));
+                writeToJson(target, MetadataSerializer.INSTANCE, metadata, MinecraftResourcePackStructure.pathOfMeta(texture));
             }
         }
 
