@@ -24,18 +24,19 @@
 package team.unnamed.creative.serialize.minecraft.atlas;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.string.MultiLineStringExaminer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.atlas.DirectoryAtlasSource;
+import team.unnamed.creative.atlas.SingleAtlasSource;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AtlasDeserializationTest {
 
@@ -46,6 +47,8 @@ public class AtlasDeserializationTest {
         try (InputStream input = AtlasDeserializationTest.class.getClassLoader().getResourceAsStream("atlas/blocks.json")) {
             atlas = AtlasSerializer.INSTANCE.deserialize(input, Key.key("minecraft:blocks"));
         }
+
+        assertEquals(Key.key("minecraft:blocks"), atlas.key());
 
         List<AtlasSource> sources = atlas.sources();
         assertEquals(5, sources.size(), "There must be 5 atlas sources");
@@ -64,6 +67,27 @@ public class AtlasDeserializationTest {
             DirectoryAtlasSource d2 = (DirectoryAtlasSource) s2;
             assertEquals("item", d2.source(), "Second source must have source = 'item'");
             assertEquals("item/", d2.prefix(), "Second source must have prefix = 'item/'");
+        }
+        {
+            AtlasSource s3 = sources.get(2);
+            assertTrue(s3 instanceof DirectoryAtlasSource, "Third source must be a directory atlas source");
+            DirectoryAtlasSource d2 = (DirectoryAtlasSource) s3;
+            assertEquals("entity/conduit", d2.source(), "Third source must have source = 'entity/conduit'");
+            assertEquals("entity/conduit/", d2.prefix(), "Second source must have prefix = 'entity/conduit/'");
+        }
+        {
+            AtlasSource s4 = sources.get(3);
+            assertTrue(s4 instanceof SingleAtlasSource, "Fourth source must be a single atlas source");
+            SingleAtlasSource single1 = (SingleAtlasSource) s4;
+            assertEquals(Key.key("entity/bell/bell_body"), single1.resource(), "Fourth source must have resource = 'minecraft:entity/bell/bell_body'");
+            assertNull(single1.sprite(), "Fourth source must have sprite = null");
+        }
+        {
+            AtlasSource s5 = sources.get(4);
+            assertTrue(s5 instanceof SingleAtlasSource, "Fifth source must be a single atlas source");
+            SingleAtlasSource single2 = (SingleAtlasSource) s5;
+            assertEquals(Key.key("entity/enchanting_table_book"), single2.resource(), "Fifth source must have resource = 'minecraft:entity/enchanting_table_book'");
+            assertNull(single2.sprite(), "Fifth source must have sprite = null");
         }
     }
 
