@@ -47,7 +47,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Keyed, Examinable {
+public class SoundEvent implements Keyed, Examinable /*, net.kyori.adventure.sound.Sound.Type */ {
 
     public static final boolean DEFAULT_REPLACE = false;
 
