@@ -188,6 +188,7 @@ public final class ResourcePackServer {
          * zero, then a system default value is used</p>
          *
          * @param backlog The socket backlog
+         * @return This builder, for chaining
          */
         public Builder backlog(int backlog) {
             this.backlog = backlog;

@@ -31,9 +31,9 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public final class GsonUtil {
 
-    /**
-     * Determines if a property with the given {@code name}
-     * exists in the specified {@code object} and it's
+    /*
+     * Determines if a property with the given name
+     * exists in the specified object and it's
      * not null
      */
     public static boolean isNullOrAbsent(JsonObject object, String name) {

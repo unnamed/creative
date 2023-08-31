@@ -50,6 +50,7 @@ public interface ResourcePackRequestHandler {
      * @param request The resource pack request
      * @param exchange The HTTP exchange
      * @see HttpExchange
+     * @throws IOException If writing the response fails
      */
     void onRequest(ResourcePackRequest request, HttpExchange exchange) throws IOException;
 
@@ -70,6 +71,7 @@ public interface ResourcePackRequestHandler {
      *
      * @param exchange The http exchange
      * @see HttpExchange
+     * @throws IOException If writing the response fails
      */
     default void onInvalidRequest(HttpExchange exchange) throws IOException {
         byte[] response = "Please use a Minecraft client\n".getBytes(StandardCharsets.UTF_8);

@@ -61,8 +61,9 @@ public final class Sound implements Keyed, Examinable {
      * <p>Example key for a sound: <pre>{@code
      *
      *   Key key = Key.key("minecraft", "ambient/cave");
-     * }</pre>
-     * Note that the key value must not include the sound extension</p>
+     * }</pre></p>
+     *
+     * <p>Note that the key value must not include the sound extension</p>
      *
      * @return The sound key
      */

@@ -122,6 +122,7 @@ public class SoundRegistry implements Namespaced, Examinable {
      * Creates a new registry from the given
      * sounds
      *
+     * @param namespace The sound registry namespace
      * @param sounds The registered sounds
      * @return A new sound registry instance
      */

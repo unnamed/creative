@@ -110,6 +110,7 @@ public class SoundEntry implements Keyed, Examinable {
     }
 
     /**
+     * @return The sound entry's name ({@link Key#value()})
      * @deprecated Use {@link SoundEntry#key()} instead
      */
     @Deprecated
@@ -318,6 +319,9 @@ public class SoundEntry implements Keyed, Examinable {
      * @param volume The sound volume (0-1)
      * @param pitch The sound pitch
      * @param weight The sound weight
+     * @param stream
+     * @param attenuationDistance The sound attenuation distance
+     * @param preload
      * @return A new sound
      */
     public static SoundEntry event(
@@ -330,9 +334,7 @@ public class SoundEntry implements Keyed, Examinable {
         );
     }
 
-    /**
-     * @deprecated Use {@link SoundEntry#event(Key, float, float, int, boolean, int, boolean)} instead
-     */
+    // @deprecated Use {@link SoundEntry#event(Key, float, float, int, boolean, int, boolean)} instead
     @Deprecated
     public static SoundEntry event(
             String name, float volume, float pitch, int weight,
@@ -391,6 +393,8 @@ public class SoundEntry implements Keyed, Examinable {
         }
 
         /**
+         * @param name The sound name
+         * @return This builder, for chaining
          * @deprecated Use {@link SoundEntry.Builder#nameEvent(Key)} instead
          */
         @Deprecated
