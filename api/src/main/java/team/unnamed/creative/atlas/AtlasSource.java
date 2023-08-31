@@ -27,43 +27,87 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.KeyPattern;
+import team.unnamed.creative.texture.Texture;
 
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Represents a source for {@link Atlas}. Every atlas source
+ * runs in during load, in order of definition, adding or
+ * removing new files to the texture list, to be later referenced
+ * by block models, item models, particles, etc.
+ *
+ * <p>There are multiple types of atlas sources. See implementations</p>
+ *
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
  */
 public interface AtlasSource extends Examinable {
 
     /**
+     * Creates a new {@link SingleAtlasSource}, single
+     * atlas sources add a single file and maps it to
+     * a custom name ({@code sprite}) if set
+     *
+     * @param resource The texture key (It can be {@link Texture#key()})
+     * @param sprite The sprite name
+     *
+     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
+     * @see SingleAtlasSource
      */
     static SingleAtlasSource single(Key resource, @Nullable Key sprite) {
         return new SingleAtlasSource(resource, sprite);
     }
 
     /**
+     * Creates a new {@link SingleAtlasSource}, single
+     * atlas sources add a single file.
+     *
+     * @param resource The texture key (It can be {@link Texture#key()})
+     *
+     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
+     * @see SingleAtlasSource
      */
     static SingleAtlasSource single(Key resource) {
         return single(resource, null);
     }
 
     /**
+     * Creates a new {@link DirectoryAtlasSource}, directory
+     * atlas sources add all the files in a directory and its
+     * subdirectories, across all namespaces.
+     *
+     * @param source The directory in the pack to be listed
+     *               (relative to the {@code textures} directory)
+     * @param prefix The prefix to be prepended to the sprite name
+     *               when loaded (can be empty)
+     *
+     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
+     * @see DirectoryAtlasSource
      */
     static DirectoryAtlasSource directory(String source, String prefix) {
         return new DirectoryAtlasSource(source, prefix);
     }
 
     /**
+     * Creates a new {@link FilterAtlasSource}, filter atlas sources
+     * remove sprites matching the given pattern, only works for entries
+     * already in the list.
+     *
+     * @param pattern The {@link KeyPattern} to match the resources
+     *
+     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
+     * @see FilterAtlasSource
+     * @see KeyPattern
      */
     static FilterAtlasSource filter(KeyPattern pattern) {
         return new FilterAtlasSource(pattern);

@@ -19,6 +19,13 @@ java {
 }
 
 tasks {
+    javadoc {
+        isFailOnError = false
+        (options as StandardJavadocDocletOptions).run {
+            tags("sinceMinecraft:a:Since Minecraft:")
+            tags("sincePackFormat:a:Since Resource-Pack Format:")
+        }
+    }
     test {
         useJUnitPlatform()
     }

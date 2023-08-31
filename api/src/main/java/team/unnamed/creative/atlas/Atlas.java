@@ -38,6 +38,24 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
+ * Represents an atlas, atlases are configuration files that control
+ * which images are included in texture atlases.
+ *
+ * <p>When the game loads all textures used by block and item models,
+ * the textures need to be stitched (merged) into a single image, called
+ * the "atlas".</p>
+ *
+ * <p>Individual textures that are stitched onto the atlas are called
+ * "sprites".</p>
+ *
+ * <p>Note that, since Minecraft M.19.3, by default, textures not in
+ * "item/" or "block/" directories are no longer automatically recognized
+ * and will fail to load.</p>
+ *
+ * <p>See the <a href="https://www.minecraft.net/en-us/article/minecraft-java-edition-1-19-3">1.19.3 change-log</a>
+ * and the atlas structure in the resource-pack <a href="https://minecraft.fandom.com/wiki/Resource_pack#Atlases">here</a></p>
+ *
+ * @since 1.0.0
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
  */
@@ -66,13 +84,38 @@ public class Atlas implements Keyed, Examinable {
         this.sources = MoreCollections.immutableListOf(sources);
     }
 
+    /**
+     * Gets the {@link Atlas} key, e.g. "test:fancy", note
+     * that JSON extension is not included
+     *
+     * @return The atlas resource location
+     * @since 1.0.0
+     */
     @Override
     public @NotNull Key key() {
         return key;
     }
 
+    /**
+     * Gets the list of sources for this {@link Atlas}
+     *
+     * @return The atlas sources
+     * @since 1.0.0
+     * @see AtlasSource
+     */
     public @Unmodifiable List<AtlasSource> sources() {
         return sources;
+    }
+
+    /**
+     * Converts this atlas instance to its builder type,
+     * with all the properties already set
+     *
+     * @return The created builder
+     * @since 1.0.0
+     */
+    public Builder toBuilder() {
+        return builder().key(key).sources(sources);
     }
 
     @Override
@@ -83,10 +126,40 @@ public class Atlas implements Keyed, Examinable {
         );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Atlas atlas = (Atlas) o;
+        if (!key.equals(atlas.key)) return false;
+        return sources.equals(atlas.sources);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = key.hashCode();
+        result = 31 * result + sources.hashCode();
+        return result;
+    }
+
+    /**
+     * Creates a new {@link Atlas} instance.
+     *
+     * @param key The atlas key, doesn't include JSON extension
+     * @param sources The list of sources for the atlas
+     * @return The created atlas instance
+     * @since 1.0.0
+     */
     public static Atlas of(Key key, List<AtlasSource> sources) {
         return new Atlas(key, sources);
     }
 
+    /**
+     * Creates a new {@link Atlas} builder instance.
+     *
+     * @return The created builder
+     * @since 1.0.0
+     */
     public static Builder builder() {
         return new Builder();
     }
@@ -99,9 +172,17 @@ public class Atlas implements Keyed, Examinable {
         private Builder() {
         }
 
+        public Key key() {
+            return key;
+        }
+
         public Builder key(Key key) {
             this.key = Validate.isNotNull(key, "key");
             return this;
+        }
+
+        public List<AtlasSource> sources() {
+            return sources;
         }
 
         public Builder sources(List<AtlasSource> sources) {
