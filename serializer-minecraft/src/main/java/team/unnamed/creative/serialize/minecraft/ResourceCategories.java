@@ -53,8 +53,6 @@ public class ResourceCategories {
     }
 
     private static void registerCategory(ResourceCategory<?> category) {
-        System.out.println("category" + category);
-        System.out.println("categories" + CATEGORIES);
         CATEGORIES.put(category.folder(), category);
     }
 

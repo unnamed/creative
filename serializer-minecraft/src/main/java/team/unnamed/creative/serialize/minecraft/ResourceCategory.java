@@ -26,22 +26,15 @@ package team.unnamed.creative.serialize.minecraft;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
-import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
-import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceSerializer;
-import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
-import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
-import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 @ApiStatus.Internal
 public class ResourceCategory<T extends Keyed> {
@@ -62,12 +55,29 @@ public class ResourceCategory<T extends Keyed> {
             ResourceDeserializer<T> deserializer,
             ResourceSerializer<T> serializer
     ) {
-        this.folder = folder;
-        this.extension = extension;
-        this.setter = setter;
-        this.deserializer = deserializer;
-        this.lister = lister;
-        this.serializer = serializer;
+        this.folder = requireNonNull(folder, "folder");
+        this.extension = requireNonNull(extension, "extension");
+        this.setter = requireNonNull(setter, "setter");
+        this.lister = requireNonNull(lister, "lister");
+        this.deserializer = requireNonNull(deserializer, "deserializer");
+        this.serializer = requireNonNull(serializer, "serializer");
+    }
+
+    public <TCodec extends ResourceSerializer<T> & ResourceDeserializer<T>> ResourceCategory(
+            String folder,
+            String extension,
+            BiConsumer<ResourcePack, T> setter,
+            Function<ResourcePack, Collection<T>> lister,
+            TCodec codec
+    ) {
+        this(
+                folder,
+                extension,
+                setter,
+                lister,
+                codec,
+                codec
+        );
     }
 
     public String folder() {

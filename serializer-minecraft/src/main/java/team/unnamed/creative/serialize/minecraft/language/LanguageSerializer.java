@@ -39,16 +39,20 @@ import java.util.Map;
 
 public final class LanguageSerializer implements JsonResourceSerializer<Language>, JsonResourceDeserializer<Language> {
 
-    public static final ResourceCategory<Language> CATEGORY = new ResourceCategory<>(
-            "lang",
-            ".json",
-            ResourcePack::language,
-            ResourcePack::languages,
-            LanguageSerializer.INSTANCE,
-            LanguageSerializer.INSTANCE
-    );
+    public static final LanguageSerializer INSTANCE;
+    public static final ResourceCategory<Language> CATEGORY;
 
-    static final LanguageSerializer INSTANCE = new LanguageSerializer();
+
+    static {
+        INSTANCE = new LanguageSerializer();
+        CATEGORY = new ResourceCategory<>(
+                "lang",
+                ".json",
+                ResourcePack::language,
+                ResourcePack::languages,
+                INSTANCE
+        );
+    }
 
     @Override
     public void serializeToJson(Language language, JsonWriter writer) throws IOException {

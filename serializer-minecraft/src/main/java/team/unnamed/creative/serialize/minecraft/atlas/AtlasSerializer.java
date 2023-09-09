@@ -41,17 +41,22 @@ import java.util.List;
 @ApiStatus.Internal
 public final class AtlasSerializer implements JsonResourceSerializer<Atlas>, JsonResourceDeserializer<Atlas> {
 
-    public static final AtlasSerializer INSTANCE = new AtlasSerializer();
-    public static final ResourceCategory<Atlas> CATEGORY = new ResourceCategory<>(
-            "atlases",
-            ".json",
-            ResourcePack::atlas,
-            ResourcePack::atlases,
-            AtlasSerializer.INSTANCE,
-            AtlasSerializer.INSTANCE
-    );
+    public static final AtlasSerializer INSTANCE;
+    public static final ResourceCategory<Atlas> CATEGORY;
 
     private static final String SOURCES_FIELD = "sources";
+
+
+    static {
+        INSTANCE = new AtlasSerializer();
+        CATEGORY = new ResourceCategory<>(
+                "atlases",
+                ".json",
+                ResourcePack::atlas,
+                ResourcePack::atlases,
+                INSTANCE
+        );
+    }
 
     private AtlasSerializer() {
     }

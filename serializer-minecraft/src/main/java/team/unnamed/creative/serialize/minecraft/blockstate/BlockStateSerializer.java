@@ -48,16 +48,19 @@ import java.util.Set;
 
 public final class BlockStateSerializer implements JsonResourceSerializer<BlockState>, JsonResourceDeserializer<BlockState> {
 
-    public static final ResourceCategory<BlockState> CATEGORY = new ResourceCategory<>(
-            "blockstates",
-            ".json",
-            ResourcePack::blockState,
-            ResourcePack::blockStates,
-            BlockStateSerializer.INSTANCE,
-            BlockStateSerializer.INSTANCE
-    );
+    public static final BlockStateSerializer INSTANCE;
+    public static final ResourceCategory<BlockState> CATEGORY;
 
-    static final BlockStateSerializer INSTANCE = new BlockStateSerializer();
+    static {
+        INSTANCE = new BlockStateSerializer();
+        CATEGORY = new ResourceCategory<>(
+                "blockstates",
+                ".json",
+                ResourcePack::blockState,
+                ResourcePack::blockStates,
+                INSTANCE
+        );
+    }
 
     @Override
     public void serializeToJson(BlockState state, JsonWriter writer) throws IOException {

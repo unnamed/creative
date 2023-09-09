@@ -61,16 +61,19 @@ import java.util.Map;
 @ApiStatus.Internal
 public final class ModelSerializer implements JsonResourceSerializer<Model>, JsonResourceDeserializer<Model> {
 
-    public static final ResourceCategory<Model> CATEGORY = new ResourceCategory<>(
-            "models",
-            ".json",
-            ResourcePack::model,
-            ResourcePack::models,
-            ModelSerializer.INSTANCE,
-            ModelSerializer.INSTANCE
-    );
+    public static final ModelSerializer INSTANCE;
+    public static final ResourceCategory<Model> CATEGORY;
 
-    static final ModelSerializer INSTANCE = new ModelSerializer();
+    static {
+        INSTANCE = new ModelSerializer();
+        CATEGORY = new ResourceCategory<>(
+                "models",
+                ".json",
+                ResourcePack::model,
+                ResourcePack::models,
+                ModelSerializer.INSTANCE
+        );
+    }
 
     @Override
     public void serializeToJson(Model model, JsonWriter writer) throws IOException {
