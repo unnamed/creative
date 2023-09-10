@@ -28,6 +28,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
 
@@ -35,7 +36,7 @@ public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
 
     @Override
     default void serialize(T object, OutputStream output) throws IOException {
-        try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(output))) {
+        try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8))) {
             serializeToJson(object, writer);
         }
     }
