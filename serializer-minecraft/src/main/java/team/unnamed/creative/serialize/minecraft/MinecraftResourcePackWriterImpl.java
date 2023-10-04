@@ -108,7 +108,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
     }
 
     private <T> void writeToJson(FileTreeWriter writer, JsonResourceSerializer<T> serializer, T object, String path) {
-        try (JsonWriter jsonWriter = writer.openJsonWriter(path)) {
+        try (JsonWriter jsonWriter = new JsonWriter(writer.openWriter(path))) {
             serializer.serializeToJson(object, jsonWriter);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write to " + path, e);

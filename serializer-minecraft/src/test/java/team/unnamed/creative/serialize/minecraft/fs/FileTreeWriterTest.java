@@ -48,7 +48,7 @@ public interface FileTreeWriterTest {
             writer.write("emptyfile.txt", Writable.EMPTY);
             writer.write("binaryfile.bin", Writable.bytes(new byte[] { (byte) 0xB0, 0x0B }));
 
-            try (JsonWriter jsonWriter = writer.openJsonWriter("file.json")) {
+            try (JsonWriter jsonWriter = new JsonWriter(writer.openWriter("file.json"))) {
                 jsonWriter.beginObject()
                         .name("libraryMainDeveloper").value("yusshu")
                         .name("license").value("MIT")
