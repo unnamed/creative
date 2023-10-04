@@ -6,4 +6,5 @@ language.md
 sounds.md
 putting-all-together.md
 examples
+serialization
 server
