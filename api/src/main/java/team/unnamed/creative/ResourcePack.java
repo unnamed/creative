@@ -24,6 +24,8 @@
 package team.unnamed.creative;
 
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.base.Writable;
@@ -34,6 +36,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
@@ -149,12 +152,49 @@ public final class ResourcePack {
         packMeta(PackMeta.of(format, description));
     }
 
+    /**
+     * Sets the resource-pack metadata, which specifies the
+     * pack supported format(s) and its description.
+     *
+     * @param format The supported pack format(s).
+     * @param description The pack description.
+     * @since 1.1.0
+     */
+    public void packMeta(final @NotNull PackFormat format, final @NotNull String description) {
+        packMeta(PackMeta.of(format, description));
+    }
+
+    /**
+     * Returns the pack format that this resource-pack uses.
+     *
+     * @return The pack format
+     * @since 1.0.0
+     * @deprecated Use {@link ResourcePack#formats()} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     public int format() {
         PackMeta meta = packMeta();
         if (meta == null) {
             return -1;
         } else {
             return meta.format();
+        }
+    }
+
+    /**
+     * Returns the pack format range that this resource-pack
+     * supports.
+     *
+     * @return The pack format range, null if not specified
+     * @since 1.1.0
+     */
+    public @Nullable PackFormat formats() {
+        PackMeta meta = packMeta();
+        if (meta == null) {
+            return null;
+        } else {
+            return meta.formats();
         }
     }
 

@@ -23,11 +23,13 @@
  */
 package team.unnamed.creative.serialize.minecraft.metadata;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
+import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.metadata.texture.TextureMeta;
 import team.unnamed.creative.metadata.villager.VillagerMeta;
@@ -254,15 +256,49 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
     //#region Pack metadata section serialization
     private static void writePack(JsonWriter writer, PackMeta pack) throws IOException {
         writer.beginObject()
-                .name("pack_format").value(pack.format())
-                .name("description").value(pack.description()) // TODO: components!
-                .endObject();
+                .name("pack_format").value(pack.formats().format())
+                .name("description").value(pack.description()); // TODO: components!
+
+        if (!pack.formats().isSingle()) { // since Minecraft 1.20.2 (pack format 18)
+            // only write min and max values if not single
+            // "supported_formats": [16, 17]
+            writer.name("supported_formats")
+                    .beginArray()
+                    .value(pack.formats().min())
+                    .value(pack.formats().max())
+                    .endArray();
+        }
+
+        writer.endObject();
     }
 
     private static PackMeta readPack(JsonObject node) {
         int format = node.get("pack_format").getAsInt();
+        int min = format;
+        int max = format;
         String description = node.get("description").getAsString();
-        return PackMeta.of(format, description);
+
+        if (node.has("supported_formats")) { // since Minecraft 1.20.2 (pack format 18)
+            JsonElement el = node.get("supported_formats");
+            if (el.isJsonPrimitive()) {
+                // single value
+                format = el.getAsInt();
+            } else if (el.isJsonArray()) {
+                JsonArray arr = el.getAsJsonArray();
+                // [min, max]
+                min = arr.get(0).getAsInt();
+                max = arr.get(1).getAsInt();
+            } else if (el.isJsonObject()) {
+                JsonObject obj = el.getAsJsonObject();
+                // {"min_inclusive": min, "max_inclusive": max}
+                min = obj.get("min_inclusive").getAsInt();
+                max = obj.get("max_inclusive").getAsInt();
+            } else {
+                throw new IllegalStateException("Unsupported supported_formats type: " + el.getClass());
+            }
+        }
+
+        return PackMeta.of(PackFormat.format(format, min, max), description);
     }
     //#endregion
 

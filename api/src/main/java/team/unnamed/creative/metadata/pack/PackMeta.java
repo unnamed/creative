@@ -25,6 +25,7 @@ package team.unnamed.creative.metadata.pack;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
 
@@ -41,14 +42,14 @@ import static java.util.Objects.requireNonNull;
  */
 public class PackMeta implements MetadataPart {
 
-    private final int format;
+    private final PackFormat format;
     private final String description;
 
     private PackMeta(
-            int format,
+            final @NotNull PackFormat format,
             String description
     ) {
-        this.format = format;
+        this.format = requireNonNull(format, "format");
         this.description = requireNonNull(description, "description");
     }
 
@@ -63,8 +64,27 @@ public class PackMeta implements MetadataPart {
      *
      * @return The resource pack format number
      * @since 1.0.0
+     * @deprecated Use {@link PackMeta#formats()} instead
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     public int format() {
+        return format.format();
+    }
+
+    /**
+     * Returns the supported pack formats. The pack format specifies
+     * how the resource-pack is structured and which features it
+     * uses.
+     *
+     * <p>There are format versions assigned to specific Minecraft
+     * client versions, e.g.: 7 for Minecraft 1.17(.1), 8 for Minecraft
+     * 1.18(.1), and so on.</p>
+     *
+     * @return The resource pack formats
+     * @since 1.1.0
+     */
+    public @NotNull PackFormat formats() {
         return format;
     }
 
@@ -117,6 +137,19 @@ public class PackMeta implements MetadataPart {
      * @since 1.0.0
      */
     public static PackMeta of(int format, String description) {
+        return new PackMeta(PackFormat.format(format), description);
+    }
+
+    /**
+     * Creates a new {@link PackMeta} instance from
+     * the given values.
+     *
+     * @param format The pack format
+     * @param description The pack description
+     * @return A new {@link PackMeta} instance
+     * @since 1.1.0
+     */
+    public static @NotNull PackMeta of(final @NotNull PackFormat format, final @NotNull String description) {
         return new PackMeta(format, description);
     }
 
