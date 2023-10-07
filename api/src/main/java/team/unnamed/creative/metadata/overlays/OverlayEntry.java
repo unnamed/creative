@@ -84,7 +84,7 @@ public interface OverlayEntry extends Examinable {
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
      */
-    public static @NotNull OverlayEntry of(
+    static @NotNull OverlayEntry of(
             final @NotNull PackFormat formats,
             final @NotNull @Subst("dir") @Directory String directory
     ) {
@@ -105,7 +105,7 @@ public interface OverlayEntry extends Examinable {
     @Documented
     @NonNls
     @Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE })
-    public @interface Directory {
+    @interface Directory {
     }
 
 }
