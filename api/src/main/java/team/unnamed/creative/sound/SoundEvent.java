@@ -24,7 +24,7 @@
 package team.unnamed.creative.sound;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -47,7 +47,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Keyed, Examinable /*, net.kyori.adventure.sound.Sound.Type */ {
+public class SoundEvent implements Sound.Type, Examinable  {
 
     public static final boolean DEFAULT_REPLACE = false;
 
