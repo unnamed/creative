@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
@@ -51,12 +52,11 @@ public interface AtlasSource extends Examinable {
      * a custom name ({@code sprite}) if set
      *
      * @param resource The texture key (It can be {@link Texture#key()})
-     * @param sprite The sprite name
-     *
-     * @since 1.0.0
+     * @param sprite   The sprite name
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see SingleAtlasSource
+     * @since 1.0.0
      */
     static SingleAtlasSource single(Key resource, @Nullable Key sprite) {
         return new SingleAtlasSource(resource, sprite);
@@ -67,11 +67,10 @@ public interface AtlasSource extends Examinable {
      * atlas sources add a single file.
      *
      * @param resource The texture key (It can be {@link Texture#key()})
-     *
-     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see SingleAtlasSource
+     * @since 1.0.0
      */
     static SingleAtlasSource single(Key resource) {
         return single(resource, null);
@@ -86,11 +85,10 @@ public interface AtlasSource extends Examinable {
      *               (relative to the {@code textures} directory)
      * @param prefix The prefix to be prepended to the sprite name
      *               when loaded (can be empty)
-     *
-     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see DirectoryAtlasSource
+     * @since 1.0.0
      */
     static DirectoryAtlasSource directory(String source, String prefix) {
         return new DirectoryAtlasSource(source, prefix);
@@ -102,12 +100,11 @@ public interface AtlasSource extends Examinable {
      * already in the list.
      *
      * @param pattern The {@link KeyPattern} to match the resources
-     *
-     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see FilterAtlasSource
      * @see KeyPattern
+     * @since 1.0.0
      */
     static FilterAtlasSource filter(KeyPattern pattern) {
         return new FilterAtlasSource(pattern);
