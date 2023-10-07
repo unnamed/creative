@@ -112,6 +112,9 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             // but it may change if the file is inside an overlay folder
             @Subst("dir")
             @Nullable String overlayDir = null;
+
+            // the file path, relative to the container
+            String containerPath = path;
             ResourceContainer container = resourcePack;
 
             // if there are two or more tokens, it means the
@@ -127,7 +130,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 if (tokens.isEmpty()) {
                     // this means that there is a file directly
                     // inside the "overlays" folder, this is illegal
-                    resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+                    resourcePack.unknownFile(containerPath, writableFromInputStreamCopy(input));
                     continue;
                 }
 
@@ -140,12 +143,13 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
                 container = overlay;
                 folder = tokens.poll();
+                containerPath = path.substring((OVERLAYS_FOLDER + '/' + overlayDir + '/').length());
             }
 
             // null check to make ide happy
             if (folder == null || !folder.equals(ASSETS_FOLDER) || tokens.isEmpty()) {
                 // not assets! this is an unknown file
-                container.unknownFile(path, writableFromInputStreamCopy(input));
+                container.unknownFile(containerPath, writableFromInputStreamCopy(input));
                 continue;
             }
 
@@ -155,14 +159,14 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
             if (!Keys.isValidNamespace(namespace)) {
                 // invalid namespace found
-                container.unknownFile(path, writableFromInputStreamCopy(input));
+                container.unknownFile(containerPath, writableFromInputStreamCopy(input));
                 continue;
             }
 
             if (tokens.isEmpty()) {
                 // found a file directly inside "assets", like
                 // assets/<file>, it is not allowed
-                container.unknownFile(path, writableFromInputStreamCopy(input));
+                container.unknownFile(containerPath, writableFromInputStreamCopy(input));
                 continue;
             }
 
@@ -184,7 +188,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     continue;
                 } else {
                     // TODO: gpu_warnlist.json?
-                    container.unknownFile(path, writableFromInputStreamCopy(input));
+                    container.unknownFile(containerPath, writableFromInputStreamCopy(input));
                     continue;
                 }
             }
@@ -254,7 +258,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
             // unknown category or
             // file inside category had a wrong extension
-            container.unknownFile(path, writableFromInputStreamCopy(input));
+            container.unknownFile(containerPath, writableFromInputStreamCopy(input));
         }
 
         for (Map.Entry<String, Map<Key, Texture>> entry : incompleteTextures.entrySet()) {
