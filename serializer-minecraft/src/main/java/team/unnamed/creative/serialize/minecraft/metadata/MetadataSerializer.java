@@ -27,8 +27,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
+import team.unnamed.creative.metadata.overlays.OverlayEntry;
+import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.metadata.texture.TextureMeta;
@@ -41,6 +45,7 @@ import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
+import team.unnamed.creative.serialize.minecraft.base.PackFormatSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
@@ -60,6 +65,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
     private static final String PACK_FIELD = "pack";
     private static final String TEXTURE_FIELD = "texture";
     private static final String VILLAGER_FIELD = "villager";
+    private static final String OVERLAYS_FIELD = "overlays";
 
     @Override
     public void serializeToJson(Metadata metadata, JsonWriter writer) throws IOException {
@@ -83,6 +89,9 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
             } else if (part instanceof VillagerMeta) {
                 writer.name(VILLAGER_FIELD);
                 writeVillager(writer, (VillagerMeta) part);
+            } else if (part instanceof OverlaysMeta) {
+                writer.name(OVERLAYS_FIELD);
+                writeOverlays(writer, (OverlaysMeta) part);
             } else {
                 // TODO: extensibility
                 throw new IllegalStateException("Cannot write unknown metadata part: " + part);
@@ -116,6 +125,9 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
                     break;
                 case VILLAGER_FIELD:
                     builder.add(readVillager(partObject));
+                    break;
+                case OVERLAYS_FIELD:
+                    builder.add(readOverlays(partObject));
                     break;
                 default:
                     System.err.println("Unknown metadata part name: " + partName);
@@ -262,43 +274,26 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         if (!pack.formats().isSingle()) { // since Minecraft 1.20.2 (pack format 18)
             // only write min and max values if not single
             // "supported_formats": [16, 17]
-            writer.name("supported_formats")
-                    .beginArray()
-                    .value(pack.formats().min())
-                    .value(pack.formats().max())
-                    .endArray();
+            writer.name("supported_formats");
+            PackFormatSerializer.serialize(pack.formats(), writer);
         }
 
         writer.endObject();
     }
 
     private static PackMeta readPack(JsonObject node) {
-        int format = node.get("pack_format").getAsInt();
-        int min = format;
-        int max = format;
+        int singleFormat = node.get("pack_format").getAsInt();
         String description = node.get("description").getAsString();
 
+        PackFormat format;
         if (node.has("supported_formats")) { // since Minecraft 1.20.2 (pack format 18)
             JsonElement el = node.get("supported_formats");
-            if (el.isJsonPrimitive()) {
-                // single value
-                format = el.getAsInt();
-            } else if (el.isJsonArray()) {
-                JsonArray arr = el.getAsJsonArray();
-                // [min, max]
-                min = arr.get(0).getAsInt();
-                max = arr.get(1).getAsInt();
-            } else if (el.isJsonObject()) {
-                JsonObject obj = el.getAsJsonObject();
-                // {"min_inclusive": min, "max_inclusive": max}
-                min = obj.get("min_inclusive").getAsInt();
-                max = obj.get("max_inclusive").getAsInt();
-            } else {
-                throw new IllegalStateException("Unsupported supported_formats type: " + el.getClass());
-            }
+            format = PackFormatSerializer.deserialize(el, singleFormat);
+        } else {
+            format = PackFormat.format(singleFormat);
         }
 
-        return PackMeta.of(PackFormat.format(format, min, max), description);
+        return PackMeta.of(format, description);
     }
     //#endregion
 
@@ -338,6 +333,36 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         String hatName = node.get("hat").getAsString();
         VillagerMeta.Hat hat = VillagerMeta.Hat.valueOf(hatName.toUpperCase(Locale.ROOT));
         return VillagerMeta.of(hat);
+    }
+    //#endregion
+
+    //#region Overlays metadata section serialization
+    private static void writeOverlays(final @NotNull JsonWriter writer, final @NotNull OverlaysMeta overlays) throws IOException {
+        writer.beginObject();
+        writer.name("entries");
+        writer.beginArray();
+        for (final OverlayEntry overlay : overlays.entries()) {
+            writer.beginObject();
+            writer.name("formats");
+            PackFormatSerializer.serialize(overlay.formats(), writer);
+            writer.name("directory").value(overlay.directory());
+            writer.endObject();
+        }
+        writer.endArray();
+        writer.endObject();
+    }
+
+    private static @NotNull OverlaysMeta readOverlays(final @NotNull JsonObject node) {
+        final JsonArray entries = node.getAsJsonArray("entries");
+        final List<OverlayEntry> overlays = new ArrayList<>();
+        for (final JsonElement entryNode : entries) {
+            final JsonObject entryObject = entryNode.getAsJsonObject();
+            final PackFormat formats = PackFormatSerializer.deserialize(entryObject.get("formats"));
+            @Subst("dir")
+            final String directory = entryObject.get("directory").getAsString();
+            overlays.add(OverlayEntry.of(formats, directory));
+        }
+        return OverlaysMeta.of(overlays);
     }
     //#endregion
 

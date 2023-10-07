@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.metadata.texture.TextureMeta;
 import team.unnamed.creative.metadata.villager.VillagerMeta;
@@ -149,6 +150,19 @@ public class Metadata implements Examinable {
 
         public Builder add(FilterMeta meta) {
             return add(FilterMeta.class, meta);
+        }
+
+        /**
+         * Adds an overlay meta part.
+         *
+         * @param meta The added overlay meta part.
+         * @return This builder.
+         * @since 1.1.0
+         * @sinceMinecraft 1.20.2
+         * @sincePackFormat 18
+         */
+        public @NotNull Builder add(final @NotNull OverlaysMeta meta) {
+            return add(OverlaysMeta.class, meta);
         }
 
         public Metadata build() {

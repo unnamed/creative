@@ -36,6 +36,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.filter.FilterMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.model.Model;
@@ -224,6 +225,33 @@ public final class ResourcePack {
     public void filterMeta(FilterMeta filterMeta) {
         requireNonNull(filterMeta, "filterMeta");
         editMetadata(metadata -> metadata.add(filterMeta));
+    }
+
+    /**
+     * Gets the overlay meta specified in the resource-pack
+     * metadata.
+     *
+     * @return The overlays meta, null if not set.
+     * @since 1.1.0
+     * @sincePackFormat 18
+     * @sinceMinecraft 1.20.2
+     */
+    public @Nullable OverlaysMeta overlaysMeta() {
+        return metadata == null ? null : metadata.meta(OverlaysMeta.class);
+    }
+
+    /**
+     * Sets the overlay meta specified in the resource-pack
+     * metadata.
+     *
+     * @param overlaysMeta The overlays meta.
+     * @since 1.1.0
+     * @sincePackFormat 18
+     * @since 1.20.2
+     */
+    public void overlaysMeta(final @NotNull OverlaysMeta overlaysMeta) {
+        requireNonNull(overlaysMeta, "overlaysMeta");
+        editMetadata(metadata -> metadata.add(overlaysMeta));
     }
     //#endregion (Metadata helpers)
     //#endregion (Top level)
