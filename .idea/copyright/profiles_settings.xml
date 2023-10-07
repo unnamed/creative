@@ -3,6 +3,8 @@
     <module2copyright>
       <element module="All" copyright="creative-mit-license" />
     </module2copyright>
-    <LanguageOptions name="__TEMPLATE__" />
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="addBlankAfter" value="false" />
+    </LanguageOptions>
   </settings>
 </component>
