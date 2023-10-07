@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
@@ -56,9 +55,9 @@ import java.util.stream.Stream;
  * <p>See the <a href="https://www.minecraft.net/en-us/article/minecraft-java-edition-1-19-3">1.19.3 change-log</a>
  * and the atlas structure in the resource-pack <a href="https://minecraft.fandom.com/wiki/Resource_pack#Atlases">here</a></p>
  *
+ * @since 1.0.0
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
- * @since 1.0.0
  */
 public class Atlas implements Keyed, Examinable {
 
@@ -101,8 +100,8 @@ public class Atlas implements Keyed, Examinable {
      * Gets the list of sources for this {@link Atlas}
      *
      * @return The atlas sources
-     * @see AtlasSource
      * @since 1.0.0
+     * @see AtlasSource
      */
     public @Unmodifiable List<AtlasSource> sources() {
         return sources;
@@ -146,7 +145,7 @@ public class Atlas implements Keyed, Examinable {
     /**
      * Creates a new {@link Atlas} instance.
      *
-     * @param key     The atlas key, doesn't include JSON extension
+     * @param key The atlas key, doesn't include JSON extension
      * @param sources The list of sources for the atlas
      * @return The created atlas instance
      * @since 1.0.0

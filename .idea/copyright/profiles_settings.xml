@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
   <settings>
     <module2copyright>
-      <element module="Java Files" copyright="creative-mit-license" />
+      <element module="All" copyright="creative-mit-license" />
     </module2copyright>
     <LanguageOptions name="__TEMPLATE__" />
   </settings>
