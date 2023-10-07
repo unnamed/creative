@@ -24,11 +24,8 @@
 package team.unnamed.creative.metadata.pack;
 
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.stream.Stream;
 
 /**
  * Represents the format or version of a resource-pack.
@@ -39,23 +36,8 @@ import java.util.stream.Stream;
  *
  * @since 1.1.0
  */
-public final class PackFormat implements Examinable {
-
-    private final int format;
-    private final int min;
-    private final int max;
-
-    private PackFormat(final int format, final int min, final int max) {
-        this.format = format;
-        this.min = min;
-        this.max = max;
-
-        // validate arguments
-        if (min > max)
-            throw new IllegalArgumentException("Minimum " + min + " is greater than maximum " + max);
-        if (!isInRange(format))
-            throw new IllegalArgumentException("Format " + format + " is not in the range [" + min + ", " + max + "]");
-    }
+@ApiStatus.NonExtendable
+public interface PackFormat extends Examinable {
 
     /**
      * Returns the pack format.
@@ -68,33 +50,27 @@ public final class PackFormat implements Examinable {
      * @return The pack format.
      * @since 1.1.0
      */
-    public int format() {
-        return format;
-    }
+    int format();
 
     /**
      * Returns the minimum supported pack format. (Inclusive)
      *
      * @return The minimum supported pack format (Inclusive)
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
-    public int min() {
-        return min;
-    }
+    int min();
 
     /**
      * Returns the maximum supported pack format. (Inclusive)
      *
      * @return The maximum supported pack format (Inclusive)
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
-    public int max() {
-        return max;
-    }
+    int max();
 
     /**
      * Determines whether this pack format is a single format
@@ -103,9 +79,7 @@ public final class PackFormat implements Examinable {
      * @return True if format, min and max are equal.
      * @since 1.1.0
      */
-    public boolean isSingle() {
-        return min == max;
-    }
+    boolean isSingle();
 
     /**
      * Determines whether the given {@code format} is in the
@@ -115,41 +89,7 @@ public final class PackFormat implements Examinable {
      * @return True if the format is in the range.
      * @since 1.1.0
      */
-    public boolean isInRange(final int format) {
-        return format >= min && format <= max;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("format", format),
-                ExaminableProperty.of("min", min),
-                ExaminableProperty.of("max", max)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PackFormat that = (PackFormat) o;
-        if (format != that.format) return false;
-        if (min != that.min) return false;
-        return max == that.max;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = format;
-        result = 31 * result + min;
-        result = 31 * result + max;
-        return result;
-    }
+    boolean isInRange(final int format);
 
     /**
      * Create a pack format that supports only a single
@@ -159,8 +99,8 @@ public final class PackFormat implements Examinable {
      * @return The created pack format
      * @since 1.1.0
      */
-    public static @NotNull PackFormat format(final int format) {
-        return new PackFormat(format, format, format);
+    static @NotNull PackFormat format(final int format) {
+        return format(format, format, format);
     }
 
     /**
@@ -177,15 +117,15 @@ public final class PackFormat implements Examinable {
      * the bounds of the provided range.</p>
      *
      * @param format The pack format (for older versions)
-     * @param min The minimum supported pack format (INCLUSIVE)
-     * @param max The maximum supported pack format (INCLUSIVE)
+     * @param min    The minimum supported pack format (INCLUSIVE)
+     * @param max    The maximum supported pack format (INCLUSIVE)
      * @return The created pack format
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
      * @since 1.1.0
      */
-    public static @NotNull PackFormat format(final int format, final int min, final int max) {
-        return new PackFormat(format, min, max);
+    static @NotNull PackFormat format(final int format, final int min, final int max) {
+        return new PackFormatImpl(format, min, max);
     }
 
 }

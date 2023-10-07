@@ -25,16 +25,9 @@ package team.unnamed.creative.metadata.pack;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Class representing the "pack" section of the
@@ -42,19 +35,8 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class PackMeta implements MetadataPart {
-
-    private final PackFormat format;
-    private final Component description;
-    private String legacyDescription;
-
-    private PackMeta(
-            final @NotNull PackFormat format,
-            final @NotNull Component description
-    ) {
-        this.format = requireNonNull(format, "format");
-        this.description = requireNonNull(description, "description");
-    }
+@ApiStatus.NonExtendable
+public interface PackMeta extends MetadataPart {
 
     /**
      * Returns the pack version. If this number does not match the
@@ -71,9 +53,7 @@ public class PackMeta implements MetadataPart {
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    public int format() {
-        return format.format();
-    }
+    int format();
 
     /**
      * Returns the supported pack formats. The pack format specifies
@@ -87,9 +67,7 @@ public class PackMeta implements MetadataPart {
      * @return The resource pack formats
      * @since 1.1.0
      */
-    public @NotNull PackFormat formats() {
-        return format;
-    }
+    @NotNull PackFormat formats();
 
     /**
      * Returns the pack description. Text shown below the pack name in
@@ -99,13 +77,7 @@ public class PackMeta implements MetadataPart {
      * @return The resource-pack description
      * @since 1.0.0
      */
-    public @NotNull String description() {
-        if (legacyDescription != null) {
-            return legacyDescription;
-        } else {
-            return legacyDescription = LegacyComponentSerializer.legacySection().serialize(description);
-        }
-    }
+    @NotNull String description();
 
     /**
      * Returns the pack description. Text shown below the pack name in
@@ -121,74 +93,45 @@ public class PackMeta implements MetadataPart {
     @ApiStatus.Internal
     @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     @Deprecated
-    public @NotNull Component description0() {
-        return description;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("format", format),
-                ExaminableProperty.of("description", description)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PackMeta packMeta = (PackMeta) o;
-        return format == packMeta.format
-                && description.equals(packMeta.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(format, description);
-    }
+    @NotNull Component description0();
 
     /**
      * Creates a new {@link PackMeta} instance from
      * the given values
      *
-     * @param format The pack format
+     * @param format      The pack format
      * @param description The pack description
      * @return A new {@link PackMeta} instance
      * @since 1.0.0
      */
-    public static PackMeta of(int format, String description) {
-        return new PackMeta(PackFormat.format(format), LegacyComponentSerializer.legacySection().deserialize(description));
+    static PackMeta of(int format, String description) {
+        return of(PackFormat.format(format), LegacyComponentSerializer.legacySection().deserialize(description));
     }
 
     /**
      * Creates a new {@link PackMeta} instance from
      * the given values.
      *
-     * @param format The pack format
+     * @param format      The pack format
      * @param description The pack description
      * @return A new {@link PackMeta} instance
      * @since 1.1.0
      */
-    public static @NotNull PackMeta of(final @NotNull PackFormat format, final @NotNull Component description) {
-        return new PackMeta(format, description);
+    static @NotNull PackMeta of(final @NotNull PackFormat format, final @NotNull Component description) {
+        return new PackMetaImpl(format, description);
     }
 
     /**
      * Creates a new {@link PackMeta} instance from
      * the given values.
      *
-     * @param format The pack format
+     * @param format      The pack format
      * @param description The pack description
      * @return A new {@link PackMeta} instance
      * @since 1.1.0
      */
-    public static @NotNull PackMeta of(final int format, final @NotNull Component description) {
-        return new PackMeta(PackFormat.format(format), description);
+    static @NotNull PackMeta of(final int format, final @NotNull Component description) {
+        return of(PackFormat.format(format), description);
     }
 
 }
