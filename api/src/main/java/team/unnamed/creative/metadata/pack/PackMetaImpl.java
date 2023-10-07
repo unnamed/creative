@@ -91,7 +91,7 @@ final class PackMetaImpl implements PackMeta {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PackMetaImpl packMeta = (PackMetaImpl) o;
-        return format == packMeta.format
+        return format.equals(packMeta.format)
                 && description.equals(packMeta.description);
     }
 
