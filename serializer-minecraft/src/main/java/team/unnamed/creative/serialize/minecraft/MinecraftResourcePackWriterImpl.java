@@ -25,9 +25,12 @@ package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.overlay.Overlay;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
@@ -40,8 +43,7 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Map;
 
-import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.PACK_ICON_FILE;
-import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.PACK_METADATA_FILE;
+import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
 final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWriter {
 
@@ -50,14 +52,49 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
     private MinecraftResourcePackWriterImpl() {
     }
 
-    public <T extends Keyed> void writeFullCategory(ResourcePack resourcePack, FileTreeWriter target, ResourceCategory<T> category) {
-        for (T resource : category.lister().apply(resourcePack)) {
-            String path = category.pathOf(resource);
+    public <T extends Keyed> void writeFullCategory(
+            final @NotNull String basePath,
+            final @NotNull ResourceContainer resourceContainer,
+            final @NotNull FileTreeWriter target,
+            final @NotNull ResourceCategory<T> category
+    ) {
+        for (T resource : category.lister().apply(resourceContainer)) {
+            String path = basePath + category.pathOf(resource);
             try (OutputStream output = target.openStream(path)) {
                 category.serializer().serialize(resource, output);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+    }
+
+    private void writeWithBasePath(FileTreeWriter target, ResourceContainer container, String basePath) {
+        // write resources from most categories
+        for (ResourceCategory<?> category : ResourceCategories.categories()) {
+            writeFullCategory(basePath, container, target, category);
+        }
+
+        // write sound registries
+        for (SoundRegistry soundRegistry : container.soundRegistries()) {
+            writeToJson(target, SoundRegistrySerializer.INSTANCE, soundRegistry, basePath + MinecraftResourcePackStructure.pathOf(soundRegistry));
+        }
+
+        // write textures
+        for (Texture texture : container.textures()) {
+            target.write(
+                    basePath + MinecraftResourcePackStructure.pathOf(texture),
+                    texture.data()
+            );
+
+            Metadata metadata = texture.meta();
+            if (!metadata.parts().isEmpty()) {
+                writeToJson(target, MetadataSerializer.INSTANCE, metadata, basePath + MinecraftResourcePackStructure.pathOfMeta(texture));
+            }
+        }
+
+        // write unknown files
+        for (Map.Entry<String, Writable> entry : container.unknownFiles().entrySet()) {
+            target.write(basePath + entry.getKey(), entry.getValue());
         }
     }
 
@@ -78,32 +115,11 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
             writeToJson(target, MetadataSerializer.INSTANCE, metadata, PACK_METADATA_FILE);
         }
 
-        // write atlases
-        for (ResourceCategory<?> category : ResourceCategories.categories()) {
-            writeFullCategory(resourcePack, target, category);
-        }
+        writeWithBasePath(target, resourcePack, "");
 
-        // write sound registries
-        for (SoundRegistry soundRegistry : resourcePack.soundRegistries()) {
-            writeToJson(target, SoundRegistrySerializer.INSTANCE, soundRegistry, MinecraftResourcePackStructure.pathOf(soundRegistry));
-        }
-
-        // write textures
-        for (Texture texture : resourcePack.textures()) {
-            target.write(
-                    MinecraftResourcePackStructure.pathOf(texture),
-                    texture.data()
-            );
-
-            Metadata metadata = texture.meta();
-            if (!metadata.parts().isEmpty()) {
-                writeToJson(target, MetadataSerializer.INSTANCE, metadata, MinecraftResourcePackStructure.pathOfMeta(texture));
-            }
-        }
-
-        // write unknown files
-        for (Map.Entry<String, Writable> entry : resourcePack.unknownFiles().entrySet()) {
-            target.write(entry.getKey(), entry.getValue());
+        // write from overlays
+        for (Overlay overlay : resourcePack.overlays()) {
+            writeWithBasePath(target, overlay, OVERLAYS_FOLDER + '/' + overlay.directory() + '/');
         }
     }
 
