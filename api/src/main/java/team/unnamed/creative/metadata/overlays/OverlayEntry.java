@@ -24,10 +24,9 @@
 package team.unnamed.creative.metadata.overlays;
 
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.pack.PackFormat;
@@ -36,10 +35,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.stream.Stream;
 
 import static java.lang.annotation.ElementType.*;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Represents an overlay entry for the {@link OverlaysMeta}
@@ -52,18 +49,8 @@ import static java.util.Objects.requireNonNull;
  * @sinceMinecraft 1.20.2
  * @sincePackFormat 18
  */
-public final class OverlayEntry implements Examinable {
-
-    private final PackFormat formats;
-    private final String directory;
-
-    private OverlayEntry(
-            final @NotNull PackFormat formats,
-            final @NotNull @Directory String directory
-    ) {
-        this.formats = requireNonNull(formats, "formats");
-        this.directory = requireNonNull(directory, "directory");
-    }
+@ApiStatus.NonExtendable
+public interface OverlayEntry extends Examinable {
 
     /**
      * Gets the pack formats range that this overlay
@@ -74,9 +61,7 @@ public final class OverlayEntry implements Examinable {
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
      */
-    public @NotNull PackFormat formats() {
-        return formats;
-    }
+    @NotNull PackFormat formats();
 
     /**
      * Gets the directory name that this overlay uses.
@@ -86,38 +71,7 @@ public final class OverlayEntry implements Examinable {
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
      */
-    public @NotNull @Subst("dir") String directory() {
-        return directory;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("formats", formats),
-                ExaminableProperty.of("directory", directory)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OverlayEntry that = (OverlayEntry) o;
-        if (!formats.equals(that.formats)) return false;
-        return directory.equals(that.directory);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = formats.hashCode();
-        result = 31 * result + directory.hashCode();
-        return result;
-    }
+    @NotNull @Subst("dir") String directory();
 
     /**
      * Creates a new {@link OverlayEntry} instance with the
@@ -134,7 +88,7 @@ public final class OverlayEntry implements Examinable {
             final @NotNull PackFormat formats,
             final @NotNull @Subst("dir") @Directory String directory
     ) {
-        return new OverlayEntry(formats, directory);
+        return new OverlayEntryImpl(formats, directory);
     }
 
     /**
