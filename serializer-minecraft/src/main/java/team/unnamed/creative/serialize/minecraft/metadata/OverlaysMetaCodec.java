@@ -41,7 +41,7 @@ import java.util.List;
 final class OverlaysMetaCodec implements MetadataPartCodec<OverlaysMeta> {
 
     @Override
-    public Class<OverlaysMeta> type() {
+    public @NotNull Class<OverlaysMeta> type() {
         return OverlaysMeta.class;
     }
 
@@ -57,8 +57,7 @@ final class OverlaysMetaCodec implements MetadataPartCodec<OverlaysMeta> {
         for (final JsonElement entryNode : entries) {
             final JsonObject entryObject = entryNode.getAsJsonObject();
             final PackFormat formats = PackFormatSerializer.deserialize(entryObject.get("formats"));
-            @Subst("dir")
-            final String directory = entryObject.get("directory").getAsString();
+            @Subst("dir") final String directory = entryObject.get("directory").getAsString();
             overlays.add(OverlayEntry.of(formats, directory));
         }
         return OverlaysMeta.of(overlays);

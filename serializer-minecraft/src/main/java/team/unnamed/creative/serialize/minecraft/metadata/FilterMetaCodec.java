@@ -38,7 +38,7 @@ import java.util.List;
 final class FilterMetaCodec implements MetadataPartCodec<FilterMeta> {
 
     @Override
-    public Class<FilterMeta> type() {
+    public @NotNull Class<FilterMeta> type() {
         return FilterMeta.class;
     }
 

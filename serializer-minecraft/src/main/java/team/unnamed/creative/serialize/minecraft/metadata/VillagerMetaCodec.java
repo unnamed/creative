@@ -34,7 +34,7 @@ import java.util.Locale;
 final class VillagerMetaCodec implements MetadataPartCodec<VillagerMeta> {
 
     @Override
-    public Class<VillagerMeta> type() {
+    public @NotNull Class<VillagerMeta> type() {
         return VillagerMeta.class;
     }
 

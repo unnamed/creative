@@ -38,7 +38,7 @@ import java.util.Map;
 final class LanguageMetaCodec implements MetadataPartCodec<LanguageMeta> {
 
     @Override
-    public Class<LanguageMeta> type() {
+    public @NotNull Class<LanguageMeta> type() {
         return LanguageMeta.class;
     }
 

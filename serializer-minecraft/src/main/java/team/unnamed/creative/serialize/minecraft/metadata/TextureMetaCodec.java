@@ -34,7 +34,7 @@ import java.io.IOException;
 final class TextureMetaCodec implements MetadataPartCodec<TextureMeta> {
 
     @Override
-    public Class<TextureMeta> type() {
+    public @NotNull Class<TextureMeta> type() {
         return TextureMeta.class;
     }
 

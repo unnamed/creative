@@ -44,7 +44,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         registerCodec(new AnimationMetaCodec());
         registerCodec(new FilterMetaCodec());
         registerCodec(new LanguageMetaCodec());
-        registerCodec(new PackMetaCodec());
+        registerCodec(PackMetaCodec.INSTANCE);
         registerCodec(new TextureMetaCodec());
         registerCodec(new VillagerMetaCodec());
         registerCodec(new OverlaysMetaCodec());

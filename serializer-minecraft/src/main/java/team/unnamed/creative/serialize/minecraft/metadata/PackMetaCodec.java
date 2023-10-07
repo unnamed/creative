@@ -43,8 +43,13 @@ import java.io.IOException;
 
 final class PackMetaCodec implements MetadataPartCodec<PackMeta> {
 
+    static MetadataPartCodec<PackMeta> INSTANCE = new PackMetaCodec();
+
+    private PackMetaCodec() {
+    }
+
     @Override
-    public Class<PackMeta> type() {
+    public @NotNull Class<PackMeta> type() {
         return PackMeta.class;
     }
 

@@ -24,20 +24,38 @@
 package team.unnamed.creative.serialize.minecraft.metadata;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
 
 interface MetadataPartCodec<T extends MetadataPart> {
 
-    Class<T> type();
+    @NotNull Class<T> type();
 
     @NotNull String name();
 
     @NotNull T read(final @NotNull JsonObject node);
 
+    default @NotNull T fromJson(final @NotNull String json) {
+        return read(new JsonParser().parse(json).getAsJsonObject());
+    }
+
     void write(final @NotNull JsonWriter writer, final @NotNull T part) throws IOException;
+
+    default @NotNull String toJSON(final @NotNull T part) {
+        StringWriter writer = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(writer);
+        try {
+            write(jsonWriter, part);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to write", e);
+        }
+        return writer.toString();
+    }
 
 }

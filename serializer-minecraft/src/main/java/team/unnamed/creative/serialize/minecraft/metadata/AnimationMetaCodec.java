@@ -38,7 +38,7 @@ import java.util.List;
 final class AnimationMetaCodec implements MetadataPartCodec<AnimationMeta> {
 
     @Override
-    public Class<AnimationMeta> type() {
+    public @NotNull Class<AnimationMeta> type() {
         return AnimationMeta.class;
     }
 
