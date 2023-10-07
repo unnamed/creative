@@ -40,6 +40,11 @@ import java.util.List;
 
 final class OverlaysMetaCodec implements MetadataPartCodec<OverlaysMeta> {
 
+    static final MetadataPartCodec<OverlaysMeta> INSTANCE = new OverlaysMetaCodec();
+
+    private OverlaysMetaCodec() {
+    }
+
     @Override
     public @NotNull Class<OverlaysMeta> type() {
         return OverlaysMeta.class;

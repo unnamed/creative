@@ -47,7 +47,7 @@ interface MetadataPartCodec<T extends MetadataPart> {
 
     void write(final @NotNull JsonWriter writer, final @NotNull T part) throws IOException;
 
-    default @NotNull String toJSON(final @NotNull T part) {
+    default @NotNull String toJson(final @NotNull T part) {
         StringWriter writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
         try {

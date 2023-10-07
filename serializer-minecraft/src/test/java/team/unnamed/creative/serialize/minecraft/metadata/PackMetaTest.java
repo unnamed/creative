@@ -42,7 +42,7 @@ class PackMetaTest {
         );
         assertEquals(
                 "{\"pack_format\":7,\"description\":\"Description!\"}",
-                PackMetaCodec.INSTANCE.toJSON(packMeta)
+                PackMetaCodec.INSTANCE.toJson(packMeta)
         );
     }
 
@@ -54,7 +54,7 @@ class PackMetaTest {
         );
         assertEquals(
                 "{\"pack_format\":18,\"description\":\"Description!\",\"supported_formats\":[18,20]}",
-                PackMetaCodec.INSTANCE.toJSON(packMeta)
+                PackMetaCodec.INSTANCE.toJson(packMeta)
         );
     }
 
@@ -71,7 +71,7 @@ class PackMetaTest {
 
         assertEquals(
                 "{\"pack_format\":12,\"description\":{\"extra\":[{\"color\":\"#FF8DF8\",\"text\":\"Unnamed Team\"},{\"color\":\"gray\",\"text\":\" ftw \"},{\"keybind\":\"i.dont.know\"}],\"text\":\"\"}}",
-                PackMetaCodec.INSTANCE.toJSON(packMeta)
+                PackMetaCodec.INSTANCE.toJson(packMeta)
         );
     }
 
@@ -88,7 +88,7 @@ class PackMetaTest {
 
         assertEquals(
                 "{\"pack_format\":18,\"description\":{\"extra\":[{\"color\":\"#FF8DF8\",\"text\":\"Unnamed Team\"},{\"color\":\"gray\",\"text\":\" ftw \"},{\"keybind\":\"i.dont.know\"}],\"text\":\"\"},\"supported_formats\":[18,20]}",
-                PackMetaCodec.INSTANCE.toJSON(packMeta)
+                PackMetaCodec.INSTANCE.toJson(packMeta)
         );
     }
 
