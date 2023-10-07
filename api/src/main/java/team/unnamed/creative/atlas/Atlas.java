@@ -26,16 +26,12 @@ package team.unnamed.creative.atlas;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.util.MoreCollections;
-import team.unnamed.creative.util.Validate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Represents an atlas, atlases are configuration files that control
@@ -48,164 +44,121 @@ import java.util.stream.Stream;
  * <p>Individual textures that are stitched onto the atlas are called
  * "sprites".</p>
  *
- * <p>Note that, since Minecraft M.19.3, by default, textures not in
+ * <p>Note that, since Minecraft 1.19.3, by default, textures not in
  * "item/" or "block/" directories are no longer automatically recognized
  * and will fail to load.</p>
  *
  * <p>See the <a href="https://www.minecraft.net/en-us/article/minecraft-java-edition-1-19-3">1.19.3 change-log</a>
  * and the atlas structure in the resource-pack <a href="https://minecraft.fandom.com/wiki/Resource_pack#Atlases">here</a></p>
  *
- * @since 1.0.0
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
+ * @since 1.0.0
  */
-public class Atlas implements Keyed, Examinable {
+public interface Atlas extends Keyed, Examinable {
 
-    public static final Key BLOCKS = Key.key("blocks");
-    public static final Key BANNER_PATTERNS = Key.key("banner_patterns");
-    public static final Key BEDS = Key.key("beds");
-    public static final Key CHESTS = Key.key("chests");
-    public static final Key SHIELD_PATTERNS = Key.key("shield_patterns");
-    public static final Key SHULKER_BOXES = Key.key("shulker_boxes");
-    public static final Key SIGNS = Key.key("signs");
-    public static final Key MOB_EFFECTS = Key.key("mob_effects");
-    public static final Key PAINTINGS = Key.key("paintings");
-    public static final Key PARTICLES = Key.key("particles");
-    public static final Key ARMOR_TRIMS = Key.key("armor_trims");
-    public static final Key DECORATED_POT = Key.key("decorated_pot");
-
-    private final Key key;
-    private final List<AtlasSource> sources;
-
-    private Atlas(Key key, List<AtlasSource> sources) {
-        Validate.isNotNull(key, "key");
-        Validate.isNotNull(sources);
-        this.key = key;
-        this.sources = MoreCollections.immutableListOf(sources);
-    }
+    Key BLOCKS = Key.key("blocks");
+    Key BANNER_PATTERNS = Key.key("banner_patterns");
+    Key BEDS = Key.key("beds");
+    Key CHESTS = Key.key("chests");
+    Key SHIELD_PATTERNS = Key.key("shield_patterns");
+    Key SHULKER_BOXES = Key.key("shulker_boxes");
+    Key SIGNS = Key.key("signs");
+    Key MOB_EFFECTS = Key.key("mob_effects");
+    Key PAINTINGS = Key.key("paintings");
+    Key PARTICLES = Key.key("particles");
+    Key ARMOR_TRIMS = Key.key("armor_trims");
+    Key DECORATED_POT = Key.key("decorated_pot");
 
     /**
      * Gets the {@link Atlas} key, e.g. "test:fancy", note
      * that JSON extension is not included
      *
      * @return The atlas resource location
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
      * @since 1.0.0
      */
     @Override
-    public @NotNull Key key() {
-        return key;
-    }
+    @NotNull Key key();
 
     /**
      * Gets the list of sources for this {@link Atlas}
      *
      * @return The atlas sources
-     * @since 1.0.0
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
      * @see AtlasSource
+     * @since 1.0.0
      */
-    public @Unmodifiable List<AtlasSource> sources() {
-        return sources;
-    }
+    @Unmodifiable
+    @NotNull List<AtlasSource> sources();
 
     /**
      * Converts this atlas instance to its builder type,
      * with all the properties already set
      *
      * @return The created builder
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
      * @since 1.0.0
      */
-    public Builder toBuilder() {
-        return builder().key(key).sources(sources);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("key", key),
-                ExaminableProperty.of("sources", sources)
-        );
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Atlas atlas = (Atlas) o;
-        if (!key.equals(atlas.key)) return false;
-        return sources.equals(atlas.sources);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = key.hashCode();
-        result = 31 * result + sources.hashCode();
-        return result;
-    }
+    @Contract("-> new")
+    @NotNull Builder toBuilder();
 
     /**
      * Creates a new {@link Atlas} instance.
      *
-     * @param key The atlas key, doesn't include JSON extension
+     * @param key     The atlas key, doesn't include JSON extension
      * @param sources The list of sources for the atlas
      * @return The created atlas instance
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
      * @since 1.0.0
      */
-    public static Atlas of(Key key, List<AtlasSource> sources) {
-        return new Atlas(key, sources);
+    static @NotNull Atlas of(final @NotNull Key key, final @NotNull List<AtlasSource> sources) {
+        return new AtlasImpl(key, sources);
     }
 
     /**
      * Creates a new {@link Atlas} builder instance.
      *
      * @return The created builder
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
      * @since 1.0.0
      */
-    public static Builder builder() {
-        return new Builder();
+    static @NotNull Builder builder() {
+        return new AtlasImpl.BuilderImpl();
     }
 
-    public static class Builder {
+    /**
+     * A mutable builder for {@link Atlas} instances.
+     *
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    interface Builder {
 
-        private Key key;
-        private List<AtlasSource> sources;
+        @Nullable Key key();
 
-        private Builder() {
-        }
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull Key key);
 
-        public Key key() {
-            return key;
-        }
+        @Nullable List<AtlasSource> sources();
 
-        public Builder key(Key key) {
-            this.key = Validate.isNotNull(key, "key");
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder sources(final @NotNull List<AtlasSource> sources);
 
-        public List<AtlasSource> sources() {
-            return sources;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder sources(final @NotNull AtlasSource @NotNull ... sources);
 
-        public Builder sources(List<AtlasSource> sources) {
-            this.sources = new ArrayList<>(sources);
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder addSource(final @NotNull AtlasSource source);
 
-        public Builder sources(AtlasSource... sources) {
-            this.sources = new ArrayList<>(Arrays.asList(sources));
-            return this;
-        }
-
-        public Builder addSource(AtlasSource source) {
-            if (sources == null) {
-                sources = new ArrayList<>();
-            }
-            sources.add(source);
-            return this;
-        }
-
-        public Atlas build() {
-            return new Atlas(key, sources);
-        }
+        @Contract("-> new")
+        @NotNull Atlas build();
 
     }
 
