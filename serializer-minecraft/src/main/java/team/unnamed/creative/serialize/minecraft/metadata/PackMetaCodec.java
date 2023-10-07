@@ -25,7 +25,15 @@ package team.unnamed.creative.serialize.minecraft.metadata;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.KeybindComponent;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
@@ -47,15 +55,21 @@ public class PackMetaCodec implements MetadataPartCodec<PackMeta> {
 
     @Override
     public @NotNull PackMeta read(final @NotNull JsonObject node) {
-        int singleFormat = node.get("pack_format").getAsInt();
-        String description = node.get("description").getAsString();
-
-        PackFormat format;
+        final int singleFormat = node.get("pack_format").getAsInt();
+        final PackFormat format;
         if (node.has("supported_formats")) { // since Minecraft 1.20.2 (pack format 18)
             JsonElement el = node.get("supported_formats");
             format = PackFormatSerializer.deserialize(el, singleFormat);
         } else {
             format = PackFormat.format(singleFormat);
+        }
+
+        final JsonElement descriptionNode = node.get("description");
+        final Component description;
+        if (descriptionNode.isJsonPrimitive()) {
+            description = LegacyComponentSerializer.legacySection().deserialize(descriptionNode.getAsString());
+        } else {
+            description = GsonComponentSerializer.gson().deserializeFromTree(descriptionNode);
         }
 
         return PackMeta.of(format, description);
@@ -64,8 +78,16 @@ public class PackMetaCodec implements MetadataPartCodec<PackMeta> {
     @Override
     public void write(final @NotNull JsonWriter writer, final @NotNull PackMeta pack) throws IOException {
         writer.beginObject()
-                .name("pack_format").value(pack.formats().format())
-                .name("description").value(pack.description()); // TODO: components!
+                .name("pack_format").value(pack.formats().format());
+
+        writer.name("description");
+        //noinspection deprecation
+        Component description = pack.description0();
+        if (canWeUseLegacy(description)) {
+            writer.value(pack.description());
+        } else {
+            Streams.write(GsonComponentSerializer.gson().serializeToTree(description), writer);
+        }
 
         if (!pack.formats().isSingle()) { // since Minecraft 1.20.2 (pack format 18)
             // only write min and max values if not single
@@ -75,6 +97,29 @@ public class PackMetaCodec implements MetadataPartCodec<PackMeta> {
         }
 
         writer.endObject();
+    }
+
+    private static boolean canWeUseLegacy(final @NotNull Component component) {
+        // if the component color is not a named color, we can't use legacy
+        final TextColor color = component.color();
+        if (color != null && NamedTextColor.namedColor(color.value()) == null) return false;
+
+        // if component uses a custom font, we can't use legacy
+        if (component.font() != null) return false;
+
+        // if any of the children components can't use legacy, we can't use legacy
+        for (final Component child : component.children()) {
+            if (!canWeUseLegacy(child)) return false;
+        }
+
+        // if component is translatable or keybind, we can't use legacy
+        if (component instanceof TranslatableComponent
+                || component instanceof KeybindComponent) return false;
+
+        // if component has insertion, hover event or click event, we can't use legacy
+        if (component.insertion() != null) return false;
+        if (component.hoverEvent() != null) return false;
+        return component.clickEvent() == null;
     }
 
 }

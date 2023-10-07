@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative;
 
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -118,7 +119,19 @@ public interface ResourcePack extends ResourceContainer {
      * @param description The pack description.
      * @since 1.1.0
      */
-    default void packMeta(final @NotNull PackFormat format, final @NotNull String description) {
+    default void packMeta(final @NotNull PackFormat format, final @NotNull Component description) {
+        packMeta(PackMeta.of(format, description));
+    }
+
+    /**
+     * Sets the resource-pack metadata, which specifies the
+     * pack supported format and its description.
+     *
+     * @param format The supported pack format.
+     * @param description The pack description.
+     * @since 1.1.0
+     */
+    default void packMeta(final int format, final @NotNull Component description) {
         packMeta(PackMeta.of(format, description));
     }
 
