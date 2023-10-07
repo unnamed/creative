@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OverlaysMetaCodec implements MetadataPartCodec<OverlaysMeta> {
+final class OverlaysMetaCodec implements MetadataPartCodec<OverlaysMeta> {
 
     @Override
     public Class<OverlaysMeta> type() {

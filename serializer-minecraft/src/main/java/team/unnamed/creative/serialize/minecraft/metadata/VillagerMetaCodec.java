@@ -31,7 +31,7 @@ import team.unnamed.creative.metadata.villager.VillagerMeta;
 import java.io.IOException;
 import java.util.Locale;
 
-public class VillagerMetaCodec implements MetadataPartCodec<VillagerMeta> {
+final class VillagerMetaCodec implements MetadataPartCodec<VillagerMeta> {
 
     @Override
     public Class<VillagerMeta> type() {

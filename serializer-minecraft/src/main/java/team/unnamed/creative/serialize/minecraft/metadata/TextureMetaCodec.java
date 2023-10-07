@@ -31,7 +31,7 @@ import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
 
-public class TextureMetaCodec implements MetadataPartCodec<TextureMeta> {
+final class TextureMetaCodec implements MetadataPartCodec<TextureMeta> {
 
     @Override
     public Class<TextureMeta> type() {

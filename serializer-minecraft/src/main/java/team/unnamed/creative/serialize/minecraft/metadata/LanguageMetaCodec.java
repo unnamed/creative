@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LanguageMetaCodec implements MetadataPartCodec<LanguageMeta> {
+final class LanguageMetaCodec implements MetadataPartCodec<LanguageMeta> {
 
     @Override
     public Class<LanguageMeta> type() {

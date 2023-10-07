@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterMetaCodec implements MetadataPartCodec<FilterMeta> {
+final class FilterMetaCodec implements MetadataPartCodec<FilterMeta> {
 
     @Override
     public Class<FilterMeta> type() {

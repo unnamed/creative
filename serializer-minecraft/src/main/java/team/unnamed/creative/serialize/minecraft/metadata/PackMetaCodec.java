@@ -41,7 +41,7 @@ import team.unnamed.creative.serialize.minecraft.base.PackFormatSerializer;
 
 import java.io.IOException;
 
-public class PackMetaCodec implements MetadataPartCodec<PackMeta> {
+final class PackMetaCodec implements MetadataPartCodec<PackMeta> {
 
     @Override
     public Class<PackMeta> type() {
