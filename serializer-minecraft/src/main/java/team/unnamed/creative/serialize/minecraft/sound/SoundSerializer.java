@@ -24,8 +24,8 @@
 package team.unnamed.creative.serialize.minecraft.sound;
 
 import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.sound.Sound;
 
@@ -35,8 +35,8 @@ public class SoundSerializer {
     public static final ResourceCategory<Sound> CATEGORY = new ResourceCategory<>(
             "sounds",
             ".ogg",
-            ResourcePack::sound,
-            ResourcePack::sounds,
+            ResourceContainer::sound,
+            ResourceContainer::sounds,
             (input, key) -> Sound.of(key, Writable.copyInputStream(input)),
             (sound, output) -> sound.data().write(output)
     );

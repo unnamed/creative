@@ -27,12 +27,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
-import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.blockstate.Condition;
 import team.unnamed.creative.blockstate.MultiVariant;
 import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
@@ -56,8 +56,8 @@ public final class BlockStateSerializer implements JsonResourceSerializer<BlockS
         CATEGORY = new ResourceCategory<>(
                 "blockstates",
                 ".json",
-                ResourcePack::blockState,
-                ResourcePack::blockStates,
+                ResourceContainer::blockState,
+                ResourceContainer::blockStates,
                 INSTANCE
         );
     }

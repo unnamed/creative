@@ -27,8 +27,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
-import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.lang.Language;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
@@ -48,8 +48,8 @@ public final class LanguageSerializer implements JsonResourceSerializer<Language
         CATEGORY = new ResourceCategory<>(
                 "lang",
                 ".json",
-                ResourcePack::language,
-                ResourcePack::languages,
+                ResourceContainer::language,
+                ResourceContainer::languages,
                 INSTANCE
         );
     }

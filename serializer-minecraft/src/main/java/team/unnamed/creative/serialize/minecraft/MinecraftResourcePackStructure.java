@@ -46,6 +46,9 @@ final class MinecraftResourcePackStructure {
     public static final String PACK_METADATA_FILE = "pack" + METADATA_EXTENSION;
     public static final String PACK_ICON_FILE = "pack" + TEXTURE_EXTENSION;
 
+    // overlays folder (overlays/<directory>/...)
+    public static final String OVERLAYS_FOLDER = "overlays";
+
     // assets folder (assets/<namespace>)
     public static final String ASSETS_FOLDER = "assets";
 

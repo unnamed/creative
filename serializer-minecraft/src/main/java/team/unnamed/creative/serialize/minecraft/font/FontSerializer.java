@@ -31,6 +31,7 @@ import net.kyori.adventure.key.Key;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.font.*;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
@@ -53,8 +54,8 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
         CATEGORY = new ResourceCategory<>(
                 "font",
                 ".json",
-                ResourcePack::font,
-                ResourcePack::fonts,
+                ResourceContainer::font,
+                ResourceContainer::fonts,
                 INSTANCE
         );
     }

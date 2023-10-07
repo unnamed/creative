@@ -26,7 +26,7 @@ package team.unnamed.creative.serialize.minecraft;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceSerializer;
 
@@ -41,8 +41,8 @@ public class ResourceCategory<T extends Keyed> {
 
     private final String folder;
     private final String extension;
-    private final BiConsumer<ResourcePack, T> setter;
-    private final Function<ResourcePack, Collection<T>> lister;
+    private final BiConsumer<ResourceContainer, T> setter;
+    private final Function<ResourceContainer, Collection<T>> lister;
 
     private final ResourceDeserializer<T> deserializer;
     private final ResourceSerializer<T> serializer;
@@ -50,8 +50,8 @@ public class ResourceCategory<T extends Keyed> {
     public ResourceCategory(
             String folder,
             String extension,
-            BiConsumer<ResourcePack, T> setter,
-            Function<ResourcePack, Collection<T>> lister,
+            BiConsumer<ResourceContainer, T> setter,
+            Function<ResourceContainer, Collection<T>> lister,
             ResourceDeserializer<T> deserializer,
             ResourceSerializer<T> serializer
     ) {
@@ -66,8 +66,8 @@ public class ResourceCategory<T extends Keyed> {
     public <TCodec extends ResourceSerializer<T> & ResourceDeserializer<T>> ResourceCategory(
             String folder,
             String extension,
-            BiConsumer<ResourcePack, T> setter,
-            Function<ResourcePack, Collection<T>> lister,
+            BiConsumer<ResourceContainer, T> setter,
+            Function<ResourceContainer, Collection<T>> lister,
             TCodec codec
     ) {
         this(
@@ -88,7 +88,7 @@ public class ResourceCategory<T extends Keyed> {
         return extension;
     }
 
-    public BiConsumer<ResourcePack, T> setter() {
+    public BiConsumer<ResourceContainer, T> setter() {
         return setter;
     }
 
@@ -96,7 +96,7 @@ public class ResourceCategory<T extends Keyed> {
         return deserializer;
     }
 
-    public Function<ResourcePack, Collection<T>> lister() {
+    public Function<ResourceContainer, Collection<T>> lister() {
         return lister;
     }
 

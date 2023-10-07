@@ -30,7 +30,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector2Float;
@@ -45,6 +44,7 @@ import team.unnamed.creative.model.ItemTransform;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
@@ -69,8 +69,8 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         CATEGORY = new ResourceCategory<>(
                 "models",
                 ".json",
-                ResourcePack::model,
-                ResourcePack::models,
+                ResourceContainer::model,
+                ResourceContainer::models,
                 ModelSerializer.INSTANCE
         );
     }

@@ -27,9 +27,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
@@ -52,8 +52,8 @@ public final class AtlasSerializer implements JsonResourceSerializer<Atlas>, Jso
         CATEGORY = new ResourceCategory<>(
                 "atlases",
                 ".json",
-                ResourcePack::atlas,
-                ResourcePack::atlases,
+                ResourceContainer::atlas,
+                ResourceContainer::atlases,
                 INSTANCE
         );
     }

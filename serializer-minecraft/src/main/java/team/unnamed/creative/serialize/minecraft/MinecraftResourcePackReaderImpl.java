@@ -27,10 +27,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.overlay.Overlay;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundRegistrySerializer;
@@ -65,7 +68,8 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         // textures that are waiting for metadata, or metadata
         // waiting for textures (because we can't know the order
         // they come in)
-        Map<Key, Texture> incompleteTextures = new HashMap<>();
+        // (null key means it is root resource pack)
+        Map<@Nullable String, Map<Key, Texture>> incompleteTextures = new HashMap<>();
 
         while (reader.hasNext()) {
             String path = reader.next();
@@ -104,21 +108,45 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 }
             }
 
+            // the container to use, it is initially the default resource-pack,
+            // but it may change if the file is inside an overlay folder
+            @Subst("dir")
+            @Nullable String overlayDir = null;
+            ResourceContainer container = resourcePack;
+
             // if there are two or more tokens, it means the
             // file is inside a folder, in a Minecraft resource
             // pack, the first folder is always "assets"
             String folder = tokens.poll();
 
-            if (!folder.equals(ASSETS_FOLDER)) {
-                // not assets! this is an unknown file
-                resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
-                continue;
+            if (folder.equals(OVERLAYS_FOLDER)) {
+                // gets the overlay name, set after the
+                // "overlays" folder, e.g. "overlays/foo",
+                // or "overlays/bar"
+                overlayDir = tokens.poll();
+                if (tokens.isEmpty()) {
+                    // this means that there is a file directly
+                    // inside the "overlays" folder, this is illegal
+                    resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+                    continue;
+                }
+
+                Overlay overlay = resourcePack.overlay(overlayDir);
+                if (overlay == null) {
+                    // first occurrence, register overlay
+                    overlay = Overlay.create(overlayDir);
+                    resourcePack.overlay(overlay);
+                }
+
+                container = overlay;
+                folder = tokens.poll();
             }
 
-            if (tokens.isEmpty()) {
-                // should never happen because we know there
-                // are more tokens
-                throw new IllegalStateException();
+            // null check to make ide happy
+            if (folder == null || !folder.equals(ASSETS_FOLDER) || tokens.isEmpty()) {
+                // not assets! this is an unknown file
+                container.unknownFile(path, writableFromInputStreamCopy(input));
+                continue;
             }
 
             // inside "assets", we should always have a folder
@@ -127,14 +155,14 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
             if (!Keys.isValidNamespace(namespace)) {
                 // invalid namespace found
-                resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+                container.unknownFile(path, writableFromInputStreamCopy(input));
                 continue;
             }
 
             if (tokens.isEmpty()) {
                 // found a file directly inside "assets", like
                 // assets/<file>, it is not allowed
-                resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+                container.unknownFile(path, writableFromInputStreamCopy(input));
                 continue;
             }
 
@@ -149,14 +177,14 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 // (remember: last tokens are always files)
                 if (categoryName.equals(SOUNDS_FILE)) {
                     // found a sound registry!
-                    resourcePack.soundRegistry(SoundRegistrySerializer.INSTANCE.readFromTree(
+                    container.soundRegistry(SoundRegistrySerializer.INSTANCE.readFromTree(
                             parse(input),
                             namespace
                     ));
                     continue;
                 } else {
                     // TODO: gpu_warnlist.json?
-                    resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+                    container.unknownFile(path, writableFromInputStreamCopy(input));
                     continue;
                 }
             }
@@ -174,25 +202,27 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         Key key = Key.key(namespace, keyOfMetadata);
                         Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(input));
 
-                        Texture texture = incompleteTextures.remove(key);
+                        Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
+                        Texture texture = incompleteTexturesThisContainer.remove(key);
                         if (texture == null) {
                             // metadata was found first, put
-                            incompleteTextures.put(key, Texture.of(key, Writable.EMPTY, metadata));
+                            incompleteTexturesThisContainer.put(key, Texture.of(key, Writable.EMPTY, metadata));
                         } else {
                             // texture was found before the metadata, nice!
-                            resourcePack.texture(texture.meta(metadata));
+                            container.texture(texture.meta(metadata));
                         }
                     } else {
                         Key key = Key.key(namespace, categoryPath);
                         Writable data = writableFromInputStreamCopy(input);
-                        Texture waiting = incompleteTextures.remove(key);
+                        Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
+                        Texture waiting = incompleteTexturesThisContainer.remove(key);
 
                         if (waiting == null) {
                             // found texture before metadata
-                            incompleteTextures.put(key, Texture.of(key, data));
+                            incompleteTexturesThisContainer.put(key, Texture.of(key, data));
                         } else {
                             // metadata was found first
-                            resourcePack.texture(Texture.of(
+                            container.texture(Texture.of(
                                     key,
                                     data,
                                     waiting.meta()
@@ -214,7 +244,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     Key key = Key.key(namespace, keyValue);
                     try {
                         Object resource = category.deserializer().deserialize(input, key);
-                        category.setter().accept(resourcePack, resource);
+                        category.setter().accept(container, resource);
                     } catch (IOException e) {
                         throw new UncheckedIOException("Failed to deserialize resource at: '" + path + "'", e);
                     }
@@ -224,17 +254,28 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
             // unknown category or
             // file inside category had a wrong extension
-            resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+            container.unknownFile(path, writableFromInputStreamCopy(input));
         }
 
-        for (Texture texture : incompleteTextures.values()) {
-            if (texture.data() != Writable.EMPTY) {
-                resourcePack.texture(texture);
+        for (Map.Entry<String, Map<Key, Texture>> entry : incompleteTextures.entrySet()) {
+            @Subst("dir")
+            @Nullable String overlayDir = entry.getKey();
+            Map<Key, Texture> incompleteTexturesThisContainer = entry.getValue();
+            ResourceContainer container;
+
+            if (overlayDir == null) {
+                // root
+                container = resourcePack;
+            } else {
+                // from an overlay
+                container = resourcePack.overlay(overlayDir);
             }
-            // else {
-            //     texture placeholder was not completed!
-            //     TODO: Should we warn?
-            // }
+
+            for (Texture texture : incompleteTexturesThisContainer.values()) {
+                if (texture.data() != Writable.EMPTY) {
+                    container.texture(texture);
+                }
+            }
         }
         return resourcePack;
     }
