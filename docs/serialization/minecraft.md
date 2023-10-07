@@ -4,7 +4,7 @@ The Minecraft serializers represent resource-packs in a way the vanilla Minecraf
 client can load them. That is, representing the resource-pack as a ZIP file or as
 a folder, where every file inside it is a resource pack element.
 
-The Minecraft serializers also let you convert `ResourcePack` object into a 
+The Minecraft serializers also let you convert `ResourcePack` object into a
 `BuiltResourcePack`, which can be hosted using the
 [creative-server](../server/creative-server.md) subproject.
 
@@ -13,7 +13,7 @@ the `creative-serializer-minecraft` dependency.
 
 ```gradle
 dependencies {
-    implementation("team.unnamed:creative-serializer-minecraft:%%REPLACE_latestReleaseOrSnapshot{team.unnamed:creative-serializer-minecraft}%%")
+    implementation("team.unnamed:creative-serializer-minecraft:%%REPLACE_latestRelease{team.unnamed:creative-serializer-minecraft}%%")
 }
 ```
 
@@ -24,22 +24,25 @@ usage guide we are going to provide some examples to use Minecraft resource
 pack serializers.
 
 Writing the resource-pack as a ZIP file:
+
 ```java
-ResourcePack resourcePack = ...;
-File output = new File("/path/to/resource-pack.zip");
-MinecraftResourcePackWriter.minecraft().writeToZipFile(output, resourcePack);
+ResourcePack resourcePack=...;
+        File output=new File("/path/to/resource-pack.zip");
+        MinecraftResourcePackWriter.minecraft().writeToZipFile(output,resourcePack);
 ```
 
 Compiling the resource-pack in memory *(`BuiltResourcePack`)*
+
 ```java
-ResourcePack resourcePack = ...;
-BuiltResourcePack builtResourcePack = MinecraftResourcePackWriter.minecraft().build(resourcePack);
+ResourcePack resourcePack=...;
+        BuiltResourcePack builtResourcePack=MinecraftResourcePackWriter.minecraft().build(resourcePack);
 ```
 
 Reading the resource-pack from a ZIP file:
+
 ```java
-File input = new File("/path/to/input/resource-pack.zip");
-ResourcePack resourcePack = MinecraftResourcePackReader.minecraft().readFromZipFile(input);
+File input=new File("/path/to/input/resource-pack.zip");
+        ResourcePack resourcePack=MinecraftResourcePackReader.minecraft().readFromZipFile(input);
 ```
 
 ### Unitary Serialization
@@ -50,17 +53,19 @@ The Minecraft serializer knows that the resource-pack elements can be serialized
 separately and lets you do that using element-specific serializers, for example:
 
 Deserializing a font from resources:
+
 ```java
-Font font = FontSerializer.INSTANCE.deserialize(
-        Readable.resource(getClass().getClassLoader(), "font.json"),
+Font font=FontSerializer.INSTANCE.deserialize(
+        Readable.resource(getClass().getClassLoader(),"font.json"),
         Key.key("custom:fontkey")
-);
+        );
 ```
 
 Serializing a language to a file:
+
 ```java
-Language language = ...;
-try (OutputStream output = new FileOutputStream("es.json")) {
-    LanguageSerializer.INSTANCE.serialize(language, output);
-}
+Language language=...;
+        try(OutputStream output=new FileOutputStream("es.json")){
+        LanguageSerializer.INSTANCE.serialize(language,output);
+        }
 ```
