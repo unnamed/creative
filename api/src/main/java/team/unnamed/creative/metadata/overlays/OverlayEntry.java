@@ -101,7 +101,7 @@ public interface OverlayEntry extends Examinable {
      * @sincePackFormat 18
      */
     @Retention(RetentionPolicy.CLASS)
-    @Pattern("[a-z0-9-_]+")
+    @Pattern(OverlayEntryImpl.DIRECTORY_PATTERN)
     @Documented
     @NonNls
     @Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE })

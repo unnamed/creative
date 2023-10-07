@@ -25,14 +25,19 @@ package team.unnamed.creative.metadata.overlays;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.pack.PackFormat;
 
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
 final class OverlayEntryImpl implements OverlayEntry {
+
+    static final @RegExp String DIRECTORY_PATTERN = "[a-z0-9-_]+";
+    private static final Pattern DIRECTORY_COMPILED_PATTERN = Pattern.compile(DIRECTORY_PATTERN);
 
     private final PackFormat formats;
     private final String directory;
@@ -43,6 +48,11 @@ final class OverlayEntryImpl implements OverlayEntry {
     ) {
         this.formats = requireNonNull(formats, "formats");
         this.directory = requireNonNull(directory, "directory");
+
+        if (!DIRECTORY_COMPILED_PATTERN.matcher(directory).matches()) {
+            throw new IllegalArgumentException("Invalid directory name: '" + directory
+                    + "' must match pattern: " + DIRECTORY_PATTERN);
+        }
     }
 
     @Override
