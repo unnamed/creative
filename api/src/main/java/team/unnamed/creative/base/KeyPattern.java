@@ -114,8 +114,15 @@ public class KeyPattern implements Examinable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         KeyPattern that = (KeyPattern) o;
-        return Objects.equals(namespace, that.namespace)
-                && Objects.equals(value, that.value);
+        return patternEquals(namespace, that.namespace)
+                && patternEquals(value, that.value);
+    }
+
+    private static boolean patternEquals(final @Nullable Pattern a, final @Nullable Pattern b) {
+        if (a == b) return true;
+        if (a == null) return false;
+        if (b == null) return false;
+        return a.pattern().equals(b.pattern());
     }
 
     @Override
@@ -129,7 +136,7 @@ public class KeyPattern implements Examinable {
      * namespace pattern and value pattern
      *
      * @param namespace The namespace pattern
-     * @param value The value pattern
+     * @param value     The value pattern
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
@@ -146,7 +153,7 @@ public class KeyPattern implements Examinable {
      * namespace pattern and value pattern
      *
      * @param namespace The namespace pattern
-     * @param value The value pattern
+     * @param value     The value pattern
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
