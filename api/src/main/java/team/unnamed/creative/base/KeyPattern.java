@@ -25,16 +25,11 @@ package team.unnamed.creative.base;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.util.Validate;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * Represents a {@link Key} pattern or predicate, uses
@@ -43,20 +38,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0.0
  */
-public class KeyPattern implements Examinable {
-
-    private static final KeyPattern ANY = new KeyPattern(null, null);
-
-    private final @Nullable Pattern namespace;
-    private final @Nullable Pattern value;
-
-    private KeyPattern(
-            @Nullable Pattern namespace,
-            @Nullable Pattern value
-    ) {
-        this.namespace = namespace;
-        this.value = value;
-    }
+public interface KeyPattern extends Examinable {
 
     /**
      * Returns the {@link Key#namespace() key's namespace}
@@ -65,10 +47,9 @@ public class KeyPattern implements Examinable {
      * <p>If null, it will apply to every namespace</p>
      *
      * @return The namespace pattern
+     * @since 1.0.0
      */
-    public @Nullable Pattern namespace() {
-        return namespace;
-    }
+    @Nullable Pattern namespace();
 
     /**
      * Returns the {@link Key#value() key's value}
@@ -77,10 +58,9 @@ public class KeyPattern implements Examinable {
      * <p>If null, it will apply to every value</p>
      *
      * @return The value pattern
+     * @since 1.0.0
      */
-    public @Nullable Pattern value() {
-        return value;
-    }
+    @Nullable Pattern value();
 
     /**
      * Tests if the given {@link Key} matches with this
@@ -90,45 +70,7 @@ public class KeyPattern implements Examinable {
      * @param key The tested key
      * @return True if it matches and should be filtered
      */
-    public boolean test(Key key) {
-        Validate.isNotNull(key, "key");
-        return (namespace == null || namespace.matcher(key.namespace()).matches())
-                && (value == null || value.matcher(key.value()).matches());
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("namespace", namespace),
-                ExaminableProperty.of("value", value)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        KeyPattern that = (KeyPattern) o;
-        return patternEquals(namespace, that.namespace)
-                && patternEquals(value, that.value);
-    }
-
-    private static boolean patternEquals(final @Nullable Pattern a, final @Nullable Pattern b) {
-        if (a == b) return true;
-        if (a == null) return false;
-        if (b == null) return false;
-        return a.pattern().equals(b.pattern());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(namespace, value);
-    }
+    boolean test(final @NotNull Key key);
 
     /**
      * Creates a new {@link KeyPattern} instance
@@ -140,11 +82,11 @@ public class KeyPattern implements Examinable {
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static KeyPattern of(
-            @Nullable Pattern namespace,
-            @Nullable Pattern value
+    static @NotNull KeyPattern of(
+            final @Nullable Pattern namespace,
+            final @Nullable Pattern value
     ) {
-        return new KeyPattern(namespace, value);
+        return new KeyPatternImpl(namespace, value);
     }
 
     /**
@@ -157,9 +99,9 @@ public class KeyPattern implements Examinable {
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static KeyPattern of(
-            @RegExp @Nullable String namespace,
-            @RegExp @Nullable String value
+    static @NotNull KeyPattern of(
+            final @RegExp @Nullable String namespace,
+            final @RegExp @Nullable String value
     ) {
         return of(
                 namespace == null ? null : Pattern.compile(namespace),
@@ -176,7 +118,7 @@ public class KeyPattern implements Examinable {
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static KeyPattern ofNamespace(@Nullable Pattern namespace) {
+    static @NotNull KeyPattern ofNamespace(final @Nullable Pattern namespace) {
         return of(namespace, null);
     }
 
@@ -189,7 +131,7 @@ public class KeyPattern implements Examinable {
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static KeyPattern ofNamespace(@RegExp @Nullable String namespace) {
+    static @NotNull KeyPattern ofNamespace(final @RegExp @Nullable String namespace) {
         return of(namespace == null ? null : Pattern.compile(namespace), null);
     }
 
@@ -202,7 +144,7 @@ public class KeyPattern implements Examinable {
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static KeyPattern ofValue(@Nullable Pattern value) {
+    static @NotNull KeyPattern ofValue(final @Nullable Pattern value) {
         return of(null, value);
     }
 
@@ -215,7 +157,7 @@ public class KeyPattern implements Examinable {
      * @return A new {@link KeyPattern} instance
      * @since 1.0.0
      */
-    public static KeyPattern ofValue(@RegExp @Nullable String value) {
+    static @NotNull KeyPattern ofValue(final @RegExp @Nullable String value) {
         return of(null, value == null ? null : Pattern.compile(value));
     }
 
@@ -226,8 +168,8 @@ public class KeyPattern implements Examinable {
      * @return The filtering pattern
      * @since 1.0.0
      */
-    public static KeyPattern any() {
-        return ANY;
+    static @NotNull KeyPattern any() {
+        return KeyPatternImpl.ANY;
     }
 
 }
