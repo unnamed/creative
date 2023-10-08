@@ -1,7 +1,0 @@
-{
-    "pack": {
-        "pack_format": 16,
-        "supported_formats": [16, 17],
-        "description": { "text":  "A resource pack for the server" }
-    }
-}

@@ -1,0 +1,59 @@
+{
+    "pack": {
+        "pack_format": 16,
+        "description": "Description!",
+        "supported_formats": [
+            16,
+            17
+        ]
+    },
+    "language": {
+        "english": {
+            "name": "English",
+            "region": "US",
+            "bidirectional": false
+        }
+    },
+    "filter": {
+        "block": [
+            {},
+            {
+                "namespace": "creative"
+            },
+            {
+                "namespace": "fancy",
+                "path": "thing/.+"
+            }
+        ]
+    },
+    "overlays": {
+        "entries": [
+            {
+                "formats": 18,
+                "directory": "abc"
+            },
+            {
+                "formats": [
+                    19,
+                    21
+                ],
+                "directory": "def"
+            }
+        ]
+    },
+    "animation": {
+        "width": 16,
+        "height": 16,
+        "frametime": 1,
+        "frames": [
+            {
+                "time": 0,
+                "index": 0
+            },
+            {
+                "time": 10,
+                "index": 1
+            }
+        ]
+    }
+}
