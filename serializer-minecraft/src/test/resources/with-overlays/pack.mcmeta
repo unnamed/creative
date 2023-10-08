@@ -1,0 +1,22 @@
+{
+    "pack": {
+        "pack_format": 18,
+        "description": "Description!",
+        "supported_formats": [
+            18,
+            20
+        ]
+    },
+    "overlays": {
+        "entries": [
+            {
+                "formats": 19,
+                "directory": "v19"
+            },
+            {
+                "formats": 20,
+                "directory": "v20"
+            }
+        ]
+    }
+}
