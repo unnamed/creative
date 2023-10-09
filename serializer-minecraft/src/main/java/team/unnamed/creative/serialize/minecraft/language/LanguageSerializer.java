@@ -29,9 +29,9 @@ import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -79,7 +79,7 @@ public final class LanguageSerializer implements JsonResourceSerializer<Language
             translations.put(translationKey, translationValue);
         }
 
-        return Language.of(key, translations);
+        return Language.language(key, translations);
     }
 
 }

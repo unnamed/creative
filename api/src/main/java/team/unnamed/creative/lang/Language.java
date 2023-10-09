@@ -25,92 +25,52 @@ package team.unnamed.creative.lang;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.translation.Translatable;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.metadata.language.LanguageMeta;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.metadata.language.LanguageEntry;
+import team.unnamed.creative.metadata.language.LanguageMeta;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a set of translations for a specific
- * language. Custom language additions require a
- * {@link LanguageEntry} being added to the {@link LanguageMeta}
- * instance of the resource pack
+ * language.
+ *
+ * <p>Custom language additions require a {@link LanguageEntry}
+ * being added to the {@link LanguageMeta} instance of the resource
+ * pack.</p>
  *
  * @since 1.0.0
  */
-public class Language implements Keyed, Examinable {
-
-    private final Key key;
-    private final Map<String, String> translations;
-
-    private Language(
-            Key key,
-            Map<String, String> translations
-    ) {
-        this.key = requireNonNull(key, "key");
-        this.translations = requireNonNull(translations, "translations");
-        validate();
-    }
-
-    private void validate() {
-        translations.forEach((key, value) -> {
-            requireNonNull(key, "Translation key cannot be null");
-            requireNonNull(value, "Translation cannot be null");
-        });
-    }
-
-    @Override
-    public @NotNull Key key() {
-        return key;
+@ApiStatus.NonExtendable
+public interface Language extends Keyed, Examinable {
+    /**
+     * Creates a new {@link Language} object which holds
+     * the given translations in a Map.
+     *
+     * @param key          The language key
+     * @param translations The translations
+     * @return The language
+     * @since 1.1.0
+     */
+    static @NotNull Language language(final @NotNull Key key, final @NotNull Map<String, String> translations) {
+        return new LanguageImpl(key, translations);
     }
 
     /**
-     * Returns a  map containing all the translations for this language, where
-     * the key is the translation key (yeah) and the value is the actual translation,
-     * in example, there could be a translation for the Stone block
+     * Creates a new {@link Language} instance builder.
      *
-     * <p>"block.minecraft.stone" -> "Stone"</p>
-     *
-     * @return The language translations
+     * @return The created builder
+     * @since 1.0.0
      */
-    public Map<String, String> translations() {
-        return translations;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("key", key),
-                ExaminableProperty.of("translations", translations)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Language that = (Language) o;
-        return key.equals(that.key)
-                && translations.equals(that.translations);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, translations);
+    static @NotNull Builder language() {
+        return new LanguageImpl.BuilderImpl();
     }
 
     /**
@@ -120,47 +80,119 @@ public class Language implements Keyed, Examinable {
      * @param translations The language translations
      * @return The language
      * @since 1.0.0
+     * @deprecated Use {@link Language#language(Key, Map)} instead,
+     * it is better for static imports
      */
-    public static Language of(Key key, Map<String, String> translations) {
-        return new Language(key, translations);
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull Language of(final @NotNull Key key, final @NotNull Map<String, String> translations) {
+        return new LanguageImpl(key, translations);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    /**
+     * Creates a new {@link Language} instance builder.
+     *
+     * @return The created builder
+     * @since 1.0.0
+     * @deprecated Use {@link Language#language()} instead,
+     * it is better for static imports
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull Builder builder() {
+        return new LanguageImpl.BuilderImpl();
     }
 
-    public static class Builder {
+    /**
+     * Returns the language key.
+     *
+     * <p>For example, the English language key is "minecraft:en_us"</p>
+     *
+     * @return The language key
+     * @since 1.0.0
+     */
+    @Override
+    @NotNull Key key();
 
-        private Key key;
-        private Map<String, String> translations;
+    /**
+     * Returns a map containing all the translations for this language, where
+     * the key is the translation key (yeah) and the value is the actual translation,
+     * in example, there could be a translation for the Stone block
+     *
+     * <p>"block.minecraft.stone" -> "Stone"</p>
+     *
+     * @return The language translations
+     * @since 1.0.0
+     */
+    @NotNull Map<String, String> translations();
 
-        private Builder() {
-        }
-
-        public Builder key(Key key) {
-            this.key = requireNonNull(key, "key");
-            return this;
-        }
-
-        public Builder translations(Map<String, String> translations) {
-            this.translations = requireNonNull(translations, "translations");
-            return this;
-        }
-
-        public Builder translation(String key, String value) {
-            requireNonNull(key, "key");
-            requireNonNull(value, "value");
-            if (this.translations == null) {
-                this.translations = new LinkedHashMap<>();
-            }
-            this.translations.put(key, value);
-            return this;
-        }
-
-        public Language build() {
-            return new Language(key, translations);
-        }
-
+    /**
+     * Returns the translation for the given key, or null if there is
+     * no translation.
+     *
+     * @param key The translation key
+     * @return The translation
+     * @since 1.1.0
+     */
+    default @Nullable String translation(final @NotNull String key) {
+        requireNonNull(key, "key");
+        return translations().get(key);
     }
 
+    /**
+     * Returns the translation for the given {@link Translatable} object,
+     * or null if there is no translation.
+     *
+     * @param translatable The translatable object
+     * @return The translation
+     * @since 1.1.0
+     */
+    default @Nullable String translation(final @NotNull Translatable translatable) {
+        requireNonNull(translatable, "translatable");
+        return translation(translatable.translationKey());
+    }
+
+    /**
+     * A builder for {@link Language} instances.
+     *
+     * @since 1.0.0
+     */
+    interface Builder {
+        /**
+         * Sets the language key.
+         *
+         * @param key The language key
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull Key key);
+
+        /**
+         * Sets the language translations.
+         *
+         * @param translations The translations
+         * @return This builder
+         * @since 1.0.0
+         */
+        @NotNull Builder translations(final @NotNull Map<String, String> translations);
+
+        /**
+         * Adds a translation to the language.
+         *
+         * @param key   The translation key
+         * @param value The translation value
+         * @return This builder
+         * @since 1.0.0
+         */
+        @NotNull Builder translation(final @NotNull String key, final @NotNull String value);
+
+        /**
+         * Builds the language instance.
+         *
+         * @return The created language
+         * @since 1.0.0
+         */
+        @NotNull Language build();
+    }
 }
