@@ -24,10 +24,12 @@
 package team.unnamed.creative.serialize.minecraft.io;
 
 import com.google.gson.stream.JsonWriter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
@@ -39,6 +41,14 @@ public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
         try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8))) {
             serializeToJson(object, writer);
         }
+    }
+
+    default @NotNull String serializeToJsonString(final @NotNull T object) throws IOException {
+        final StringWriter writer = new StringWriter();
+        try (final JsonWriter jsonWriter = new JsonWriter(writer)) {
+            serializeToJson(object, jsonWriter);
+        }
+        return writer.toString();
     }
 
 }

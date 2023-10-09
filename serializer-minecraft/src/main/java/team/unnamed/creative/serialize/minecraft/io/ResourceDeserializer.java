@@ -33,9 +33,9 @@ public interface ResourceDeserializer<T> {
 
     T deserialize(InputStream input, Key key) throws IOException;
 
-    default void deserialize(Readable readable, Key key) throws IOException {
+    default T deserialize(Readable readable, Key key) throws IOException {
         try (InputStream input = readable.open()) {
-            deserialize(input, key);
+            return deserialize(input, key);
         }
     }
 
