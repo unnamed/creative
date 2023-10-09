@@ -26,53 +26,118 @@ package team.unnamed.creative.font;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
- * Represents a resource-pack font file, located
- * at assets/&lt;namespace&gt;/font and is compound
- * by a list of font providers ({@link FontProvider}) that
- * tie a character set to a resource location along
- * with some extra information
+ * Represents a resource-pack font.
  *
- * <p>The default font is defined by "minecraft:default"
- * font ({@link Font#MINECRAFT_DEFAULT}) while
- * the default font used by enchantment tables is defined
- * by the {@link Font#MINECRAFT_ALT}</p>
+ * <p>A font is composed by a {@link FontProvider font providers},
+ * providers are the responsible for mapping characters to their
+ * respective character texture.</p>
  *
  * @since 1.0.0
  */
-public class Font implements Keyed, Examinable {
+@ApiStatus.NonExtendable
+public interface Font extends Keyed, Examinable {
+    Key MINECRAFT_DEFAULT = Key.key("default");
+    Key MINECRAFT_ALT = Key.key("alt");
+    Key MINECRAFT_ILLAGERALT = Key.key("illageralt");
+    Key MINECRAFT_UNIFORM = Key.key("uniform");
 
-    public static final Key MINECRAFT_DEFAULT = Key.key(Key.MINECRAFT_NAMESPACE, "default");
-    public static final Key MINECRAFT_ALT = Key.key(Key.MINECRAFT_NAMESPACE, "alt");
-    public static final Key MINECRAFT_ILLAGERALT = Key.key(Key.MINECRAFT_NAMESPACE, "illageralt");
-    public static final Key MINECRAFT_UNIFORM = Key.key(Key.MINECRAFT_NAMESPACE, "uniform");
-
-    private final Key key;
-    private final List<FontProvider> providers;
-
-    private Font(
-            Key key,
-            List<FontProvider> providers
-    ) {
-        this.key = requireNonNull(key, "key");
-        this.providers = requireNonNull(providers, "providers");
+    /**
+     * Creates a new {@link Font} instance from
+     * the given provider list.
+     *
+     * @param key       The font key
+     * @param providers The font providers
+     * @return A new {@link Font} instance
+     * @since 1.1.0
+     */
+    static @NotNull Font font(final @NotNull Key key, final @NotNull List<FontProvider> providers) {
+        return new FontImpl(key, providers);
     }
 
+    /**
+     * Creates a new {@link Font} instance from
+     * the given providers
+     *
+     * @param key       The font key
+     * @param providers The font providers
+     * @return A new {@link Font} instance
+     * @since 1.1.0
+     */
+    static @NotNull Font font(final @NotNull Key key, final @NotNull FontProvider @NotNull ... providers) {
+        return of(key, Arrays.asList(providers));
+    }
+
+    /**
+     * Creates a new builder for {@link Font} instances.
+     *
+     * @return The created builder
+     * @since 1.1.0
+     */
+    static @NotNull Builder font() {
+        return new FontImpl.BuilderImpl();
+    }
+
+    /**
+     * Creates a new {@link Font} instance from
+     * the given provider list
+     *
+     * @param key       The font key
+     * @param providers The font providers
+     * @return A new {@link Font} instance
+     * @since 1.0.0
+     * @deprecated Use {@link Font#font} as it is better
+     * for static imports
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull Font of(final @NotNull Key key, final @NotNull List<FontProvider> providers) {
+        return font(key, providers);
+    }
+
+    /**
+     * Creates a new {@link Font} instance from
+     * the given providers
+     *
+     * @param key       The font key
+     * @param providers The font providers
+     * @return A new {@link Font} instance
+     * @since 1.0.0
+     * @deprecated Use {@link Font#font} as it is better
+     * for static imports
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull Font of(final @NotNull Key key, final @NotNull FontProvider @NotNull ... providers) {
+        return font(key, Arrays.asList(providers));
+    }
+
+    /**
+     * Returns the font key.
+     *
+     * @return The font key
+     * @since 1.0.0
+     */
     @Override
-    public @NotNull Key key() {
-        return key;
-    }
+    @NotNull Key key();
+
+    /**
+     * Returns an updated {@link Font} instance
+     * with the given key.
+     *
+     * @param key The font key
+     * @return An updated {@link Font} instance
+     * @since 1.1.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    @NotNull Font key(final @NotNull Key key);
 
     /**
      * Returns a list of font providers
@@ -81,60 +146,83 @@ public class Font implements Keyed, Examinable {
      * @return The font providers
      * @since 1.0.0
      */
-    public List<FontProvider> providers() {
-        return providers;
-    }
+    @NotNull List<FontProvider> providers();
 
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("key", key),
-                ExaminableProperty.of("providers", providers)
-        );
-    }
+    /**
+     * Returns an updated {@link Font} instance
+     * with the given providers.
+     *
+     * @param providers The font providers
+     * @return An updated {@link Font} instance
+     * @since 1.1.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    @NotNull Font providers(final @NotNull List<FontProvider> providers);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Font that = (Font) o;
-        return key.equals(that.key)
-                && providers.equals(that.providers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, providers);
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
+    /**
+     * Returns a new {@link Builder} instance
+     * with the same values as this font.
+     *
+     * @return A new {@link Builder} instance
+     * @since 1.1.0
+     */
+    default @NotNull Builder toBuilder() {
+        return font()
+                .key(this.key())
+                .providers(this.providers());
     }
 
     /**
-     * Creates a new {@link Font} instance from
-     * the given provider list
+     * A builder for {@link Font} instances.
      *
-     * @param key The font key
-     * @param providers The font providers
-     * @return A new {@link Font} instance
-     * @since 1.0.0
+     * @since 1.1.0
      */
-    public static Font of(Key key, List<FontProvider> providers) {
-        return new Font(key, providers);
-    }
+    interface Builder {
+        /**
+         * Sets the font key.
+         *
+         * @param key The font key
+         * @return This builder
+         * @since 1.1.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull Key key);
 
-    /**
-     * Creates a new {@link Font} instance from
-     * the given providers
-     *
-     * @param key The font key
-     * @param providers The font providers
-     * @return A new {@link Font} instance
-     * @since 1.0.0
-     */
-    public static Font of(Key key, FontProvider... providers) {
-        return new Font(key, Arrays.asList(providers));
-    }
+        /**
+         * Sets the font providers.
+         *
+         * @param providers The font providers
+         * @return This builder
+         * @since 1.1.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder providers(final @NotNull List<FontProvider> providers);
 
+        /**
+         * Sets the font providers.
+         *
+         * @param providers The font providers
+         * @return This builder
+         * @since 1.1.0
+         */
+        @NotNull Builder providers(final @NotNull FontProvider @NotNull ... providers);
+
+        /**
+         * Adds a font provider to the font.
+         *
+         * @param provider The font provider
+         * @return This builder
+         * @since 1.1.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder provider(final @NotNull FontProvider provider);
+
+        /**
+         * Builds the font.
+         *
+         * @return The font
+         * @since 1.1.0
+         */
+        @NotNull Font build();
+    }
 }
