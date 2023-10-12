@@ -41,7 +41,7 @@ final class SingleAtlasSourceImpl implements SingleAtlasSource {
 
     SingleAtlasSourceImpl(final @NotNull Key resource, final @Nullable Key sprite) {
         this.resource = requireNonNull(resource, "resource");
-        this.sprite = requireNonNull(sprite, "sprite");
+        this.sprite = sprite;
     }
 
     @Override
