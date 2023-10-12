@@ -175,12 +175,12 @@ public class LanguageEntry implements Examinable {
         }
 
         public Builder name(String name) {
-            this.name = isNotEmpty(name, "name");
+            this.name = requireNonNull(name, "name");
             return this;
         }
 
         public Builder region(String region) {
-            this.region = isNotEmpty(region, "region");
+            this.region = requireNonNull(region, "region");
             return this;
         }
 
