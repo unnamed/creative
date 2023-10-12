@@ -43,9 +43,9 @@ import team.unnamed.creative.metadata.overlays.OverlayEntry;
  * <p>Also note that overlays do not have pack metadata or
  * icon.</p>
  *
- * @since 1.1.0
  * @sincePackFormat 18
  * @sinceMinecraft 1.20.2
+ * @since 1.1.0
  */
 @ApiStatus.NonExtendable
 public interface Overlay extends ResourceContainer {
@@ -54,9 +54,9 @@ public interface Overlay extends ResourceContainer {
      * Gets the overlay's directory name.
      *
      * @return The overlay directory name.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     @Subst("dir")
     @NotNull String directory();
@@ -67,11 +67,11 @@ public interface Overlay extends ResourceContainer {
      *
      * @param directory The overlay directory name.
      * @return The created overlay.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
-    static @NotNull Overlay create(final @NotNull @OverlayEntry.Directory String directory) {
+    static @NotNull Overlay overlay(final @NotNull @OverlayEntry.Directory String directory) {
         return new OverlayImpl(directory);
     }
 

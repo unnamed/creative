@@ -137,7 +137,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 Overlay overlay = resourcePack.overlay(overlayDir);
                 if (overlay == null) {
                     // first occurrence, register overlay
-                    overlay = Overlay.create(overlayDir);
+                    overlay = Overlay.overlay(overlayDir);
                     resourcePack.overlay(overlay);
                 }
 
