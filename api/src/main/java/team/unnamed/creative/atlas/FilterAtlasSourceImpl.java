@@ -23,29 +23,50 @@
  */
 package team.unnamed.creative.atlas;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.KeyPattern;
 
-/**
- * An {@link AtlasSource} that removes sprites matching the given
- * pattern (only works for entries already in the list).
- *
- * @sincePackFormat 12
- * @sinceMinecraft 1.19.3
- * @since 1.0.0
- */
-@ApiStatus.NonExtendable
-public interface FilterAtlasSource extends AtlasSource {
+import java.util.Objects;
+import java.util.stream.Stream;
 
-    /**
-     * Gets the pattern to filter the textures
-     *
-     * @return The key pattern
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     * @since 1.0.0
-     */
-    @NotNull KeyPattern pattern();
+final class FilterAtlasSourceImpl implements FilterAtlasSource {
+
+    private final KeyPattern pattern;
+
+    FilterAtlasSourceImpl(final @NotNull KeyPattern pattern) {
+        this.pattern = Objects.requireNonNull(pattern, "pattern");
+    }
+
+    @Override
+    public @NotNull KeyPattern pattern() {
+        return pattern;
+    }
+
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("pattern", pattern)
+        );
+    }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FilterAtlasSourceImpl that = (FilterAtlasSourceImpl) o;
+        return pattern.equals(that.pattern);
+    }
+
+    @Override
+    public int hashCode() {
+        return pattern.hashCode();
+    }
 
 }

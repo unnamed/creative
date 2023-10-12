@@ -26,6 +26,7 @@ package team.unnamed.creative.atlas;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,12 +50,13 @@ import java.util.List;
  * and will fail to load.</p>
  *
  * <p>See the <a href="https://www.minecraft.net/en-us/article/minecraft-java-edition-1-19-3">1.19.3 change-log</a>
- * and the atlas structure in the resource-pack <a href="https://minecraft.fandom.com/wiki/Resource_pack#Atlases">here</a></p>
+ * and the atlas structure in the resource-pack <a href="https://minecraft.wiki/w/Resource_pack#Atlases">here</a></p>
  *
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
  * @since 1.0.0
  */
+@ApiStatus.NonExtendable
 public interface Atlas extends Keyed, Examinable {
 
     Key BLOCKS = Key.key("blocks");
@@ -141,22 +143,82 @@ public interface Atlas extends Keyed, Examinable {
      */
     interface Builder {
 
+        /**
+         * Gets the atlas key.
+         *
+         * @return The atlas key
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Nullable Key key();
 
+        /**
+         * Sets the atlas key.
+         *
+         * @param key The atlas key
+         * @return This builder
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder key(final @NotNull Key key);
 
+        /**
+         * Gets the list of sources for the built atlas.
+         *
+         * @return The atlas sources
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Nullable List<AtlasSource> sources();
 
+        /**
+         * Sets the list of sources for the built atlas.
+         *
+         * @param sources The atlas sources
+         * @return This builder
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder sources(final @NotNull List<AtlasSource> sources);
 
+        /**
+         * Sets the given sources for the built atlas.
+         *
+         * @param sources The atlas sources
+         * @return This builder
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder sources(final @NotNull AtlasSource @NotNull ... sources);
 
+        /**
+         * Adds the given source to the built atlas.
+         *
+         * @param source The atlas source
+         * @return This builder
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder addSource(final @NotNull AtlasSource source);
 
+        /**
+         * Builds the {@link Atlas} instance.
+         *
+         * @return The built atlas
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
         @Contract("-> new")
         @NotNull Atlas build();
 

@@ -24,14 +24,12 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.util.MoreCollections;
-import team.unnamed.creative.util.Validate;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * A type of {@link AtlasSource} used to dynamically generate
@@ -39,45 +37,50 @@ import java.util.stream.Stream;
  *
  * @sincePackFormat 13
  * @sinceMinecraft 1.19.4
+ * @since 1.0.0
  */
-public class PalettedPermutationsAtlasSource implements AtlasSource {
+@ApiStatus.NonExtendable
+public interface PalettedPermutationsAtlasSource extends AtlasSource {
 
-    private final List<Key> textures;
-    private final Key paletteKey;
-    private final Map<String, Key> permutations;
+    /**
+     * Gets the list of keys of the base textures. These textures will be used
+     * to generate variants of them that have been modified by color palettes.
+     *
+     * @return The list of base textures.
+     * @sincePackFormat 13
+     * @sinceMinecraft 1.19.4
+     * @since 1.0.0
+     */
+    @NotNull @Unmodifiable List<Key> textures();
 
-    protected PalettedPermutationsAtlasSource(
-            List<Key> textures,
-            Key paletteKey,
-            Map<String, Key> permutations
-    ) {
-        Validate.isNotNull(textures, "textures");
-        Validate.isNotNull(paletteKey, "paletteKey");
-        Validate.isNotNull(permutations, "permutations");
-        this.textures = MoreCollections.immutableListOf(textures);
-        this.paletteKey = paletteKey;
-        this.permutations = MoreCollections.immutableMapOf(permutations);
-    }
+    /**
+     * Gets the key of a color palette key file. This is used to define the set of key
+     * pixel colors to swap out with the color palettes defined.
+     *
+     * @return The key of the color palette key file.
+     * @sincePackFormat 13
+     * @sinceMinecraft 1.19.4
+     * @since 1.0.0
+     */
+    @NotNull Key paletteKey();
 
-    public List<Key> textures() {
-        return textures;
-    }
-
-    public Key paletteKey() {
-        return paletteKey;
-    }
-
-    public Map<String, Key> permutations() {
-        return permutations;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("textures", textures),
-                ExaminableProperty.of("paletteKey", paletteKey),
-                ExaminableProperty.of("permutations", permutations)
-        );
-    }
+    /**
+     * Gets the map of permutations from suffix to a key of a color palette file.
+     *
+     * <p>The suffix is prepended to the key of the output variant textures, with a {@code _}
+     * character separating the suffix and the base texture name.</p>
+     *
+     * <p>The number of pixels in each color palette must be the same as that of the {@link #paletteKey()}
+     * defined for this source. Pixels are compared by RGB value. The alpha channel is ignored for key
+     * matching, but in the resulting texture the alpha channel is multiplied with the color palette's
+     * alpha channel. Pixels that do not match the {@link #paletteKey()} are copied over to the resulting
+     * texture as-is.</p>
+     *
+     * @return The map of permutations from suffix to a key of a color palette file.
+     * @sincePackFormat 13
+     * @sinceMinecraft 1.19.4
+     * @since 1.0.0
+     */
+    @NotNull @Unmodifiable Map<String, Key> permutations();
 
 }

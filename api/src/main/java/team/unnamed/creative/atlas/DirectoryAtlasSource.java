@@ -23,40 +23,40 @@
  */
 package team.unnamed.creative.atlas;
 
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.util.Validate;
-
-import java.util.stream.Stream;
 
 /**
+ * A {@link AtlasSource} that adds all the contents of a directory
+ * and its subdirectories, across all namespaces, to the texture atlas.
+ *
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
+ * @since 1.0.0
  */
-public class DirectoryAtlasSource implements AtlasSource {
+@ApiStatus.NonExtendable
+public interface DirectoryAtlasSource extends AtlasSource {
 
-    private final String source;
-    private final String prefix;
+    /**
+     * Gets the directory path, relative to the textures'
+     * directory.
+     *
+     * @return The directory path
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @NotNull String source();
 
-    protected DirectoryAtlasSource(String source, String prefix) {
-        this.source = Validate.isNotNull(source, "source");
-        this.prefix = Validate.isNotEmpty(prefix, "prefix");
-    }
-
-    public String source() {
-        return source;
-    }
-
-    public String prefix() {
-        return prefix;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("source", source),
-                ExaminableProperty.of("prefix", prefix)
-        );
-    }
+    /**
+     * String to be prefixed to the sprite name when loaded,
+     * can be empty.
+     *
+     * @return The prefix
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @NotNull String prefix();
 
 }

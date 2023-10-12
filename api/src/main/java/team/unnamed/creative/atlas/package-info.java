@@ -21,31 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.atlas;
-
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.base.KeyPattern;
-
 /**
- * An {@link AtlasSource} that removes sprites matching the given
- * pattern (only works for entries already in the list).
- *
- * @sincePackFormat 12
- * @sinceMinecraft 1.19.3
- * @since 1.0.0
+ * Provides classes to work with texture atlases.
  */
-@ApiStatus.NonExtendable
-public interface FilterAtlasSource extends AtlasSource {
-
-    /**
-     * Gets the pattern to filter the textures
-     *
-     * @return The key pattern
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     * @since 1.0.0
-     */
-    @NotNull KeyPattern pattern();
-
-}
+package team.unnamed.creative.atlas;

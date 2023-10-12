@@ -25,120 +25,168 @@ package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.util.Validate;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
+ * An {@link AtlasSource} that copies rectangular regions from
+ * other images.
+ *
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
+ * @since 1.0.0
  */
-public class UnstitchAtlasSource implements AtlasSource {
+@ApiStatus.NonExtendable
+public interface UnstitchAtlasSource extends AtlasSource {
 
-    public static final double DEFAULT_X_DIVISOR = 1.0D;
-    public static final double DEFAULT_Y_DIVISOR = 1.0D;
+    double DEFAULT_X_DIVISOR = 1.0D;
+    double DEFAULT_Y_DIVISOR = 1.0D;
 
-    private final Key resource;
-    private final List<Region> regions;
-    private final double xDivisor;
-    private final double yDivisor;
+    /**
+     * Returns the location of the resource to copy from
+     * within the pack (relative to textures directory,
+     * implied .png extension).
+     *
+     * @return The resource location
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @NotNull Key resource();
 
-    protected UnstitchAtlasSource(
-            Key resource,
-            List<Region> regions,
-            double xDivisor,
-            double yDivisor
-    ) {
-        this.resource = resource;
-        this.regions = regions;
-        this.xDivisor = xDivisor;
-        this.yDivisor = yDivisor;
-    }
+    /**
+     * Returns the list of regions to copy from the source
+     * image.
+     *
+     * @return The list of regions
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @NotNull @Unmodifiable List<Region> regions();
 
-    public Key resource() {
-        return resource;
-    }
+    /**
+     * Returns the X divisor, used for determining the units used
+     * by in the x coordinate of regions.
+     *
+     * @return The X divisor
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    double xDivisor();
 
-    public List<Region> regions() {
-        return regions;
-    }
+    /**
+     * Returns the Y divisor, used for determining the units used
+     * by in the y coordinate of regions.
+     *
+     * @return The Y divisor
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    double yDivisor();
 
-    public double xDivisor() {
-        return xDivisor;
-    }
+    /**
+     * A region to copy from a {@link UnstitchAtlasSource} image.
+     *
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @ApiStatus.NonExtendable
+    interface Region extends Examinable {
 
-    public double yDivisor() {
-        return yDivisor;
-    }
+        /**
+         * Gets the sprite name.
+         *
+         * @return The sprite name
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
+        @NotNull Key sprite();
 
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("resource", resource),
-                ExaminableProperty.of("regions", regions),
-                ExaminableProperty.of("xDivisor", xDivisor),
-                ExaminableProperty.of("yDivisor", yDivisor)
-        );
-    }
+        /**
+         * Gets the X coordinate of the top-left
+         * corner of the region
+         *
+         * @return The X coordinate
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
+        double x();
 
-    public static class Region implements Examinable {
+        /**
+         * Gets the Y coordinate of the top-left
+         * corner of the region
+         *
+         * @return The Y coordinate
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
+        double y();
 
-        private final Key sprite;
-        private final double x;
-        private final double y;
-        private final double width;
-        private final double height;
+        /**
+         * Gets the width of the region
+         *
+         * @return The width
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
+        double width();
 
-        private Region(
-                Key sprite,
-                double x,
-                double y,
-                double width,
-                double height
-        ) {
-            this.sprite = Validate.isNotNull(sprite);
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
+        /**
+         * Gets the height of the region
+         *
+         * @return The height
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         */
+        double height();
+
+        /**
+         * Creates a new {@link Region} instance.
+         *
+         * @param sprite The sprite name
+         * @param x      The X coordinate of the top-left corner of the region
+         * @param y      The Y coordinate of the top-left corner of the region
+         * @param width  The width of the region
+         * @param height The height of the region
+         * @return The new region instance
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.1.0
+         */
+        static @NotNull Region region(final @NotNull Key sprite, final double x, final double y, final double width, final double height) {
+            return new UnstitchAtlasSourceImpl.RegionImpl(sprite, x, y, width, height);
         }
 
-        public Key sprite() {
-            return sprite;
-        }
-
-        public double x() {
-            return x;
-        }
-
-        public double y() {
-            return y;
-        }
-
-        public double width() {
-            return width;
-        }
-
-        public double height() {
-            return height;
-        }
-
-        @Override
-        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-            return Stream.of(
-                    ExaminableProperty.of("sprite", sprite),
-                    ExaminableProperty.of("x", x),
-                    ExaminableProperty.of("y", y),
-                    ExaminableProperty.of("width", width),
-                    ExaminableProperty.of("height", height)
-            );
-        }
-
-        public static Region of(Key sprite, double x, double y, double width, double height) {
-            return new Region(sprite, x, y, width, height);
+        /**
+         * Creates a new {@link Region} instance.
+         *
+         * @param sprite The sprite name
+         * @param x      The X coordinate of the top-left corner of the region
+         * @param y      The Y coordinate of the top-left corner of the region
+         * @param width  The width of the region
+         * @param height The height of the region
+         * @return The new region instance
+         * @sincePackFormat 12
+         * @sinceMinecraft 1.19.3
+         * @since 1.0.0
+         * @deprecated In favor of {@link #region(Key, double, double, double, double)}
+         */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+        static @NotNull Region of(final @NotNull Key sprite, final double x, final double y, final double width, final double height) {
+            return region(sprite, x, y, width, height);
         }
 
     }

@@ -25,6 +25,8 @@ package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.texture.Texture;
@@ -42,7 +44,9 @@ import java.util.Map;
  *
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
+ * @since 1.0.0
  */
+@ApiStatus.NonExtendable
 public interface AtlasSource extends Examinable {
 
     /**
@@ -51,15 +55,14 @@ public interface AtlasSource extends Examinable {
      * a custom name ({@code sprite}) if set
      *
      * @param resource The texture key (It can be {@link Texture#key()})
-     * @param sprite The sprite name
-     *
-     * @since 1.0.0
+     * @param sprite   The sprite name
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see SingleAtlasSource
+     * @since 1.0.0
      */
-    static SingleAtlasSource single(Key resource, @Nullable Key sprite) {
-        return new SingleAtlasSource(resource, sprite);
+    static @NotNull SingleAtlasSource single(final @NotNull Key resource, final @Nullable Key sprite) {
+        return new SingleAtlasSourceImpl(resource, sprite);
     }
 
     /**
@@ -67,13 +70,12 @@ public interface AtlasSource extends Examinable {
      * atlas sources add a single file.
      *
      * @param resource The texture key (It can be {@link Texture#key()})
-     *
-     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see SingleAtlasSource
+     * @since 1.0.0
      */
-    static SingleAtlasSource single(Key resource) {
+    static @NotNull SingleAtlasSource single(final @NotNull Key resource) {
         return single(resource, null);
     }
 
@@ -86,14 +88,13 @@ public interface AtlasSource extends Examinable {
      *               (relative to the {@code textures} directory)
      * @param prefix The prefix to be prepended to the sprite name
      *               when loaded (can be empty)
-     *
-     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see DirectoryAtlasSource
+     * @since 1.0.0
      */
-    static DirectoryAtlasSource directory(String source, String prefix) {
-        return new DirectoryAtlasSource(source, prefix);
+    static @NotNull DirectoryAtlasSource directory(final @NotNull String source, final @NotNull String prefix) {
+        return new DirectoryAtlasSourceImpl(source, prefix);
     }
 
     /**
@@ -102,31 +103,46 @@ public interface AtlasSource extends Examinable {
      * already in the list.
      *
      * @param pattern The {@link KeyPattern} to match the resources
-     *
-     * @since 1.0.0
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @see FilterAtlasSource
      * @see KeyPattern
+     * @since 1.0.0
      */
-    static FilterAtlasSource filter(KeyPattern pattern) {
-        return new FilterAtlasSource(pattern);
+    static @NotNull FilterAtlasSource filter(final @NotNull KeyPattern pattern) {
+        return new FilterAtlasSourceImpl(pattern);
     }
 
     /**
+     * Creates a new {@link UnstitchAtlasSource}, unstitch atlas sources
+     * copy rectangular regions from other images.
+     *
+     * @param resource The resource
+     * @param regions  The regions to copy
+     * @param xDivisor The X divisor, used to determine the units used by the regions
+     * @param yDivisor The Y divisor, used to determine the units used by the regions
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
+     * @since 1.0.0
      */
-    static UnstitchAtlasSource unstitch(Key resource, List<UnstitchAtlasSource.Region> regions, double xDivisor, double yDivisor) {
-        return new UnstitchAtlasSource(resource, regions, xDivisor, yDivisor);
+    static @NotNull UnstitchAtlasSource unstitch(final @NotNull Key resource, final @NotNull List<UnstitchAtlasSource.Region> regions, final double xDivisor, final double yDivisor) {
+        return new UnstitchAtlasSourceImpl(resource, regions, xDivisor, yDivisor);
     }
 
     /**
+     * Creates a new {@link PalettedPermutationsAtlasSource}, paletted permutations
+     * atlas sources dynamically generate textures in-memory with specific color sets.
+     *
+     * @param textures     A list of the base textures
+     * @param paletteKey   The key of the palette file that defines the set of key pixel
+     *                     colors to swap out with the color palettes defined.
+     * @param permutations A map of permutations from suffix to a key of a color palette file
      * @sincePackFormat 13
      * @sinceMinecraft 1.19.4
+     * @since 1.0.0
      */
-    static PalettedPermutationsAtlasSource palettedPermutations(List<Key> textures, Key paletteKey, Map<String, Key> permutations) {
-        return new PalettedPermutationsAtlasSource(textures, paletteKey, permutations);
+    static @NotNull PalettedPermutationsAtlasSource palettedPermutations(final @NotNull List<Key> textures, final @NotNull Key paletteKey, final @NotNull Map<String, Key> permutations) {
+        return new PalettedPermutationsAtlasSourceImpl(textures, paletteKey, permutations);
     }
 
 }

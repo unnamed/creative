@@ -24,40 +24,42 @@
 package team.unnamed.creative.atlas;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.stream.Stream;
+import team.unnamed.creative.texture.Texture;
 
 /**
+ * An atlas source that adds a single file to the texture
+ * atlas and maps it to a custom name ({@code sprite}) if set.
+ *
  * @sincePackFormat 12
  * @sinceMinecraft 1.19.3
+ * @since 1.0.0
  */
-public class SingleAtlasSource implements AtlasSource {
+@ApiStatus.NonExtendable
+public interface SingleAtlasSource extends AtlasSource {
 
-    private final Key resource;
-    private final @Nullable Key sprite;
+    /**
+     * The texture key (It can be {@link Texture#key()})
+     *
+     * @return The texture key
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @NotNull Key resource();
 
-    protected SingleAtlasSource(Key resource, @Nullable Key sprite) {
-        this.resource = resource;
-        this.sprite = sprite;
-    }
-
-    public Key resource() {
-        return resource;
-    }
-
-    public @Nullable Key sprite() {
-        return sprite;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("resource", resource),
-                ExaminableProperty.of("sprite", sprite)
-        );
-    }
+    /**
+     * The sprite name to use, if null, it means that
+     * the same value as {@link SingleAtlasSource#resource()}
+     * should be used.
+     *
+     * @return The sprite name
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     */
+    @Nullable Key sprite();
 
 }
