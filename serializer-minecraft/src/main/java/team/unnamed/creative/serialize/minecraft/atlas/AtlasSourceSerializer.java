@@ -36,6 +36,7 @@ import team.unnamed.creative.atlas.PalettedPermutationsAtlasSource;
 import team.unnamed.creative.atlas.SingleAtlasSource;
 import team.unnamed.creative.atlas.UnstitchAtlasSource;
 import team.unnamed.creative.base.KeyPattern;
+import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
 import team.unnamed.creative.util.Keys;
 
@@ -122,22 +123,22 @@ final class AtlasSourceSerializer {
             writer
                     .name(TYPE_FIELD).value(UNSTITCH_TYPE)
                     .name("resource").value(Keys.toString(unstitchSource.resource()));
-            double divisorX = unstitchSource.xDivisor();
-            if (divisorX != UnstitchAtlasSource.DEFAULT_X_DIVISOR) {
+            double divisorX = unstitchSource.divisor().x();
+            if (divisorX != UnstitchAtlasSource.DEFAULT_DIVISOR.x()) {
                 writer.name("divisor_x").value(divisorX);
             }
-            double divisorY = unstitchSource.yDivisor();
-            if (divisorY != UnstitchAtlasSource.DEFAULT_Y_DIVISOR) {
+            double divisorY = unstitchSource.divisor().y();
+            if (divisorY != UnstitchAtlasSource.DEFAULT_DIVISOR.y()) {
                 writer.name("divisor_y").value(divisorY);
             }
             writer.name("regions").beginArray();
             for (UnstitchAtlasSource.Region region : unstitchSource.regions()) {
                 writer.beginObject()
                         .name("sprite").value(Keys.toString(region.sprite()))
-                        .name("x").value(region.x())
-                        .name("y").value(region.y())
-                        .name("width").value(region.width())
-                        .name("height").value(region.height())
+                        .name("x").value(region.position().x())
+                        .name("y").value(region.position().y())
+                        .name("width").value(region.dimensions().x())
+                        .name("height").value(region.dimensions().y())
                         .endObject();
             }
             writer.endArray();
@@ -189,22 +190,26 @@ final class AtlasSourceSerializer {
                 @Subst("minecraft:resource")
                 String resourceStr = node.get("resource").getAsString();
                 Key resource = Key.key(resourceStr);
-                double xDivisor = node.has("divisor_x") ? node.get("divisor_x").getAsDouble() : UnstitchAtlasSource.DEFAULT_X_DIVISOR;
-                double yDivisor = node.has("divisor_y") ? node.get("divisor_y").getAsDouble() : UnstitchAtlasSource.DEFAULT_Y_DIVISOR;
+                float xDivisor = node.has("divisor_x") ? node.get("divisor_x").getAsFloat() : UnstitchAtlasSource.DEFAULT_DIVISOR.x();
+                float yDivisor = node.has("divisor_y") ? node.get("divisor_y").getAsFloat() : UnstitchAtlasSource.DEFAULT_DIVISOR.y();
                 List<UnstitchAtlasSource.Region> regions = new ArrayList<>();
                 for (JsonElement regionElement : node.getAsJsonArray("regions")) {
                     JsonObject regionNode = regionElement.getAsJsonObject();
                     @Subst("minecraft:resource")
                     String spriteStr = regionNode.get("sprite").getAsString();
-                    regions.add(UnstitchAtlasSource.Region.of(
+                    regions.add(UnstitchAtlasSource.Region.region(
                             Key.key(spriteStr),
-                            regionNode.get("x").getAsDouble(),
-                            regionNode.get("y").getAsDouble(),
-                            regionNode.get("width").getAsDouble(),
-                            regionNode.get("height").getAsDouble()
+                            new Vector2Float(
+                                    regionNode.get("x").getAsFloat(),
+                                    regionNode.get("y").getAsFloat()
+                            ),
+                            new Vector2Float(
+                                    regionNode.get("width").getAsFloat(),
+                                    regionNode.get("height").getAsFloat()
+                            )
                     ));
                 }
-                return AtlasSource.unstitch(resource, regions, xDivisor, yDivisor);
+                return AtlasSource.unstitch(resource, regions, new Vector2Float(xDivisor, yDivisor));
             }
             case PALETTED_PERMUTATIONS_TYPE: {
                 List<Key> textures = new ArrayList<>();

@@ -28,6 +28,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.util.MoreCollections;
 
 import java.util.List;
@@ -39,19 +40,16 @@ final class UnstitchAtlasSourceImpl implements UnstitchAtlasSource {
 
     private final Key resource;
     private final List<Region> regions;
-    private final double xDivisor;
-    private final double yDivisor;
+    private final Vector2Float divisor;
 
     UnstitchAtlasSourceImpl(
             final @NotNull Key resource,
             final @NotNull List<Region> regions,
-            final double xDivisor,
-            final double yDivisor
+            final @NotNull Vector2Float divisor
     ) {
         this.resource = requireNonNull(resource, "resource");
         this.regions = MoreCollections.immutableListOf(requireNonNull(regions, "regions"));
-        this.xDivisor = xDivisor;
-        this.yDivisor = yDivisor;
+        this.divisor = requireNonNull(divisor, "divisor");
     }
 
     @Override
@@ -65,13 +63,8 @@ final class UnstitchAtlasSourceImpl implements UnstitchAtlasSource {
     }
 
     @Override
-    public double xDivisor() {
-        return xDivisor;
-    }
-
-    @Override
-    public double yDivisor() {
-        return yDivisor;
+    public @NotNull Vector2Float divisor() {
+        return divisor;
     }
 
     @Override
@@ -79,8 +72,7 @@ final class UnstitchAtlasSourceImpl implements UnstitchAtlasSource {
         return Stream.of(
                 ExaminableProperty.of("resource", resource),
                 ExaminableProperty.of("regions", regions),
-                ExaminableProperty.of("xDivisor", xDivisor),
-                ExaminableProperty.of("yDivisor", yDivisor)
+                ExaminableProperty.of("divisor", divisor)
         );
     }
 
@@ -94,8 +86,7 @@ final class UnstitchAtlasSourceImpl implements UnstitchAtlasSource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UnstitchAtlasSourceImpl that = (UnstitchAtlasSourceImpl) o;
-        if (Double.compare(that.xDivisor, xDivisor) != 0) return false;
-        if (Double.compare(that.yDivisor, yDivisor) != 0) return false;
+        if (!divisor.equals(that.divisor)) return false;
         if (!resource.equals(that.resource)) return false;
         return regions.equals(that.regions);
     }
@@ -103,36 +94,26 @@ final class UnstitchAtlasSourceImpl implements UnstitchAtlasSource {
     @Override
     public int hashCode() {
         int result;
-        long temp;
         result = resource.hashCode();
         result = 31 * result + regions.hashCode();
-        temp = Double.doubleToLongBits(xDivisor);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(yDivisor);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + divisor.hashCode();
         return result;
     }
 
     static final class RegionImpl implements Region {
 
         private final Key sprite;
-        private final double x;
-        private final double y;
-        private final double width;
-        private final double height;
+        private final Vector2Float position;
+        private final Vector2Float dimensions;
 
         RegionImpl(
                 final @NotNull Key sprite,
-                final double x,
-                final double y,
-                final double width,
-                final double height
+                final @NotNull Vector2Float position,
+                final @NotNull Vector2Float dimensions
         ) {
             this.sprite = requireNonNull(sprite, "sprite");
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
+            this.position = requireNonNull(position, "position");
+            this.dimensions = requireNonNull(dimensions, "dimensions");
         }
 
         @Override
@@ -141,33 +122,21 @@ final class UnstitchAtlasSourceImpl implements UnstitchAtlasSource {
         }
 
         @Override
-        public double x() {
-            return x;
+        public @NotNull Vector2Float position() {
+            return position;
         }
 
         @Override
-        public double y() {
-            return y;
-        }
-
-        @Override
-        public double width() {
-            return width;
-        }
-
-        @Override
-        public double height() {
-            return height;
+        public @NotNull Vector2Float dimensions() {
+            return dimensions;
         }
 
         @Override
         public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
             return Stream.of(
                     ExaminableProperty.of("sprite", sprite),
-                    ExaminableProperty.of("x", x),
-                    ExaminableProperty.of("y", y),
-                    ExaminableProperty.of("width", width),
-                    ExaminableProperty.of("height", height)
+                    ExaminableProperty.of("position", position),
+                    ExaminableProperty.of("dimensions", dimensions)
             );
         }
 

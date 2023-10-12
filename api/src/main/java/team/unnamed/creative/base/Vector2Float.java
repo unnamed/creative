@@ -45,8 +45,18 @@ public final class Vector2Float
     /**
      * Constant for {@link Vector2Float} value with
      * abscissa and ordinate of {@code 0} zero.
+     *
+     * @since 1.0.0
      */
     public static final Vector2Float ZERO = new Vector2Float(0F, 0F);
+
+    /**
+     * Constant for {@link Vector2Float} value with
+     * abscissa and ordinate of {@code 1} one.
+     *
+     * @since 1.1.0
+     */
+    public static final Vector2Float ONE = new Vector2Float(1F, 1F);
 
     private final float x;
     private final float y;
@@ -105,7 +115,7 @@ public final class Vector2Float
     }
 
     public float[] toArray() {
-        return new float[] { x, y };
+        return new float[]{x, y};
     }
 
     @NotNull
