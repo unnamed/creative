@@ -23,10 +23,17 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.ApiStatus;
+import team.unnamed.creative.base.Vector2Float;
+import team.unnamed.creative.base.Vector3Float;
+import team.unnamed.creative.base.Vector4Float;
+
+import java.io.IOException;
 
 @ApiStatus.Internal
 public final class GsonUtil {
@@ -79,6 +86,49 @@ public final class GsonUtil {
         } else {
             throw new IllegalStateException("Field '" + key + "' must be a float");
         }
+    }
+
+    public static void writeVector3Float(JsonWriter writer, Vector3Float vector) throws IOException {
+        writer.beginArray();
+        writer.value(vector.x());
+        writer.value(vector.y());
+        writer.value(vector.z());
+        writer.endArray();
+    }
+
+    public static void writeVector2Float(JsonWriter writer, Vector2Float vector) throws IOException {
+        writer.beginArray();
+        writer.value(vector.x());
+        writer.value(vector.y());
+        writer.endArray();
+    }
+
+    public static void writeVector4Float(JsonWriter writer, Vector4Float vector) throws IOException {
+        writer.beginArray();
+        writer.value(vector.x());
+        writer.value(vector.y());
+        writer.value(vector.x2());
+        writer.value(vector.y2());
+        writer.endArray();
+    }
+
+    public static Vector3Float readVector3Float(JsonElement element) {
+        JsonArray array = element.getAsJsonArray();
+        return new Vector3Float(
+                (float) array.get(0).getAsDouble(),
+                (float) array.get(1).getAsDouble(),
+                (float) array.get(2).getAsDouble()
+        );
+    }
+
+    public static Vector4Float readVector4Float(JsonElement element) {
+        JsonArray array = element.getAsJsonArray();
+        return new Vector4Float(
+                (float) array.get(0).getAsDouble(),
+                (float) array.get(1).getAsDouble(),
+                (float) array.get(2).getAsDouble(),
+                (float) array.get(3).getAsDouble()
+        );
     }
 
 }

@@ -23,7 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft.model;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -32,7 +31,6 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
-import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.base.Vector3Float;
 import team.unnamed.creative.base.Vector4Float;
 import team.unnamed.creative.model.Element;
@@ -46,9 +44,9 @@ import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -196,9 +194,9 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         writer
                 .beginObject()
                 .name("from");
-        writeVector3Float(writer, element.from());
+        GsonUtil.writeVector3Float(writer, element.from());
         writer.name("to");
-        writeVector3Float(writer, element.to());
+        GsonUtil.writeVector3Float(writer, element.to());
 
         ElementRotation rotation = element.rotation();
         if (rotation != null) {
@@ -225,7 +223,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
                 Vector4Float defaultUv = ElementFace.getDefaultUvForFace(type, element.from(), element.to());
                 if (uv != null && !uv.equals(defaultUv)) {
                     writer.name("uv");
-                    writeVector4Float(writer, uv.multiply(ElementFace.MINECRAFT_UV_UNIT));
+                    GsonUtil.writeVector4Float(writer, uv.multiply(ElementFace.MINECRAFT_UV_UNIT));
                 }
             }
             writer.name("texture").value(face.texture());
@@ -257,7 +255,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             JsonObject elementFaceNode = entry.getValue().getAsJsonObject();
             Vector4Float uv = null;
             if (elementFaceNode.has("uv")) {
-                uv = readVector4Float(elementFaceNode.get("uv")).multiply(1F / ElementFace.MINECRAFT_UV_UNIT);
+                uv = GsonUtil.readVector4Float(elementFaceNode.get("uv")).multiply(1F / ElementFace.MINECRAFT_UV_UNIT);
             }
 
             CubeFace cullFace = null;
@@ -278,8 +276,8 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         }
 
         return Element.builder()
-                .from(readVector3Float(objectNode.get("from")))
-                .to(readVector3Float(objectNode.get("to")))
+                .from(GsonUtil.readVector3Float(objectNode.get("from")))
+                .to(GsonUtil.readVector3Float(objectNode.get("to")))
                 .rotation(rotation)
                 .shade(GsonUtil.getBoolean(objectNode, "shade", Element.DEFAULT_SHADE))
                 .faces(faces)
@@ -289,7 +287,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
     private static void writeElementRotation(JsonWriter writer, ElementRotation rotation) throws IOException {
         writer.beginObject()
                 .name("origin");
-        writeVector3Float(writer, rotation.origin());
+        GsonUtil.writeVector3Float(writer, rotation.origin());
         writer.name("axis").value(rotation.axis().name().toLowerCase(Locale.ROOT))
                 .name("angle").value(rotation.angle());
 
@@ -304,7 +302,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
     private static ElementRotation readElementRotation(JsonElement node) {
         JsonObject objectNode = node.getAsJsonObject();
         return ElementRotation.builder()
-                .origin(readVector3Float(objectNode.get("origin")))
+                .origin(GsonUtil.readVector3Float(objectNode.get("origin")))
                 .axis(Axis3D.valueOf(objectNode.get("axis").getAsString().toUpperCase(Locale.ROOT)))
                 .angle(objectNode.get("angle").getAsFloat())
                 .rescale(GsonUtil.getBoolean(objectNode, "rescale", ElementRotation.DEFAULT_RESCALE))
@@ -368,17 +366,17 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         Vector3Float rotation = transform.rotation();
         if (!rotation.equals(ItemTransform.DEFAULT_ROTATION)) {
             writer.name("rotation");
-            writeVector3Float(writer, rotation);
+            GsonUtil.writeVector3Float(writer, rotation);
         }
         Vector3Float translation = transform.translation();
         if (!translation.equals(ItemTransform.DEFAULT_TRANSLATION)) {
             writer.name("translation");
-            writeVector3Float(writer, translation);
+            GsonUtil.writeVector3Float(writer, translation);
         }
         Vector3Float scale = transform.scale();
         if (!scale.equals(ItemTransform.DEFAULT_SCALE)) {
             writer.name("scale");
-            writeVector3Float(writer, scale);
+            GsonUtil.writeVector3Float(writer, scale);
         }
         writer.endObject();
     }
@@ -389,13 +387,13 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         Vector3Float translation = ItemTransform.DEFAULT_TRANSLATION;
         Vector3Float scale = ItemTransform.DEFAULT_SCALE;
         if (objectNode.has("rotation")) {
-            rotation = readVector3Float(objectNode.get("rotation"));
+            rotation = GsonUtil.readVector3Float(objectNode.get("rotation"));
         }
         if (objectNode.has("translation")) {
-            translation = readVector3Float(objectNode.get("translation"));
+            translation = GsonUtil.readVector3Float(objectNode.get("translation"));
         }
         if (objectNode.has("scale")) {
-            scale = readVector3Float(objectNode.get("scale"));
+            scale = GsonUtil.readVector3Float(objectNode.get("scale"));
         }
         return ItemTransform.of(rotation, translation, scale);
     }
@@ -457,49 +455,6 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
                 .layers(layers)
                 .variables(variables)
                 .build();
-    }
-
-    private static void writeVector3Float(JsonWriter writer, Vector3Float vector) throws IOException {
-        writer.beginArray();
-        writer.value(vector.x());
-        writer.value(vector.y());
-        writer.value(vector.z());
-        writer.endArray();
-    }
-
-    private static void writeVector2Float(JsonWriter writer, Vector2Float vector) throws IOException {
-        writer.beginArray();
-        writer.value(vector.x());
-        writer.value(vector.y());
-        writer.endArray();
-    }
-
-    private static void writeVector4Float(JsonWriter writer, Vector4Float vector) throws IOException {
-        writer.beginArray();
-        writer.value(vector.x());
-        writer.value(vector.y());
-        writer.value(vector.x2());
-        writer.value(vector.y2());
-        writer.endArray();
-    }
-
-   private static Vector3Float readVector3Float(JsonElement element) {
-       JsonArray array = element.getAsJsonArray();
-       return new Vector3Float(
-               (float) array.get(0).getAsDouble(),
-               (float) array.get(1).getAsDouble(),
-               (float) array.get(2).getAsDouble()
-       );
-   }
-
-    private static Vector4Float readVector4Float(JsonElement element) {
-        JsonArray array = element.getAsJsonArray();
-        return new Vector4Float(
-                (float) array.get(0).getAsDouble(),
-                (float) array.get(1).getAsDouble(),
-                (float) array.get(2).getAsDouble(),
-                (float) array.get(3).getAsDouble()
-        );
     }
 
 }
