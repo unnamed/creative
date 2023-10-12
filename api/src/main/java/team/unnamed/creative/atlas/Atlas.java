@@ -116,8 +116,37 @@ public interface Atlas extends Keyed, Examinable {
      * @return The created atlas instance
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
-     * @since 1.0.0
+     * @since 1.1.0
      */
+    static @NotNull Atlas atlas(final @NotNull Key key, final @NotNull List<AtlasSource> sources) {
+        return new AtlasImpl(key, sources);
+    }
+
+    /**
+     * Creates a new {@link Atlas} builder instance.
+     *
+     * @return The created builder
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.1.0
+     */
+    static @NotNull Builder atlas() {
+        return new AtlasImpl.BuilderImpl();
+    }
+
+    /**
+     * Creates a new {@link Atlas} instance.
+     *
+     * @param key     The atlas key, doesn't include JSON extension
+     * @param sources The list of sources for the atlas
+     * @return The created atlas instance
+     * @sincePackFormat 12
+     * @sinceMinecraft 1.19.3
+     * @since 1.0.0
+     * @deprecated in favor of {@link #atlas(Key, List)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     static @NotNull Atlas of(final @NotNull Key key, final @NotNull List<AtlasSource> sources) {
         return new AtlasImpl(key, sources);
     }
@@ -129,7 +158,10 @@ public interface Atlas extends Keyed, Examinable {
      * @sincePackFormat 12
      * @sinceMinecraft 1.19.3
      * @since 1.0.0
+     * @deprecated In favor of {@link #atlas()}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     static @NotNull Builder builder() {
         return new AtlasImpl.BuilderImpl();
     }
