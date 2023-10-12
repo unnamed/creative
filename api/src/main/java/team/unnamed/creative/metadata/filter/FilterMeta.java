@@ -35,8 +35,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static team.unnamed.creative.util.MoreCollections.immutableListOf;
-import static team.unnamed.creative.util.Validate.isNotNull;
-import static team.unnamed.creative.util.Validate.isTrue;
 
 /**
  * Class representing the "filter" section of the
@@ -46,21 +44,22 @@ import static team.unnamed.creative.util.Validate.isTrue;
  * from resource-packs below this one by using
  * {@link KeyPattern filtering patterns}</p>
  *
- * @since 1.0.0
  * @sincePackFormat 9
+ * @since 1.0.0
  */
 public class FilterMeta implements MetadataPart {
 
     private final List<KeyPattern> patterns;
 
     private FilterMeta(List<KeyPattern> patterns) {
-        isNotNull(patterns, "patterns");
+        Objects.requireNonNull(patterns, "patterns");
         this.patterns = immutableListOf(patterns);
         validate();
     }
 
     private void validate() {
-        isTrue(patterns.size() > 0, "Patterns list is empty!");
+        if (patterns.isEmpty())
+            throw new IllegalArgumentException("Patterns list is empty!");
         for (KeyPattern pattern : patterns) {
             if (pattern == null) {
                 throw new NullPointerException("An element in the patterns list is null");

@@ -29,7 +29,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -66,8 +65,8 @@ public class ElementRotation implements Examinable {
 
     private void validate() {
         float absAngle = Math.abs(angle);
-        Validate.isTrue(angle == 0F || absAngle == 22.5 || absAngle == 45,
-                "Angle must be multiple of 22.5, in range of -45 to 45");
+        if (angle != 0F && absAngle != 22.5F && absAngle != 45F)
+            throw new IllegalArgumentException("Angle must be multiple of 22.5, in range of -45 to 45");
     }
 
     /**
@@ -161,9 +160,9 @@ public class ElementRotation implements Examinable {
      * Creates a new {@link ElementRotation} instance
      * from the provided values
      *
-     * @param origin The rotation origin or pivot
-     * @param axis The rotation axis
-     * @param angle The rotation angle (value)
+     * @param origin  The rotation origin or pivot
+     * @param axis    The rotation axis
+     * @param angle   The rotation angle (value)
      * @param rescale Whether to rescale the faces
      *                to the whole block
      * @return A new {@link ElementRotation} instance

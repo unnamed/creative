@@ -26,6 +26,8 @@ package team.unnamed.creative.util;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
 public final class Validate {
 
     private Validate() {
@@ -35,6 +37,7 @@ public final class Validate {
      * Validates that the provided object isn't null,
      * if it is, the method throws an {@link NullPointerException}
      * with the specified message.
+     *
      * @param object     The checked object
      * @param message    The exception message
      * @param parameters Parameters for the message,
@@ -55,6 +58,7 @@ public final class Validate {
     /**
      * Validates that the provided object isn't null,
      * if it is, the method throws an {@link NullPointerException}
+     *
      * @param object The checked object
      * @param <T>    The type of the checked object
      * @return The object, never null
@@ -71,6 +75,7 @@ public final class Validate {
      * Validates that the specified expression is true,
      * if it is false, the method throws a {@link IllegalStateException}
      * with the specified message.
+     *
      * @param expression The checked expression
      * @param message    The message for the thrown exception
      * @param parameters The parameters for the exception
@@ -87,6 +92,7 @@ public final class Validate {
     /**
      * Validates that the specified expression is true,
      * if it is false, the method throws a {@link IllegalStateException}
+     *
      * @param expression The checked expression
      * @throws IllegalStateException If expression is false
      */
@@ -100,6 +106,7 @@ public final class Validate {
      * Validates that the specified expression is true,
      * if it is false, the method throws a {@link IllegalArgumentException}
      * with the specified message
+     *
      * @param expression The checked expression
      * @param message    The message for the thrown exception
      * @param parameters The parameters for the exception
@@ -116,6 +123,7 @@ public final class Validate {
     /**
      * Validates that the specified expression is true,
      * if it is false, the method throws a {@link IllegalArgumentException}
+     *
      * @param expression The checked expression
      * @throws IllegalArgumentException If expression is false
      */
@@ -131,6 +139,7 @@ public final class Validate {
      * null, throws a {@link NullPointerException},
      * if the string is empty, throws a
      * {@link IllegalArgumentException}.
+     *
      * @param string     The checked string
      * @param message    The message used for the messages
      * @param parameters The parameters for the exception
@@ -155,6 +164,7 @@ public final class Validate {
      * null, throws a {@link NullPointerException},
      * if the string is empty, throws a
      * {@link IllegalArgumentException}.
+     *
      * @param string The checked string
      * @return The string, not null and not empty
      * @throws NullPointerException     if the string is null

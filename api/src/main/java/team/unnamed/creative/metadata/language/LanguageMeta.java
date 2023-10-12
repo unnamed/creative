@@ -28,7 +28,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.MetadataPart;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Map;
 import java.util.Objects;
@@ -58,10 +57,10 @@ public class LanguageMeta implements MetadataPart {
     private void validate() {
         for (Map.Entry<String, LanguageEntry> language : languages.entrySet()) {
             String code = language.getKey();
-            Validate.isNotNull(code, "Language code is null");
-            Validate.isNotNull(language.getValue(), "Language entry for %s is null", code);
-            Validate.isTrue(code.length() <= MAX_LANGUAGE_LENGTH,
-                    "Language code is more than %s characters long", MAX_LANGUAGE_LENGTH);
+            requireNonNull(code, "Language code is null");
+            requireNonNull(language.getValue(), "Language entry for " + code + " is null");
+            if (code.length() > MAX_LANGUAGE_LENGTH)
+                throw new IllegalArgumentException("Language code is more than " + MAX_LANGUAGE_LENGTH + " characters long");
         }
     }
 

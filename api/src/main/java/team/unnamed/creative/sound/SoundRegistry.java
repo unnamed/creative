@@ -33,7 +33,6 @@ import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.util.Keys;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -69,10 +68,8 @@ public class SoundRegistry implements Namespaced, Examinable {
     private void validate() {
         Keys.validateNamespace(namespace);
         for (Key key : sounds.keySet()) {
-            Validate.isTrue(
-                    key.namespace().equals(this.namespace),
-                    "Sound events can't have a namespace different from the sound registry namespace!"
-            );
+            if (!key.namespace().equals(this.namespace))
+                throw new IllegalArgumentException("Sound events can't have a namespace different from the sound registry namespace!");
         }
     }
 
@@ -123,7 +120,7 @@ public class SoundRegistry implements Namespaced, Examinable {
      * sounds
      *
      * @param namespace The sound registry namespace
-     * @param sounds The registered sounds
+     * @param sounds    The registered sounds
      * @return A new sound registry instance
      */
     public static SoundRegistry of(

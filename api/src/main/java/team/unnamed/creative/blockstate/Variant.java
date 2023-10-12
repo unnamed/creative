@@ -28,7 +28,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -70,11 +69,12 @@ public class Variant implements Examinable {
     }
 
     private void validate() {
-        Validate.isTrue(x % 90 == 0 && x >= 0 && x <= 270,
-                "X rotation must be a positive multiple of 90");
-        Validate.isTrue(y % 90 == 0 && y >= 0 && y <= 270,
-                "Y rotation must be a positive multiple of 90");
-        Validate.isTrue(weight > 0, "Zero or negative weight");
+        if (x % 90 != 0 || x < 0 || x > 270)
+            throw new IllegalArgumentException("X rotation must be a positive multiple of 90");
+        if (y % 90 != 0 || y < 0 || y > 270)
+            throw new IllegalArgumentException("Y rotation must be a positive multiple of 90");
+        if (weight <= 0)
+            throw new IllegalArgumentException("Zero or negative weight");
     }
 
     /**

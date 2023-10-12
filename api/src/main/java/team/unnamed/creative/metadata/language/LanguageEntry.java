@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static team.unnamed.creative.util.Validate.isNotEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Object representing a Minecraft's Resource Pack language
@@ -58,9 +58,17 @@ public class LanguageEntry implements Examinable {
             String region,
             boolean bidirectional
     ) {
-        this.name = isNotEmpty(name, "name");
-        this.region = isNotEmpty(region, "region");
+        this.name = requireNonNull(name, "name");
+        this.region = requireNonNull(region, "region");
         this.bidirectional = bidirectional;
+        validate();
+    }
+
+    private void validate() {
+        if (name.isEmpty())
+            throw new IllegalArgumentException("'name' is empty!");
+        if (region.isEmpty())
+            throw new IllegalArgumentException("'region' is empty!");
     }
 
     /**
@@ -129,8 +137,8 @@ public class LanguageEntry implements Examinable {
     /**
      * Creates a new Minecraft {@link LanguageEntry} instance
      *
-     * @param name The language full name
-     * @param region The language region or country
+     * @param name          The language full name
+     * @param region        The language region or country
      * @param bidirectional True if read from right to left
      */
     public static LanguageEntry of(
@@ -143,6 +151,7 @@ public class LanguageEntry implements Examinable {
 
     /**
      * Static factory method for our builder implementation
+     *
      * @return A new builder for {@link LanguageEntry} instances
      */
     public static Builder builder() {

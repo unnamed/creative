@@ -28,7 +28,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,17 +73,17 @@ public class BitMapFontProvider implements FontProvider {
     }
 
     private void validate() {
-        Validate.isTrue(ascent <= height, "Ascent (%s) is higher than height (%s)", ascent, height);
-        Validate.isTrue(!characters.isEmpty(), "Character list is empty");
+        if (ascent > height)
+            throw new IllegalArgumentException("Ascent (" + ascent + ") is higher than height (" + height + ")");
+        if (characters.isEmpty())
+            throw new IllegalArgumentException("Character list is empty");
 
         String sample = characters.get(0);
         int codePointCount = sample.codePointCount(0, sample.length());
         for (String character : characters) {
-            Validate.isNotNull(character, "An element from the character list is null");
-            Validate.isTrue(
-                    character.codePointCount(0, character.length()) == codePointCount,
-                    "Elements of character list must have the same codepoint count"
-            );
+            requireNonNull(character, "An element from the character list is null");
+            if (character.codePointCount(0, character.length()) != codePointCount)
+                throw new IllegalArgumentException("Elements of character list must have the same codepoint count");
         }
     }
 

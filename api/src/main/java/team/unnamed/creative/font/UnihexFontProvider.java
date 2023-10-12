@@ -29,7 +29,6 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +41,8 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  * A {@link FontProvider} implementation that uses Unifont
  * HEX files
  *
- * @since 1.0.0
  * @sincePackFormat 15
+ * @since 1.0.0
  */
 public class UnihexFontProvider implements FontProvider {
 
@@ -128,7 +127,8 @@ public class UnihexFontProvider implements FontProvider {
         }
 
         private void validate() {
-            Validate.isTrue(from < to, "Invalid range: [%s;%s]", from, to);
+            if (from >= to)
+                throw new IllegalArgumentException("Invalid range: [" + from + ";" + to + "]");
         }
 
         public int from() {

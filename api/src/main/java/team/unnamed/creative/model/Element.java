@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -80,10 +79,8 @@ public class Element implements Examinable {
     }
 
     private void validateBound(float value, String axisName) {
-        Validate.isTrue(value >= MIN_EXTENT && value <= MAX_EXTENT,
-                "Value at %s axis (%s) is out of bounds", axisName, value);
-        Validate.isTrue(faces.size() <= 6,
-                "Invalid amount of faces (%s)", faces.size());
+        if (value < MIN_EXTENT || value > MAX_EXTENT)
+            throw new IllegalArgumentException("Value at " + axisName + " axis (" + value + ") is out of bounds");
     }
 
     private void validateBound(Vector3Float vec) {
@@ -95,6 +92,8 @@ public class Element implements Examinable {
     private void validate() {
         validateBound(from);
         validateBound(to);
+        if (faces.size() > 6)
+            throw new IllegalArgumentException("Invalid amount of faces (" + faces.size() + ")");
     }
 
     /**

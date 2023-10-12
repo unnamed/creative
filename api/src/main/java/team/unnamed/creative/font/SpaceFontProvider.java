@@ -26,7 +26,6 @@ package team.unnamed.creative.font;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.util.Validate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +50,7 @@ public class SpaceFontProvider implements FontProvider {
     protected SpaceFontProvider(
             Map<String, Integer> advances
     ) {
-        requireNonNull(advances,"advances");
+        requireNonNull(advances, "advances");
         this.advances = immutableMapOf(advances);
         validate();
     }
@@ -60,8 +59,8 @@ public class SpaceFontProvider implements FontProvider {
         for (Map.Entry<String, Integer> entry : advances.entrySet()) {
             String character = entry.getKey();
             Integer offset = entry.getValue();
-            Validate.isNotNull(character, "A key from the 'advances' map is null");
-            Validate.isNotNull(offset, "The advanced pixels value for '%s' character is null", character);
+            requireNonNull(character, "A key from the 'advances' map is null");
+            requireNonNull(offset, "The advanced pixels value for '" + character + "' character is null");
         }
     }
 

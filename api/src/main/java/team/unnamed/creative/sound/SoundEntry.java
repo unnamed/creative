@@ -29,7 +29,6 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.util.Validate;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -84,9 +83,9 @@ public class SoundEntry implements Keyed, Examinable {
     }
 
     private void validate() {
-        Validate.isTrue(volume > 0, "Zero or negative volume");
-        Validate.isTrue(pitch > 0, "Zero or negative pitch");
-        Validate.isTrue(weight > 0, "Zero or negative weight");
+        if (volume <= 0) throw new IllegalArgumentException("Zero or negative volume");
+        if (pitch <= 0) throw new IllegalArgumentException("Zero or negative pitch");
+        if (weight <= 0) throw new IllegalArgumentException("Zero or negative weight");
     }
 
     /**
@@ -290,9 +289,9 @@ public class SoundEntry implements Keyed, Examinable {
      * properties, using {@link Type#FILE} as
      * sound type
      *
-     * @param path The sound file path
+     * @param path   The sound file path
      * @param volume The sound volume (0-1)
-     * @param pitch The sound pitch
+     * @param pitch  The sound pitch
      * @param weight The sound weight
      * @return A new sound
      */
@@ -315,10 +314,10 @@ public class SoundEntry implements Keyed, Examinable {
      * properties, using {@link Type#EVENT} as
      * sound type
      *
-     * @param name The sound event name
-     * @param volume The sound volume (0-1)
-     * @param pitch The sound pitch
-     * @param weight The sound weight
+     * @param name                The sound event name
+     * @param volume              The sound volume (0-1)
+     * @param pitch               The sound pitch
+     * @param weight              The sound weight
      * @param stream
      * @param attenuationDistance The sound attenuation distance
      * @param preload
@@ -348,6 +347,7 @@ public class SoundEntry implements Keyed, Examinable {
 
     /**
      * Static factory method for our builder implementation
+     *
      * @return A new builder for {@link SoundEntry} instances
      */
     public static Builder builder() {
