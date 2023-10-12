@@ -26,18 +26,13 @@ package team.unnamed.creative.blockstate;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * There are several variants of some blocks (like doors, which can be
@@ -51,87 +46,32 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class BlockState implements Keyed, Examinable {
-
-    private final Key key;
-    private final Map<String, MultiVariant> variants;
-    private final List<Selector> multipart;
-
-    private BlockState(
-            Key key,
-            Map<String, MultiVariant> variants,
-            List<Selector> multipart
-    ) {
-        this.key = requireNonNull(key, "key");
-        this.variants = requireNonNull(variants, "variants");
-        this.multipart = requireNonNull(multipart, "multipart");
-        validate();
-    }
-
-    private void validate() {
-        if (variants.isEmpty() && multipart.isEmpty()) {
-            throw new IllegalArgumentException("variants and multipart cannot be both empty!");
-        }
-    }
+@ApiStatus.NonExtendable
+public interface BlockState extends Keyed, Examinable {
 
     @Override
-    public @NotNull Key key() {
-        return key;
-    }
+    @NotNull Key key();
 
-    public Map<String, MultiVariant> variants() {
-        return variants;
-    }
+    Map<String, MultiVariant> variants();
 
-    public List<Selector> multipart() {
-        return multipart;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("key", key),
-                ExaminableProperty.of("variants", variants),
-                ExaminableProperty.of("multipart", multipart)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BlockState that = (BlockState) o;
-        return key.equals(that.key)
-                && variants.equals(that.variants)
-                && multipart.equals(that.multipart);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, variants, multipart);
-    }
+    List<Selector> multipart();
 
     /**
      * Creates a new {@link BlockState} object from
      * the given values
      *
-     * @param variants The block state variants
+     * @param variants  The block state variants
      * @param multipart The block state variants
      *                  (multipart)
      * @return A new {@link BlockState} instance
      * @since 1.0.0
      */
-    public static BlockState of(
+    static BlockState of(
             Key key,
             Map<String, MultiVariant> variants,
             List<Selector> multipart
     ) {
-        return new BlockState(key, variants, multipart);
+        return new BlockStateImpl(key, variants, multipart);
     }
 
     /**
@@ -142,8 +82,8 @@ public class BlockState implements Keyed, Examinable {
      * @return A new {@link BlockState} variants
      * @since 1.0.0
      */
-    public static BlockState of(Key key, Map<String, MultiVariant> variants) {
-        return new BlockState(
+    static BlockState of(Key key, Map<String, MultiVariant> variants) {
+        return new BlockStateImpl(
                 key,
                 variants,
                 Collections.emptyList()
@@ -158,16 +98,16 @@ public class BlockState implements Keyed, Examinable {
      * @return A new {@link BlockState} instance
      * @since 1.0.0
      */
-    public static BlockState of(Key key, List<Selector> multipart) {
-        return new BlockState(
+    static BlockState of(Key key, List<Selector> multipart) {
+        return new BlockStateImpl(
                 key,
                 Collections.emptyMap(),
                 multipart
         );
     }
 
-    public static BlockState of(Key key, Selector... multipart) {
-        return new BlockState(
+    static BlockState of(Key key, Selector... multipart) {
+        return new BlockStateImpl(
                 key,
                 Collections.emptyMap(),
                 Arrays.asList(multipart)
