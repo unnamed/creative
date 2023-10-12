@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Map;
 
@@ -49,7 +51,7 @@ import static java.util.Objects.requireNonNull;
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
-public interface Language extends Keyed, Examinable {
+public interface Language extends ResourcePackPart, Keyed, Examinable {
     /**
      * Creates a new {@link Language} object which holds
      * the given translations in a Map.
@@ -150,6 +152,17 @@ public interface Language extends Keyed, Examinable {
     default @Nullable String translation(final @NotNull Translatable translatable) {
         requireNonNull(translatable, "translatable");
         return translation(translatable.translationKey());
+    }
+
+    /**
+     * Adds this language to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.language(this);
     }
 
     /**

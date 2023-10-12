@@ -36,6 +36,8 @@ import team.unnamed.creative.metadata.Metadatable;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.texture.TextureMeta;
 import team.unnamed.creative.metadata.villager.VillagerMeta;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 /**
  * Represents a Minecraft texture (PNG image) in the
@@ -52,7 +54,7 @@ import team.unnamed.creative.metadata.villager.VillagerMeta;
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
-public interface Texture extends Keyed, Examinable, Metadatable {
+public interface Texture extends ResourcePackPart, Keyed, Examinable, Metadatable {
     /**
      * Creates a texture.
      *
@@ -225,6 +227,17 @@ public interface Texture extends Keyed, Examinable, Metadatable {
         return builder()
                 .key(this.key())
                 .data(this.data());
+    }
+
+    /**
+     * Adds this texture to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.texture(this);
     }
 
     /**

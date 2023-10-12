@@ -31,6 +31,8 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class Model implements Keyed, Examinable {
+public class Model implements ResourcePackPart, Keyed, Examinable {
 
     /**
      * A {@link Model} can be set to extend this key to use
@@ -179,6 +181,17 @@ public class Model implements Keyed, Examinable {
      */
     public List<ItemOverride> overrides() {
         return overrides;
+    }
+
+    /**
+     * Adds this model to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    public void addTo(@NotNull ResourceContainer resourceContainer) {
+        resourceContainer.model(this);
     }
 
     /**

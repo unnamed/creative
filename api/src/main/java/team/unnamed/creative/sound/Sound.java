@@ -30,6 +30,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 import team.unnamed.creative.texture.Texture;
 
 import java.util.Objects;
@@ -43,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public final class Sound implements Keyed, Examinable {
+public final class Sound implements ResourcePackPart, Keyed, Examinable {
 
     private final Key key;
     private final Writable data;
@@ -81,6 +83,17 @@ public final class Sound implements Keyed, Examinable {
      */
     public Writable data() {
         return data;
+    }
+
+    /**
+     * Adds this sound to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    public void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.sound(this);
     }
 
     @Override

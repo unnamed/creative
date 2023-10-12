@@ -28,6 +28,8 @@ import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +49,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
-public interface BlockState extends Keyed, Examinable {
+public interface BlockState extends ResourcePackPart, Keyed, Examinable {
 
     @Override
     @NotNull Key key();
@@ -55,6 +57,17 @@ public interface BlockState extends Keyed, Examinable {
     Map<String, MultiVariant> variants();
 
     List<Selector> multipart();
+
+    /**
+     * Adds this block state to the given resource container
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.blockState(this);
+    }
 
     /**
      * Creates a new {@link BlockState} object from

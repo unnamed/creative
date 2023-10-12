@@ -32,6 +32,8 @@ import org.intellij.lang.annotations.Pattern;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 import team.unnamed.creative.util.Keys;
 
 import java.util.Collection;
@@ -50,7 +52,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 1.0.0
  */
-public class SoundRegistry implements Namespaced, Examinable {
+public class SoundRegistry implements ResourcePackPart, Namespaced, Examinable {
 
     @Subst(Key.MINECRAFT_NAMESPACE)
     private final String namespace;
@@ -86,6 +88,17 @@ public class SoundRegistry implements Namespaced, Examinable {
     public @Nullable SoundEvent sound(Key key) {
         requireNonNull(key, "key");
         return sounds.get(key);
+    }
+
+    /**
+     * Adds this sound registry to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    public void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.soundRegistry(this);
     }
 
     @Override

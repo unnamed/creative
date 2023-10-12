@@ -26,7 +26,9 @@ package team.unnamed.creative.overlay;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
+import team.unnamed.creative.part.ResourcePackPart;
 
 /**
  * Represents a resource-pack overlay. Overlays are sub-packs
@@ -43,23 +45,39 @@ import team.unnamed.creative.metadata.overlays.OverlayEntry;
  * <p>Also note that overlays do not have pack metadata or
  * icon.</p>
  *
- * @since 1.1.0
  * @sincePackFormat 18
  * @sinceMinecraft 1.20.2
+ * @since 1.1.0
  */
 @ApiStatus.NonExtendable
-public interface Overlay extends ResourceContainer {
+public interface Overlay extends ResourcePackPart, ResourceContainer {
 
     /**
      * Gets the overlay's directory name.
      *
      * @return The overlay directory name.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     @Subst("dir")
     @NotNull String directory();
+
+    /**
+     * Adds this overlay to the given resource container,
+     * which must be a resource pack.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        if (resourceContainer instanceof ResourcePack) {
+            ((ResourcePack) resourceContainer).overlay(this);
+        } else {
+            throw new IllegalArgumentException("Cannot add an Overlay to a resource container that is not a resource pack.");
+        }
+    }
 
     /**
      * Creates a new overlay object that will live in the given
@@ -67,9 +85,9 @@ public interface Overlay extends ResourceContainer {
      *
      * @param directory The overlay directory name.
      * @return The created overlay.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     static @NotNull Overlay create(final @NotNull @OverlayEntry.Directory String directory) {
         return new OverlayImpl(directory);
