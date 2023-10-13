@@ -428,11 +428,23 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         }
         if (objectNode.has("translation")) {
             translation = GsonUtil.readVector3Float(objectNode.get("translation"));
+            // clamp translations between -80 and 80 (what Minecraft does)
+            translation = new Vector3Float(
+                    Math.max(-80F, Math.min(80F, translation.x())),
+                    Math.max(-80F, Math.min(80F, translation.y())),
+                    Math.max(-80F, Math.min(80F, translation.z()))
+            );
         }
         if (objectNode.has("scale")) {
             scale = GsonUtil.readVector3Float(objectNode.get("scale"));
+            // set max to 4 (what Minecraft does)
+            scale = new Vector3Float(
+                    Math.min(4F, scale.x()),
+                    Math.min(4F, scale.y()),
+                    Math.min(4F, scale.z())
+            );
         }
-        return ItemTransform.of(rotation, translation, scale);
+        return ItemTransform.transform(rotation, translation, scale);
     }
 
     private static void writeTextures(JsonWriter writer, ModelTextures texture) throws IOException {
