@@ -25,7 +25,7 @@ package team.unnamed.creative.base;
 
 /**
  * Enum of axis in a three-dimensional space,
- * always X, Y and Z
+ * always X, Y and Z.
  *
  * @since 1.0.0
  */
@@ -33,7 +33,7 @@ public enum Axis3D {
     /**
      * The "X" axis or abscissa. It is the
      * first element in our three-dimensional
-     * vectors
+     * vectors.
      *
      * @since 1.0.0
      */
@@ -42,16 +42,16 @@ public enum Axis3D {
     /**
      * The "Y" axis or ordinate. It is the
      * second element in our three-dimensional
-     * vectors
+     * vectors.
      *
      * @since 1.0.0
      */
     Y,
 
     /**
-     * The "Z" axis or applicate. It is the
-     * third and last element in our three-
-     * dimensional vectors
+     * The "Z" axis or applicate. It is the third
+     * and last element in our three-dimensional
+     * vectors.
      *
      * @since 1.0.0
      */

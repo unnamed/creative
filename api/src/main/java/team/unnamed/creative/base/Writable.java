@@ -23,9 +23,10 @@
  */
 package team.unnamed.creative.base;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +35,8 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Interface for representing objects that can
@@ -50,7 +53,7 @@ public interface Writable {
     Writable EMPTY = new Writable() {
 
         @Override
-        public void write(OutputStream output) {
+        public void write(final @NotNull OutputStream output) {
         }
 
         @Override
@@ -79,7 +82,7 @@ public interface Writable {
      * @throws IOException If write fails
      * @since 1.0.0
      */
-    void write(OutputStream output) throws IOException;
+    void write(final @NotNull OutputStream output) throws IOException;
 
     /**
      * Converts this {@link Writable} instance to a byte
@@ -89,8 +92,8 @@ public interface Writable {
      * @return This writable instance as a byte array
      * @throws IOException If conversion fails
      */
-    default byte[] toByteArray() throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+    default byte @NotNull [] toByteArray() throws IOException {
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
         write(output);
         return output.toByteArray();
     }
@@ -103,7 +106,7 @@ public interface Writable {
      * @return This writable instance as an UTF-8 string
      * @throws IOException If conversion fails
      */
-    default String toUTF8String() throws IOException {
+    default @NotNull String toUTF8String() throws IOException {
         return new String(toByteArray(), StandardCharsets.UTF_8);
     }
 
@@ -112,13 +115,15 @@ public interface Writable {
      * the named resource at the specified class loader
      *
      * @param loader The class loader that holds the resource
-     * @param name The full resource name
+     * @param name   The full resource name
      * @return The {@link Writable} representation
      * @since 1.0.0
      */
-    static Writable resource(ClassLoader loader, String name) {
+    static @NotNull Writable resource(final @NotNull ClassLoader loader, final @NotNull String name) {
+        requireNonNull(loader, "loader");
+        requireNonNull(name, "name");
         return inputStream(() -> {
-            InputStream resource = loader.getResourceAsStream(name);
+            final InputStream resource = loader.getResourceAsStream(name);
             if (resource == null) {
                 throw new IOException("Resource not found: " + name);
             }
@@ -135,8 +140,9 @@ public interface Writable {
      * @return The {@link Writable} representation for this file
      * @since 1.0.0
      */
-    static Writable file(File file) {
-        return inputStream(() -> new FileInputStream(file));
+    static @NotNull Writable file(final @NotNull File file) {
+        requireNonNull(file, "file");
+        return inputStream(() -> Files.newInputStream(file.toPath()));
     }
 
     /**
@@ -144,12 +150,14 @@ public interface Writable {
      * the given {@link Path}, which will be copied to the given
      * {@link OutputStream} when calling {@link Writable#write}
      *
-     * @param path The file path
+     * @param path    The file path
      * @param options The options ({@link Files#newInputStream})
      * @return The {@link Writable} representation for this path
      * @since 1.0.0
      */
-    static Writable path(Path path, OpenOption... options) {
+    static @NotNull Writable path(final @NotNull Path path, final @NotNull OpenOption @NotNull ... options) {
+        requireNonNull(path, "path");
+        requireNonNull(options, "options");
         return inputStream(() -> Files.newInputStream(path, options));
     }
 
@@ -163,17 +171,18 @@ public interface Writable {
      * @return The {@link Writable} representation
      * @since 1.0.0
      */
-    static Writable inputStream(Callable<InputStream> inputStreamSupplier) {
+    static @NotNull Writable inputStream(final @NotNull Callable<InputStream> inputStreamSupplier) {
+        requireNonNull(inputStreamSupplier, "inputStreamSupplier");
         return output -> {
-            try (InputStream input = inputStreamSupplier.call()) {
-                byte[] buf = new byte[DEFAULT_BUFFER_LENGTH];
+            try (final InputStream input = inputStreamSupplier.call()) {
+                final byte[] buf = new byte[DEFAULT_BUFFER_LENGTH];
                 int len;
                 while ((len = input.read(buf)) != -1) {
                     output.write(buf, 0, len);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw e;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new IOException("Failed to open InputStream", e);
             }
         };
@@ -190,25 +199,27 @@ public interface Writable {
      * @throws IOException If reading the input stream fails
      * @since 1.0.0
      */
-    static Writable copyInputStream(InputStream inputStream) throws IOException {
+    static @NotNull Writable copyInputStream(final @NotNull InputStream inputStream) throws IOException {
+        requireNonNull(inputStream, "inputStream");
 
         // read input stream data to a byte array
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buf = new byte[DEFAULT_BUFFER_LENGTH];
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final byte[] buf = new byte[DEFAULT_BUFFER_LENGTH];
         int len;
         while ((len = inputStream.read(buf)) != -1) {
             output.write(buf, 0, len);
         }
-        byte[] bytes = output.toByteArray();
+        final byte[] bytes = output.toByteArray();
         return new Writable() {
 
             @Override
-            public void write(OutputStream output) throws IOException {
+            public void write(final @NotNull OutputStream output) throws IOException {
+                requireNonNull(output, "output");
                 output.write(bytes);
             }
 
             @Override
-            public byte[] toByteArray() {
+            public byte @NotNull [] toByteArray() {
                 return bytes.clone();
             }
 
@@ -229,17 +240,18 @@ public interface Writable {
      * @return The {@link Writable} representation
      * @since 1.0.0
      */
-    static Writable bytes(byte[] bytes) {
-        byte[] b = bytes.clone();
+    static @NotNull Writable bytes(final byte @NotNull [] bytes) {
+        final byte[] b = bytes.clone();
         return new Writable() {
 
             @Override
-            public void write(OutputStream output) throws IOException {
+            public void write(final @NotNull OutputStream output) throws IOException {
+                requireNonNull(output, "output");
                 output.write(b);
             }
 
             @Override
-            public byte[] toByteArray() {
+            public byte @NotNull [] toByteArray() {
                 return b.clone();
             }
 
@@ -260,22 +272,24 @@ public interface Writable {
      * @return The {@link Writable} representation
      * @since 1.0.0
      */
-    static Writable stringUtf8(String string) {
-        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+    static @NotNull Writable stringUtf8(final @NotNull String string) {
+        requireNonNull(string, "string");
+        final byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         return new Writable() {
 
             @Override
-            public void write(OutputStream output) throws IOException {
+            public void write(final @NotNull OutputStream output) throws IOException {
+                requireNonNull(output, "output");
                 output.write(bytes);
             }
 
             @Override
-            public byte[] toByteArray() {
+            public byte @NotNull [] toByteArray() {
                 return bytes.clone();
             }
 
             @Override
-            public String toUTF8String() {
+            public @NotNull String toUTF8String() {
                 return string;
             }
 

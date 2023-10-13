@@ -23,10 +23,11 @@
  */
 package team.unnamed.creative.base;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +35,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Interface for representing data that can be read
@@ -58,7 +61,7 @@ public interface Readable {
      * @throws IOException If opening fails
      * @since 1.0.0
      */
-    InputStream open() throws IOException;
+    @NotNull InputStream open() throws IOException;
 
     /**
      * Opens, reads and writes this {@link Readable} information
@@ -69,10 +72,12 @@ public interface Readable {
      *
      * @param output The output stream to transfer
      * @throws IOException If transferring fails
+     * @since 1.0.0
      */
-    default void readAndWrite(OutputStream output) throws IOException {
-        try (InputStream input = this.open()) {
-            byte[] buf = new byte[Writable.DEFAULT_BUFFER_LENGTH];
+    default void readAndWrite(final @NotNull OutputStream output) throws IOException {
+        requireNonNull(output, "output");
+        try (final InputStream input = this.open()) {
+            final byte[] buf = new byte[Writable.DEFAULT_BUFFER_LENGTH];
             int len;
             while ((len = input.read(buf)) != -1) {
                 output.write(buf, 0, len);
@@ -88,9 +93,10 @@ public interface Readable {
      *
      * @return The data in a byte array
      * @throws IOException If conversion fails
+     * @since 1.0.0
      */
-    default byte[] readAsByteArray() throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+    default byte @NotNull [] readAsByteArray() throws IOException {
+        final ByteArrayOutputStream output = new ByteArrayOutputStream();
         readAndWrite(output);
         return output.toByteArray();
     }
@@ -103,8 +109,9 @@ public interface Readable {
      *
      * @return This readable data, as a string
      * @throws IOException If conversion fails
+     * @since 1.0.0
      */
-    default String readAsUTF8String() throws IOException {
+    default @NotNull String readAsUTF8String() throws IOException {
         return new String(readAsByteArray(), StandardCharsets.UTF_8);
     }
 
@@ -113,12 +120,20 @@ public interface Readable {
      * the named resource at the specified class loader
      *
      * @param loader The class loader that holds the resource
-     * @param name The full resource name
+     * @param name   The full resource name
      * @return The {@link Readable} representation
      * @since 1.0.0
      */
-    static Readable resource(ClassLoader loader, String name) {
-        return () -> loader.getResourceAsStream(name);
+    static @NotNull Readable resource(final @NotNull ClassLoader loader, final @NotNull String name) {
+        requireNonNull(loader, "loader");
+        requireNonNull(name, "name");
+        return () -> {
+            final InputStream input = loader.getResourceAsStream(name);
+            if (input == null) {
+                throw new IOException("Resource not found: " + name);
+            }
+            return input;
+        };
     }
 
     /**
@@ -128,9 +143,11 @@ public interface Readable {
      *
      * @param file The wrapped file, must exist
      * @return The {@link Readable} representation for this file
+     * @since 1.0.0
      */
-    static Readable file(File file) {
-        return () -> new FileInputStream(file);
+    static @NotNull Readable file(final @NotNull File file) {
+        requireNonNull(file, "file");
+        return () -> Files.newInputStream(file.toPath());
     }
 
     /**
@@ -138,11 +155,14 @@ public interface Readable {
      * the given {@link Path}, which will be opened every time
      * {@link Readable#open()} is called
      *
-     * @param path The file path
+     * @param path    The file path
      * @param options The options {@link Files#newInputStream}
      * @return The {@link Readable} representation for this path
+     * @since 1.0.0
      */
-    static Readable path(Path path, OpenOption... options) {
+    static @NotNull Readable path(final @NotNull Path path, final @NotNull OpenOption @NotNull ... options) {
+        requireNonNull(path, "path");
+        requireNonNull(options, "options");
         return () -> Files.newInputStream(path, options);
     }
 
@@ -155,23 +175,26 @@ public interface Readable {
      * @param inputStream The input stream to copy
      * @return The {@link Readable} representation
      * @throws IOException If reading the input stream fails
+     * @since 1.0.0
      */
-    static Readable copyInputStream(InputStream inputStream) throws IOException {
-        byte[] bytes = ((Readable) (() -> inputStream)).readAsByteArray();
+    static @NotNull Readable copyInputStream(final @NotNull InputStream inputStream) throws IOException {
+        requireNonNull(inputStream, "inputStream");
+        // read the input stream as a byte array (kinda hacky)
+        final byte[] bytes = ((Readable) (() -> inputStream)).readAsByteArray();
         return new Readable() {
 
             @Override
-            public InputStream open() {
+            public @NotNull InputStream open() {
                 return new ByteArrayInputStream(bytes);
             }
 
             @Override
-            public byte[] readAsByteArray() {
+            public byte @NotNull [] readAsByteArray() {
                 return bytes.clone();
             }
 
             @Override
-            public String readAsUTF8String() {
+            public @NotNull String readAsUTF8String() {
                 return new String(bytes, StandardCharsets.UTF_8);
             }
 
@@ -189,23 +212,25 @@ public interface Readable {
      *
      * @param bytes The wrapped bytes
      * @return The {@link Readable} representation
+     * @since 1.0.0
      */
-    static Readable bytes(byte[] bytes) {
-        byte[] b = bytes.clone();
+    static @NotNull Readable bytes(final byte @NotNull [] bytes) {
+        requireNonNull(bytes, "bytes");
+        final byte[] b = bytes.clone();
         return new Readable() {
 
             @Override
-            public InputStream open() {
+            public @NotNull InputStream open() {
                 return new ByteArrayInputStream(b);
             }
 
             @Override
-            public byte[] readAsByteArray() {
+            public byte @NotNull [] readAsByteArray() {
                 return b.clone();
             }
 
             @Override
-            public String readAsUTF8String() {
+            public @NotNull String readAsUTF8String() {
                 return new String(b, StandardCharsets.UTF_8);
             }
 
@@ -219,23 +244,25 @@ public interface Readable {
      *
      * @param string The wrapped string
      * @return The {@link Readable representation}
+     * @since 1.0.0
      */
-    static Readable stringUtf8(String string) {
-        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+    static @NotNull Readable stringUtf8(final @NotNull String string) {
+        requireNonNull(string, "string");
+        final byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
         return new Readable() {
 
             @Override
-            public InputStream open() {
+            public @NotNull InputStream open() {
                 return new ByteArrayInputStream(bytes);
             }
 
             @Override
-            public byte[] readAsByteArray() {
+            public byte @NotNull [] readAsByteArray() {
                 return bytes.clone();
             }
 
             @Override
-            public String readAsUTF8String() {
+            public @NotNull String readAsUTF8String() {
                 return string;
             }
 

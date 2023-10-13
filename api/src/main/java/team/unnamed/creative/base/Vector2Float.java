@@ -26,6 +26,7 @@ package team.unnamed.creative.base;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -35,12 +36,11 @@ import java.util.stream.Stream;
 
 /**
  * Represents a fixed-size vector of two 32-bit
- * floating-point numbers, immutable
+ * floating-point numbers, immutable.
  *
  * @since 1.0.0
  */
-public final class Vector2Float
-        implements Examinable, Iterable<Float> {
+public final class Vector2Float implements Examinable, Iterable<Float> {
 
     /**
      * Constant for {@link Vector2Float} value with
@@ -61,16 +61,25 @@ public final class Vector2Float
     private final float x;
     private final float y;
 
-    public Vector2Float(float x, float y) {
+    /**
+     * Constructs a new {@link Vector2Float} with the
+     * given {@code x} and {@code y} values.
+     *
+     * @param x The vector abscissa
+     * @param y The vector ordinate
+     * @since 1.0.0
+     */
+    public Vector2Float(final float x, final float y) {
         this.x = x;
         this.y = y;
     }
 
     /**
      * Returns the "X" component or abscissa
-     * of this vector
+     * of this vector.
      *
      * @return The vector abscissa
+     * @since 1.0.0
      */
     public float x() {
         return x;
@@ -78,43 +87,89 @@ public final class Vector2Float
 
     /**
      * Returns the "Y" component or ordinate
-     * of this vector
+     * of this vector.
      *
      * @return The vector ordinate
+     * @since 1.0.0
      */
     public float y() {
         return y;
     }
 
-    public Vector2Float add(Vector2Float value) {
-        return new Vector2Float(
-                x + value.x,
-                y + value.y
-        );
+    /**
+     * Returns a new {@link Vector2Float vector} result of
+     * adding the given {@code value} to this vector.
+     *
+     * @param value The value to add
+     * @return The result vector
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull Vector2Float add(final @NotNull Vector2Float value) {
+        return new Vector2Float(x + value.x, y + value.y);
     }
 
-    public Vector2Float subtract(Vector2Float value) {
-        return new Vector2Float(
-                x - value.x,
-                y - value.y
-        );
+    /**
+     * Returns a new {@link Vector2Float vector} result of
+     * subtracting the given {@code value} to this vector.
+     *
+     * @param value The value to subtract
+     * @return The result vector
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull Vector2Float subtract(final @NotNull Vector2Float value) {
+        return new Vector2Float(x - value.x, y - value.y);
     }
 
-    public Vector2Float multiply(Vector2Float value) {
-        return new Vector2Float(
-                x * value.x,
-                y * value.y
-        );
+    /**
+     * Returns a new {@link Vector2Float vector} result of
+     * multiplying the given {@code value} vector by this vector.
+     *
+     * <p>The resulting X component is calculated by multiplying the
+     * X components of both vectors.</p>
+     *
+     * <p>The resulting Y component is calculated by multiplying the
+     * Y components of both vectors.</p>
+     *
+     * @param value The value to multiply
+     * @return The result vector
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull Vector2Float multiply(final @NotNull Vector2Float value) {
+        return new Vector2Float(x * value.x, y * value.y);
     }
 
-    public Vector2Float divide(Vector2Float value) {
-        return new Vector2Float(
-                x / value.x,
-                y / value.y
-        );
+    /**
+     * Returns a new {@link Vector2Float vector} result of
+     * dividing this vector by the given {@code value} vector.
+     *
+     * <p>The resulting X component is calculated by dividing the
+     * X components of both vectors.</p>
+     *
+     * <p>The resulting Y component is calculated by dividing the
+     * Y components of both vectors.</p>
+     *
+     * @param value The value to divide
+     * @return The result vector
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull Vector2Float divide(final @NotNull Vector2Float value) {
+        return new Vector2Float(x / value.x, y / value.y);
     }
 
-    public float[] toArray() {
+    /**
+     * Converts this vector object to a {@code float} array
+     * with the X component at index {@code 0} and the Y component
+     * at index {@code 1}.
+     *
+     * @return This vector as an array
+     * @since 1.0.0
+     */
+    @Contract(value = "-> new", pure = true)
+    public float @NotNull [] toArray() {
         return new float[]{x, y};
     }
 

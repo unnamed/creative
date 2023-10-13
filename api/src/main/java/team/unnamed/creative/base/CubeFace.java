@@ -23,46 +23,96 @@
  */
 package team.unnamed.creative.base;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 /**
- * Enum of (three-dimensional) cubes faces (6),
- * can be positive or negative {@link Axis3D#X},
- * {@link Axis3D#Y} or {@link Axis3D#Z}
+ * Enum of three-dimensional cube faces.
+ *
+ * <p>Every face has an {@link Axis3D axis} and
+ * an orientation (positive or negative).</p>
+ *
+ * <p>Note that the directions specified here are
+ * the same as the Minecraft ones.</p>
  *
  * @since 1.0.0
  */
 public enum CubeFace {
-
+    /**
+     * The west face. It faces the negative
+     * X direction.
+     *
+     * @since 1.0.0
+     */
     WEST(Axis3D.X, -1),
+
+    /**
+     * The east face. It faces the positive
+     * X direction.
+     *
+     * @since 1.0.0
+     */
     EAST(Axis3D.X, 1),
+
+    /**
+     * The down face. It faces the negative
+     * Y direction.
+     *
+     * @since 1.0.0
+     */
     DOWN(Axis3D.Y, -1),
+
+    /**
+     * The up face. It faces the positive
+     * Y direction.
+     *
+     * @since 1.0.0
+     */
     UP(Axis3D.Y, 1),
+
+    /**
+     * The north face. It faces the negative
+     * Z direction.
+     *
+     * @since 1.0.0
+     */
     NORTH(Axis3D.Z, -1),
+
+    /**
+     * The south face. It faces the positive
+     * Z direction.
+     *
+     * @since 1.0.0
+     */
     SOUTH(Axis3D.Z, 1);
 
     private final Axis3D axis;
     private final int factor;
 
-    CubeFace(Axis3D axis, int factor) {
-        this.axis = axis;
+    CubeFace(final @NotNull Axis3D axis, final int factor) {
+        this.axis = Objects.requireNonNull(axis, "axis");
         this.factor = factor;
     }
 
     /**
-     * Returns the axis of this face, X for
-     * west and east, Y for down and up, and
-     * Z for north and south
+     * Returns the axis of this face.
+     *
+     * <p>The axis is X for west and east, Y for
+     * down and up, and Z for north and south</p>
      *
      * @return The face axis
      * @since 1.0.0
      */
-    public Axis3D axis() {
+    public @NotNull Axis3D axis() {
         return axis;
     }
 
     /**
-     * Returns the factor of this face direction,
-     * 1 for positive directions, -1 for negative
-     * directions
+     * Returns the factor of this face direction.
+     *
+     * <p>The factor is 1 for positive directions
+     * and -1 for negative directions</p>
      *
      * @return The face factor
      * @since 1.0.0
