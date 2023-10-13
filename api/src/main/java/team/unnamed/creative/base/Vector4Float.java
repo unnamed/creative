@@ -26,6 +26,7 @@ package team.unnamed.creative.base;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -41,9 +42,11 @@ import java.util.stream.Stream;
  * it has two "X" and two "Y" values (just names)</p>
  *
  * @since 1.0.0
+ * @deprecated Bad design. Use two {@link Vector2Float} instead
  */
-public final class Vector4Float
-        implements Examinable, Iterable<Float> {
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+public final class Vector4Float implements Examinable, Iterable<Float> {
 
     /**
      * Constant for {@link Vector2Float} value with
@@ -105,7 +108,7 @@ public final class Vector4Float
     }
 
     public float[] toArray() {
-        return new float[] { x, y, x2, y2 };
+        return new float[]{x, y, x2, y2};
     }
 
     /**
