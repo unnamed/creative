@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft.model;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -31,8 +32,8 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
+import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.base.Vector4Float;
 import team.unnamed.creative.model.Element;
 import team.unnamed.creative.model.ElementFace;
 import team.unnamed.creative.model.ElementRotation;
@@ -47,6 +48,7 @@ import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.texture.TextureUV;
 import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
@@ -58,6 +60,8 @@ import java.util.Map;
 
 @ApiStatus.Internal
 public final class ModelSerializer implements JsonResourceSerializer<Model>, JsonResourceDeserializer<Model> {
+
+    private static final float MINECRAFT_UV_UNIT = 16F;
 
     public static final ModelSerializer INSTANCE;
     public static final ResourceCategory<Model> CATEGORY;
@@ -219,11 +223,16 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             writer.name(type.name().toLowerCase(Locale.ROOT))
                     .beginObject();
             if (face.uv() != null) {
-                Vector4Float uv = face.uv();
-                Vector4Float defaultUv = ElementFace.getDefaultUvForFace(type, element.from(), element.to());
+                TextureUV uv = face.uv0();
+                TextureUV defaultUv = getDefaultUvForFace(type, element.from(), element.to());
                 if (uv != null && !uv.equals(defaultUv)) {
                     writer.name("uv");
-                    GsonUtil.writeVector4Float(writer, uv.multiply(ElementFace.MINECRAFT_UV_UNIT));
+                    writer.beginArray();
+                    writer.value(uv.from().x() * MINECRAFT_UV_UNIT);
+                    writer.value(uv.from().y() * MINECRAFT_UV_UNIT);
+                    writer.value(uv.to().x() * MINECRAFT_UV_UNIT);
+                    writer.value(uv.to().y() * MINECRAFT_UV_UNIT);
+                    writer.endArray();
                 }
             }
             writer.name("texture").value(face.texture());
@@ -241,6 +250,25 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         writer.endObject().endObject();
     }
 
+    private static TextureUV getDefaultUvForFace(CubeFace face, Vector3Float from, Vector3Float to) {
+        switch (face) {
+            case WEST:
+                return TextureUV.uv(from.z(), 1F - to.y(), to.z(), 1F - from.y());
+            case EAST:
+                return TextureUV.uv(1F - to.z(), 1F - to.y(), 1F - from.z(), 1F - from.y());
+            case DOWN:
+                return TextureUV.uv(from.x(), 1F - to.z(), to.x(), 1F - from.z());
+            case UP:
+                return TextureUV.uv(from.x(), from.z(), to.x(), to.z());
+            case NORTH:
+                return TextureUV.uv(1F - to.x(), 1F - to.y(), 1F - from.x(), 1F - from.y());
+            case SOUTH:
+                return TextureUV.uv(from.x(), 1F - to.y(), to.x(), 1F - from.y());
+            default:
+                throw new IllegalArgumentException("Unknown face: " + face);
+        }
+    }
+
     private static Element readElement(JsonElement node) {
         JsonObject objectNode = node.getAsJsonObject();
         ElementRotation rotation = null;
@@ -253,9 +281,18 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         for (Map.Entry<String, JsonElement> entry : objectNode.getAsJsonObject("faces").entrySet()) {
             CubeFace face = CubeFace.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
             JsonObject elementFaceNode = entry.getValue().getAsJsonObject();
-            Vector4Float uv = null;
+            TextureUV uv = null;
             if (elementFaceNode.has("uv")) {
-                uv = GsonUtil.readVector4Float(elementFaceNode.get("uv")).multiply(1F / ElementFace.MINECRAFT_UV_UNIT);
+                JsonArray array = elementFaceNode.getAsJsonArray("uv");
+                Vector2Float from = new Vector2Float(
+                        array.get(0).getAsFloat() / MINECRAFT_UV_UNIT,
+                        array.get(1).getAsFloat() / MINECRAFT_UV_UNIT
+                );
+                Vector2Float to = new Vector2Float(
+                        array.get(2).getAsFloat() / MINECRAFT_UV_UNIT,
+                        array.get(3).getAsFloat() / MINECRAFT_UV_UNIT
+                );
+                uv = TextureUV.uv(from, to);
             }
 
             CubeFace cullFace = null;
@@ -265,7 +302,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
 
             faces.put(
                     face,
-                    ElementFace.builder()
+                    ElementFace.face()
                             .uv(uv)
                             .texture(elementFaceNode.get("texture").getAsString())
                             .cullFace(cullFace)

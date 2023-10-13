@@ -31,7 +31,6 @@ import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.base.Vector3Float;
-import team.unnamed.creative.base.Vector4Float;
 
 import java.io.IOException;
 
@@ -103,31 +102,12 @@ public final class GsonUtil {
         writer.endArray();
     }
 
-    public static void writeVector4Float(JsonWriter writer, Vector4Float vector) throws IOException {
-        writer.beginArray();
-        writer.value(vector.x());
-        writer.value(vector.y());
-        writer.value(vector.x2());
-        writer.value(vector.y2());
-        writer.endArray();
-    }
-
     public static Vector3Float readVector3Float(JsonElement element) {
         JsonArray array = element.getAsJsonArray();
         return new Vector3Float(
                 (float) array.get(0).getAsDouble(),
                 (float) array.get(1).getAsDouble(),
                 (float) array.get(2).getAsDouble()
-        );
-    }
-
-    public static Vector4Float readVector4Float(JsonElement element) {
-        JsonArray array = element.getAsJsonArray();
-        return new Vector4Float(
-                (float) array.get(0).getAsDouble(),
-                (float) array.get(1).getAsDouble(),
-                (float) array.get(2).getAsDouble(),
-                (float) array.get(3).getAsDouble()
         );
     }
 
