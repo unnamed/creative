@@ -274,7 +274,7 @@ public interface Writable {
             }
 
             @Override
-            public String toUTF8String() {
+            public @NotNull String toUTF8String() {
                 return new String(b, StandardCharsets.UTF_8);
             }
         };
