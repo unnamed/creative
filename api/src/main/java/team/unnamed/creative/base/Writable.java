@@ -24,6 +24,8 @@
 package team.unnamed.creative.base;
 
 import org.jetbrains.annotations.NotNull;
+import sun.reflect.CallerSensitive;
+import sun.reflect.Reflection;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -129,6 +131,22 @@ public interface Writable {
             }
             return resource;
         });
+    }
+
+    /**
+     * Creates a new {@link Writable} instance that represents
+     * the named resource at the caller class loader.
+     *
+     * @param name The full resource name
+     * @return The {@link Writable} representation
+     * @since 1.1.0
+     */
+    @CallerSensitive
+    static @NotNull Writable resource(final @NotNull String name) {
+        requireNonNull(name, "name");
+        final Class<?> caller = Reflection.getCallerClass();
+        final ClassLoader classLoader = caller.getClassLoader();
+        return resource(classLoader, name);
     }
 
     /**
