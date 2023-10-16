@@ -143,6 +143,19 @@ public final class Vector2Float implements Examinable, Iterable<Float> {
 
     /**
      * Returns a new {@link Vector2Float vector} result of
+     * multiplying this vector by the given scalar {@code value}.
+     *
+     * @param value The factor
+     * @return The result vector
+     * @since 1.1.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull Vector2Float multiply(final float value) {
+        return new Vector2Float(x * value, y * value);
+    }
+
+    /**
+     * Returns a new {@link Vector2Float vector} result of
      * dividing this vector by the given {@code value} vector.
      *
      * <p>The resulting X component is calculated by dividing the
@@ -158,6 +171,19 @@ public final class Vector2Float implements Examinable, Iterable<Float> {
     @Contract(value = "_ -> new", pure = true)
     public @NotNull Vector2Float divide(final @NotNull Vector2Float value) {
         return new Vector2Float(x / value.x, y / value.y);
+    }
+
+    /**
+     * Returns a new {@link Vector2Float vector} result of
+     * dividing this vector by the given scalar {@code value}.
+     *
+     * @param value The divisor
+     * @return The result vector
+     * @since 1.1.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    public @NotNull Vector2Float divide(final float value) {
+        return new Vector2Float(x / value, y / value);
     }
 
     /**
