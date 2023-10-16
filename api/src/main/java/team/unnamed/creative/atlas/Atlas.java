@@ -31,6 +31,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
-public interface Atlas extends Keyed, Examinable {
+public interface Atlas extends ResourcePackPart, Keyed, Examinable {
 
     Key BLOCKS = Key.key("blocks");
     Key BANNER_PATTERNS = Key.key("banner_patterns");
@@ -107,6 +109,17 @@ public interface Atlas extends Keyed, Examinable {
      */
     @Contract("-> new")
     @NotNull Builder toBuilder();
+
+    /**
+     * Adds this atlas instance to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.atlas(this);
+    }
 
     /**
      * Creates a new {@link Atlas} instance.

@@ -31,6 +31,8 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +49,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements Sound.Type, Examinable  {
+public class SoundEvent implements ResourcePackPart, Sound.Type, Examinable {
 
     public static final boolean DEFAULT_REPLACE = false;
 
@@ -108,6 +110,17 @@ public class SoundEvent implements Sound.Type, Examinable  {
         return sounds;
     }
 
+    /**
+     * Adds this sound event to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    public void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.soundEvent(this);
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
@@ -141,10 +154,10 @@ public class SoundEvent implements Sound.Type, Examinable  {
      * Creates a new {@link SoundEvent} from the
      * given values
      *
-     * @param key The sound event's key
-     * @param replace True to replace default sounds
+     * @param key      The sound event's key
+     * @param replace  True to replace default sounds
      * @param subtitle The sound event subtitle
-     * @param sounds The sound event sounds
+     * @param sounds   The sound event sounds
      * @return A new {@link SoundEvent} instance
      * @since 1.0.0
      */

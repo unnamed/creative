@@ -29,6 +29,8 @@ import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +45,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
-public interface Font extends Keyed, Examinable {
+public interface Font extends ResourcePackPart, Keyed, Examinable {
     Key MINECRAFT_DEFAULT = Key.key("default");
     Key MINECRAFT_ALT = Key.key("alt");
     Key MINECRAFT_ILLAGERALT = Key.key("illageralt");
@@ -170,6 +172,17 @@ public interface Font extends Keyed, Examinable {
         return font()
                 .key(this.key())
                 .providers(this.providers());
+    }
+
+    /**
+     * Adds this font to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.font(this);
     }
 
     /**

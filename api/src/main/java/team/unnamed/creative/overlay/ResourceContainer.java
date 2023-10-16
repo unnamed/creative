@@ -35,6 +35,7 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
+import team.unnamed.creative.part.ResourcePackPart;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -175,6 +176,17 @@ public interface ResourceContainer {
     }
     //#endregion
     //#endregion
+
+    /**
+     * Adds the given resource pack part to this resource container.
+     *
+     * @param part The resource pack part
+     * @since 1.1.0
+     */
+    default void part(final @NotNull ResourcePackPart part) {
+        requireNonNull(part, "part");
+        part.addTo(this);
+    }
 
     //#region Unknown Files (By absolute path)
     void unknownFile(final @NotNull String path, final @NotNull Writable data);

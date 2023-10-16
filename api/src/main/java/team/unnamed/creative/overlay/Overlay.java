@@ -26,7 +26,9 @@ package team.unnamed.creative.overlay;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
+import team.unnamed.creative.part.ResourcePackPart;
 
 /**
  * Represents a resource-pack overlay. Overlays are sub-packs
@@ -48,7 +50,7 @@ import team.unnamed.creative.metadata.overlays.OverlayEntry;
  * @since 1.1.0
  */
 @ApiStatus.NonExtendable
-public interface Overlay extends ResourceContainer {
+public interface Overlay extends ResourcePackPart, ResourceContainer {
 
     /**
      * Gets the overlay's directory name.
@@ -60,6 +62,22 @@ public interface Overlay extends ResourceContainer {
      */
     @Subst("dir")
     @NotNull String directory();
+
+    /**
+     * Adds this overlay to the given resource container,
+     * which must be a resource pack.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        if (resourceContainer instanceof ResourcePack) {
+            ((ResourcePack) resourceContainer).overlay(this);
+        } else {
+            throw new IllegalArgumentException("Cannot add an Overlay to a resource container that is not a resource pack.");
+        }
+    }
 
     /**
      * Creates a new overlay object that will live in the given
