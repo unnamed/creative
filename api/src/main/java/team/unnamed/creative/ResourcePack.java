@@ -57,12 +57,35 @@ import static java.util.Objects.requireNonNull;
  */
 @ApiStatus.NonExtendable
 public interface ResourcePack extends ResourceContainer {
+    /**
+     * Creates a new, empty resource-pack instance.
+     *
+     * @return A new resource-pack instance
+     * @since 1.1.0
+     */
+    static @NotNull ResourcePack resourcePack() {
+        return new ResourcePackImpl();
+    }
+
+    /**
+     * Creates a new, empty resource-pack instance.
+     *
+     * @return A new resource-pack instance
+     * @since 1.0.0
+     * @deprecated Use {@link #resourcePack()} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull ResourcePack create() {
+        return resourcePack();
+    }
 
     /**
      * Returns the resource-pack icon
      * in <bold>PNG</bold> format
      *
      * @return The resource-pack icon
+     * @since 1.0.0
      */
     @Nullable Writable icon();
 
@@ -71,6 +94,7 @@ public interface ResourcePack extends ResourceContainer {
      * in <bold>PNG</bold> format
      *
      * @param icon The resource-pack icon
+     * @since 1.0.0
      */
     void icon(@Nullable Writable icon);
 
@@ -79,6 +103,7 @@ public interface ResourcePack extends ResourceContainer {
      * pack, may be empty, but it is never null
      *
      * @return The resource-pack metadata
+     * @since 1.0.0
      */
     @NotNull Metadata metadata();
 
@@ -87,6 +112,7 @@ public interface ResourcePack extends ResourceContainer {
      * may be empty, but not null
      *
      * @param metadata The resource-pack metadata
+     * @since 1.0.0
      */
     void metadata(final @NotNull Metadata metadata);
 
@@ -115,7 +141,7 @@ public interface ResourcePack extends ResourceContainer {
      * Sets the resource-pack metadata, which specifies the
      * pack supported format(s) and its description.
      *
-     * @param format The supported pack format(s).
+     * @param format      The supported pack format(s).
      * @param description The pack description.
      * @since 1.1.0
      */
@@ -127,7 +153,7 @@ public interface ResourcePack extends ResourceContainer {
      * Sets the resource-pack metadata, which specifies the
      * pack supported format and its description.
      *
-     * @param format The supported pack format.
+     * @param format      The supported pack format.
      * @param description The pack description.
      * @since 1.1.0
      */
@@ -201,9 +227,9 @@ public interface ResourcePack extends ResourceContainer {
      * metadata.
      *
      * @return The overlays meta, null if not set.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     default @Nullable OverlaysMeta overlaysMeta() {
         return metadata().meta(OverlaysMeta.class);
@@ -214,8 +240,8 @@ public interface ResourcePack extends ResourceContainer {
      * metadata.
      *
      * @param overlaysMeta The overlays meta.
-     * @since 1.1.0
      * @sincePackFormat 18
+     * @since 1.1.0
      * @since 1.20.2
      */
     default void overlaysMeta(final @NotNull OverlaysMeta overlaysMeta) {
@@ -228,9 +254,9 @@ public interface ResourcePack extends ResourceContainer {
      * Adds or sets an overlay to this resource-pack.
      *
      * @param overlay The overlay to add or set.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     void overlay(final @NotNull Overlay overlay);
 
@@ -239,9 +265,9 @@ public interface ResourcePack extends ResourceContainer {
      *
      * @param directory The overlay directory name.
      * @return The overlay, null if not found.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     @Nullable Overlay overlay(final @NotNull @OverlayEntry.Directory String directory);
 
@@ -249,20 +275,9 @@ public interface ResourcePack extends ResourceContainer {
      * Gets all the overlays in this resource-pack.
      *
      * @return The overlays.
-     * @since 1.1.0
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @since 1.1.0
      */
     @NotNull Collection<Overlay> overlays();
-
-    /**
-     * Creates a new, empty resource-pack instance.
-     *
-     * @return A new resource-pack instance.
-     * @since 1.0.0
-     */
-    static @NotNull ResourcePack create() {
-        return new ResourcePackImpl();
-    }
-
 }
