@@ -23,10 +23,28 @@
  */
 package team.unnamed.creative.serialize;
 
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.ResourcePack;
 
+/**
+ * Represents a resource pack reader.
+ *
+ * <p>A reader converts from a specific data
+ * type, to creative's {@link ResourcePack}</p>
+ *
+ * @param <T> The converted data type
+ * @since 1.0.0
+ */
 public interface ResourcePackReader<T> {
 
-    ResourcePack read(T source);
+    /**
+     * Reads the given source and converts it
+     * to a {@link ResourcePack}.
+     *
+     * @param source The source to read
+     * @return The converted resource pack
+     * @since 1.0.0
+     */
+    @NotNull ResourcePack read(final @NotNull T source);
 
 }

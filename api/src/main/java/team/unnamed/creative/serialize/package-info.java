@@ -21,29 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize;
-
-import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.ResourcePack;
-
 /**
- * Represents a resource pack writer.
- *
- * <p>A writer converts {@link ResourcePack} instances
- * and write them to a specific target type.</p>
- *
- * @param <T> The target type
- * @since 1.0.0
+ * Contains classes related to serialization and deserialization of {@link team.unnamed.creative.ResourcePack}
+ * objects.
  */
-public interface ResourcePackWriter<T> {
-
-    /**
-     * Writes the given {@link ResourcePack} to the given target.
-     *
-     * @param target       The target
-     * @param resourcePack The resource pack
-     * @since 1.0.0
-     */
-    void write(final @NotNull T target, final @NotNull ResourcePack resourcePack);
-
-}
+package team.unnamed.creative.serialize;
