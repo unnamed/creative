@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -114,7 +113,7 @@ final class SoundEventImpl implements SoundEvent {
         private Key key;
         private boolean replace = DEFAULT_REPLACE;
         private String subtitle;
-        private List<SoundEntry> sounds = Collections.emptyList();
+        private List<SoundEntry> sounds = new ArrayList<>();
 
         @Override
         public @NotNull Builder key(final @NotNull Key key) {
@@ -138,6 +137,13 @@ final class SoundEventImpl implements SoundEvent {
         public @NotNull Builder sounds(final @NotNull List<SoundEntry> sounds) {
             requireNonNull(sounds, "sounds");
             this.sounds = new ArrayList<>(sounds);
+            return this;
+        }
+
+        @Override
+        public @NotNull Builder addSound(@NotNull SoundEntry soundEntry) {
+            requireNonNull(soundEntry, "soundEntry");
+            this.sounds.add(soundEntry);
             return this;
         }
 
