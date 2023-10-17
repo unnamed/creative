@@ -26,8 +26,8 @@ package team.unnamed.creative.sound;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -35,13 +35,9 @@ import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
  * Represents a sound event, a compound of {@link SoundEntry}
@@ -49,105 +45,33 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class SoundEvent implements ResourcePackPart, Sound.Type, Examinable {
-
-    public static final boolean DEFAULT_REPLACE = false;
-
-    private final Key key;
-    private final boolean replace;
-    @Nullable private final String subtitle;
-    @Unmodifiable private final List<SoundEntry> sounds;
-
-    private SoundEvent(
-            Key key,
-            boolean replace,
-            @Nullable String subtitle,
-            List<SoundEntry> sounds
-    ) {
-        requireNonNull(key, "key");
-        requireNonNull(sounds, "sounds");
-        this.key = key;
-        this.replace = replace;
-        this.subtitle = subtitle;
-        this.sounds = immutableListOf(sounds);
-    }
-
-    @Override
-    public @NotNull Key key() {
-        return key;
-    }
-
+@ApiStatus.NonExtendable
+public interface SoundEvent extends ResourcePackPart, Sound.Type, Examinable {
     /**
-     * Returns true if the sounds listed in {@link SoundEvent#sounds}
-     * should replace the sounds listed in the default
-     * sounds.json for this sound event. False if the
-     * sounds listed should be added to the list of
-     * default sounds
+     * Creates a new {@link SoundEvent} from the
+     * given values
      *
-     * @return True to replace default sounds.json sounds
-     */
-    public boolean replace() {
-        return replace;
-    }
-
-    /**
-     * Returns the sound event subtitle, which is translated as the
-     * subtitle of the sound if "Show Subtitles" is enabled in-game
-     *
-     * @return The sound subtitle
-     */
-    public @Nullable String subtitle() {
-        return subtitle;
-    }
-
-    /**
-     * The sounds this sound event uses, one of the listed sounds
-     * is randomly selected to play when this sound event is triggered
-     *
-     * @return An unmodifiable list of the sound that this event uses
-     */
-    public @Unmodifiable List<SoundEntry> sounds() {
-        return sounds;
-    }
-
-    /**
-     * Adds this sound event to the given resource container.
-     *
-     * @param resourceContainer The resource container
+     * @param key      The sound event's key
+     * @param replace  True to replace default sounds
+     * @param subtitle The sound event subtitle
+     * @param sounds   The sound event sounds
+     * @return A new {@link SoundEvent} instance
      * @since 1.1.0
      */
-    @Override
-    public void addTo(final @NotNull ResourceContainer resourceContainer) {
-        resourceContainer.soundEvent(this);
+    static @NotNull SoundEvent soundEvent(final @NotNull Key key, final boolean replace, final @Nullable String subtitle, final @NotNull List<SoundEntry> sounds) {
+        return new SoundEventImpl(key, replace, subtitle, sounds);
     }
 
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("replace", replace),
-                ExaminableProperty.of("subtitle", subtitle),
-                ExaminableProperty.of("sounds", sounds)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SoundEvent that = (SoundEvent) o;
-        return replace == that.replace
-                && Objects.equals(subtitle, that.subtitle)
-                && Objects.equals(sounds, that.sounds);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(replace, subtitle, sounds);
+    /**
+     * Creates a new {@link Builder} instance,
+     * it eases the creation of {@link SoundEvent}
+     * objects
+     *
+     * @return A new {@link Builder} instance
+     * @since 1.1.0
+     */
+    static @NotNull Builder soundEvent() {
+        return new SoundEventImpl.BuilderImpl();
     }
 
     /**
@@ -160,14 +84,12 @@ public class SoundEvent implements ResourcePackPart, Sound.Type, Examinable {
      * @param sounds   The sound event sounds
      * @return A new {@link SoundEvent} instance
      * @since 1.0.0
+     * @deprecated Use {@link #soundEvent(Key, boolean, String, List)} instead
      */
-    public static SoundEvent of(
-            Key key,
-            boolean replace,
-            @Nullable String subtitle,
-            @Nullable List<SoundEntry> sounds
-    ) {
-        return new SoundEvent(key, replace, subtitle, sounds);
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull SoundEvent of(final @NotNull Key key, final boolean replace, final @Nullable String subtitle, final @NotNull List<SoundEntry> sounds) {
+        return new SoundEventImpl(key, replace, subtitle, sounds);
     }
 
     /**
@@ -177,9 +99,64 @@ public class SoundEvent implements ResourcePackPart, Sound.Type, Examinable {
      *
      * @return A new {@link Builder} instance
      * @since 1.0.0
+     * @deprecated Use {@link #soundEvent()} instead
      */
-    public static Builder builder() {
-        return new Builder();
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull Builder builder() {
+        return new SoundEventImpl.BuilderImpl();
+    }
+
+    boolean DEFAULT_REPLACE = false;
+
+    /**
+     * Returns this sound event's key.
+     *
+     * @return The sound event's key
+     * @since 1.0.0
+     */
+    @Override
+    @NotNull Key key();
+
+    /**
+     * Returns true if the sounds listed in {@link SoundEvent#sounds}
+     * should replace the sounds listed in the default
+     * sounds.json for this sound event. False if the
+     * sounds listed should be added to the list of
+     * default sounds
+     *
+     * @return True to replace default sounds.json sounds
+     * @since 1.0.0
+     */
+    boolean replace();
+
+    /**
+     * Returns the sound event subtitle, which is translated as the
+     * subtitle of the sound if "Show Subtitles" is enabled in-game
+     *
+     * @return The sound subtitle
+     * @since 1.0.0
+     */
+    @Nullable String subtitle();
+
+    /**
+     * The sounds this sound event uses, one of the listed sounds
+     * is randomly selected to play when this sound event is triggered
+     *
+     * @return An unmodifiable list of the sound that this event uses
+     * @since 1.0.0
+     */
+    @Unmodifiable @NotNull List<SoundEntry> sounds();
+
+    /**
+     * Adds this sound event to the given resource container.
+     *
+     * @param resourceContainer The resource container
+     * @since 1.1.0
+     */
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.soundEvent(this);
     }
 
     /**
@@ -189,40 +166,99 @@ public class SoundEvent implements ResourcePackPart, Sound.Type, Examinable {
      *
      * @since 1.0.0
      */
-    public static class Builder {
+    interface Builder {
 
-        private Key key;
-        private boolean replace = DEFAULT_REPLACE;
-        private String subtitle;
-        private List<SoundEntry> sounds = Collections.emptyList();
+        /**
+         * Sets the sound event's key
+         *
+         * @param key The sound event's key
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull Key key);
 
-        private Builder() {
+        /**
+         * Sets whether the sounds listed in {@link SoundEvent#sounds}
+         * should replace the sounds listed in the default sound registry
+         * for this sound event. False if the sounds listed should be added
+         * to the list of default sounds
+         *
+         * @param replace True to replace default sounds
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder replace(final boolean replace);
+
+        /**
+         * Sets the sound event subtitle, which is translated as the
+         * subtitle of the sound if "Show Subtitles" is enabled in-game
+         *
+         * @param subtitle The sound subtitle
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder subtitle(final @Nullable String subtitle);
+
+        /**
+         * Sets the sounds this sound event uses, one of the listed sounds
+         * is randomly selected to play when this sound event is triggered
+         *
+         * @param sounds The sounds this sound event uses
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder sounds(final @NotNull List<SoundEntry> sounds);
+
+        /**
+         * Adds a sound to this sound event.
+         *
+         * @param soundEntry The sound entry
+         * @return This builder
+         * @since 1.1.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder addSound(final @NotNull SoundEntry soundEntry);
+
+        /**
+         * Adds a sound to this sound event.
+         *
+         * @param sound The sound
+         * @return This builder
+         * @since 1.1.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addSound(final @NotNull team.unnamed.creative.sound.Sound sound) {
+            return addSound(SoundEntry.soundEntry(sound));
         }
 
-        public Builder key(Key key) {
-            this.key = requireNonNull(key, "key");
-            return this;
+        /**
+         * Adds a sound to this sound event.
+         *
+         * @param soundEvent The sound event
+         * @return This builder
+         * @since 1.1.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addSound(final @NotNull SoundEvent soundEvent) {
+            return addSound(SoundEntry.soundEntry(soundEvent));
         }
 
-        public Builder replace(boolean replace) {
-            this.replace = replace;
-            return this;
-        }
-
-        public Builder subtitle(@Nullable String subtitle) {
-            this.subtitle = subtitle;
-            return this;
-        }
-
-        public Builder sounds(List<SoundEntry> sounds) {
-            this.sounds = requireNonNull(sounds, "sounds");
-            return this;
-        }
-
-        public Builder sounds(SoundEntry... sounds) {
+        /**
+         * Sets the sounds this sound event uses, one of the listed sounds
+         * is randomly selected to play when this sound event is triggered
+         *
+         * @param sounds The sounds this sound event uses
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder sounds(final @NotNull SoundEntry @NotNull ... sounds) {
             requireNonNull(sounds, "sounds");
-            this.sounds = Arrays.asList(sounds);
-            return this;
+            return sounds(Arrays.asList(sounds));
         }
 
         /**
@@ -230,11 +266,8 @@ public class SoundEvent implements ResourcePackPart, Sound.Type, Examinable {
          * using the previously set values
          *
          * @return A new {@link SoundEvent instance}
+         * @since 1.0.0
          */
-        public SoundEvent build() {
-            return new SoundEvent(key, replace, subtitle, sounds);
-        }
-
+        @NotNull SoundEvent build();
     }
-
 }

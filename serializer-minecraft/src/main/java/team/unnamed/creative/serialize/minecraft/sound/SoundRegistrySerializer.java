@@ -123,8 +123,8 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
             @Subst("entity.enderman.stare")
             String eventKey = soundEventEntry.getKey();
             JsonObject eventNode = soundEventEntry.getValue().getAsJsonObject();
-            SoundEvent.Builder event = SoundEvent.builder()
-                            .key(Key.key(namespace, eventKey));
+            SoundEvent.Builder event = SoundEvent.soundEvent()
+                    .key(Key.key(namespace, eventKey));
 
             event.replace(GsonUtil.getBoolean(eventNode, "replace", SoundEvent.DEFAULT_REPLACE));
 
@@ -157,7 +157,7 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
                         sounds.add(sound.build());
                     } else {
                         // everything is default, just read the name
-                        sounds.add(SoundEntry.builder()
+                        sounds.add(SoundEntry.soundEntry()
                                 .key(Key.key(soundNode.getAsString()))
                                 .type(SoundEntry.Type.FILE)
                                 .build());
@@ -169,7 +169,7 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
 
             soundEvents.add(event.build());
         }
-        return SoundRegistry.of(namespace, soundEvents);
+        return SoundRegistry.soundRegistry(namespace, soundEvents);
     }
 
 }

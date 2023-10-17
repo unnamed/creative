@@ -123,7 +123,7 @@ public interface ResourceContainer {
         }
 
         soundEvents.add(soundEvent);
-        soundRegistry(SoundRegistry.of(namespace, soundEvents));
+        soundRegistry(SoundRegistry.soundRegistry(namespace, soundEvents));
     }
 
     default @Nullable SoundEvent soundEvent(final @NotNull Key key) {

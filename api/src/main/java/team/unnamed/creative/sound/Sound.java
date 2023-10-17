@@ -26,33 +26,46 @@ package team.unnamed.creative.sound;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.part.ResourcePackPart;
 import team.unnamed.creative.texture.Texture;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
-
 /**
- * Represents a Minecraft sound (.OGG) in the resource-pack,
- * analog to {@link Texture}.
+ * Represents a Minecraft sound data in the resource-pack,
+ * similar to {@link Texture}.
  *
  * @since 1.0.0
  */
-public final class Sound implements ResourcePackPart, Keyed, Examinable {
+@ApiStatus.NonExtendable
+public interface Sound extends ResourcePackPart, Keyed, Examinable {
+    /**
+     * Creates a new sound instance with the given key and data.
+     *
+     * @param key  The sound key
+     * @param data The sound data
+     * @return The sound instance
+     * @since 1.1.0
+     */
+    static @NotNull Sound sound(final @NotNull Key key, final @NotNull Writable data) {
+        return new SoundImpl(key, data);
+    }
 
-    private final Key key;
-    private final Writable data;
-
-    private Sound(Key key, Writable data) {
-        this.key = requireNonNull(key, "key");
-        this.data = requireNonNull(data, "data");
+    /**
+     * Creates a new sound instance with the given key and data.
+     *
+     * @param key  The sound key
+     * @param data The sound data
+     * @return The sound instance
+     * @since 1.0.0
+     * @deprecated Use {@link #sound(Key, Writable)} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    static @NotNull Sound of(final @NotNull Key key, final @NotNull Writable data) {
+        return new SoundImpl(key, data);
     }
 
     /**
@@ -70,9 +83,7 @@ public final class Sound implements ResourcePackPart, Keyed, Examinable {
      * @return The sound key
      */
     @Override
-    public @NotNull Key key() {
-        return key;
-    }
+    @NotNull Key key();
 
     /**
      * Returns the sound's OGG sound data, as a
@@ -81,9 +92,7 @@ public final class Sound implements ResourcePackPart, Keyed, Examinable {
      * @return The OGG sound data
      * @since 1.0.0
      */
-    public Writable data() {
-        return data;
-    }
+    @NotNull Writable data();
 
     /**
      * Adds this sound to the given resource container.
@@ -92,38 +101,7 @@ public final class Sound implements ResourcePackPart, Keyed, Examinable {
      * @since 1.1.0
      */
     @Override
-    public void addTo(final @NotNull ResourceContainer resourceContainer) {
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
         resourceContainer.sound(this);
     }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Sound sound = (Sound) o;
-        return key.equals(sound.key) && data.equals(sound.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, data);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("key", key),
-                ExaminableProperty.of("data", data)
-        );
-    }
-
-    public static Sound of(Key key, Writable data) {
-        return new Sound(key, data);
-    }
-
 }
