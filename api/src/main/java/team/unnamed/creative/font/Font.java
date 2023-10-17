@@ -228,7 +228,7 @@ public interface Font extends ResourcePackPart, Keyed, Examinable {
          * @since 1.1.0
          */
         @Contract("_ -> this")
-        @NotNull Builder provider(final @NotNull FontProvider provider);
+        @NotNull Builder addProvider(final @NotNull FontProvider provider);
 
         /**
          * Builds the font.

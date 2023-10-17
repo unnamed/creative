@@ -123,7 +123,7 @@ final class FontImpl implements Font {
         }
 
         @Override
-        public @NotNull Builder provider(final @NotNull FontProvider provider) {
+        public @NotNull Builder addProvider(final @NotNull FontProvider provider) {
             requireNonNull(provider, "provider");
             if (providers == null) {
                 providers = new ArrayList<>();
