@@ -25,6 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 
@@ -96,7 +97,7 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
             hash = builder.toString();
         }
 
-        return BuiltResourcePack.of(bytes, hash);
+        return BuiltResourcePack.of(Writable.bytes(bytes), hash);
     }
 
     default BuiltResourcePack build(Consumer<ResourcePack> consumer) {

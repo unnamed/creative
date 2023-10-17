@@ -52,14 +52,14 @@ public class DownloadTest extends LocalHttpTestBase {
             stream(input, output);
 
             Assertions.assertArrayEquals(
-                    resourcePack.bytes(),
+                    resourcePack.data().toByteArray(),
                     output.toByteArray()
             );
         } catch (IOException e) {
             Assertions.fail(
                     "Request failed"
-                    + "\n\tResponse Code: " + connection.getResponseCode()
-                    + "\n\tError Body: " + streamToString(connection.getErrorStream()),
+                            + "\n\tResponse Code: " + connection.getResponseCode()
+                            + "\n\tError Body: " + streamToString(connection.getErrorStream()),
                     e
             );
         }

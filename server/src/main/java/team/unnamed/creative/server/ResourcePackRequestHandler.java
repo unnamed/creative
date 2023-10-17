@@ -47,10 +47,10 @@ public interface ResourcePackRequestHandler {
      * <p>An "application/zip" Content-Type header should be set
      * when returning a resource-pack, {@link HttpExchange#getResponseHeaders()}</p>
      *
-     * @param request The resource pack request
+     * @param request  The resource pack request
      * @param exchange The HTTP exchange
-     * @see HttpExchange
      * @throws IOException If writing the response fails
+     * @see HttpExchange
      */
     void onRequest(ResourcePackRequest request, HttpExchange exchange) throws IOException;
 
@@ -70,8 +70,8 @@ public interface ResourcePackRequestHandler {
      * a simple message is sent
      *
      * @param exchange The http exchange
-     * @see HttpExchange
      * @throws IOException If writing the response fails
+     * @see HttpExchange
      */
     default void onInvalidRequest(HttpExchange exchange) throws IOException {
         byte[] response = "Please use a Minecraft client\n".getBytes(StandardCharsets.UTF_8);
@@ -88,7 +88,7 @@ public interface ResourcePackRequestHandler {
             @Override
             public void onRequest(@Nullable ResourcePackRequest request, HttpExchange exchange) throws IOException {
                 if (request != null || !validOnly) {
-                    byte[] data = pack.bytes();
+                    byte[] data = pack.data().toByteArray();
                     exchange.getResponseHeaders().set("Content-Type", "application/zip");
                     exchange.sendResponseHeaders(200, data.length);
                     try (OutputStream responseStream = exchange.getResponseBody()) {
