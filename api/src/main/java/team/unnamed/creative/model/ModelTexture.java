@@ -26,6 +26,8 @@ package team.unnamed.creative.model;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 public class ModelTexture {
@@ -52,6 +54,24 @@ public class ModelTexture {
 
     public Object get() {
         return key == null ? reference : key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ModelTexture that = (ModelTexture) o;
+
+        if (!Objects.equals(key, that.key)) return false;
+        return Objects.equals(reference, that.reference);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = key != null ? key.hashCode() : 0;
+        result = 31 * result + (reference != null ? reference.hashCode() : 0);
+        return result;
     }
 
     public static ModelTexture ofKey(Key key) {
