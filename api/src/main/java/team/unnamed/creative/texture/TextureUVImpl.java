@@ -38,18 +38,6 @@ final class TextureUVImpl implements TextureUV {
     TextureUVImpl(final @NotNull Vector2Float from, final @NotNull Vector2Float to) {
         this.from = requireNonNull(from, "from");
         this.to = requireNonNull(to, "to");
-        this.validate();
-    }
-
-    private void validate() {
-        if (isInvalid(from.x()) || isInvalid(from.y()))
-            throw new IllegalArgumentException("Invalid 'from' coordinates, all the values must be in range [0, 1], provided: " + from);
-        if (isInvalid(to.x()) || isInvalid(to.y()))
-            throw new IllegalArgumentException("Invalid 'to' coordinates, all the values must be in range [0, 1], provided: " + to);
-    }
-
-    private boolean isInvalid(final float value) {
-        return value < 0 || value > 1;
     }
 
     @Override

@@ -35,7 +35,8 @@ import team.unnamed.creative.base.Vector2Float;
  * to a certain 3D surface.</p>
  *
  * <p>Note that the coordinates specified in this texture
- * are all relative and in the range of zero to one.</p>
+ * are all relative and (ideally) in the range of zero to
+ * one.</p>
  *
  * <p>If any of the from and to components are swapped,
  * the texture flips.</p>

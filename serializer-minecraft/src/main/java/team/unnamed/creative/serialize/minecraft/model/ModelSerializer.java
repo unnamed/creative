@@ -288,15 +288,6 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
                 JsonArray array = elementFaceNode.getAsJsonArray("uv");
                 Vector2Float from = new Vector2Float(array.get(0).getAsFloat(), array.get(1).getAsFloat());
                 Vector2Float to = new Vector2Float(array.get(2).getAsFloat(), array.get(3).getAsFloat());
-                // clamp "from" and "to" between 0 and 16 (what Minecraft does)
-                from = new Vector2Float(
-                        Math.max(0F, Math.min(MINECRAFT_UV_UNIT, from.x())),
-                        Math.max(0F, Math.min(MINECRAFT_UV_UNIT, from.y()))
-                );
-                to = new Vector2Float(
-                        Math.max(0F, Math.min(MINECRAFT_UV_UNIT, to.x())),
-                        Math.max(0F, Math.min(MINECRAFT_UV_UNIT, to.y()))
-                );
                 uv = TextureUV.uv(
                         from.divide(MINECRAFT_UV_UNIT),
                         to.divide(MINECRAFT_UV_UNIT)
