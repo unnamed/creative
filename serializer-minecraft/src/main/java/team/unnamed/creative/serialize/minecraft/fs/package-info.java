@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 /**
  * The input and output targets for this serializer, the serializer-minecraft
  * subproject implements the Minecraft Vanilla resource pack format for the
