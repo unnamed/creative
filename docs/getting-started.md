@@ -7,6 +7,8 @@ Edition, it is not dependent on the server implementation *(It doesn't
 matter if you use Spigot, Paper, Waterfall, BungeeCord, Velocity, etc.)*
 
 See this example of the `creative` API:
+
+<!--@formatter:off-->
 ```java
 ResourcePack resourcePack = ResourcePack.create();
         
@@ -30,6 +32,7 @@ MinecraftResourcePackWriter.minecraft().writeToZipFile(
         resourcePack
 );
 ```
+<!--@formatter:on-->
 
 ### Features
 

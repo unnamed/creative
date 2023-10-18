@@ -6,8 +6,9 @@ In Minecraft resource-packs, sounds have different levels of structure
 
 It is the smallest unit of the sound system, it just represents a sound (`.ogg`)
 file
+<!--@formatter:off-->
 ```java
-Sound sound = Sound.of(
+Sound sound = Sound.sound(
         // location of the sound file in the resource-pack
         // (assets/<namespace>/sounds/<name>.ogg)
         Key.key("creative:meow_1"),
@@ -18,16 +19,18 @@ Sound sound = Sound.of(
         Writable.file(new File("the_sound.ogg"))
 );
 ```
+<!--@formatter:on-->
 
 Remember that sound files are independently written to the resource-pack, to
 add a sound to a resource-pack, you use:
+<!--@formatter:off-->
 ```java
 ResourcePack resourcePack = ...;
 resourcePack.sound(sound);
 ```
+<!--@formatter:on-->
 
 As simple as that!
-
 
 ### 2. `SoundEntry`
 
@@ -35,8 +38,9 @@ It is the second-smallest unit of the sound system, there are two types of sound
 
 2.1. `FILE`, which is just configuration for a single `Sound`, it contains options like
 volume, pitch and attenuation distance
+<!--@formatter:off-->
 ```java
-SoundEntry soundEntry = SoundEntry.builder()
+SoundEntry soundEntry = SoundEntry.soundEntry()
         .type(SoundEntry.Type.FILE) // <-- Specify type to FILE
         .key(Key.key("creative:meow_1")) // <-- set the key of a Sound
         .volume(1.0F)
@@ -47,11 +51,13 @@ SoundEntry soundEntry = SoundEntry.builder()
         .preload(false)
         .build();
 ```
+<!--@formatter:on-->
 
 2.2. `EVENT`, which is configuration for a `SoundEvent` (see below), it allows the same
 options as the FILE type
+<!--@formatter:off-->
 ```java
-SoundEntry soundEntry = SoundEntry.builder()
+SoundEntry soundEntry = SoundEntry.soundEntry()
         .type(SoundEntry.Type.EVENT) // <-- Specify type to EVENT
         .key(Key.key("creative:meow")) // <-- set the key of a SoundEvent
         .volume(1.0F)
@@ -62,6 +68,7 @@ SoundEntry soundEntry = SoundEntry.builder()
         .preload(false)
         .build();
 ```
+<!--@formatter:on-->
 
 ### 3. `SoundEvent`
 
@@ -74,8 +81,9 @@ From the server, you can't play specific sound entries (`SoundEntry`) or sounds
 When a sound event is played/fired, a `SoundEntry` is randomly selected *(based
 on their `weight` property)* and played.
 
+<!--@formatter:off-->
 ```java
-SoundEvent soundEvent = SoundEvent.builder()
+SoundEvent soundEvent = SoundEvent.soundEvent()
         .key(Key.key("creative:creative.cat.meow"))
         .sounds(
                 soundEntry1,
@@ -86,24 +94,28 @@ SoundEvent soundEvent = SoundEvent.builder()
         .replace(false)
         .build();
 ```
+<!--@formatter:on-->
 
 Now write the `SoundEvent` in the resource-pack:
 
+<!--@formatter:off-->
 ```java
 ResourcePack resourcePack = ...;
 resourcePack.soundEvent(soundEvent);
 ```
+<!--@formatter:on-->
 
 And that's it! We are ready to play sounds in the game
-
 
 ### Playing a custom sound
 
 In **Paper**, you can do the following:
 
+<!--@formatter:off-->
 ```java
 SoundEvent soundEvent = ...;
-player.playSound(Sound.sound(soundEvent.key(), Sound.Source.AMBIENT, 1f, 1.1f));
+player.playSound(Sound.sound(soundEvent, Sound.Source.AMBIENT, 1f, 1.1f));
 ```
+<!--@formatter:on-->
 
 See [Adventure documentation](https://docs.adventure.kyori.net/sound.html)

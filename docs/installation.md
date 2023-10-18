@@ -2,7 +2,7 @@
 
 You can add `creative-api` to your project using [Gradle](https://gradle.org/)
 *(recommended)*, [Maven](https://maven.apache.org/) or manually downloading the
-JAR files
+JAR files.
 
 ### Gradle
 
@@ -26,14 +26,13 @@ dependencies {
 
 ### Maven
 
+<!--@formatter:off-->
 ```xml
-
 <repository>
     <id>unnamed-public</id>
     <url>https://repo.unnamed.team/repository/unnamed-public/</url>
 </repository>
 ```
-
 ```xml
 <dependency>
     <groupId>team.unnamed</groupId>
@@ -41,3 +40,4 @@ dependencies {
     <version>%%REPLACE_latestRelease{team.unnamed:creative-api}%%</version>
 </dependency>
 ```
+<!--@formatter:on-->

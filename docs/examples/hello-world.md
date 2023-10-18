@@ -4,7 +4,7 @@ Let's create a simple and empty resource-pack using `creative-api`
 and `creative-serializer-minecraft`
 
 ```java
-ResourcePack resourcePack = ResourcePack.create();
+ResourcePack resourcePack = ResourcePack.resourcePack();
 
 // Here we specify the resource-pack format (12) and description (Hello world!)
 resourcePack.packMeta(12, "Hello world!");
@@ -23,6 +23,7 @@ folder/
 ```
 
 Where `pack.mcmeta` file has the following content (but minimized):
+
 ```json
 {
     "pack": {

@@ -2,6 +2,7 @@
 
 Now we can build the resource-pack!
 
+<!--@formatter:off-->
 ```java
 ResourcePack resourcePack = ResourcePack.create();
 
@@ -28,3 +29,4 @@ MinecraftResourcePackWriter.minecraft().writeToZipFile(
         resourcePack
 );
 ```
+<!--@formatter:on-->

@@ -25,25 +25,31 @@ pack serializers.
 
 Writing the resource-pack as a ZIP file:
 
+<!--@formatter:off-->
 ```java
-ResourcePack resourcePack=...;
-        File output=new File("/path/to/resource-pack.zip");
-        MinecraftResourcePackWriter.minecraft().writeToZipFile(output,resourcePack);
+ResourcePack resourcePack = ...;
+File output = new File("/path/to/resource-pack.zip");
+MinecraftResourcePackWriter.minecraft().writeToZipFile(output, resourcePack);
 ```
+<!--@formatter:on-->
 
 Compiling the resource-pack in memory *(`BuiltResourcePack`)*
 
+<!--@formatter:off-->
 ```java
-ResourcePack resourcePack=...;
-        BuiltResourcePack builtResourcePack=MinecraftResourcePackWriter.minecraft().build(resourcePack);
+ResourcePack resourcePack = ...;
+BuiltResourcePack builtResourcePack = MinecraftResourcePackWriter.minecraft().build(resourcePack);
 ```
+<!--@formatter:on-->
 
 Reading the resource-pack from a ZIP file:
 
+<!--@formatter:off-->
 ```java
-File input=new File("/path/to/input/resource-pack.zip");
-        ResourcePack resourcePack=MinecraftResourcePackReader.minecraft().readFromZipFile(input);
+File input = new File("/path/to/input/resource-pack.zip");
+ResourcePack resourcePack = MinecraftResourcePackReader.minecraft().readFromZipFile(input);
 ```
+<!--@formatter:on-->
 
 ### Unitary Serialization
 
@@ -54,18 +60,22 @@ separately and lets you do that using element-specific serializers, for example:
 
 Deserializing a font from resources:
 
+<!--@formatter:off-->
 ```java
-Font font=FontSerializer.INSTANCE.deserialize(
-        Readable.resource(getClass().getClassLoader(),"font.json"),
-        Key.key("custom:fontkey")
-        );
+Font font = FontSerializer.INSTANCE.deserialize(
+    Readable.resource(getClass().getClassLoader(), "font.json"),
+    Key.key("custom:fontkey")
+);
 ```
+<!--@formatter:on-->
 
 Serializing a language to a file:
 
+<!--@formatter:off-->
 ```java
-Language language=...;
-        try(OutputStream output=new FileOutputStream("es.json")){
-        LanguageSerializer.INSTANCE.serialize(language,output);
-        }
+Language language = ...;
+try (OutputStream output = new FileOutputStream("es.json")) {
+    LanguageSerializer.INSTANCE.serialize(language, output);
+}
 ```
+<!--@formatter:on-->

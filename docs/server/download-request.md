@@ -5,6 +5,7 @@ resource-pack, this is platform-dependent, but it commonly takes
 the resource-pack server address and the resource-pack SHA-1 hash
 (which can be taken from `BuiltResourcePack#hash()`)
 
+<!--@formatter:off-->
 ```java
 BuiltResourcePack pack = ...;
 
@@ -20,24 +21,27 @@ String path = hash + ".zip";
 // HTTP is required if you did not configure HTTPS
 String url = "http://127.0.0.1:7270/" + path;
 ```
-
+<!--@formatter:on-->
 
 ### Paper
 
 On [Paper](https://papermc.io/) we can use the `Player#setResourcePack`
 method:
 
+<!--@formatter:off-->
 ```java
 player.setResourcePack(url, hash /*, prompt, force */);
 ```
-
+<!--@formatter:on-->
 
 ### Minestom
 
 On [Minestom](https://minestom.net/) we can use the `Player#setResourcePack`
 method:
 
+<!--@formatter:off-->
 ```java
 // forced(...) or optional(...)
 player.setResourcePack(ResourcePack.forced(url, hash /*, prompt */));
 ```
+<!--@formatter:on-->

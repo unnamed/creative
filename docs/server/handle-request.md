@@ -8,6 +8,7 @@ always return it no matter the resource-pack request information
 
 We can replace this behavior by specifying a custom resource-pack request handler
 
+<!--@formatter:off-->
 ```java
 ResourcePackServer server = ResourcePackServer.builder()
         .address("127.0.0.1", 7270)
@@ -15,7 +16,7 @@ ResourcePackServer server = ResourcePackServer.builder()
         // ...
         .build();
 ```
-
+<!--@formatter:on-->
 
 ### Handler
 
@@ -26,6 +27,7 @@ the response information
 
 Example:
 
+<!--@formatter:off-->
 ```java
 BuiltResourcePack pack8 = MinecraftResourcePackWriter.minecraft().build(this::createPack8);
 BuiltResorucePack pack9 = MinecraftResourcePackWriter.minecraft().build(this::createPack9);
@@ -64,7 +66,7 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
     }
 };
 ```
-
+<!--@formatter:on-->
 
 ### Invalid Requests
 
@@ -76,6 +78,7 @@ In the example above we did not override the `onInvalidRequest` method,
 so the behavior is defaulted (a 'Please use a Minecraft client' message
 is shown)
 
+<!--@formatter:off-->
 ```java
 ResourcePackRequestHandler handler = new ResourcePackRequestHandler() {
     
@@ -93,3 +96,4 @@ ResourcePackRequestHandler handler = new ResourcePackRequestHandler() {
     
 };
 ```
+<!--@formatter:on-->
