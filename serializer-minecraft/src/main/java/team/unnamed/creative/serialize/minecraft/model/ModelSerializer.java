@@ -251,6 +251,8 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
     }
 
     private static TextureUV getDefaultUvForFace(CubeFace face, Vector3Float from, Vector3Float to) {
+        from = from.divide(MINECRAFT_UV_UNIT);
+        to = to.divide(MINECRAFT_UV_UNIT);
         switch (face) {
             case WEST:
                 return TextureUV.uv(from.z(), 1F - to.y(), to.z(), 1F - from.y());
