@@ -100,7 +100,7 @@ final class TextureImpl implements Texture {
 
         private Key key;
         private Writable data;
-        private Metadata meta = Metadata.EMPTY;
+        private Metadata meta = Metadata.empty();
 
         BuilderImpl() {
         }

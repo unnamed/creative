@@ -64,7 +64,7 @@ public interface Texture extends ResourcePackPart, Keyed, Examinable, Metadatabl
      * @since 1.1.0
      */
     static @NotNull Texture texture(final @NotNull Key key, final @NotNull Writable data) {
-        return texture(key, data, Metadata.EMPTY);
+        return texture(key, data, Metadata.empty());
     }
 
     /**
@@ -103,7 +103,7 @@ public interface Texture extends ResourcePackPart, Keyed, Examinable, Metadatabl
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     static @NotNull Texture of(final @NotNull Key key, final @NotNull Writable data) {
-        return of(key, data, Metadata.EMPTY);
+        return of(key, data, Metadata.empty());
     }
 
     /**
