@@ -24,6 +24,7 @@
 package team.unnamed.creative.serialize.minecraft.overlays;
 
 import net.kyori.adventure.key.Key;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.overlay.Overlay;
@@ -38,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ResourcePackWithOverlaysDeserializationTest {
 
     @Test
+    @DisplayName("Test multi-version resource pack deserialization")
     void test() {
         final ResourcePack resourcePack = MinecraftResourcePackReader.minecraft()
                 .readFromDirectory(new File("src/test/resources/with-overlays"));

@@ -24,7 +24,6 @@
 package team.unnamed.creative.serialize.minecraft.fs;
 
 import com.google.gson.stream.JsonWriter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Writable;
@@ -34,7 +33,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public interface FileTreeWriterTest {
+interface FileTreeWriterTest {
 
     FileTreeWriter createWriter() throws IOException;
 
@@ -46,7 +45,7 @@ public interface FileTreeWriterTest {
         try (FileTreeWriter writer = createWriter()) {
             writer.write("file.txt", Writable.stringUtf8("Hello there"));
             writer.write("emptyfile.txt", Writable.EMPTY);
-            writer.write("binaryfile.bin", Writable.bytes(new byte[] { (byte) 0xB0, 0x0B }));
+            writer.write("binaryfile.bin", Writable.bytes(new byte[]{(byte) 0xB0, 0x0B}));
 
             try (JsonWriter jsonWriter = new JsonWriter(writer.openWriter("file.json"))) {
                 jsonWriter.beginObject()

@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipInputStream;
 
-public class ZipFileTreeReaderTest implements FileTreeReaderTest {
+class ZipFileTreeReaderTest implements FileTreeReaderTest {
 
     @Override
     public FileTreeReader createReader() {

@@ -24,6 +24,7 @@
 package team.unnamed.creative.serialize.minecraft.model;
 
 import net.kyori.adventure.key.Key;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
@@ -44,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ModelDeserializationTest {
 
     @Test
+    @DisplayName("Test 'cross.json' model deserialization")
     void test_deserialize_cross() throws Exception {
         Model model = ModelSerializer.INSTANCE.deserialize(
                 Readable.resource(getClass().getClassLoader(), "model/cross.json"),

@@ -29,11 +29,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class KeyCompactionTest {
+class KeyCompactionTest {
 
     @Test
     @DisplayName("Test that keys with default namespace are compacted")
-    public void test_default_namespace() {
+    void test_default_namespace() {
         assertEquals("test", Keys.toString(Key.key("minecraft:test")));
         assertEquals("test_no_namespace", Keys.toString(Key.key("test_no_namespace")));
         assertEquals("test_separate", Keys.toString(Key.key("minecraft", "test_separate")));
@@ -42,7 +42,7 @@ public class KeyCompactionTest {
 
     @Test
     @DisplayName("Test that keys without default namespace are not compacted")
-    public void test_custom_namespace() {
+    void test_custom_namespace() {
         assertEquals("creative:test", Keys.toString(Key.key("creative:test")));
         assertEquals("creative:test_separate", Keys.toString(Key.key("creative", "test_separate")));
     }

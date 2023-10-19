@@ -36,7 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
 
-public class LocalHttpTestBase {
+class LocalHttpTestBase {
 
     private static final int PORT = 7270;
 
@@ -44,7 +44,7 @@ public class LocalHttpTestBase {
     private static ResourcePackServer server;
 
     @BeforeAll
-    public static void setup() throws Exception {
+    static void setup() throws Exception {
         resourcePack = MinecraftResourcePackWriter.minecraft().build(resourcePack ->
                 resourcePack.packMeta(8, "Resource pack!"));
         server = ResourcePackServer.builder()
@@ -55,16 +55,16 @@ public class LocalHttpTestBase {
     }
 
     @AfterAll
-    public static void stopServer() {
+    static void stopServer() {
         server.stop(0);
     }
 
-    public HttpURLConnection open(String path) throws IOException {
+    HttpURLConnection open(String path) throws IOException {
         return (HttpURLConnection) new URL("http://localhost:" + PORT + path)
                 .openConnection();
     }
 
-    public void stream(InputStream input, OutputStream output) throws IOException {
+    void stream(InputStream input, OutputStream output) throws IOException {
         byte[] buf = new byte[1024];
         int read;
         while ((read = input.read(buf)) != -1) {
@@ -72,8 +72,7 @@ public class LocalHttpTestBase {
         }
     }
 
-
-    public String streamToString(InputStream input) throws IOException {
+    String streamToString(InputStream input) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         stream(input, output);
         return output.toString();

@@ -32,11 +32,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
-public class DownloadTest extends LocalHttpTestBase {
+class DownloadTest extends LocalHttpTestBase {
 
     @Test
     @DisplayName("Test that download is successful using HTTP")
-    public void test_http_download() throws IOException {
+    void test_http_download() throws IOException {
 
         HttpURLConnection connection = open("/");
 

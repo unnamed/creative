@@ -25,7 +25,7 @@ package team.unnamed.creative.serialize.minecraft.fs;
 
 import java.io.File;
 
-public class DirectoryFileTreeReaderTest implements FileTreeReaderTest {
+class DirectoryFileTreeReaderTest implements FileTreeReaderTest {
 
     @Override
     public FileTreeReader createReader() {

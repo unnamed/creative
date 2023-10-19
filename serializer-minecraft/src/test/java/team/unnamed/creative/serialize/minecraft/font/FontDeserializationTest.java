@@ -24,7 +24,6 @@
 package team.unnamed.creative.serialize.minecraft.font;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.string.MultiLineStringExaminer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.font.BitMapFontProvider;
@@ -37,22 +36,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FontDeserializationTest {
+class FontDeserializationTest {
 
     @Test
     @DisplayName("Test deserialization of a Font with a single BitMap font provider")
-    public void test_deserialize_bitmap_font() throws IOException {
+    void test_deserialize_bitmap_font() throws IOException {
         Font font = FontSerializer.INSTANCE.deserializeFromJsonString(
                 "{" +
                         "\"providers\": [" +
-                            "{" +
-                                "\"type\": \"bitmap\"," +
-                                "\"file\": \"creative:test\"," +
-                                "\"ascent\": 8," +
-                                "\"chars\": [\"a\"]" +
-                            "}" +
+                        "{" +
+                        "\"type\": \"bitmap\"," +
+                        "\"file\": \"creative:test\"," +
+                        "\"ascent\": 8," +
+                        "\"chars\": [\"a\"]" +
+                        "}" +
                         "]" +
-                    "}",
+                        "}",
                 Font.MINECRAFT_DEFAULT
         );
 

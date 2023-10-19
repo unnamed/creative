@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft.metadata;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
 import team.unnamed.creative.metadata.overlays.OverlaysMeta;
@@ -33,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OverlaysMetaTest {
 
     @Test
+    @DisplayName("Test Overlays meta serialization")
     void test_simple_serialization() {
         final OverlaysMeta overlaysMeta = OverlaysMeta.of(
                 OverlayEntry.of(PackFormat.format(18), "v18"),
@@ -45,6 +47,7 @@ class OverlaysMetaTest {
     }
 
     @Test
+    @DisplayName("Test overlays meta serialization with custom pack format range")
     void test_range_serialization() {
         final OverlaysMeta overlaysMeta = OverlaysMeta.of(
                 OverlayEntry.of(PackFormat.format(18, 18, 20), "v18-20"),
@@ -57,6 +60,7 @@ class OverlaysMetaTest {
     }
 
     @Test
+    @DisplayName("Test simple overlays meta deserialization")
     void test_simple_deserialization() {
         final OverlaysMeta overlaysMeta = OverlaysMetaCodec.INSTANCE.fromJson("{\"entries\":[{\"formats\":18,\"directory\":\"v18\"},{\"formats\":19,\"directory\":\"v19\"}]}");
         assertEquals(
@@ -69,6 +73,7 @@ class OverlaysMetaTest {
     }
 
     @Test
+    @DisplayName("Test overlays meta deserialization with custom pack format range")
     void test_range_deserialization() {
         final OverlaysMeta overlaysMeta = OverlaysMetaCodec.INSTANCE.fromJson("{\"entries\":[{\"formats\":[18,20],\"directory\":\"v18-20\"},{\"formats\":[21,24],\"directory\":\"v21-24\"}]}");
         assertEquals(

@@ -24,6 +24,7 @@
 package team.unnamed.creative.serialize.minecraft.lang;
 
 import net.kyori.adventure.key.Key;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Readable;
 import team.unnamed.creative.lang.Language;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LanguageSerializationTest {
 
     @Test
+    @DisplayName("Test Language JSON Serialization")
     void test_serialize() throws Exception {
         Language language = Language.language()
                 .key(Key.key("minecraft", "en_us"))
@@ -48,6 +50,7 @@ class LanguageSerializationTest {
     }
 
     @Test
+    @DisplayName("Test Language JSON Deserialization from resources")
     void test_deserialization() throws Exception {
         Key key = Key.key("minecraft", "en_us");
         Language language = LanguageSerializer.INSTANCE.deserialize(
