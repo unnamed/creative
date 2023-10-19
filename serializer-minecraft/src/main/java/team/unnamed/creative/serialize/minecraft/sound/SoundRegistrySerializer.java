@@ -29,11 +29,11 @@ import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
+import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.sound.SoundEntry;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
-import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,10 +73,10 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
                     // we have to do this
                     if (sound.allDefault()) {
                         // everything is default, just write the name
-                        writer.value(Keys.toString(sound.key()));
+                        writer.value(KeySerializer.toString(sound.key()));
                     } else {
                         writer.beginObject()
-                                .name("name").value(Keys.toString(sound.key()));
+                                .name("name").value(KeySerializer.toString(sound.key()));
                         float volume = sound.volume();
                         if (volume != SoundEntry.DEFAULT_VOLUME) {
                             writer.name("volume").value(volume);

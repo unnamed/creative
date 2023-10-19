@@ -28,15 +28,21 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
-import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Vector2Float;
-import team.unnamed.creative.font.*;
+import team.unnamed.creative.font.BitMapFontProvider;
+import team.unnamed.creative.font.Font;
+import team.unnamed.creative.font.FontProvider;
+import team.unnamed.creative.font.LegacyUnicodeFontProvider;
+import team.unnamed.creative.font.ReferenceFontProvider;
+import team.unnamed.creative.font.SpaceFontProvider;
+import team.unnamed.creative.font.TrueTypeFontProvider;
+import team.unnamed.creative.font.UnihexFontProvider;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
-import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,7 +133,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
     private static void writeBitMap(JsonWriter writer, BitMapFontProvider provider) throws IOException {
         writer.beginObject()
                 .name("type").value("bitmap")
-                .name("file").value(Keys.toString(provider.file()));
+                .name("file").value(KeySerializer.toString(provider.file()));
 
         int height = provider.height();
         if (height != BitMapFontProvider.DEFAULT_HEIGHT) {
@@ -163,7 +169,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
     private static void writeLegacyUnicode(JsonWriter writer, LegacyUnicodeFontProvider provider) throws IOException {
         writer.beginObject()
                 .name("type").value("legacy_unicode")
-                .name("sizes").value(Keys.toString(provider.sizes()))
+                .name("sizes").value(KeySerializer.toString(provider.sizes()))
                 .name("template").value(provider.template())
                 .endObject();
     }
@@ -200,7 +206,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
     private static void writeUnihex(JsonWriter writer, UnihexFontProvider provider) throws IOException {
         writer.beginObject()
                 .name("type").value("unihex")
-                .name("hex_file").value(Keys.toString(provider.file()))
+                .name("hex_file").value(KeySerializer.toString(provider.file()))
                 .name("size_overrides").beginArray();
         for (UnihexFontProvider.SizeOverride sizeOverride : provider.sizes()) {
             writer.beginObject()
@@ -233,7 +239,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
     private static void writeTrueType(JsonWriter writer, TrueTypeFontProvider provider) throws IOException {
         writer.beginObject()
                 .name("type").value("ttf")
-                .name("file").value(Keys.toString(provider.file()));
+                .name("file").value(KeySerializer.toString(provider.file()));
 
         Vector2Float shift = provider.shift();
         if (!shift.equals(Vector2Float.ZERO)) {
@@ -309,7 +315,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
     private static void writeReference(JsonWriter writer, ReferenceFontProvider provider) throws IOException {
         writer.beginObject();
         writer.name("type").value("reference");
-        writer.name("id").value(Keys.toString(provider.id()));
+        writer.name("id").value(KeySerializer.toString(provider.id()));
         writer.endObject();
     }
 

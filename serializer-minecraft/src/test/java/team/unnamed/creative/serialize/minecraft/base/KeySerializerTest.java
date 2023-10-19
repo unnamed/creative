@@ -21,37 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.util;
+package team.unnamed.creative.serialize.minecraft.base;
 
 import net.kyori.adventure.key.Key;
-import org.intellij.lang.annotations.Subst;
-import org.jetbrains.annotations.ApiStatus;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.function.IntPredicate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ApiStatus.Internal
-public final class Keys {
+class KeySerializerTest {
 
-    // taken from KeyImpl (adventure-key)
-    private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
-
-    private Keys() {
+    @Test
+    @DisplayName("Test that keys with default namespace are compacted")
+    void test_default_namespace() {
+        assertEquals("test", KeySerializer.toString(Key.key("minecraft:test")));
+        assertEquals("test_no_namespace", KeySerializer.toString(Key.key("test_no_namespace")));
+        assertEquals("test_separate", KeySerializer.toString(Key.key("minecraft", "test_separate")));
+        assertEquals("test_constant", KeySerializer.toString(Key.key(Key.MINECRAFT_NAMESPACE, "test_constant")));
     }
 
-    public static void validateNamespace(
-            @Subst(Key.MINECRAFT_NAMESPACE) String namespace
-    ) {
-        Key.key(namespace, "dummy");
-    }
-
-    public static boolean isValidNamespace(String namespace) {
-        // taken from KeyImpl (adventure-key)
-        for (int i = 0, length = namespace.length(); i < length; i++) {
-            if (!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
+    @Test
+    @DisplayName("Test that keys without default namespace are not compacted")
+    void test_custom_namespace() {
+        assertEquals("creative:test", KeySerializer.toString(Key.key("creative:test")));
+        assertEquals("creative:test_separate", KeySerializer.toString(Key.key("creative", "test_separate")));
     }
 
 }

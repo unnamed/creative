@@ -21,30 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.util;
+package team.unnamed.creative.serialize.minecraft.base;
 
 import net.kyori.adventure.key.Key;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+@ApiStatus.Internal
+public final class KeySerializer {
 
-class KeyCompactionTest {
-
-    @Test
-    @DisplayName("Test that keys with default namespace are compacted")
-    void test_default_namespace() {
-        assertEquals("test", Keys.toString(Key.key("minecraft:test")));
-        assertEquals("test_no_namespace", Keys.toString(Key.key("test_no_namespace")));
-        assertEquals("test_separate", Keys.toString(Key.key("minecraft", "test_separate")));
-        assertEquals("test_constant", Keys.toString(Key.key(Key.MINECRAFT_NAMESPACE, "test_constant")));
+    private KeySerializer() {
+        throw new UnsupportedOperationException("Can't instantiate utility class");
     }
 
-    @Test
-    @DisplayName("Test that keys without default namespace are not compacted")
-    void test_custom_namespace() {
-        assertEquals("creative:test", Keys.toString(Key.key("creative:test")));
-        assertEquals("creative:test_separate", Keys.toString(Key.key("creative", "test_separate")));
+    public static @NotNull String toString(final @NotNull Key key) {
+        // very small resource-pack optimization, omits
+        // the "minecraft" namespace if key is using it
+        if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            return key.value();
+        } else {
+            return key.asString();
+        }
     }
 
 }

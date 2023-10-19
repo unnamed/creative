@@ -46,10 +46,10 @@ import team.unnamed.creative.model.ModelTextures;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.texture.TextureUV;
-import team.unnamed.creative.util.Keys;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         // parent
         Key parent = model.parent();
         if (parent != null) {
-            writer.name("parent").value(Keys.toString(parent));
+            writer.name("parent").value(KeySerializer.toString(parent));
         }
 
         // display
@@ -368,7 +368,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             }
         }
         writer.endObject()
-                .name("model").value(Keys.toString(override.model()))
+                .name("model").value(KeySerializer.toString(override.model()))
                 .endObject();
     }
 
@@ -469,7 +469,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         if (texture.reference() != null) {
             writer.value("#" + texture.reference());
         } else {
-            writer.value(Keys.toString(texture.key()));
+            writer.value(KeySerializer.toString(texture.key()));
         }
     }
 
