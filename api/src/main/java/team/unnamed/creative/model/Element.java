@@ -24,21 +24,15 @@
 package team.unnamed.creative.model;
 
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector3Float;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
-import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
 
 /**
  * Represents a {@link Model} cubic element,
@@ -47,193 +41,174 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  *
  * @since 1.0.0
  */
-public class Element implements Examinable {
-
-    public static final boolean DEFAULT_SHADE = true;
-
-    public static final float MIN_EXTENT = -16F;
-    public static final float MAX_EXTENT = 32F;
-
-    private final Vector3Float from;
-    private final Vector3Float to;
-    @Nullable private final ElementRotation rotation;
-    private final boolean shade;
-    @Unmodifiable private final Map<CubeFace, ElementFace> faces;
-
-    private Element(
-            Vector3Float from,
-            Vector3Float to,
-            @Nullable ElementRotation rotation,
-            boolean shade,
-            Map<CubeFace, ElementFace> faces
-    ) {
-        requireNonNull(from, "from");
-        requireNonNull(to, "to");
-        requireNonNull(faces, "faces");
-        this.from = from;
-        this.to = to;
-        this.rotation = rotation;
-        this.shade = shade;
-        this.faces = immutableMapOf(faces);
-        validate();
+public interface Element extends Examinable {
+    /**
+     * Creates a new {@link Element} builder
+     *
+     * @return The new builder
+     * @since 1.2.0
+     */
+    @Contract("-> new")
+    static @NotNull Builder element() {
+        return new ElementImpl.BuilderImpl();
     }
 
-    private void validateBound(float value, String axisName) {
-        if (value < MIN_EXTENT || value > MAX_EXTENT)
-            throw new IllegalArgumentException("Value at " + axisName + " axis (" + value + ") is out of bounds");
+    /**
+     * Creates a new {@link Element} builder
+     *
+     * @return The new builder
+     * @since 1.0.0
+     * @deprecated Use {@link #element()} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return element();
     }
 
-    private void validateBound(Vector3Float vec) {
-        validateBound(vec.x(), "X");
-        validateBound(vec.y(), "Y");
-        validateBound(vec.z(), "Z");
-    }
+    boolean DEFAULT_SHADE = true;
 
-    private void validate() {
-        validateBound(from);
-        validateBound(to);
-        if (faces.size() > 6)
-            throw new IllegalArgumentException("Invalid amount of faces (" + faces.size() + ")");
-    }
+    float MIN_EXTENT = -16F;
+    float MAX_EXTENT = 32F;
 
     /**
      * Returns the starting point of the
-     * element cuboid. Values must be
-     * between -16 and 32
+     * element cuboid.
      *
      * @return The cuboid origin
+     * @since 1.0.0
      */
-    public Vector3Float from() {
-        return from;
-    }
+    @NotNull Vector3Float from();
 
     /**
      * Returns the stop point of the element
-     * cuboid. Values must be between -16 and
-     * 32
+     * cuboid.
      *
      * @return The cuboid stop point
+     * @since 1.0.0
      */
-    public Vector3Float to() {
-        return to;
-    }
+    @NotNull Vector3Float to();
 
     /**
-     * Returns the element rotation in a single
-     * axis (it is not possible to use rotation
-     * in multiple axis)
+     * Gets the element rotation.
      *
      * @return The element rotation
+     * @since 1.0.0
      */
-    public ElementRotation rotation() {
-        return rotation;
-    }
+    @NotNull ElementRotation rotation();
 
     /**
      * Determines whether to render shadows
-     * or not for this element
+     * for this element or not
      *
      * @return True to render shadows
+     * @since 1.0.0
      */
-    public boolean shade() {
-        return shade;
-    }
+    boolean shade();
 
     /**
-     * Returns an unmodifiable map of the
-     * element faces specifications. If a
-     * face is left out, it does not render
+     * Returns an unmodifiable map of the element faces
+     * specifications.
+     *
+     * <p>If a face is left out, it does not render</p>
      *
      * @return The element faces
+     * @since 1.0.0
      */
-    public @Unmodifiable Map<CubeFace, ElementFace> faces() {
-        return faces;
-    }
+    @Unmodifiable @NotNull Map<CubeFace, ElementFace> faces();
 
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("from", from),
-                ExaminableProperty.of("to", to),
-                ExaminableProperty.of("rotation", rotation),
-                ExaminableProperty.of("shade", shade),
-                ExaminableProperty.of("faces", faces)
-        );
-    }
+    /**
+     * A builder for {@link Element} instances.
+     *
+     * @since 1.0.0
+     */
+    interface Builder {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Element element = (Element) o;
-        return from.equals(element.from)
-                && to.equals(element.to)
-                && Objects.equals(rotation, element.rotation)
-                && shade == element.shade
-                && faces.equals(element.faces);
-    }
+        /**
+         * Sets the starting point of the element cuboid.
+         *
+         * @param from The cuboid origin
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder from(final @NotNull Vector3Float from);
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(from, to, rotation, shade, faces);
-    }
+        /**
+         * Sets the stop point of the element cuboid.
+         *
+         * @param to The cuboid stop point
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder to(final @NotNull Vector3Float to);
 
-    public static Builder builder() {
-        return new Builder();
-    }
+        /**
+         * Sets the element rotation.
+         *
+         * @param rotation The element rotation
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder rotation(final @Nullable ElementRotation rotation);
 
-    public static class Builder {
+        /**
+         * Sets whether to render shadows for this element or not.
+         *
+         * @param shade True to render shadows
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder shade(final boolean shade);
 
-        private Vector3Float from;
-        private Vector3Float to;
-        private ElementRotation rotation = null;
-        private boolean shade = DEFAULT_SHADE;
-        private Map<CubeFace, ElementFace> faces;
+        /**
+         * Sets the element faces.
+         *
+         * @param faces The element faces
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder faces(final @NotNull Map<CubeFace, ElementFace> faces);
 
-        private Builder() {
+        /**
+         * Adds a face to the element.
+         *
+         * @param type Which face to add
+         * @param face The face data
+         * @return This builder
+         * @since 1.2.0
+         */
+        @NotNull Builder addFace(final @NotNull CubeFace type, final @NotNull ElementFace face);
+
+        /**
+         * Adds a face to the element.
+         *
+         * @param type Which face to add
+         * @param face The face data
+         * @return This builder
+         * @since 1.0.0
+         * @deprecated Use {@link #addFace(CubeFace, ElementFace)} instead
+         */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+        @Contract("_, _ -> this")
+        default @NotNull Builder face(final @NotNull CubeFace type, final @NotNull ElementFace face) {
+            return addFace(type, face);
         }
 
-        public Builder from(Vector3Float from) {
-            this.from = requireNonNull(from, "from");
-            return this;
-        }
-
-        public Builder to(Vector3Float to) {
-            this.to = requireNonNull(to, "to");
-            return this;
-        }
-
-        public Builder rotation(@Nullable ElementRotation rotation) {
-            this.rotation = rotation;
-            return this;
-        }
-
-        public Builder shade(boolean shade) {
-            this.shade = shade;
-            return this;
-        }
-
-        public Builder faces(Map<CubeFace, ElementFace> faces) {
-            this.faces = requireNonNull(faces, "faces");
-            return this;
-        }
-
-        public Builder face(CubeFace type, ElementFace face) {
-            requireNonNull(type, "type");
-            requireNonNull(face, "face");
-            if (this.faces == null) {
-                this.faces = new HashMap<>();
-            }
-            this.faces.put(type, face);
-            return this;
-        }
-
-        public Element build() {
-            if (this.faces == null) {
-                this.faces = Collections.emptyMap();
-            }
-            return new Element(from, to, rotation, shade, faces);
-        }
+        /**
+         * Builds the element.
+         *
+         * @return The new element
+         * @since 1.0.0
+         */
+        @Contract("-> new")
+        @NotNull Element build();
 
     }
 

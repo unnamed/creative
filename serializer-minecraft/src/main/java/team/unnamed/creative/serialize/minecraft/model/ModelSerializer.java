@@ -311,7 +311,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             );
         }
 
-        return Element.builder()
+        return Element.element()
                 .from(GsonUtil.readVector3Float(objectNode.get("from")))
                 .to(GsonUtil.readVector3Float(objectNode.get("to")))
                 .rotation(rotation)

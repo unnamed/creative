@@ -58,7 +58,7 @@ class ModelDeserializationTest {
                                 .particle(ModelTexture.ofReference("cross"))
                                 .build())
                         .elements(
-                                Element.builder()
+                                Element.element()
                                         .from(new Vector3Float(0.8f, 0.0f, 8.0f))
                                         .to(new Vector3Float(15.2f, 16.0f, 8.0f))
                                         .rotation(
@@ -87,7 +87,7 @@ class ModelDeserializationTest {
                                             ));
                                         }})
                                         .build(),
-                                Element.builder()
+                                Element.element()
                                         .from(new Vector3Float(8.0f, 0.0f, 0.8f))
                                         .to(new Vector3Float(8.0f, 16.0f, 15.2f))
                                         .rotation(
