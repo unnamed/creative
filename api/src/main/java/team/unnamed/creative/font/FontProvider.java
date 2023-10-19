@@ -25,6 +25,8 @@ package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -33,28 +35,23 @@ import java.util.Map;
  * Represents a Minecraft Resource Pack Font provider,
  * a part of a {@link Font}
  *
- * @since 1.0.0
  * @see Font
+ * @since 1.0.0
  */
 public interface FontProvider extends Examinable {
-
     /**
      * Creates a new bit-map font from the provided values
      *
-     * @param file The bit-map texture location in PNG format
-     * @param height The characters height
-     * @param ascent The characters ascent
+     * @param file       The bit-map texture location in PNG format
+     * @param height     The characters height
+     * @param ascent     The characters ascent
      * @param characters The characters string
      * @return A new bit-map font
      * @since 1.0.0
      */
-    static BitMapFontProvider bitMap(
-            Key file,
-            int height,
-            int ascent,
-            List<String> characters
-    ) {
-        return new BitMapFontProvider(file, height, ascent, characters);
+    @Contract("_, _, _, _ -> new")
+    static @NotNull BitMapFontProvider bitMap(final @NotNull Key file, final int height, final int ascent, final @NotNull List<String> characters) {
+        return new BitMapFontProviderImpl(file, height, ascent, characters);
     }
 
     /**
@@ -64,8 +61,9 @@ public interface FontProvider extends Examinable {
      * @return A new builder for {@link BitMapFontProvider} instances
      * @since 1.0.0
      */
+    @Contract("-> new")
     static BitMapFontProvider.Builder bitMap() {
-        return new BitMapFontProvider.Builder();
+        return new BitMapFontProviderImpl.BuilderImpl();
     }
 
     /**
@@ -75,8 +73,8 @@ public interface FontProvider extends Examinable {
      * is only prioritized when the "Force Unicode Font" option
      * is turned on
      *
-     * @param sizes Location to the file that specifies the
-     *              character sizes
+     * @param sizes    Location to the file that specifies the
+     *                 character sizes
      * @param template Location of the file that specifies
      *                 the character textures, it is a string
      *                 template and MUST contain a single '%s'
@@ -95,6 +93,7 @@ public interface FontProvider extends Examinable {
      * This font provider consists of a map of codepoints (characters) and integers (how many pixels to shift by)
      * If a character is used in a space font provider, it is not rendered, and is instead used as spacing.
      * You can not shift vertically with this font provider, for vertical offsets use {@link BitMapFontProvider}
+     *
      * @return the newly created builder
      * @sincePackFormat 9
      */
@@ -133,8 +132,8 @@ public interface FontProvider extends Examinable {
      *
      * @param id The referred provider
      * @return A new instance of {@link ReferenceFontProvider}
-     * @since 1.0.0
      * @sincePackFormat 15
+     * @since 1.0.0
      */
     static ReferenceFontProvider reference(Key id) {
         return ReferenceFontProvider.of(id);
@@ -143,11 +142,11 @@ public interface FontProvider extends Examinable {
     /**
      * Creates a new instance of {@link UnihexFontProvider}
      *
-     * @param file The zip file containing the HEX files
+     * @param file  The zip file containing the HEX files
      * @param sizes The size overrides
      * @return A new font provider instance
-     * @since 1.0.0
      * @sincePackFormat 15
+     * @since 1.0.0
      */
     static UnihexFontProvider unihex(Key file, List<UnihexFontProvider.SizeOverride> sizes) {
         return new UnihexFontProvider(file, sizes);
@@ -158,8 +157,8 @@ public interface FontProvider extends Examinable {
      * instances
      *
      * @return A new builder instance
-     * @since 1.0.0
      * @sincePackFormat 15
+     * @since 1.0.0
      */
     static UnihexFontProvider.Builder unihex() {
         return new UnihexFontProvider.Builder();

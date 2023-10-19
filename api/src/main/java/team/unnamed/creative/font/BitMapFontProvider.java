@@ -24,19 +24,15 @@
 package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
  * Represents a bitmap font (font that uses a set of
@@ -45,61 +41,33 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class BitMapFontProvider implements FontProvider {
+@ApiStatus.NonExtendable
+public interface BitMapFontProvider extends FontProvider {
 
     /**
      * Default bitmap font height
      */
-    public static final int DEFAULT_HEIGHT = 8;
-
-    private final Key file;
-    private final int height;
-    private final int ascent;
-    @Unmodifiable private final List<String> characters;
-
-    protected BitMapFontProvider(
-            Key file,
-            int height,
-            int ascent,
-            List<String> characters
-    ) {
-        requireNonNull(file, "file");
-        requireNonNull(characters, "characters");
-        this.file = file;
-        this.height = height;
-        this.ascent = ascent;
-        this.characters = immutableListOf(characters);
-        validate();
-    }
-
-    private void validate() {
-        if (ascent > height)
-            throw new IllegalArgumentException("Ascent (" + ascent + ") is higher than height (" + height + ")");
-        if (characters.isEmpty())
-            throw new IllegalArgumentException("Character list is empty");
-
-        String sample = characters.get(0);
-        int codePointCount = sample.codePointCount(0, sample.length());
-        for (String character : characters) {
-            requireNonNull(character, "An element from the character list is null");
-            if (character.codePointCount(0, character.length()) != codePointCount)
-                throw new IllegalArgumentException("Elements of character list must have the same codepoint count");
-        }
-    }
+    int DEFAULT_HEIGHT = 8;
 
     /**
      * Returns the texture location of this
      * bitmap font, must be a PNG image
      *
      * @return The font texture
+     * @since 1.0.0
      */
-    public Key file() {
-        return file;
-    }
+    @NotNull Key file();
 
-    public BitMapFontProvider file(Key newFile) {
-        return new BitMapFontProvider(newFile, height, ascent, characters);
-    }
+    /**
+     * Returns a new bitmap font with the given
+     * texture location
+     *
+     * @param file The new texture location
+     * @return A new bitmap font
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    @NotNull BitMapFontProvider file(final @NotNull Key file);
 
     /**
      * Returns the height of the character, measured in pixels.
@@ -108,14 +76,20 @@ public class BitMapFontProvider implements FontProvider {
      * result
      *
      * @return The font characters height
+     * @since 1.0.0
      */
-    public int height() {
-        return height;
-    }
+    int height();
 
-    public BitMapFontProvider height(int newHeight) {
-        return new BitMapFontProvider(file, newHeight, ascent, characters);
-    }
+    /**
+     * Returns a new bitmap font with the given
+     * height
+     *
+     * @param height The new height
+     * @return A new bitmap font
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    @NotNull BitMapFontProvider height(final int height);
 
     /**
      * Returns the font characters ascent, measured in
@@ -123,14 +97,20 @@ public class BitMapFontProvider implements FontProvider {
      * result
      *
      * @return The font characters ascent
+     * @since 1.0.0
      */
-    public int ascent() {
-        return ascent;
-    }
+    int ascent();
 
-    public BitMapFontProvider ascent(int newAscent) {
-        return new BitMapFontProvider(file, height, newAscent, characters);
-    }
+    /**
+     * Returns a new bitmap font with the given
+     * ascent
+     *
+     * @param ascent The new ascent
+     * @return A new bitmap font
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    @NotNull BitMapFontProvider ascent(final int ascent);
 
     /**
      * Returns a list of strings containing the characters replaced by
@@ -141,52 +121,36 @@ public class BitMapFontProvider implements FontProvider {
      * within one list element.
      *
      * @return The font characters
+     * @since 1.0.0
      */
-    public @Unmodifiable List<String> characters() {
-        return characters;
-    }
+    @Unmodifiable @NotNull List<String> characters();
 
-    public BitMapFontProvider characters(List<String> newCharacters) {
-        return new BitMapFontProvider(file, height, ascent, newCharacters);
-    }
+    /**
+     * Returns a new bitmap font with the given
+     * characters
+     *
+     * @param characters The new characters
+     * @return A new bitmap font
+     * @since 1.0.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    @NotNull BitMapFontProvider characters(final @NotNull List<String> characters);
 
-    public BitMapFontProvider.Builder toBuilder() {
+    /**
+     * Converts this {@link BitMapFontProvider} instance
+     * to a {@link BitMapFontProvider.Builder} instance
+     * with the same values as this font provider.
+     *
+     * @return A new builder with the same values as this font provider
+     * @since 1.0.0
+     */
+    @Contract("-> new")
+    default @NotNull BitMapFontProvider.Builder toBuilder() {
         return FontProvider.bitMap()
-                .file(file)
-                .height(height)
-                .ascent(ascent)
-                .characters(characters);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("height", height),
-                ExaminableProperty.of("ascent", ascent),
-                ExaminableProperty.of("file", file),
-                ExaminableProperty.of("chars", characters)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BitMapFontProvider that = (BitMapFontProvider) o;
-        return height == that.height
-                && ascent == that.ascent
-                && file.equals(that.file)
-                && characters.equals(that.characters);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(file, height, ascent, characters);
+                .file(file())
+                .height(height())
+                .ascent(ascent())
+                .characters(characters());
     }
 
     /**
@@ -195,53 +159,67 @@ public class BitMapFontProvider implements FontProvider {
      *
      * @since 1.0.0
      */
-    public static class Builder {
+    interface Builder {
+        /**
+         * Sets the font texture location
+         *
+         * @param file The font texture location
+         * @return This builder instance
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder file(final @NotNull Key file);
 
-        private int height = DEFAULT_HEIGHT;
-        private int ascent;
-        private Key file;
-        private List<String> characters = Collections.emptyList();
+        /**
+         * Sets the font height
+         *
+         * @param height The font height
+         * @return This builder instance
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder height(final int height);
 
-        protected Builder() {
-        }
+        /**
+         * Sets the font ascent
+         *
+         * @param ascent The font ascent
+         * @return This builder instance
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder ascent(final int ascent);
 
-        public Builder height(int height) {
-            this.height = height;
-            return this;
-        }
+        /**
+         * Sets the font characters
+         *
+         * @param characters The font characters
+         * @return This builder instance
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder characters(final @NotNull List<String> characters);
 
-        public Builder ascent(int ascent) {
-            this.ascent = ascent;
-            return this;
-        }
-
-        public Builder file(Key file) {
-            this.file = requireNonNull(file, "file");
-            return this;
-        }
-
-        public Builder characters(List<String> characters) {
-            this.characters = requireNonNull(characters, "characters");
-            return this;
-        }
-
-        public Builder characters(String... characters) {
+        /**
+         * Sets the font characters
+         *
+         * @param characters The font characters
+         * @return This builder instance
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder characters(final @NotNull String @NotNull ... characters) {
             requireNonNull(characters, "characters");
-            this.characters = Arrays.asList(characters);
-            return this;
+            return characters(Arrays.asList(characters));
         }
 
         /**
-         * Finishes building the {@link BitMapFontProvider} instance,
-         * this method may fail if values were not correctly
-         * provided
+         * Builds a new {@link BitMapFontProvider} instance.
          *
-         * @return The recently created font
+         * @return A new {@link BitMapFontProvider} instance
+         * @since 1.0.0
          */
-        public BitMapFontProvider build() {
-            return new BitMapFontProvider(file, height, ascent, characters);
-        }
-
+        @Contract("-> new")
+        @NotNull BitMapFontProvider build();
     }
-
 }
