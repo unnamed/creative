@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
+import team.unnamed.creative.metadata.gui.GuiMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackMeta;
@@ -150,6 +151,10 @@ public class Metadata implements Examinable {
 
         public Builder add(FilterMeta meta) {
             return add(FilterMeta.class, meta);
+        }
+
+        public Builder add(GuiMeta meta) {
+            return add(GuiMeta.class, meta);
         }
 
         /**

@@ -32,6 +32,9 @@ import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.animation.AnimationFrame;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
+import team.unnamed.creative.metadata.gui.GuiBorderImpl;
+import team.unnamed.creative.metadata.gui.GuiMeta;
+import team.unnamed.creative.metadata.gui.GuiScaling;
 import team.unnamed.creative.metadata.language.LanguageEntry;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
@@ -77,6 +80,10 @@ class MetadataTest {
                                         AnimationFrame.of(1, 10)
                                 )
                                 .build())
+                        .add(GuiMeta.builder().scaling(GuiScaling.of(
+                                GuiScaling.ScalingType.NINE_SLICE,
+                                200, 10, GuiBorderImpl.of(1, 2, 3, 4)
+                        )).build())
                         .build(),
                 metadata
         );
