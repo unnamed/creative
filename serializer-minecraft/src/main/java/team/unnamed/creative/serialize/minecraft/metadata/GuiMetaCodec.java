@@ -33,7 +33,6 @@ import team.unnamed.creative.metadata.gui.GuiScaling;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
-import java.util.Locale;
 
 final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
 

@@ -24,84 +24,23 @@
 package team.unnamed.creative.metadata.gui;
 
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.stream.Stream;
+public interface GuiScaling extends Examinable {
 
-public class GuiScaling implements Examinable {
+    ScalingType type();
+    int width();
+    int height();
+    GuiBorder border();
 
-    public static final ScalingType DEFAULT_TYPE = ScalingType.STRETCH;
-
-    private final ScalingType type;
-    private final int width;
-    private final int height;
-    private final GuiBorder border;
-
-    private GuiScaling(ScalingType type, int width, int height, GuiBorder border) {
-        this.type = type;
-        this.width = width;
-        this.height = height;
-        this.border = border;
+    static GuiScaling of(ScalingType type, int width, int height, GuiBorder border) {
+        return new GuiScalingImpl(type, width, height, border);
     }
 
-    public ScalingType type() {
-        return type;
+    static GuiScaling of(ScalingType type, int width, int height, int border) {
+        return new GuiScalingImpl(type, width, height, GuiBorder.of(border, border, border, border));
     }
 
-    public int width() {
-        return width;
-    }
-
-    public int height() {
-        return height;
-    }
-
-    public GuiBorder border() {
-        return border;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("type", type),
-                ExaminableProperty.of("width", width),
-                ExaminableProperty.of("height", height),
-                ExaminableProperty.of("border", border)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GuiScaling scaling = (GuiScaling) o;
-        return width == scaling.width &&
-                height == scaling.height &&
-                type == scaling.type &&
-                border == scaling.border;
-    }
-
-    @Override
-    public int hashCode() {
-        return type.hashCode() + width + height + border.hashCode();
-    }
-
-    public static GuiScaling of(ScalingType type, int width, int height, GuiBorder border) {
-        return new GuiScaling(type, width, height, border);
-    }
-
-    public static GuiScaling of(ScalingType type, int width, int height, int border) {
-        return new GuiScaling(type, width, height, GuiBorder.of(border, border, border, border));
-    }
-
-    public enum ScalingType {
+    enum ScalingType {
         STRETCH, TILE, NINE_SLICE
     }
 }

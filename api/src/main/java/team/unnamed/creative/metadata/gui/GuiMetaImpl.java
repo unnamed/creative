@@ -23,49 +23,50 @@
  */
 package team.unnamed.creative.metadata.gui;
 
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.metadata.MetadataPart;
+import org.jetbrains.annotations.Unmodifiable;
 
-/**
- * Represents meta-data applicable to gui-elements
- *
- * @since 1.2.0
- * @sinceMinecraft 1.20.2
- * @sincePackFormat 18
- */
-public interface GuiMeta extends MetadataPart {
+import java.util.Objects;
+import java.util.stream.Stream;
 
-    GuiScaling scaling();
+import static java.util.Objects.requireNonNull;
 
-    /**
-     * Creates a new {@link GuiMeta} instance
-     * from the given values
-     *
-     * @param scaling Scaling instance
-     * @return A new instance of {@link GuiMeta}
-     * @since 1.0.0
-     */
-    static @NotNull GuiMeta of(GuiScaling scaling) {
-        return new GuiMetaImpl(scaling);
+final class GuiMetaImpl implements GuiMeta {
+    @Unmodifiable private final GuiScaling scaling;
+
+    GuiMetaImpl(GuiScaling scaling) {
+        requireNonNull(scaling, "scaling");
+        this.scaling = scaling;
     }
 
-    static @NotNull GuiMeta.Builder builder() {
-        return new GuiMeta.Builder();
+    public GuiScaling scaling() {
+        return scaling;
     }
 
-    class Builder {
-        private GuiScaling scaling;
-
-        private Builder() {
-        }
-
-        public Builder scaling(GuiScaling scaling) {
-            this.scaling = scaling;
-            return this;
-        }
-
-        public GuiMeta build() {
-            return new GuiMetaImpl(scaling);
-        }
+    @Override
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(ExaminableProperty.of("scaling", scaling));
     }
+
+    @Override
+    public String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GuiMetaImpl that = (GuiMetaImpl) o;
+        return Objects.equals(scaling, that.scaling);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(scaling);
+    }
+
+
 }
