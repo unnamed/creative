@@ -61,6 +61,15 @@ public final class GsonUtil {
         }
     }
 
+    public static boolean isInt(JsonObject object, String key) {
+        if (!object.has(key)) {
+            // no value, return default
+            return false;
+        }
+        JsonElement element = object.get(key);
+        return element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber();
+    }
+
     public static int getInt(JsonObject object, String key, int def) {
         if (!object.has(key)) {
             // no value, return default
