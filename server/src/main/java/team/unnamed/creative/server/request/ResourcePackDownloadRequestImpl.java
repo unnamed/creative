@@ -21,13 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.server;
+package team.unnamed.creative.server.request;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -35,25 +34,19 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * @deprecated Use {@link team.unnamed.creative.server.request.ResourcePackDownloadRequest} instead
- */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-public final class ResourcePackRequest implements ResourcePackDownloadRequest {
-
+final class ResourcePackDownloadRequestImpl implements ResourcePackDownloadRequest {
     private final UUID uuid;
     private final String username;
     private final String clientVersion;
     private final String clientVersionId;
     private final int packFormat;
 
-    public ResourcePackRequest(
-            UUID uuid,
-            String username,
-            String clientVersion,
-            String clientVersionId,
-            int packFormat
+    ResourcePackDownloadRequestImpl(
+            final @NotNull UUID uuid,
+            final @NotNull String username,
+            final @NotNull String clientVersion,
+            final @NotNull String clientVersionId,
+            final int packFormat
     ) {
         this.uuid = requireNonNull(uuid, "uuid");
         this.username = requireNonNull(username, "username");
@@ -62,67 +55,28 @@ public final class ResourcePackRequest implements ResourcePackDownloadRequest {
         this.packFormat = packFormat;
     }
 
-    /**
-     * Returns the uuid of the requester player,
-     * provided by the {@code X-Minecraft-UUID}
-     * HTTP header sent by the client
-     *
-     * @return The requester player UUID
-     */
     @Override
     public @NotNull UUID uuid() {
         return uuid;
     }
 
-    /**
-     * Returns the requester player's username,
-     * provided by the {@code X-Minecraft-Username}
-     * HTTP header sent by the client
-     *
-     * @return The requester player username
-     */
     @Override
     public @NotNull String username() {
         return username;
     }
 
-    /**
-     * Returns the requester player's client version
-     * name, e.g. "1.18.1", provided by the
-     * {@code X-Minecraft-Client-Version} HTTP header
-     * sent by the client
-     *
-     * @return The requester client version name
-     */
     @Override
     public @NotNull String clientVersion() {
         return clientVersion;
     }
 
-    /**
-     * Returns the requester player's client version
-     * id, e.g. "1.18.1", provided by the
-     * {@code X-Minecraft-Client-Version-Id} HTTP
-     * header sent by the client, not to be confused
-     * with {@link ResourcePackRequest#clientVersion()}
-     *
-     * @return The requester client version id
-     */
     @Override
     public @NotNull String clientVersionId() {
         return clientVersionId;
     }
 
-    /**
-     * Returns the expected resource pack format
-     * for the requester player's client, provided
-     * by the {@code X-Minecraft-Pack-Format} HTTP
-     * header sent by the client
-     *
-     * @return The expected pack format version
-     */
     @Override
-    public @NotNull int packFormat() {
+    public int packFormat() {
         return packFormat;
     }
 
@@ -138,15 +92,15 @@ public final class ResourcePackRequest implements ResourcePackDownloadRequest {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ResourcePackRequest that = (ResourcePackRequest) o;
+        final ResourcePackDownloadRequestImpl that = (ResourcePackDownloadRequestImpl) o;
         return packFormat == that.packFormat
                 && uuid.equals(that.uuid)
                 && username.equals(that.username)
@@ -158,5 +112,4 @@ public final class ResourcePackRequest implements ResourcePackDownloadRequest {
     public int hashCode() {
         return Objects.hash(uuid, username, clientVersion, clientVersionId, packFormat);
     }
-
 }
