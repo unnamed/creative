@@ -26,6 +26,7 @@ package team.unnamed.creative.server;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -34,6 +35,8 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
 public final class ResourcePackRequest implements Examinable {
 
     private final UUID uuid;
