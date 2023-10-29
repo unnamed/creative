@@ -220,7 +220,7 @@ public interface Metadata extends Examinable {
          * @since 1.2.0
          */
         @Contract("_ -> this")
-        public @NotNull Builder add(final @NotNull GuiMeta meta) {
+        default @NotNull Builder add(final @NotNull GuiMeta meta) {
             return add(GuiMeta.class, meta);
         }
 
