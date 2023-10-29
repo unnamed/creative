@@ -10,7 +10,7 @@ We can replace this behavior by specifying a custom resource-pack request handle
 
 <!--@formatter:off-->
 ```java
-ResourcePackServer server = ResourcePackServer.builder()
+ResourcePackServer server = ResourcePackServer.server()
         .address("127.0.0.1", 7270)
         .handler(handler) // <-- Here, see below
         // ...
@@ -21,9 +21,16 @@ ResourcePackServer server = ResourcePackServer.builder()
 ### Handler
 
 A handler is a `ResourcePackRequestHandler` implementation, it receives a
-parsed `ResourcePackRequest` which contains the player uuid, username, client
-version, and pack format. It also receives an `HttpExchange` used to set
-the response information
+*(nullable)* `ResourcePackDownloadRequest` which contains the player uuid, username,
+client version, and pack format. It also receives an `HttpExchange` used to set the
+response information
+
+The received `ResourcePackDownloadRequest` is null when the server couldn't
+parse the received information from the request. `null` indicates that
+the request was not made from a vanilla Minecraft client.
+
+Please also note that the information may be spoofed, and may not be
+actually sent by the client.
 
 Example:
 
@@ -40,7 +47,14 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
     // - request.clientVersionId()
     // - request.packFormat()
         
-    int expectedPackFormat = request.packFormat();
+    int expectedPackFormat;
+    if (request == null) {
+        // no information provided, fall back to 9
+        expectedPackFormat = 9;
+    } else {
+        expectedPackFormat = request.packFormat();
+    }
+    
     BuiltResourcePack pack;
     
     if (expectedPackFormat == 9) {
@@ -49,7 +63,8 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
         pack = pack8;
     } else {
         // no pack with this format :(
-        byte[] response = "No pack for u".getBytes(StandardCharsets.UTF_8);
+        byte[] response = "No pack for u\n".getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", "text/plain");
         exchange.sendResponseHeaders(400, response.length);
         try (OutputStream responseStream = exchange.getResponseBody()) {
             responseStream.write(response);
@@ -64,36 +79,6 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
     try (OutputStream responseStream = exchange.getResponseBody()) {
         responseStream.write(data);
     }
-};
-```
-<!--@formatter:on-->
-
-### Invalid Requests
-
-Invalid requests are those that do not have the information that the
-vanilla Minecraft client sends, we can handle them by overriding the
-`onInvalidRequest` method
-
-In the example above we did not override the `onInvalidRequest` method,
-so the behavior is defaulted (a 'Please use a Minecraft client' message
-is shown)
-
-<!--@formatter:off-->
-```java
-ResourcePackRequestHandler handler = new ResourcePackRequestHandler() {
-    
-    @Override
-    public void onRequest(ResourcePackRequest request, HttpExchange exchange) throws IOException {
-        // handle valid request
-    }
-    
-    @Override
-    public void onInvalidRequest(HttpExchange exchange) throws IOException {
-        // handle invalid request
-        // we can return resource-packs here too!
-        // we just do not have the 'request' information available
-    }
-    
 };
 ```
 <!--@formatter:on-->

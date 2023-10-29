@@ -8,7 +8,7 @@ Example:
 
 <!--@formatter:off-->
 ```java
-ResourcePackServer server = ResourcePackServer.builder()
+ResourcePackServer server = ResourcePackServer.server()
         .address("127.0.0.1", 7270) // (required) address and port
         .pack(ResourcePack) // (required) pack to serve
         .secure(...) // (optional) SSL/TLS configuration
