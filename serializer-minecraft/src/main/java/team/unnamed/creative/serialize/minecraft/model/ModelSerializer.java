@@ -355,7 +355,9 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             // match the type of the value and write it
             if (value instanceof Long) {
                 writer.value((long) value);
-            } else if (value instanceof Float || value instanceof Double) {
+            } else if (value instanceof Float) {
+                writer.value((float) value);
+            } else if (value instanceof Double) {
                 writer.value((double) value);
             } else if (value instanceof Number) {
                 writer.value((Number) value);
