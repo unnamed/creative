@@ -94,6 +94,6 @@ public interface GuiScaling extends Examinable {
      * @since 1.2.0
      */
     static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final int border) {
-        return new NineSliceGuiScalingImpl(width, height, GuiBorder.border(border, border, border, border));
+        return new NineSliceGuiScalingImpl(width, height, GuiBorder.border(border));
     }
 }
