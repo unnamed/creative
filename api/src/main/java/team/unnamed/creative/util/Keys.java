@@ -54,14 +54,4 @@ public final class Keys {
         return true;
     }
 
-    public static String toString(Key key) {
-        // very small resource-pack optimization, omits
-        // the "minecraft" namespace if key is using it
-        if (key.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
-            return key.value();
-        } else {
-            return key.asString();
-        }
-    }
-
 }

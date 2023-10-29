@@ -34,10 +34,10 @@ import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
-import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.ResourceCategory;
-import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -149,7 +149,7 @@ public final class BlockStateSerializer implements JsonResourceSerializer<BlockS
     private static void writeVariant(JsonWriter writer, Variant variant) throws IOException {
         writer
                 .beginObject()
-                .name("model").value(Keys.toString(variant.model()));
+                .name("model").value(KeySerializer.toString(variant.model()));
         int x = variant.x();
         if (x != Variant.DEFAULT_X_ROTATION) {
             writer.name("x").value(x);

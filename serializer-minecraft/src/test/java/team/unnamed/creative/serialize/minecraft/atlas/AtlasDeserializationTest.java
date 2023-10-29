@@ -24,7 +24,6 @@
 package team.unnamed.creative.serialize.minecraft.atlas;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.string.MultiLineStringExaminer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.atlas.Atlas;
@@ -38,11 +37,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AtlasDeserializationTest {
+class AtlasDeserializationTest {
 
     @Test
     @DisplayName("Test deserializing blocks.json atlas from Minecraft 1.19.3")
-    public void test_blocks_atlas_deserialization() throws IOException {
+    void test_blocks_atlas_deserialization() throws IOException {
         Atlas atlas;
         try (InputStream input = AtlasDeserializationTest.class.getClassLoader().getResourceAsStream("atlas/blocks.json")) {
             atlas = AtlasSerializer.INSTANCE.deserialize(input, Key.key("minecraft:blocks"));

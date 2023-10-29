@@ -38,7 +38,7 @@ import team.unnamed.creative.atlas.UnstitchAtlasSource;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.serialize.minecraft.base.KeyPatternSerializer;
-import team.unnamed.creative.util.Keys;
+import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,9 +102,9 @@ final class AtlasSourceSerializer {
             Key resource = singleSource.resource();
             @Nullable Key sprite = singleSource.sprite();
             writer.name(TYPE_FIELD).value(SINGLE_TYPE)
-                    .name("resource").value(Keys.toString(resource));
+                    .name("resource").value(KeySerializer.toString(resource));
             if (sprite != null && !sprite.equals(resource)) {
-                writer.name("sprite").value(Keys.toString(sprite));
+                writer.name("sprite").value(KeySerializer.toString(sprite));
             }
         } else if (source instanceof DirectoryAtlasSource) {
             DirectoryAtlasSource dirSource = (DirectoryAtlasSource) source;
@@ -122,7 +122,7 @@ final class AtlasSourceSerializer {
             UnstitchAtlasSource unstitchSource = (UnstitchAtlasSource) source;
             writer
                     .name(TYPE_FIELD).value(UNSTITCH_TYPE)
-                    .name("resource").value(Keys.toString(unstitchSource.resource()));
+                    .name("resource").value(KeySerializer.toString(unstitchSource.resource()));
             double divisorX = unstitchSource.divisor().x();
             if (divisorX != UnstitchAtlasSource.DEFAULT_DIVISOR.x()) {
                 writer.name("divisor_x").value(divisorX);
@@ -134,7 +134,7 @@ final class AtlasSourceSerializer {
             writer.name("regions").beginArray();
             for (UnstitchAtlasSource.Region region : unstitchSource.regions()) {
                 writer.beginObject()
-                        .name("sprite").value(Keys.toString(region.sprite()))
+                        .name("sprite").value(KeySerializer.toString(region.sprite()))
                         .name("x").value(region.position().x())
                         .name("y").value(region.position().y())
                         .name("width").value(region.dimensions().x())
@@ -148,13 +148,13 @@ final class AtlasSourceSerializer {
                     .name(TYPE_FIELD).value(PALETTED_PERMUTATIONS_TYPE)
                     .name("textures").beginArray();
             for (Key texture : ppSource.textures()) {
-                writer.value(Keys.toString(texture));
+                writer.value(KeySerializer.toString(texture));
             }
             writer.endArray();
-            writer.name("palette_key").value(Keys.toString(ppSource.paletteKey()));
+            writer.name("palette_key").value(KeySerializer.toString(ppSource.paletteKey()));
             writer.name("permutations").beginObject();
             for (Map.Entry<String, Key> entry : ppSource.permutations().entrySet()) {
-                writer.name(entry.getKey()).value(Keys.toString(entry.getValue()));
+                writer.name(entry.getKey()).value(KeySerializer.toString(entry.getValue()));
             }
             writer.endObject();
         } else {

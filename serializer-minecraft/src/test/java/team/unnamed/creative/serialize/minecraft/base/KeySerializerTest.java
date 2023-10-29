@@ -21,15 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.fs;
+package team.unnamed.creative.serialize.minecraft.base;
 
-import java.io.File;
+import net.kyori.adventure.key.Key;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-class DirectoryFileTreeReaderTest implements FileTreeReaderTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @Override
-    public FileTreeReader createReader() {
-        return FileTreeReader.directory(new File("src/test/resources/folder"));
+class KeySerializerTest {
+
+    @Test
+    @DisplayName("Test that keys with default namespace are compacted")
+    void test_default_namespace() {
+        assertEquals("test", KeySerializer.toString(Key.key("minecraft:test")));
+        assertEquals("test_no_namespace", KeySerializer.toString(Key.key("test_no_namespace")));
+        assertEquals("test_separate", KeySerializer.toString(Key.key("minecraft", "test_separate")));
+        assertEquals("test_constant", KeySerializer.toString(Key.key(Key.MINECRAFT_NAMESPACE, "test_constant")));
+    }
+
+    @Test
+    @DisplayName("Test that keys without default namespace are not compacted")
+    void test_custom_namespace() {
+        assertEquals("creative:test", KeySerializer.toString(Key.key("creative:test")));
+        assertEquals("creative:test_separate", KeySerializer.toString(Key.key("creative", "test_separate")));
     }
 
 }

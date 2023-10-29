@@ -26,6 +26,7 @@ package team.unnamed.creative.serialize.minecraft.metadata;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.metadata.Metadata;
@@ -47,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MetadataTest {
 
     @Test
+    @DisplayName("Test Metadata deserialization from resources")
     void test_deserialization() throws Exception {
         Metadata metadata;
         try (JsonReader reader = new JsonReader(new InputStreamReader(MetadataTest.class.getClassLoader().getResourceAsStream("metadata/pack.mcmeta")))) {

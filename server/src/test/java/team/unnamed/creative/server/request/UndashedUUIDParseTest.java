@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.server;
+package team.unnamed.creative.server.request;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -32,11 +32,11 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UndashedUUIDParseTest {
+class UndashedUUIDParseTest {
 
     @Test
     @DisplayName("Test the correct functionality of undashed uuid parsing")
-    public void test_success() {
+    void test_success() {
 
         assertEquals(
                 UUID.fromString("845ea5cc-6823-40b7-b022-ab57ed54c7af"),
@@ -55,7 +55,7 @@ public class UndashedUUIDParseTest {
 
     @Test
     @DisplayName("Test that invalid undashed uuid parsing fails correctly")
-    public void test_fail() {
+    void test_fail() {
 
         // invalid string length, it is not 32
         assertThrows(IllegalArgumentException.class, () ->

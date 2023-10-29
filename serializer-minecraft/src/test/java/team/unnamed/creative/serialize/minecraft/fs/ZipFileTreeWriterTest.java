@@ -41,7 +41,7 @@ import java.util.zip.ZipOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ZipFileTreeWriterTest implements FileTreeWriterTest {
+class ZipFileTreeWriterTest implements FileTreeWriterTest {
 
     private @TempDir Path tempDir;
 

@@ -30,11 +30,12 @@ import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 import team.unnamed.creative.BuiltResourcePack;
+import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
+import team.unnamed.creative.server.request.ResourcePackDownloadRequestParser;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -68,9 +69,9 @@ public final class ResourcePackServer {
 
     /**
      * Stops the internal {@link HttpServer}
-     * 
+     *
      * @param delay the maximum time in seconds to wait until requests have finished
-     * @see HttpServer#stop(int) 
+     * @see HttpServer#stop(int)
      */
     public void stop(int delay) {
         server.stop(delay);
@@ -82,41 +83,28 @@ public final class ResourcePackServer {
             return;
         }
 
-        Headers headers = exchange.getRequestHeaders();
-        String username = headers.getFirst("X-Minecraft-Username");
-        String rawUuid = headers.getFirst("X-Minecraft-UUID");
-        String clientVersion = headers.getFirst("X-Minecraft-Version");
-        String clientVersionId = headers.getFirst("X-Minecraft-Version-ID");
-        String rawPackFormat = headers.getFirst("X-Minecraft-Pack-Format");
+        final Headers headers = exchange.getRequestHeaders();
+        final ResourcePackDownloadRequest request = ResourcePackDownloadRequestParser.parse(headers);
 
-        if (username == null
-                || rawUuid == null
-                || clientVersion == null
-                || clientVersionId == null
-                || rawPackFormat == null) {
-            handler.onInvalidRequest(exchange);
-            exchange.close();
+        if (request == null) {
+            try {
+                handler.onInvalidRequest(exchange);
+            } catch (final Exception e) {
+                handler.onException(e);
+            } finally {
+                exchange.close();
+            }
             return;
         }
 
-        // parse input data
-        UUID uuid;
-        int packFormat;
-
         try {
-            uuid = UUIDUtil.fromUndashedString(rawUuid);
-            packFormat = Integer.parseInt(rawPackFormat);
-        } catch (IllegalArgumentException e) {
-            handler.onInvalidRequest(exchange);
-            exchange.close();
-            return;
-        }
-
-        ResourcePackRequest request
-                = new ResourcePackRequest(uuid, username, clientVersion, clientVersionId, packFormat);
-
-        try {
-            handler.onRequest(request, exchange);
+            handler.onRequest(new ResourcePackRequest(
+                    request.uuid(),
+                    request.username(),
+                    request.clientVersion(),
+                    request.clientVersionId(),
+                    request.packFormat()
+            ), exchange);
         } catch (Exception e) {
             handler.onException(e);
         } finally {

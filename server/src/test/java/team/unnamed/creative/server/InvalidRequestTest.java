@@ -30,11 +30,11 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class InvalidRequestTest extends LocalHttpTestBase {
+class InvalidRequestTest extends LocalHttpTestBase {
 
     @Test
     @DisplayName("Test making a request without Minecraft's headers")
-    public void test_no_headers() throws IOException {
+    void test_no_headers() throws IOException {
         HttpURLConnection connection = open("/");
         connection.setRequestMethod("GET");
 
@@ -49,7 +49,7 @@ public class InvalidRequestTest extends LocalHttpTestBase {
 
     @Test
     @DisplayName("Test sending invalid Minecraft headers")
-    public void test_invalid_headers() throws IOException {
+    void test_invalid_headers() throws IOException {
         HttpURLConnection connection = open("/");
         connection.setRequestMethod("GET");
 

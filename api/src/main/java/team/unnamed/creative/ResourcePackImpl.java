@@ -56,7 +56,7 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
 
     @Override
     public @NotNull Metadata metadata() {
-        return metadata == null ? Metadata.EMPTY : metadata;
+        return metadata == null ? Metadata.empty() : metadata;
     }
 
     @Override
