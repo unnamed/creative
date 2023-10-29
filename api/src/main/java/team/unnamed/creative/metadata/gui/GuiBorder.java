@@ -26,20 +26,94 @@ package team.unnamed.creative.metadata.gui;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents border sizes for a GUI sprite.
+ *
+ * <p>Sizes are specified in pixels, pixels that
+ * the border slices should cover on-screen.</p>
+ *
+ * @sinceMinecraft 1.20.2
+ * @sincePackFormat 18
+ * @since 1.2.0
+ */
 public interface GuiBorder extends Examinable {
-    static @NotNull GuiBorder border(int top, int bottom, int left, int right) {
+    /**
+     * Returns a {@link GuiBorder} instance that will have the
+     * specified border sizes on each side, all sizes must must
+     * be non-negative.
+     *
+     * @param top    The top border size in pixels
+     * @param bottom The bottom border size in pixels
+     * @param left   The left border size in pixels
+     * @param right  The right border size in pixels
+     * @return The created {@link GuiBorder} instance
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    static @NotNull GuiBorder border(final int top, final int bottom, final int left, final int right) {
         return new GuiBorderImpl(top, bottom, left, right);
     }
 
+    /**
+     * Returns a {@link GuiBorder} instance that will have a uniform
+     * border size on all sides specified by the given {@code size},
+     * must be non-negative.
+     *
+     * @return The created {@link GuiBorder} instance
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
     static @NotNull GuiBorder border(final int size) {
         return border(size, size, size, size);
     }
 
+    /**
+     * Returns the number of pixels for the border to cover
+     * on-screen across its top side, non-negative.
+     *
+     * @return The number of pixels for the border to cover
+     * on-screen across its top side
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
     int top();
 
+    /**
+     * Returns the number of pixels for the border to cover
+     * on-screen across its bottom side, non-negative.
+     *
+     * @return The number of pixels for the border to cover
+     * on-screen across its bottom side
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
     int bottom();
 
+    /**
+     * Returns the number of pixels for the border to cover
+     * on-screen across its left side, non-negative.
+     *
+     * @return The number of pixels for the border to cover
+     * on-screen across its left side
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
     int left();
 
+    /**
+     * Returns the number of pixels for the border to cover
+     * on-screen across its right side, non-negative.
+     *
+     * @return The number of pixels for the border to cover
+     * on-screen across its right side
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
     int right();
 }

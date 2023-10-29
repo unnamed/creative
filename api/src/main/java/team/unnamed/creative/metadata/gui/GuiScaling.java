@@ -27,6 +27,13 @@ import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a scaling mode for a GUI sprite.
+ *
+ * @sinceMinecraft 1.20.2
+ * @sincePackFormat 18
+ * @since 1.2.0
+ */
 @ApiStatus.NonExtendable
 public interface GuiScaling extends Examinable {
     /**
