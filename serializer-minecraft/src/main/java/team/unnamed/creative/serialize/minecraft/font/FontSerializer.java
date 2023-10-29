@@ -210,8 +210,8 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
                 .name("size_overrides").beginArray();
         for (UnihexFontProvider.SizeOverride sizeOverride : provider.sizes()) {
             writer.beginObject()
-                    .name("from").value(sizeOverride.from())
-                    .name("to").value(sizeOverride.to())
+                    .name("from").value(new StringBuilder().appendCodePoint(sizeOverride.from()).toString())
+                    .name("to").value(new StringBuilder().appendCodePoint(sizeOverride.to()).toString())
                     .name("left").value(sizeOverride.left())
                     .name("right").value(sizeOverride.right())
                     .endObject();
@@ -223,9 +223,9 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
         List<UnihexFontProvider.SizeOverride> sizes = new ArrayList<>();
         for (JsonElement element : node.getAsJsonArray("size_overrides")) {
             JsonObject overrideNode = element.getAsJsonObject();
-            sizes.add(UnihexFontProvider.SizeOverride.of(
-                    overrideNode.get("from").getAsInt(),
-                    overrideNode.get("to").getAsInt(),
+            sizes.add(UnihexFontProvider.SizeOverride.override(
+                    overrideNode.get("from").getAsString(),
+                    overrideNode.get("to").getAsString(),
                     overrideNode.get("left").getAsInt(),
                     overrideNode.get("right").getAsInt()
             ));
