@@ -21,24 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.server.request;
+package team.unnamed.creative.server.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import team.unnamed.creative.server.util.UndashedUUID;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UndashedUUIDParseTest {
-
     @Test
     @DisplayName("Test the correct functionality of undashed uuid parsing")
     void test_success() {
-
         assertEquals(
                 UUID.fromString("845ea5cc-6823-40b7-b022-ab57ed54c7af"),
                 UndashedUUID.fromUndashedString("845ea5cc682340b7b022ab57ed54c7af")
@@ -49,7 +45,7 @@ class UndashedUUIDParseTest {
                 UndashedUUID.fromUndashedString("54be616ededa428c92a5154fce4ca8f9")
         );
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 50; i++) {
             testRandom();
         }
     }
@@ -57,7 +53,6 @@ class UndashedUUIDParseTest {
     @Test
     @DisplayName("Test that invalid undashed uuid parsing fails correctly")
     void test_fail() {
-
         // invalid string length, it is not 32
         assertThrows(IllegalArgumentException.class, () ->
                 UndashedUUID.fromUndashedString("0123456789"));
@@ -70,19 +65,18 @@ class UndashedUUIDParseTest {
     }
 
     private static void testRandom() {
-        UUID uuid = UUID.randomUUID();
-        String undashedUuid = uuid.toString().replace("-", "");
+        final UUID uuid = UUID.randomUUID();
+        final String undashedUuid = uuid.toString().replace("-", "");
         UUID result = null;
 
         try {
             result = UndashedUUID.fromUndashedString(undashedUuid);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Assertions.fail("Failed to parse UUID '"
                     + uuid + "' (undashed: '" + undashedUuid + "')", e);
         }
 
-        Assertions.assertNotNull(result, "UUIDUtil#fromUndashedString should not return null");
+        assertNotNull(result, "UUIDUtil#fromUndashedString should not return null");
         assertEquals(uuid, result);
     }
-
 }
