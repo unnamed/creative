@@ -161,11 +161,13 @@ public interface FontProvider extends Examinable {
      * @param file  The zip file containing the HEX files
      * @param sizes The size overrides
      * @return A new font provider instance
+     * @sinceMinecraft 1.20
      * @sincePackFormat 15
      * @since 1.0.0
      */
-    static UnihexFontProvider unihex(Key file, List<UnihexFontProvider.SizeOverride> sizes) {
-        return new UnihexFontProvider(file, sizes);
+    @Contract("_, _ -> new")
+    static @NotNull UnihexFontProvider unihex(final @NotNull Key file, final @NotNull List<UnihexFontProvider.SizeOverride> sizes) {
+        return new UnihexFontProviderImpl(file, sizes);
     }
 
     /**
@@ -173,11 +175,12 @@ public interface FontProvider extends Examinable {
      * instances
      *
      * @return A new builder instance
+     * @sinceMinecraft 1.20
      * @sincePackFormat 15
      * @since 1.0.0
      */
-    static UnihexFontProvider.Builder unihex() {
-        return new UnihexFontProvider.Builder();
+    @Contract("-> new")
+    static @NotNull UnihexFontProvider.Builder unihex() {
+        return new UnihexFontProviderImpl.BuilderImpl();
     }
-
 }

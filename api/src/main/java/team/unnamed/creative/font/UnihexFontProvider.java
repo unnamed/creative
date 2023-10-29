@@ -25,37 +25,27 @@ package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
  * A {@link FontProvider} implementation that uses Unifont
  * HEX files
  *
+ * @sinceMinecraft 1.20
  * @sincePackFormat 15
+ * @see FontProvider#unihex()
  * @since 1.0.0
  */
-public class UnihexFontProvider implements FontProvider {
-
-    private final Key file;
-    private final @Unmodifiable List<SizeOverride> sizes;
-
-    protected UnihexFontProvider(Key file, List<SizeOverride> sizes) {
-        requireNonNull(file, "file");
-        requireNonNull(sizes, "sizes");
-        this.file = file;
-        this.sizes = immutableListOf(sizes);
-    }
-
+@ApiStatus.NonExtendable
+public interface UnihexFontProvider extends FontProvider {
     /**
      * Returns the location of a ZIP file containing the
      * HEX files. All the files that end with ".hex" are
@@ -66,10 +56,11 @@ public class UnihexFontProvider implements FontProvider {
      * <i>(Note that it is not inside "fonts")</i></p>
      *
      * @return The location of the ZIP file of HEX files
+     * @sinceMinecraft 1.20
+     * @sincePackFormat 15
+     * @since 1.0.0
      */
-    public Key file() {
-        return file;
-    }
+    @NotNull Key file();
 
     /**
      * A list of size overrides, an override contains an
@@ -77,145 +68,191 @@ public class UnihexFontProvider implements FontProvider {
      * dimensions
      *
      * @return The size overrides
+     * @sinceMinecraft 1.20
+     * @sincePackFormat 15
+     * @since 1.0.0
      */
-    public @Unmodifiable List<SizeOverride> sizes() {
-        return sizes;
-    }
+    @Unmodifiable @NotNull List<SizeOverride> sizes();
 
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("file", file),
-                ExaminableProperty.of("sizes", sizes)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UnihexFontProvider that = (UnihexFontProvider) o;
-        if (!file.equals(that.file)) return false;
-        return sizes.equals(that.sizes);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = file.hashCode();
-        result = 31 * result + sizes.hashCode();
-        return result;
-    }
-
-    public static class SizeOverride implements Examinable {
-
-        private final int from;
-        private final int to;
-        private final int left;
-        private final int right;
-
-        private SizeOverride(int from, int to, int left, int right) {
-            this.from = from;
-            this.to = to;
-            this.left = left;
-            this.right = right;
-            validate();
+    /**
+     * A range of codepoints that should have a different width
+     * than the auto-detected.
+     *
+     * @sinceMinecraft 1.20
+     * @sincePackFormat 15
+     * @since 1.0.0
+     */
+    interface SizeOverride extends Examinable {
+        /**
+         * Creates a new {@link SizeOverride} instance
+         * with the given parameters.
+         *
+         * @param from  The start of the codepoint range (inclusive)
+         * @param to    The end of the codepoint range (inclusive)
+         * @param left  The left-most column of the glyph
+         * @param right The right-most column of the glyph
+         * @return The new instance
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.2.0
+         */
+        static @NotNull SizeOverride override(final int from, final int to, final int left, final int right) {
+            return new UnihexFontProviderImpl.SizeOverrideImpl(from, to, left, right);
         }
 
-        private void validate() {
-            if (from >= to)
-                throw new IllegalArgumentException("Invalid range: [" + from + ";" + to + "]");
+        /**
+         * Creates a new {@link SizeOverride} instance
+         * with the given parameters.
+         *
+         * @param from  The start of the codepoint range (inclusive),
+         *              the given string must have a single codepoint
+         * @param to    The end of the codepoint range (inclusive),
+         *              the given string must have a single codepoint
+         * @param left  The left-most column of the glyph
+         * @param right The right-most column of the glyph
+         * @return The new instance
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.2.0
+         */
+        static @NotNull SizeOverride override(final String from, final String to, final int left, final int right) {
+            return new UnihexFontProviderImpl.SizeOverrideImpl(from, to, left, right);
         }
 
-        public int from() {
-            return from;
+        /**
+         * Creates a new {@link SizeOverride} instance
+         * with the given parameters.
+         *
+         * @param from  The start of the codepoint range (inclusive)
+         * @param to    The end of the codepoint range (inclusive)
+         * @param left  The left-most column of the glyph
+         * @param right The right-most column of the glyph
+         * @return The new instance
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         * @deprecated Use {@link #override(int, int, int, int)} instead
+         */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+        static @NotNull SizeOverride of(final int from, final int to, final int left, final int right) {
+            return override(from, to, left, right);
         }
 
-        public int to() {
-            return to;
-        }
+        /**
+         * The start of the codepoint range (inclusive).
+         *
+         * @return The start of the codepoint range
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        int from();
 
-        public int left() {
-            return left;
-        }
+        /**
+         * The end of the codepoint range (inclusive).
+         *
+         * @return The end of the codepoint range
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        int to();
 
-        public int right() {
-            return right;
-        }
+        /**
+         * The left-most column of the glyph in this
+         * range.
+         *
+         * @return The left-most column of the glyph
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        int left();
 
-        @Override
-        public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-            return Stream.of(
-                    ExaminableProperty.of("from", from),
-                    ExaminableProperty.of("to", to),
-                    ExaminableProperty.of("left", left),
-                    ExaminableProperty.of("right", right)
-            );
-        }
-
-        @Override
-        public String toString() {
-            return examine(StringExaminer.simpleEscaping());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SizeOverride override = (SizeOverride) o;
-            if (from != override.from) return false;
-            if (to != override.to) return false;
-            if (left != override.left) return false;
-            return right == override.right;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = from;
-            result = 31 * result + to;
-            result = 31 * result + left;
-            result = 31 * result + right;
-            return result;
-        }
-
-        public static SizeOverride of(int from, int to, int left, int right) {
-            return new SizeOverride(from, to, left, right);
-        }
-
+        /**
+         * The right-most column of the glyph in this
+         * range.
+         *
+         * @return The right-most column of the glyph
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        int right();
     }
 
     /**
      * Mutable and fluent-style builder for {@link UnihexFontProvider}
      * instances
      *
+     * @sinceMinecraft 1.20
+     * @sincePackFormat 15
      * @since 1.0.0
      */
-    public static class Builder {
+    interface Builder {
+        /**
+         * Sets the location of the ZIP file containing the HEX files
+         * for this font provider.
+         *
+         * @param file The location of the ZIP file
+         * @return This builder
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder file(final @NotNull Key file);
 
-        private Key file;
-        private List<SizeOverride> sizes = Collections.emptyList();
+        /**
+         * Sets the size overrides for this font provider.
+         *
+         * @param sizes The size overrides
+         * @return This builder
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder sizes(final @NotNull List<SizeOverride> sizes);
 
-        protected Builder() {
+        /**
+         * Sets the size overrides for this font provider.
+         *
+         * @param sizes The size overrides
+         * @return This builder
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.2.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder sizes(final @NotNull SizeOverride @NotNull ... sizes) {
+            requireNonNull(sizes, "sizes");
+            return sizes(Arrays.asList(sizes));
         }
 
-        public Builder file(Key file) {
-            this.file = requireNonNull(file, "file");
-            return this;
-        }
+        /**
+         * Adds a new size override to this font provider.
+         *
+         * @param size The size override
+         * @return This builder
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.2.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder addSize(final @NotNull SizeOverride size);
 
-        public Builder sizes(List<SizeOverride> sizes) {
-            this.sizes = requireNonNull(sizes, "sizes");
-            return this;
-        }
-
-        public UnihexFontProvider build() {
-            return new UnihexFontProvider(file, sizes);
-        }
-
+        /**
+         * Builds a new {@link UnihexFontProvider} instance
+         * with the current state of this builder.
+         *
+         * @return The new instance
+         * @sinceMinecraft 1.20
+         * @sincePackFormat 15
+         * @since 1.0.0
+         */
+        @Contract("-> new")
+        @NotNull UnihexFontProvider build();
     }
-
 }
