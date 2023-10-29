@@ -29,18 +29,21 @@ import org.junit.jupiter.api.Test;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.atlas.DirectoryAtlasSource;
+import team.unnamed.creative.atlas.PalettedPermutationsAtlasSource;
 import team.unnamed.creative.atlas.SingleAtlasSource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AtlasDeserializationTest {
-
     @Test
-    @DisplayName("Test deserializing blocks.json atlas from Minecraft 1.19.3")
+    @DisplayName("Test deserializing blocks.json atlas from Minecraft 1.20.2")
     void test_blocks_atlas_deserialization() throws IOException {
         Atlas atlas;
         try (InputStream input = AtlasDeserializationTest.class.getClassLoader().getResourceAsStream("atlas/blocks.json")) {
@@ -50,7 +53,7 @@ class AtlasDeserializationTest {
         assertEquals(Key.key("minecraft:blocks"), atlas.key());
 
         List<AtlasSource> sources = atlas.sources();
-        assertEquals(5, sources.size(), "There must be 5 atlas sources");
+        assertEquals(7, sources.size(), "There must be 7 atlas sources");
 
         // assert directory atlas sources
         {
@@ -85,9 +88,43 @@ class AtlasDeserializationTest {
             AtlasSource s5 = sources.get(4);
             assertTrue(s5 instanceof SingleAtlasSource, "Fifth source must be a single atlas source");
             SingleAtlasSource single2 = (SingleAtlasSource) s5;
-            assertEquals(Key.key("entity/enchanting_table_book"), single2.resource(), "Fifth source must have resource = 'minecraft:entity/enchanting_table_book'");
+            assertEquals(Key.key("entity/decorated_pot/decorated_pot_side"), single2.resource(), "Fifth source must have resource = 'minecraft:entity/decorated_pot/decorated_pot_side'");
             assertNull(single2.sprite(), "Fifth source must have sprite = null");
         }
-    }
+        {
+            AtlasSource s6 = sources.get(5);
+            assertTrue(s6 instanceof SingleAtlasSource, "Sixth source must be a single atlas source");
+            SingleAtlasSource single3 = (SingleAtlasSource) s6;
+            assertEquals(Key.key("entity/enchanting_table_book"), single3.resource(), "Sixth source must have resource = 'minecraft:entity/enchanting_table_book'");
+        }
+        {
+            AtlasSource s7 = sources.get(6);
+            assertTrue(s7 instanceof PalettedPermutationsAtlasSource, "Seventh source must be a paletted permutations atlas source");
+            PalettedPermutationsAtlasSource permutations = (PalettedPermutationsAtlasSource) s7;
+            assertEquals(Key.key("trims/color_palettes/trim_palette"), permutations.paletteKey(), "Seventh source must have palette key = 'minecraft:trims/color_palettes/trim_palette'");
+            assertEquals(Arrays.asList(
+                    Key.key("trims/items/leggings_trim"),
+                    Key.key("trims/items/chestplate_trim"),
+                    Key.key("trims/items/helmet_trim"),
+                    Key.key("trims/items/boots_trim")
+            ), permutations.textures(), "Seventh source must have textures = [ 'minecraft:trims/items/leggings_trim', 'minecraft:trims/items/chestplate_trim', 'minecraft:trims/items/helmet_trim', 'minecraft:trims/items/boots_trim' ]");
 
+            Map<String, Key> expectedPermutations = new HashMap<>();
+            expectedPermutations.put("quartz", Key.key("trims/color_palettes/quartz"));
+            expectedPermutations.put("iron", Key.key("trims/color_palettes/iron"));
+            expectedPermutations.put("gold", Key.key("trims/color_palettes/gold"));
+            expectedPermutations.put("diamond", Key.key("trims/color_palettes/diamond"));
+            expectedPermutations.put("netherite", Key.key("trims/color_palettes/netherite"));
+            expectedPermutations.put("redstone", Key.key("trims/color_palettes/redstone"));
+            expectedPermutations.put("copper", Key.key("trims/color_palettes/copper"));
+            expectedPermutations.put("emerald", Key.key("trims/color_palettes/emerald"));
+            expectedPermutations.put("lapis", Key.key("trims/color_palettes/lapis"));
+            expectedPermutations.put("amethyst", Key.key("trims/color_palettes/amethyst"));
+            expectedPermutations.put("iron_darker", Key.key("trims/color_palettes/iron_darker"));
+            expectedPermutations.put("gold_darker", Key.key("trims/color_palettes/gold_darker"));
+            expectedPermutations.put("diamond_darker", Key.key("trims/color_palettes/diamond_darker"));
+            expectedPermutations.put("netherite_darker", Key.key("trims/color_palettes/netherite_darker"));
+            assertEquals(expectedPermutations, permutations.permutations(), "Unexpected permutations for seventh source");
+        }
+    }
 }
