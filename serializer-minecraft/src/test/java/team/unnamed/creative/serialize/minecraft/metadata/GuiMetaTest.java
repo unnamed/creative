@@ -33,27 +33,38 @@ import team.unnamed.creative.metadata.gui.GuiScaling;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuiMetaTest {
-
     @Test
-    void test_simple_serialization() throws IOException {
-        Metadata metadata;
-        try (JsonReader reader = new JsonReader(new InputStreamReader(GuiMetaTest.class.getClassLoader().getResourceAsStream("metadata/gui.mcmeta")))) {
-            metadata = MetadataSerializer.INSTANCE.readFromTree(new JsonParser().parse(reader));
-        }
+    void test_deserialization() throws IOException {
+        final Map<String, GuiScaling> expectations = new HashMap<>();
+        expectations.put("button.png.mcmeta", GuiScaling.nineSlice(200, 20, 3));
+        expectations.put("button_disabled.png.mcmeta", GuiScaling.nineSlice(200, 20, 1));
+        expectations.put("slider_handle.png.mcmeta", GuiScaling.nineSlice(8, 20, GuiBorder.border(2, 3, 2, 2)));
+        expectations.put("slider_handle_highlighted.png.mcmeta", GuiScaling.nineSlice(8, 20, GuiBorder.border(2, 3, 2, 2)));
+        expectations.put("stretch_custom.png.mcmeta", GuiScaling.stretch());
+        expectations.put("tile_custom.png.mcmeta", GuiScaling.tile(8, 20));
+        expectations.put("tile_custom_2.png.mcmeta", GuiScaling.tile(200, 20));
+        expectations.put("tile_custom_3.png.mcmeta", GuiScaling.tile(200, 26));
+        expectations.put("title_box.png.mcmeta", GuiScaling.nineSlice(200, 26, 10));
 
-        assertEquals(
-                Metadata.metadata()
-                        .add(GuiMeta.of(GuiScaling.nineSlice(
-                                200,
-                                20,
-                                GuiBorder.border(4, 4, 20, 20)
-                        )))
-                        .build(),
-                metadata
-        );
+        for (final Map.Entry<String, GuiScaling> entry : expectations.entrySet()) {
+            final Metadata metadata;
+            try (final JsonReader reader = new JsonReader(new InputStreamReader(GuiMetaTest.class.getClassLoader().getResourceAsStream("metadata/gui/" + entry.getKey())))) {
+                metadata = MetadataSerializer.INSTANCE.readFromTree(new JsonParser().parse(reader));
+            }
+
+            assertEquals(
+                    Metadata.metadata()
+                            .add(GuiMeta.of(entry.getValue()))
+                            .build(),
+                    metadata,
+                    "Not equal for entry: " + entry.getKey()
+            );
+        }
     }
 }
