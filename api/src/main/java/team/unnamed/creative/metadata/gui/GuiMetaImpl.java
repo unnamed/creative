@@ -26,7 +26,7 @@ package team.unnamed.creative.metadata.gui;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -34,39 +34,39 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 final class GuiMetaImpl implements GuiMeta {
-    @Unmodifiable private final GuiScaling scaling;
+    private final GuiScaling scaling;
 
-    GuiMetaImpl(GuiScaling scaling) {
-        requireNonNull(scaling, "scaling");
-        this.scaling = scaling;
+    GuiMetaImpl(final @NotNull GuiScaling scaling) {
+        this.scaling = requireNonNull(scaling, "scaling");
     }
 
-    public GuiScaling scaling() {
+    @Override
+    public @NotNull GuiScaling scaling() {
         return scaling;
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(ExaminableProperty.of("scaling", scaling));
+        return Stream.of(
+                ExaminableProperty.of("scaling", scaling)
+        );
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GuiMetaImpl that = (GuiMetaImpl) o;
-        return Objects.equals(scaling, that.scaling);
+        final GuiMetaImpl that = (GuiMetaImpl) o;
+        return scaling.equals(that.scaling);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(scaling);
     }
-
-
 }

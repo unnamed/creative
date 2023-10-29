@@ -34,18 +34,27 @@ import team.unnamed.creative.metadata.MetadataPart;
  * @since 1.2.0
  */
 public interface GuiMeta extends MetadataPart {
-
-    GuiScaling scaling();
-
     /**
      * Creates a new {@link GuiMeta} instance
-     * from the given values
+     * from the given gui scaling.
      *
-     * @param scaling Scaling instance
+     * @param scaling The gui scaling
      * @return A new instance of {@link GuiMeta}
-     * @since 1.0.0
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
      */
-    static @NotNull GuiMeta of(GuiScaling scaling) {
+    static @NotNull GuiMeta of(final @NotNull GuiScaling scaling) {
         return new GuiMetaImpl(scaling);
     }
+
+    /**
+     * Gets the gui meta scaling.
+     *
+     * @return The gui meta scaling
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    @NotNull GuiScaling scaling();
 }
