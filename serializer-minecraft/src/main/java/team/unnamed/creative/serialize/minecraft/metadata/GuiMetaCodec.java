@@ -27,7 +27,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.metadata.gui.*;
+import team.unnamed.creative.metadata.gui.GuiBorder;
+import team.unnamed.creative.metadata.gui.GuiMeta;
+import team.unnamed.creative.metadata.gui.GuiScaling;
+import team.unnamed.creative.metadata.gui.NineSliceGuiScaling;
+import team.unnamed.creative.metadata.gui.StretchGuiScaling;
+import team.unnamed.creative.metadata.gui.TileGuiScaling;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
@@ -47,48 +52,44 @@ final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
 
     @Override
     public @NotNull GuiMeta read(final @NotNull JsonObject node) {
-        GuiMeta.Builder gui = GuiMeta.builder();
-        if (node.has("scaling")) {
-            JsonObject scalingNode = node.getAsJsonObject("scaling");
-            JsonElement typeNode = scalingNode.get("type");
-            String typeString = typeNode != null ? typeNode.getAsString() : "stretch";
-            switch (typeString.toLowerCase(Locale.ROOT)) {
-                case "stretch": {
-                    gui.scaling(GuiScaling.stretch());
-                    break;
-                }
-                case "tile": {
-                    final int width = GsonUtil.getInt(scalingNode, "width", 0);
-                    final int height = GsonUtil.getInt(scalingNode, "height", 0);
-                    gui.scaling(GuiScaling.tile(width, height));
-                    break;
-                }
-                case "nine_slice": {
-                    final int width = GsonUtil.getInt(scalingNode, "width", 0);
-                    final int height = GsonUtil.getInt(scalingNode, "height", 0);
-                    final GuiBorder border;
-                    if (GsonUtil.isInt(scalingNode, "border")) {
-                        border = GuiBorder.border(GsonUtil.getInt(scalingNode, "border", 0));
-                    } else {
-                        final JsonObject borderNode = scalingNode.getAsJsonObject("border");
-                        if (borderNode == null) border = GuiBorder.border(0, 0, 0, 0);
-                        else {
-                            final int top = GsonUtil.getInt(borderNode, "top", 0);
-                            final int bottom = GsonUtil.getInt(borderNode, "bottom", 0);
-                            final int left = GsonUtil.getInt(borderNode, "left", 0);
-                            final int right = GsonUtil.getInt(borderNode, "right", 0);
-                            border = GuiBorder.border(top, bottom, left, right);
-                        }
-                    }
-                    gui.scaling(GuiScaling.nineSlice(width, height, border));
-                    break;
-                }
-                default:
-                    throw new IllegalArgumentException("Unknown gui scaling type: " + typeString);
-            }
+        if (!node.has("scaling")) { // todo: should this be optional?
+            return GuiMeta.of(GuiScaling.stretch());
         }
 
-        return gui.build();
+        JsonObject scalingNode = node.getAsJsonObject("scaling");
+        JsonElement typeNode = scalingNode.get("type");
+        String typeString = typeNode != null ? typeNode.getAsString() : "stretch";
+        switch (typeString.toLowerCase(Locale.ROOT)) {
+            case "stretch": {
+                return GuiMeta.of(GuiScaling.stretch());
+            }
+            case "tile": {
+                final int width = GsonUtil.getInt(scalingNode, "width", 0);
+                final int height = GsonUtil.getInt(scalingNode, "height", 0);
+                return GuiMeta.of(GuiScaling.tile(width, height));
+            }
+            case "nine_slice": {
+                final int width = GsonUtil.getInt(scalingNode, "width", 0);
+                final int height = GsonUtil.getInt(scalingNode, "height", 0);
+                final GuiBorder border;
+                if (GsonUtil.isInt(scalingNode, "border")) {
+                    border = GuiBorder.border(GsonUtil.getInt(scalingNode, "border", 0));
+                } else {
+                    final JsonObject borderNode = scalingNode.getAsJsonObject("border");
+                    if (borderNode == null) border = GuiBorder.border(0, 0, 0, 0);
+                    else {
+                        final int top = GsonUtil.getInt(borderNode, "top", 0);
+                        final int bottom = GsonUtil.getInt(borderNode, "bottom", 0);
+                        final int left = GsonUtil.getInt(borderNode, "left", 0);
+                        final int right = GsonUtil.getInt(borderNode, "right", 0);
+                        border = GuiBorder.border(top, bottom, left, right);
+                    }
+                }
+                return GuiMeta.of(GuiScaling.nineSlice(width, height, border));
+            }
+            default:
+                throw new IllegalArgumentException("Unknown gui scaling type: " + typeString);
+        }
     }
 
     @Override

@@ -29,9 +29,9 @@ import team.unnamed.creative.metadata.MetadataPart;
 /**
  * Represents meta-data applicable to gui-elements
  *
- * @since 1.2.0
  * @sinceMinecraft 1.20.2
  * @sincePackFormat 18
+ * @since 1.2.0
  */
 public interface GuiMeta extends MetadataPart {
 
@@ -47,25 +47,5 @@ public interface GuiMeta extends MetadataPart {
      */
     static @NotNull GuiMeta of(GuiScaling scaling) {
         return new GuiMetaImpl(scaling);
-    }
-
-    static @NotNull GuiMeta.Builder builder() {
-        return new GuiMeta.Builder();
-    }
-
-    class Builder {
-        private GuiScaling scaling;
-
-        private Builder() {
-        }
-
-        public Builder scaling(GuiScaling scaling) {
-            this.scaling = scaling;
-            return this;
-        }
-
-        public GuiMeta build() {
-            return new GuiMetaImpl(scaling);
-        }
     }
 }
