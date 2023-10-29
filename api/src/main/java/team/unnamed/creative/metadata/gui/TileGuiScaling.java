@@ -23,23 +23,40 @@
  */
 package team.unnamed.creative.metadata.gui;
 
-import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus;
 
-public interface GuiBorder extends Examinable {
-    static @NotNull GuiBorder border(int top, int bottom, int left, int right) {
-        return new GuiBorderImpl(top, bottom, left, right);
-    }
+/**
+ * Type of {@link GuiScaling} that makes the sprite repeat itself
+ * across the desired space, starting from top-left.
+ *
+ * @sinceMinecraft 1.20.2
+ * @sincePackFormat 18
+ * @see GuiScaling#tile(int, int)
+ * @since 1.2.0
+ */
+@ApiStatus.NonExtendable
+public interface TileGuiScaling extends GuiScaling {
+    /**
+     * Returns the number of pixels for the sprite to cover
+     * on-screen across its width, always positive.
+     *
+     * @return The number of pixels for the sprite to cover
+     * on-screen across its width
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    int width();
 
-    static @NotNull GuiBorder border(final int size) {
-        return border(size, size, size, size);
-    }
-
-    int top();
-
-    int bottom();
-
-    int left();
-
-    int right();
+    /**
+     * Returns the number of pixels for the sprite to cover
+     * on-screen across its height, always positive.
+     *
+     * @return The number of pixels for the sprite to cover
+     * on-screen across its height
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    int height();
 }

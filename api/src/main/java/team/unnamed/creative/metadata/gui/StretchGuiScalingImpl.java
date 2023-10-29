@@ -23,23 +23,18 @@
  */
 package team.unnamed.creative.metadata.gui;
 
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 
-public interface GuiBorder extends Examinable {
-    static @NotNull GuiBorder border(int top, int bottom, int left, int right) {
-        return new GuiBorderImpl(top, bottom, left, right);
+final class StretchGuiScalingImpl implements StretchGuiScaling {
+    static final StretchGuiScaling INSTANCE = new StretchGuiScalingImpl();
+
+    private StretchGuiScalingImpl() {
     }
 
-    static @NotNull GuiBorder border(final int size) {
-        return border(size, size, size, size);
+    @Override
+    public @NotNull String toString() {
+        return "StretchGuiScalingImpl.INSTANCE";
     }
 
-    int top();
-
-    int bottom();
-
-    int left();
-
-    int right();
+    // let it use identity equals() and hashCode()
 }

@@ -26,45 +26,54 @@ package team.unnamed.creative.metadata.gui;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-final class GuiScalingImpl implements GuiScaling {
+import static java.util.Objects.requireNonNull;
 
-    public static final ScalingType DEFAULT_TYPE = ScalingType.STRETCH;
-
-    private final ScalingType type;
+final class NineSliceGuiScalingImpl implements NineSliceGuiScaling {
     private final int width;
     private final int height;
     private final GuiBorder border;
 
-    GuiScalingImpl(ScalingType type, int width, int height, GuiBorder border) {
-        this.type = type;
+    NineSliceGuiScalingImpl(final int width, final int height, final @NotNull GuiBorder border) {
         this.width = width;
         this.height = height;
-        this.border = border;
+        this.border = requireNonNull(border, "border");
+        validate();
     }
 
-    public ScalingType type() {
-        return type;
+    private void validate() {
+        if (width <= 0)
+            throw new IllegalArgumentException("Width must be positive! Got " + width);
+        if (height <= 0)
+            throw new IllegalArgumentException("Height must be positive! Got " + height);
+        if (border.left() + border.right() >= width)
+            throw new IllegalArgumentException("Horizontal borders too big: " + border.left() + " + " + border.right() + " >= " + width);
+        if (border.top() + border.bottom() >= height) {
+            throw new IllegalArgumentException("Vertical borders too big: " + border.top() + " + " + border.bottom() + " >= " + height);
+        }
     }
 
+    @Override
     public int width() {
         return width;
     }
 
+    @Override
     public int height() {
         return height;
     }
 
-    public GuiBorder border() {
+    @Override
+    public @NotNull GuiBorder border() {
         return border;
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
-                ExaminableProperty.of("type", type),
                 ExaminableProperty.of("width", width),
                 ExaminableProperty.of("height", height),
                 ExaminableProperty.of("border", border)
@@ -72,23 +81,25 @@ final class GuiScalingImpl implements GuiScaling {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GuiScalingImpl scaling = (GuiScalingImpl) o;
-        return width == scaling.width &&
-                height == scaling.height &&
-                type == scaling.type &&
-                border == scaling.border;
+        final NineSliceGuiScalingImpl that = (NineSliceGuiScalingImpl) o;
+        if (width != that.width) return false;
+        if (height != that.height) return false;
+        return border.equals(that.border);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode() + width + height + border.hashCode();
+        int result = width;
+        result = 31 * result + height;
+        result = 31 * result + border.hashCode();
+        return result;
     }
 }

@@ -23,23 +23,18 @@
  */
 package team.unnamed.creative.metadata.gui;
 
-import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.ApiStatus;
 
-public interface GuiBorder extends Examinable {
-    static @NotNull GuiBorder border(int top, int bottom, int left, int right) {
-        return new GuiBorderImpl(top, bottom, left, right);
-    }
-
-    static @NotNull GuiBorder border(final int size) {
-        return border(size, size, size, size);
-    }
-
-    int top();
-
-    int bottom();
-
-    int left();
-
-    int right();
+/**
+ * Type of {@link GuiScaling} that makes the sprite stretch
+ * across the desired space.
+ *
+ * @sinceMinecraft 1.20.2
+ * @sincePackFormat 18
+ * @see GuiScaling#stretch()
+ * @since 1.2.0
+ */
+@ApiStatus.NonExtendable
+public interface StretchGuiScaling extends GuiScaling {
+    // no fields!
 }

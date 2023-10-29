@@ -24,23 +24,76 @@
 package team.unnamed.creative.metadata.gui;
 
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
+@ApiStatus.NonExtendable
 public interface GuiScaling extends Examinable {
-
-    ScalingType type();
-    int width();
-    int height();
-    GuiBorder border();
-
-    static GuiScaling of(ScalingType type, int width, int height, GuiBorder border) {
-        return new GuiScalingImpl(type, width, height, border);
+    /**
+     * Returns a {@link GuiScaling} instance that makes the sprite
+     * stretch across the desired space.
+     *
+     * @return The created {@link GuiScaling} instance
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    static @NotNull StretchGuiScaling stretch() {
+        return StretchGuiScalingImpl.INSTANCE;
     }
 
-    static GuiScaling of(ScalingType type, int width, int height, int border) {
-        return new GuiScalingImpl(type, width, height, GuiBorder.of(border, border, border, border));
+    /**
+     * Returns a {@link GuiScaling} instance that makes the sprite
+     * repeat itself across the desired space, starting from top-left.
+     *
+     * @param width  The number of pixels for the sprite to cover
+     *               on-screen across its width, must be positive
+     * @param height The number of pixels for the sprite to cover
+     *               on-screen across its height, must be positive
+     * @return The created {@link GuiScaling} instance
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    static @NotNull TileGuiScaling tile(final int width, final int height) {
+        return new TileGuiScalingImpl(width, height);
     }
 
-    enum ScalingType {
-        STRETCH, TILE, NINE_SLICE
+    /**
+     * Returns a {@link GuiScaling} instance that slices the sprite into
+     * 4 corners, 4 edges and 1 center slice, which will be tiled across
+     * the desired space.
+     *
+     * @param width  The number of pixels for the sprite to cover
+     *               on-screen across its width, must be positive
+     * @param height The number of pixels for the sprite to cover
+     *               on-screen across its height, must be positive
+     * @param border The border sizes
+     * @return The created {@link GuiScaling} instance
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final @NotNull GuiBorder border) {
+        return new NineSliceGuiScalingImpl(width, height, border);
+    }
+
+    /**
+     * Returns a {@link GuiScaling} instance that slices the sprite into
+     * 4 corners, 4 edges and 1 center slice, which will be tiled across
+     * the desired space.
+     *
+     * @param width  The number of pixels for the sprite to cover
+     *               on-screen across its width, must be positive
+     * @param height The number of pixels for the sprite to cover
+     *               on-screen across its height, must be positive
+     * @param border The border size for all sides
+     * @return The created {@link GuiScaling} instance
+     * @sinceMinecraft 1.20.2
+     * @sincePackFormat 18
+     * @since 1.2.0
+     */
+    static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final int border) {
+        return new NineSliceGuiScalingImpl(width, height, GuiBorder.border(border, border, border, border));
     }
 }

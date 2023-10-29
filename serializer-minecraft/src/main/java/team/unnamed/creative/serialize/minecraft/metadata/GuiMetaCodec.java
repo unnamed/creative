@@ -27,12 +27,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.metadata.gui.GuiBorder;
-import team.unnamed.creative.metadata.gui.GuiMeta;
-import team.unnamed.creative.metadata.gui.GuiScaling;
+import team.unnamed.creative.metadata.gui.*;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
+import java.util.Locale;
 
 final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
 
@@ -53,23 +52,39 @@ final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
             JsonObject scalingNode = node.getAsJsonObject("scaling");
             JsonElement typeNode = scalingNode.get("type");
             String typeString = typeNode != null ? typeNode.getAsString() : "stretch";
-            GuiScaling.ScalingType type = GuiScaling.ScalingType.valueOf(typeString.toUpperCase());
-            int width = GsonUtil.getInt(scalingNode, "width", 0);
-            int height = GsonUtil.getInt(scalingNode, "height", 0);
-            if (GsonUtil.isInt(scalingNode, "border"))
-                gui.scaling(GuiScaling.of(type, width, height, GsonUtil.getInt(scalingNode, "border", 0)));
-            else {
-                JsonObject borderNode = scalingNode.getAsJsonObject("border");
-                GuiBorder guiBorder;
-                if (borderNode == null) guiBorder = GuiBorder.of(0,0,0,0);
-                else {
-                    int top = GsonUtil.getInt(borderNode, "top", 0);
-                    int bottom = GsonUtil.getInt(borderNode, "bottom", 0);
-                    int left = GsonUtil.getInt(borderNode, "left", 0);
-                    int right = GsonUtil.getInt(borderNode, "right", 0);
-                    guiBorder = GuiBorder.of(top, bottom, left, right);
+            switch (typeString.toLowerCase(Locale.ROOT)) {
+                case "stretch": {
+                    gui.scaling(GuiScaling.stretch());
+                    break;
                 }
-                gui.scaling(GuiScaling.of(type, width, height, guiBorder));
+                case "tile": {
+                    final int width = GsonUtil.getInt(scalingNode, "width", 0);
+                    final int height = GsonUtil.getInt(scalingNode, "height", 0);
+                    gui.scaling(GuiScaling.tile(width, height));
+                    break;
+                }
+                case "nine_slice": {
+                    final int width = GsonUtil.getInt(scalingNode, "width", 0);
+                    final int height = GsonUtil.getInt(scalingNode, "height", 0);
+                    final GuiBorder border;
+                    if (GsonUtil.isInt(scalingNode, "border")) {
+                        border = GuiBorder.border(GsonUtil.getInt(scalingNode, "border", 0));
+                    } else {
+                        final JsonObject borderNode = scalingNode.getAsJsonObject("border");
+                        if (borderNode == null) border = GuiBorder.border(0, 0, 0, 0);
+                        else {
+                            final int top = GsonUtil.getInt(borderNode, "top", 0);
+                            final int bottom = GsonUtil.getInt(borderNode, "bottom", 0);
+                            final int left = GsonUtil.getInt(borderNode, "left", 0);
+                            final int right = GsonUtil.getInt(borderNode, "right", 0);
+                            border = GuiBorder.border(top, bottom, left, right);
+                        }
+                    }
+                    gui.scaling(GuiScaling.nineSlice(width, height, border));
+                    break;
+                }
+                default:
+                    throw new IllegalArgumentException("Unknown gui scaling type: " + typeString);
             }
         }
 
@@ -81,17 +96,39 @@ final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
         writer.beginObject();
         GuiScaling scaling = value.scaling();
         writer.name("scaling").beginObject();
-        writer.name("type").value(scaling.type().name().toLowerCase());
-        writer.name("width").value(scaling.width());
-        writer.name("height").value(scaling.height());
-        writer.name("border");
-        writer.beginObject();
-        GuiBorder border = scaling.border();
-        writer.name("top").value(border.top());
-        writer.name("bottom").value(border.bottom());
-        writer.name("left").value(border.left());
-        writer.name("right").value(border.right());
-        writer.endObject();
+        if (scaling instanceof StretchGuiScaling) {
+            writer.name("type").value("stretch");
+        } else if (scaling instanceof TileGuiScaling) {
+            final TileGuiScaling tile = (TileGuiScaling) scaling;
+            writer.name("type").value("tile");
+            writer.name("width").value(tile.width());
+            writer.name("height").value(tile.height());
+        } else if (scaling instanceof NineSliceGuiScaling) {
+            final NineSliceGuiScaling nineSlice = (NineSliceGuiScaling) scaling;
+            writer.name("type").value("nine_slice");
+            writer.name("width").value(nineSlice.width());
+            writer.name("height").value(nineSlice.height());
+
+            final GuiBorder border = nineSlice.border();
+            final int top = border.top();
+            final int bottom = border.bottom();
+            final int left = border.left();
+            final int right = border.right();
+
+            writer.name("border");
+            if (top == bottom && bottom == left && left == right) {
+                // if they are all equal just write as an int
+                writer.value(top);
+            } else {
+                // otherwise write as an object
+                writer.beginObject()
+                        .name("top").value(top)
+                        .name("bottom").value(bottom)
+                        .name("left").value(left)
+                        .name("right").value(right)
+                        .endObject();
+            }
+        }
         writer.endObject();
         writer.endObject();
     }
