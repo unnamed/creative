@@ -160,36 +160,11 @@ class FontDeserializationTest {
                 .addProvider(FontProvider.unihex()
                         .file(Key.key("font/unifont.zip"))
                         .sizes(Arrays.asList(
-                                UnihexFontProvider.SizeOverride.of(
-                                        "\u3001".codePointAt(0),
-                                        "\u30FF".codePointAt(0),
-                                        0,
-                                        15
-                                ),
-                                UnihexFontProvider.SizeOverride.of(
-                                        "\u3200".codePointAt(0),
-                                        "\u9FFF".codePointAt(0),
-                                        0,
-                                        15
-                                ),
-                                UnihexFontProvider.SizeOverride.of(
-                                        "\uAC00".codePointAt(0),
-                                        "\uD7AF".codePointAt(0),
-                                        0,
-                                        14
-                                ),
-                                UnihexFontProvider.SizeOverride.of(
-                                        "\uF900".codePointAt(0),
-                                        "\uFAFF".codePointAt(0),
-                                        0,
-                                        15
-                                ),
-                                UnihexFontProvider.SizeOverride.of(
-                                        "\uFF01".codePointAt(0),
-                                        "\uFF5E".codePointAt(0),
-                                        0,
-                                        15
-                                )
+                                UnihexFontProvider.SizeOverride.override("\u3001", "\u30FF", 0, 15),
+                                UnihexFontProvider.SizeOverride.override("\u3200", "\u9FFF", 0, 15),
+                                UnihexFontProvider.SizeOverride.override("\uAC00", "\uD7AF", 0, 14),
+                                UnihexFontProvider.SizeOverride.override("\uF900", "\uFAFF", 0, 15),
+                                UnihexFontProvider.SizeOverride.override("\uFF01", "\uFF5E", 0, 15)
                         ))
                         .build())
                 .build();
