@@ -47,7 +47,7 @@ class LocalHttpTestBase {
     static void setup() throws Exception {
         resourcePack = MinecraftResourcePackWriter.minecraft().build(resourcePack ->
                 resourcePack.packMeta(8, "Resource pack!"));
-        server = ResourcePackServer.builder()
+        server = ResourcePackServer.server()
                 .address(new InetSocketAddress(PORT))
                 .pack(resourcePack, true)
                 .build();

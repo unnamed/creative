@@ -23,132 +23,198 @@
  */
 package team.unnamed.creative.server;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
-import com.sun.net.httpserver.HttpsServer;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.server.handler.ResourcePackRequestHandler;
-import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
-import team.unnamed.creative.server.util.ResourcePackDownloadRequestParser;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ResourcePackServer {
-
-    private final HttpServer server;
-    private final ResourcePackRequestHandler handler;
-
-    private ResourcePackServer(
-            HttpServer server,
-            String path,
-            ResourcePackRequestHandler handler
-    ) {
-        this.server = server;
-        this.handler = handler;
-        this.server.createContext(path, this::handleRequest);
+/**
+ * An HTTP(s) server wrapper specialized in serving
+ * creative resource packs.
+ *
+ * @since 1.0.0
+ */
+public interface ResourcePackServer {
+    /**
+     * Creates a new builder instance for {@link ResourcePackServer}.
+     *
+     * @return A new builder instance
+     * @since 1.2.0
+     */
+    static @NotNull Builder server() {
+        return new ResourcePackServerImpl.BuilderImpl();
     }
 
-    public HttpServer httpServer() {
-        return server;
+    /**
+     * Creates a new builder instance for {@link ResourcePackServer}.
+     *
+     * @return A new builder instance
+     * @since 1.0.0
+     * @deprecated Use {@link #server()} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return server();
     }
+
+    /**
+     * Gets the internal {@link HttpServer} instance.
+     *
+     * @return The internal {@link HttpServer} instance
+     * @since 1.0.0
+     * @deprecated Should not be exposed by this interface
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @NotNull HttpServer httpServer();
+
+    /**
+     * Gets the server's bound {@link InetSocketAddress address}.
+     *
+     * @return The server's bound {@link InetSocketAddress address}
+     * @since 1.2.0
+     */
+    @NotNull InetSocketAddress address();
 
     /**
      * Starts the internal {@link HttpServer}, it is started in a new
      * background thread, so this operation is not blocking
+     *
+     * @since 1.0.0
      */
-    public void start() {
-        server.start();
-    }
+    void start();
 
     /**
      * Stops the internal {@link HttpServer}
      *
      * @param delay the maximum time in seconds to wait until requests have finished
      * @see HttpServer#stop(int)
+     * @since 1.0.0
      */
-    public void stop(int delay) {
-        server.stop(delay);
-    }
+    void stop(final int delay);
 
-    private void handleRequest(HttpExchange exchange) throws IOException {
-        if (!"GET".equals(exchange.getRequestMethod())) {
-            exchange.close();
-            return;
+    /**
+     * A builder for {@link ResourcePackServer} instances
+     *
+     * @since 1.0.0
+     */
+    interface Builder {
+        /**
+         * Sets the server's bound address, required.
+         *
+         * @param address The server's bound address
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder address(final @NotNull InetSocketAddress address);
+
+        /**
+         * Sets the server's bound address, required.
+         *
+         * @param hostname The server's bound hostname
+         * @param port     The server's bound port
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_, _ -> this")
+        default @NotNull Builder address(final @NotNull String hostname, final int port) {
+            requireNonNull(hostname, "hostname");
+            return address(new InetSocketAddress(hostname, port));
         }
 
-        final Headers headers = exchange.getRequestHeaders();
-        final ResourcePackDownloadRequest request = ResourcePackDownloadRequestParser.parse(headers);
-
-        try {
-            handler.onRequest(request, exchange);
-        } finally {
-            exchange.close();
-        }
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-
-        private InetSocketAddress address;
-        private int backlog;
-        private ResourcePackRequestHandler handler;
-        private String path = "/";
-        private HttpServerFactory serverFactory = HttpServer::create;
-
-        private Builder() {
+        /**
+         * Sets the server's bound address, required.
+         *
+         * @param address The server's bound address
+         * @param port    The server's bound port
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_, _ -> this")
+        default @NotNull Builder address(final @NotNull InetAddress address, final int port) {
+            requireNonNull(address, "address");
+            return address(new InetSocketAddress(address, port));
         }
 
-        public Builder address(InetSocketAddress address) {
-            this.address = requireNonNull(address, "address");
-            return this;
+        /**
+         * Sets the server's bound address, required.
+         *
+         * @param port The server's bound port
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder address(final int port) {
+            return address(new InetSocketAddress(port));
         }
 
-        public Builder address(String hostname, int port) {
-            this.address = new InetSocketAddress(hostname, port);
-            return this;
-        }
+        /**
+         * Sets the server's HTTPS configurator, optional.
+         * If not set, the server will default to a HTTP
+         * implementation.
+         *
+         * @param httpsConfigurator The server's HTTPS configurator
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder secure(final @NotNull HttpsConfigurator httpsConfigurator);
 
-        public Builder secure(HttpsConfigurator httpsConfigurator) {
-            requireNonNull(httpsConfigurator, "httpsConfigurator");
-            this.serverFactory = (address, backlog) -> {
-                HttpsServer server = HttpsServer.create(address, backlog);
-                server.setHttpsConfigurator(httpsConfigurator);
-                return server;
-            };
-            return this;
-        }
-
-        public Builder secure(SSLContext sslContext, Consumer<HttpsParameters> configurator) {
+        /**
+         * Sets the server's HTTPS configurator, optional.
+         * If not set, the server will default to a HTTP
+         * implementation.
+         *
+         * @param sslContext   The server's SSL context
+         * @param configurator The server's HTTPS configurator
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_, _ -> this")
+        default @NotNull Builder secure(final @NotNull SSLContext sslContext, final @NotNull Consumer<@NotNull HttpsParameters> configurator) {
+            requireNonNull(sslContext, "sslContext");
+            requireNonNull(configurator, "configurator");
             return this.secure(new HttpsConfigurator(sslContext) {
-
                 @Override
-                public void configure(HttpsParameters params) {
+                public void configure(final @NotNull HttpsParameters params) {
                     configurator.accept(params);
                 }
 
                 @Override
-                public String toString() {
+                public @NotNull String toString() {
                     return "ResourcePackServer/HttpsConfigurator for " + configurator;
                 }
-
             });
         }
 
-        public Builder secure(SSLContext sslContext) {
-            return this.secure(new HttpsConfigurator(sslContext));
+        /**
+         * Sets the server's HTTPS SSL context, optional.
+         * If not set, the server will default to a HTTP
+         * implementation.
+         *
+         * @param sslContext The server's SSL context
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder secure(final @NotNull SSLContext sslContext) {
+            requireNonNull(sslContext, "sslContext");
+            return secure(new HttpsConfigurator(sslContext));
         }
 
         /**
@@ -161,51 +227,91 @@ public final class ResourcePackServer {
          *
          * @param backlog The socket backlog
          * @return This builder, for chaining
+         * @since 1.0.0
          */
-        public Builder backlog(int backlog) {
-            this.backlog = backlog;
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder backlog(final int backlog);
 
-        public Builder handler(ResourcePackRequestHandler handler) {
-            this.handler = requireNonNull(handler, "handler");
-            return this;
-        }
+        /**
+         * Sets the server's request handler, required,
+         * may also be set by using {@link #pack}.
+         *
+         * @param handler The server's request handler
+         * @return This builder
+         * @since 1.2.0
+         */
+        @NotNull Builder handler(final @NotNull ResourcePackRequestHandler handler);
 
+        /**
+         * Sets the server's request handler, required,
+         * may also be set by using {@link #pack}.
+         *
+         * @param handler The server's request handler
+         * @return This builder
+         * @since 1.0.0
+         * @deprecated Use {@link #handler(ResourcePackRequestHandler)} instead
+         */
         @Deprecated
         @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        public Builder handler(final @NotNull team.unnamed.creative.server.ResourcePackRequestHandler handler) {
-            this.handler = requireNonNull(handler, "handler");
-            return this;
+        @Contract("_ -> this")
+        default @NotNull Builder handler(final @NotNull team.unnamed.creative.server.ResourcePackRequestHandler handler) {
+            // cast to new ResourcePackRequestHandler
+            return handler((ResourcePackRequestHandler) requireNonNull(handler, "handler"));
         }
 
-        public Builder pack(BuiltResourcePack pack, boolean validOnly) {
-            this.handler = ResourcePackRequestHandler.fixed(pack, validOnly);
-            return this;
+        /**
+         * Sets a request handler that will always return the given
+         * {@link BuiltResourcePack pack}.
+         *
+         * @param pack      The served resource pack
+         * @param validOnly Whether to only serve the pack if the
+         *                  request was made from a Minecraft client
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_, _ -> this")
+        default @NotNull Builder pack(final @NotNull BuiltResourcePack pack, final boolean validOnly) {
+            requireNonNull(pack, "pack");
+            return handler(ResourcePackRequestHandler.fixed(pack, validOnly));
         }
 
-        public Builder pack(BuiltResourcePack pack) {
-            this.handler = ResourcePackRequestHandler.fixed(pack);
-            return this;
+        /**
+         * Sets a request handler that will always return the given
+         * {@link BuiltResourcePack pack}.
+         *
+         * @param pack The served resource pack
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder pack(final @NotNull BuiltResourcePack pack) {
+            requireNonNull(pack, "pack");
+            return handler(ResourcePackRequestHandler.fixed(pack));
         }
 
-        public Builder path(String path) {
-            this.path = requireNonNull(path, "path");
-            return this;
-        }
+        /**
+         * Sets the base path for the set handler, optional,
+         * defaults to "/".
+         *
+         * @param path The base path for the set handler
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder path(final @NotNull String path);
 
-        public ResourcePackServer build() throws IOException {
-            requireNonNull(address, "Address must be set!");
-            requireNonNull(handler, "Handler must be set!");
-            return new ResourcePackServer(serverFactory.create(address, backlog), path, handler);
-        }
-
+        /**
+         * Builds the {@link ResourcePackServer} instance.
+         *
+         * <p>Note that this method will NOT automatically start
+         * the server, you must use the {@link ResourcePackServer#start()}
+         * method to do that.</p>
+         *
+         * @return The built {@link ResourcePackServer} instance
+         * @throws IOException If bind fails
+         * @since 1.0.0
+         */
+        @Contract("-> new")
+        @NotNull ResourcePackServer build() throws IOException;
     }
-
-    interface HttpServerFactory {
-
-        HttpServer create(InetSocketAddress address, int backlog) throws IOException;
-
-    }
-
 }
