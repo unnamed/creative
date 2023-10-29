@@ -26,36 +26,52 @@ package team.unnamed.creative.metadata.gui;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.stream.Stream;
 
 final class GuiBorderImpl implements GuiBorder {
-
     private final int top;
     private final int bottom;
     private final int left;
     private final int right;
 
-    GuiBorderImpl(int top, int bottom, int left, int right) {
+    GuiBorderImpl(final int top, final int bottom, final int left, final int right) {
         this.top = top;
         this.bottom = bottom;
         this.left = left;
         this.right = right;
+        validate();
     }
 
+    private void validate() {
+        if (top < 0)
+            throw new IllegalArgumentException("top border size must be greater than or equal to 0, got " + top);
+        if (bottom < 0)
+            throw new IllegalArgumentException("bottom border size must be greater than or equal to 0, got " + bottom);
+        if (left < 0)
+            throw new IllegalArgumentException("left border size must be greater than or equal to 0, got " + left);
+        if (right < 0)
+            throw new IllegalArgumentException("right border size must be greater than or equal to 0, got " + right);
+    }
+
+    @Override
     public int top() {
         return top;
     }
 
+    @Override
     public int bottom() {
         return bottom;
     }
 
+    @Override
     public int left() {
         return left;
     }
 
+    @Override
     public int right() {
         return right;
     }
@@ -71,15 +87,15 @@ final class GuiBorderImpl implements GuiBorder {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return examine(StringExaminer.simpleEscaping());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) return true;
         if (!(o instanceof GuiBorderImpl)) return false;
-        GuiBorderImpl guiBorder = (GuiBorderImpl) o;
+        final GuiBorderImpl guiBorder = (GuiBorderImpl) o;
         return top == guiBorder.top && bottom == guiBorder.bottom && left == guiBorder.left && right == guiBorder.right;
     }
 
@@ -87,6 +103,4 @@ final class GuiBorderImpl implements GuiBorder {
     public int hashCode() {
         return Objects.hash(top, bottom, left, right);
     }
-
-
 }
