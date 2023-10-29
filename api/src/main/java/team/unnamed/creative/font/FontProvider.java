@@ -128,15 +128,31 @@ public interface FontProvider extends Examinable {
 
     /**
      * Creates a new {@link ReferenceFontProvider} instance that
-     * refers to the provided {@code id} provider
+     * references another font specified by the given {@code id},
+     * which is the font key.
      *
-     * @param id The referred provider
+     * @param id The referenced font key
      * @return A new instance of {@link ReferenceFontProvider}
+     * @sinceMinecraft 1.20
      * @sincePackFormat 15
      * @since 1.0.0
      */
-    static ReferenceFontProvider reference(Key id) {
-        return ReferenceFontProvider.of(id);
+    static @NotNull ReferenceFontProvider reference(final @NotNull Key id) {
+        return new ReferenceFontProviderImpl(id);
+    }
+
+    /**
+     * Creates a new {@link ReferenceFontProvider} instance that
+     * references another font specified by the given {@code font}.
+     *
+     * @param font The referenced font
+     * @return A new instance of {@link ReferenceFontProvider}
+     * @sinceMinecraft 1.20
+     * @sincePackFormat 15
+     * @since 1.2.0
+     */
+    static @NotNull ReferenceFontProvider reference(final @NotNull Font font) {
+        return reference(font.key());
     }
 
     /**

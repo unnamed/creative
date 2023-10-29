@@ -24,45 +24,41 @@
 package team.unnamed.creative.font;
 
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Type of {@link FontProvider} that references another font.
- *
- * <p>It's used to include common font providers in another
- * font.</p>
- *
- * @sinceMinecraft 1.20
- * @sincePackFormat 15
- * @since 1.0.0
- */
-@ApiStatus.NonExtendable
-public interface ReferenceFontProvider extends FontProvider {
-    /**
-     * Creates a new {@link ReferenceFontProvider} with the
-     * given {@code id}.
-     *
-     * @param id The referenced font key
-     * @return A new {@link ReferenceFontProvider}
-     * @sinceMinecraft 1.20
-     * @sincePackFormat 15
-     * @since 1.0.0
-     * @deprecated Use {@link FontProvider#reference(Key)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull ReferenceFontProvider of(final @NotNull Key id) {
-        return FontProvider.reference(id);
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
+
+final class ReferenceFontProviderImpl implements ReferenceFontProvider {
+    private final Key id;
+
+    ReferenceFontProviderImpl(final @NotNull Key id) {
+        this.id = requireNonNull(id, "id");
     }
 
-    /**
-     * Returns the referenced font key.
-     *
-     * @return The referenced font key
-     * @sinceMinecraft 1.20
-     * @sincePackFormat 15
-     * @since 1.0.0
-     */
-    @NotNull Key id();
+    @Override
+    public @NotNull Key id() {
+        return id;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final ReferenceFontProviderImpl that = (ReferenceFontProviderImpl) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
