@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 import team.unnamed.creative.metadata.filter.FilterMeta;
+import team.unnamed.creative.metadata.gui.GuiMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackMeta;
@@ -207,6 +208,20 @@ public interface Metadata extends Examinable {
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull VillagerMeta meta) {
             return add(VillagerMeta.class, meta);
+        }
+
+        /**
+         * Adds a gui meta part.
+         *
+         * @param meta The added gui meta part
+         * @return This builder
+         * @sinceMinecraft 1.20.2
+         * @sincePackFormat 18
+         * @since 1.2.0
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder add(final @NotNull GuiMeta meta) {
+            return add(GuiMeta.class, meta);
         }
 
         /**
