@@ -27,6 +27,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.metadata.gui.GuiBorder;
+import team.unnamed.creative.metadata.gui.GuiMeta;
+import team.unnamed.creative.metadata.gui.GuiScaling;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,10 +46,13 @@ class GuiMetaTest {
         }
 
         assertEquals(
-                /*Metadata.builder().add(GuiMeta.builder().scaling(GuiScaling.of(
-                        GuiScaling.ScalingType.NINE_SLICE, 200, 20, GuiBorder.of(4, 4, 20, 20))
-                ).build()).build(),*/
-                metadata,
+                Metadata.metadata()
+                        .add(GuiMeta.of(GuiScaling.nineSlice(
+                                200,
+                                20,
+                                GuiBorder.border(4, 4, 20, 20)
+                        )))
+                        .build(),
                 metadata
         );
     }
