@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.server.handler.ResourcePackRequestHandler;
 import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
-import team.unnamed.creative.server.request.ResourcePackDownloadRequestParser;
+import team.unnamed.creative.server.util.ResourcePackDownloadRequestParser;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;

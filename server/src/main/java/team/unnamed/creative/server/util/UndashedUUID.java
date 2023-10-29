@@ -21,48 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.server.request;
+package team.unnamed.creative.server.util;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-final class UUIDUtil {
-
+@ApiStatus.Internal
+public final class UndashedUUID {
     private static final int HEX_RADIX = 16;
 
-    private UUIDUtil() {
+    private UndashedUUID() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
     }
 
-    public static UUID fromUndashedString(String string) {
-        if (string.length() != 32) {
+    public static @NotNull UUID fromUndashedString(final @NotNull String s) {
+        if (s.length() != 32) {
             throw new IllegalArgumentException("Undashed string must be 32 characters long");
         }
-        long msb = parseUnsignedHexLong(string.substring(0, 16));
-        long lsb = parseUnsignedHexLong(string.substring(16));
+        final long msb = parseUnsignedHexLong(s.substring(0, 16));
+        final long lsb = parseUnsignedHexLong(s.substring(16));
         return new UUID(msb, lsb);
     }
 
-    private static long parseUnsignedHexLong(String str) {
+    private static long parseUnsignedHexLong(final @NotNull String s) {
 
         // from Long.parseUnsignedLong in Java 9+
-        int len = str.length();
+        final int len = s.length();
 
-        if (str.charAt(0) == '-') {
-            throw new IllegalArgumentException("Illegal leading minus sign on unsigned string " + str);
+        if (s.charAt(0) == '-') {
+            throw new IllegalArgumentException("Illegal leading minus sign on unsigned string " + s);
         }
 
-        long first = Long.parseLong(str.substring(0, len - 1), HEX_RADIX);
-        int second = Character.digit(str.charAt(len - 1), HEX_RADIX);
+        final long first = Long.parseLong(s.substring(0, len - 1), HEX_RADIX);
+        final int second = Character.digit(s.charAt(len - 1), HEX_RADIX);
         if (second < 0) {
-            throw new IllegalArgumentException("Bad digit at end of " + str);
+            throw new IllegalArgumentException("Bad digit at end of " + s);
         }
-        long result = first * HEX_RADIX + second;
+        final long result = first * HEX_RADIX + second;
 
-        int guard = HEX_RADIX * (int) (first >>> 57);
+        final int guard = HEX_RADIX * (int) (first >>> 57);
         if (guard >= 128 || (result >= 0 && guard >= 128 - Character.MAX_RADIX)) {
-            throw new IllegalArgumentException("String value " + str
+            throw new IllegalArgumentException("String value " + s
                     + " exceeds range of unsigned long");
         }
         return result;
     }
-
 }

@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.server.request;
+package team.unnamed.creative.server.util;
 
 import com.sun.net.httpserver.Headers;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
 
 import java.util.UUID;
 
 @ApiStatus.Internal
 public final class ResourcePackDownloadRequestParser {
-
     private ResourcePackDownloadRequestParser() {
         throw new UnsupportedOperationException("Can't instantiate utility class");
     }
@@ -54,7 +54,7 @@ public final class ResourcePackDownloadRequestParser {
         final int packFormat;
 
         try {
-            uuid = UUIDUtil.fromUndashedString(rawUuid);
+            uuid = UndashedUUID.fromUndashedString(rawUuid);
             packFormat = Integer.parseInt(rawPackFormat);
         } catch (final IllegalArgumentException ignored) {
             return null;
@@ -62,5 +62,4 @@ public final class ResourcePackDownloadRequestParser {
 
         return ResourcePackDownloadRequest.request(uuid, username, clientVersion, clientVersionId, packFormat);
     }
-
 }
