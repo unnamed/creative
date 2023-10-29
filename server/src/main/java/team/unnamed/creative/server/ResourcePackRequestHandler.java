@@ -24,8 +24,11 @@
 package team.unnamed.creative.server;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.BuiltResourcePack;
+import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,9 +39,14 @@ import java.nio.charset.StandardCharsets;
  * Minecraft clients, using this we are able to detect some
  * information such as the expected pack format, the requester
  * player uuid, username and client version
+ *
+ * @since 1.0.0
+ * @deprecated Use new {@link team.unnamed.creative.server.handler.ResourcePackRequestHandler} instead
  */
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
 @FunctionalInterface
-public interface ResourcePackRequestHandler {
+public interface ResourcePackRequestHandler extends team.unnamed.creative.server.handler.ResourcePackRequestHandler {
 
     /**
      * Handles a resource pack request, the resulting resource
@@ -53,6 +61,27 @@ public interface ResourcePackRequestHandler {
      * @see HttpExchange
      */
     void onRequest(ResourcePackRequest request, HttpExchange exchange) throws IOException;
+
+    @Override
+    default void onRequest(final @Nullable ResourcePackDownloadRequest request, final @NotNull HttpExchange exchange) throws IOException {
+        try {
+            if (request == null) {
+                onInvalidRequest(exchange);
+            } else {
+                onRequest(new ResourcePackRequest(
+                        request.uuid(),
+                        request.username(),
+                        request.clientVersion(),
+                        request.clientVersionId(),
+                        request.packFormat()
+                ), exchange);
+            }
+        } catch (final Exception e) {
+            onException(e);
+        } finally {
+            exchange.close();
+        }
+    }
 
     /**
      * Handles an unhandled exception when invoking

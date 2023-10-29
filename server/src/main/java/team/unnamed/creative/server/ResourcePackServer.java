@@ -29,7 +29,10 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.BuiltResourcePack;
+import team.unnamed.creative.server.handler.ResourcePackRequestHandler;
 import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
 import team.unnamed.creative.server.request.ResourcePackDownloadRequestParser;
 
@@ -86,27 +89,8 @@ public final class ResourcePackServer {
         final Headers headers = exchange.getRequestHeaders();
         final ResourcePackDownloadRequest request = ResourcePackDownloadRequestParser.parse(headers);
 
-        if (request == null) {
-            try {
-                handler.onInvalidRequest(exchange);
-            } catch (final Exception e) {
-                handler.onException(e);
-            } finally {
-                exchange.close();
-            }
-            return;
-        }
-
         try {
-            handler.onRequest(new ResourcePackRequest(
-                    request.uuid(),
-                    request.username(),
-                    request.clientVersion(),
-                    request.clientVersionId(),
-                    request.packFormat()
-            ), exchange);
-        } catch (Exception e) {
-            handler.onException(e);
+            handler.onRequest(request, exchange);
         } finally {
             exchange.close();
         }
@@ -188,13 +172,20 @@ public final class ResourcePackServer {
             return this;
         }
 
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+        public Builder handler(final @NotNull team.unnamed.creative.server.ResourcePackRequestHandler handler) {
+            this.handler = requireNonNull(handler, "handler");
+            return this;
+        }
+
         public Builder pack(BuiltResourcePack pack, boolean validOnly) {
-            this.handler = ResourcePackRequestHandler.of(pack, validOnly);
+            this.handler = ResourcePackRequestHandler.fixed(pack, validOnly);
             return this;
         }
 
         public Builder pack(BuiltResourcePack pack) {
-            this.handler = ResourcePackRequestHandler.of(pack);
+            this.handler = ResourcePackRequestHandler.fixed(pack);
             return this;
         }
 
