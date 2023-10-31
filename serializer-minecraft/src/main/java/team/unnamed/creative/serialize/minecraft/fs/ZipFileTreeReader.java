@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -83,12 +84,17 @@ final class ZipFileTreeReader implements FileTreeReader {
 
     @Override
     public InputStream input() {
-        return zip;
+        return new FilterInputStream(zip) {
+            @Override
+            public void close() throws IOException {
+                // do not close the zip stream
+                zip.closeEntry();
+            }
+        };
     }
 
     @Override
     public void close() throws IOException {
         zip.close();
     }
-
 }
