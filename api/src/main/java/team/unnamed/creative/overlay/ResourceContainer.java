@@ -260,10 +260,45 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Models (Keyed)
+
+    /**
+     * Adds/updates a model to this resource container.
+     *
+     * <p>Note that there can't be two models with the
+     * same key, so if there was a model with the same
+     * key as the new given model, it will be replaced
+     * by the given one.</p>
+     *
+     * @param model The model to add/update
+     * @since 1.0.0
+     */
     void model(final @NotNull Model model);
 
+    /**
+     * Gets the model with the given key.
+     *
+     * @param key The model key
+     * @return The model, null if not found
+     * @since 1.0.0
+     */
     @Nullable Model model(final @NotNull Key key);
 
+    /**
+     * Removes the model with the given key.
+     *
+     * @param key The model key
+     * @return True if the model existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeModel(final @NotNull Key key);
+
+    /**
+     * Gets all the models in this resource container.
+     *
+     * @return The models
+     * @since 1.0.0
+     */
     @NotNull Collection<Model> models();
     //#endregion
 

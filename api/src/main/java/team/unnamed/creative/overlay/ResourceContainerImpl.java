@@ -159,17 +159,26 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Models (Keyed)
-    public void model(Model model) {
+    @Override
+    public void model(final @NotNull Model model) {
         requireNonNull(model, "model");
         models.put(model.key(), model);
     }
 
-    public @Nullable Model model(Key key) {
+    @Override
+    public @Nullable Model model(final @NotNull Key key) {
         requireNonNull(key, "key");
         return models.get(key);
     }
 
-    public Collection<Model> models() {
+    @Override
+    public boolean removeModel(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return models.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Model> models() {
         return models.values();
     }
     //#endregion
