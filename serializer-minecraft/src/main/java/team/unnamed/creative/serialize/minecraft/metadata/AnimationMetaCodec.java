@@ -105,7 +105,7 @@ final class AnimationMetaCodec implements MetadataPartCodec<AnimationMeta> {
             for (AnimationFrame frame : frames) {
                 int index = frame.index();
                 int time = frame.frameTime();
-                if (frameTime == time || frameTime == AnimationFrame.DELEGATE_FRAME_TIME) {
+                if (time == frameTime || time == AnimationFrame.DELEGATE_FRAME_TIME) {
                     // same as default frameTime, we can skip it
                     writer.value(index);
                 } else {
