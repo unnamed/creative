@@ -90,13 +90,20 @@ public class ResourceContainerImpl implements ResourceContainer {
         blockStates.put(state.key(), state);
     }
 
-
-    public @Nullable BlockState blockState(Key key) {
+    @Override
+    public @Nullable BlockState blockState(final @NotNull Key key) {
         requireNonNull(key, "key");
         return blockStates.get(key);
     }
 
-    public Collection<BlockState> blockStates() {
+    @Override
+    public boolean removeBlockState(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return blockStates.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<BlockState> blockStates() {
         return blockStates.values();
     }
     //#endregion

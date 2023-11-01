@@ -96,10 +96,45 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Block States (Keyed)
+
+    /**
+     * Adds/updates a block state to this resource container.
+     *
+     * <p>Note that there can't be two block states with the
+     * same key, so if there was a block state with the same
+     * key as the new given block state, it will be replaced
+     * by the given one.</p>
+     *
+     * @param state The block state to add/update
+     * @since 1.0.0
+     */
     void blockState(final @NotNull BlockState state);
 
+    /**
+     * Gets the block state with the given key.
+     *
+     * @param key The block state key
+     * @return The block state, null if not found
+     * @since 1.0.0
+     */
     @Nullable BlockState blockState(final @NotNull Key key);
 
+    /**
+     * Removes the block state with the given key.
+     *
+     * @param key The block state key
+     * @return True if the block state existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeBlockState(final @NotNull Key key);
+
+    /**
+     * Gets all the block states in this resource container.
+     *
+     * @return The block states
+     * @since 1.0.0
+     */
     @NotNull Collection<BlockState> blockStates();
     //#endregion
 
