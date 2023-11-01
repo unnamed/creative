@@ -381,15 +381,63 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Sounds (Keyed)
+
+    /**
+     * Adds/updates a sound to this resource container.
+     *
+     * <p>Note that there can't be two sounds with the
+     * same key, so if there was a sound with the same
+     * key as the new given sound, it will be replaced
+     * by the given one.</p>
+     *
+     * @param sound The sound to add/update
+     * @since 1.0.0
+     */
     void sound(final @NotNull Sound sound);
 
+    /**
+     * Gets the sound with the given key.
+     *
+     * @param key The sound key
+     * @return The sound, null if not found
+     * @since 1.0.0
+     */
     @Nullable Sound sound(final @NotNull Key key);
 
+    /**
+     * Removes the sound with the given key.
+     *
+     * @param key The sound key
+     * @return True if the sound existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeSound(final @NotNull Key key);
+
+    /**
+     * Gets all the sounds in this resource container.
+     *
+     * @return The sounds
+     * @since 1.0.0
+     */
     @NotNull Collection<Sound> sounds();
 
     //#region Sound helpers
+
+    /**
+     * Adds/updates a sound to this resource container.
+     *
+     * <p>Note that there can't be two sounds with the
+     * same key, so if there was a sound with the same
+     * key as the new given sound, it will be replaced
+     * by the given one.</p>
+     *
+     * @param key  The sound key
+     * @param data The sound data
+     * @since 1.0.0
+     */
     default void sound(final @NotNull Key key, final @NotNull Writable data) {
-        sound(Sound.of(key, data));
+        sound(Sound.sound(key, data));
     }
     //#endregion
     //#endregion

@@ -209,17 +209,26 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Sounds (Keyed)
-    public void sound(Sound sound) {
+    @Override
+    public void sound(final @NotNull Sound sound) {
         requireNonNull(sound, "sound");
         sounds.put(sound.key(), sound);
     }
 
-    public @Nullable Sound sound(Key key) {
+    @Override
+    public @Nullable Sound sound(final @NotNull Key key) {
         requireNonNull(key, "key");
         return sounds.get(key);
     }
 
-    public Collection<Sound> sounds() {
+    @Override
+    public boolean removeSound(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return sounds.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Sound> sounds() {
         return sounds.values();
     }
     //#endregion
