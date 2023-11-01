@@ -184,17 +184,26 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Sound Registries (Namespaced)
-    public void soundRegistry(SoundRegistry soundRegistry) {
+    @Override
+    public void soundRegistry(final @NotNull SoundRegistry soundRegistry) {
         requireNonNull(soundRegistry, "soundRegistry");
         soundRegistries.put(soundRegistry.namespace(), soundRegistry);
     }
 
-    public @Nullable SoundRegistry soundRegistry(String namespace) {
+    @Override
+    public @Nullable SoundRegistry soundRegistry(final @NotNull String namespace) {
         requireNonNull(namespace, "namespace");
         return soundRegistries.get(namespace);
     }
 
-    public Collection<SoundRegistry> soundRegistries() {
+    @Override
+    public boolean removeSoundRegistry(final @NotNull String namespace) {
+        requireNonNull(namespace, "namespace");
+        return soundRegistries.remove(namespace) != null;
+    }
+
+    @Override
+    public @NotNull Collection<SoundRegistry> soundRegistries() {
         return soundRegistries.values();
     }
     //#endregion

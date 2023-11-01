@@ -303,10 +303,45 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Sound Registries (Namespaced)
+
+    /**
+     * Adds/updates a sound registry to this resource container.
+     *
+     * <p>Note that there can't be two sound registries with the
+     * same namespace, so if there was a sound registry with the same
+     * namespace as the new given sound registry, it will be replaced
+     * by the given one.</p>
+     *
+     * @param soundRegistry The sound registry to add/update
+     * @since 1.0.0
+     */
     void soundRegistry(final @NotNull SoundRegistry soundRegistry);
 
+    /**
+     * Gets the sound registry with the given namespace.
+     *
+     * @param namespace The sound registry namespace
+     * @return The sound registry, null if not found
+     * @since 1.0.0
+     */
     @Nullable SoundRegistry soundRegistry(final @NotNull String namespace);
 
+    /**
+     * Removes the sound registry with the given namespace.
+     *
+     * @param namespace The sound registry namespace
+     * @return True if the sound registry existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeSoundRegistry(final @NotNull String namespace);
+
+    /**
+     * Gets all the sound registries in this resource container.
+     *
+     * @return The sound registries
+     * @since 1.0.0
+     */
     @NotNull Collection<SoundRegistry> soundRegistries();
 
     //#region Sound Events (Keyed, inside Sound Registries)
