@@ -160,19 +160,80 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Textures (Keyed)
+
+    /**
+     * Adds/updates a texture to this resource container.
+     *
+     * <p>Note that there can't be two textures with the
+     * same key, so if there was a texture with the same
+     * key as the new given texture, it will be replaced
+     * by the given one.</p>
+     *
+     * @param texture The texture to add/update
+     * @since 1.0.0
+     */
     void texture(final @NotNull Texture texture);
 
+    /**
+     * Gets the texture with the given key.
+     *
+     * @param key The texture key
+     * @return The texture, null if not found
+     * @since 1.0.0
+     */
     @Nullable Texture texture(final @NotNull Key key);
 
+    /**
+     * Removes the texture with the given key.
+     *
+     * @param key The texture key
+     * @return True if the texture existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeTexture(final @NotNull Key key);
+
+    /**
+     * Gets all the textures in this resource container.
+     *
+     * @return The textures
+     * @since 1.0.0
+     */
     @NotNull Collection<Texture> textures();
 
     //#region Texture helpers
+
+    /**
+     * Adds/updates a texture to this resource container.
+     *
+     * <p>Note that there can't be two textures with the
+     * same key, so if there was a texture with the same
+     * key as the new given texture, it will be replaced
+     * by the given one.</p>
+     *
+     * @param key  The texture key
+     * @param data The texture data
+     * @since 1.0.0
+     */
     default void texture(final @NotNull Key key, final @NotNull Writable data) {
-        texture(Texture.of(key, data));
+        texture(Texture.texture(key, data));
     }
 
+    /**
+     * Adds/updates a texture to this resource container.
+     *
+     * <p>Note that there can't be two textures with the
+     * same key, so if there was a texture with the same
+     * key as the new given texture, it will be replaced
+     * by the given one.</p>
+     *
+     * @param key  The texture key
+     * @param data The texture data
+     * @param meta The texture metadata
+     * @since 1.0.0
+     */
     default void texture(final @NotNull Key key, final @NotNull Writable data, final @NotNull Metadata meta) {
-        texture(Texture.of(key, data, meta));
+        texture(Texture.texture(key, data, meta));
     }
     //#endregion
     //#endregion

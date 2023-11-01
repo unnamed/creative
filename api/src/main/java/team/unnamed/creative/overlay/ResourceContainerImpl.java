@@ -177,17 +177,26 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Textures (Keyed)
-    public void texture(Texture texture) {
+    @Override
+    public void texture(final @NotNull Texture texture) {
         requireNonNull(texture, "textures");
         textures.put(texture.key(), texture);
     }
 
-    public @Nullable Texture texture(Key key) {
+    @Override
+    public @Nullable Texture texture(final @NotNull Key key) {
         requireNonNull(key, "key");
         return textures.get(key);
     }
 
-    public Collection<Texture> textures() {
+    @Override
+    public boolean removeTexture(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return textures.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Texture> textures() {
         return textures.values();
     }
     //#endregion
