@@ -345,12 +345,24 @@ public interface ResourceContainer {
     @NotNull Collection<SoundRegistry> soundRegistries();
 
     //#region Sound Events (Keyed, inside Sound Registries)
+
+    /**
+     * Adds/updates a sound event to this resource container.
+     *
+     * <p>Note that there can't be two sound events with the
+     * same key, so if there was a sound event with the same
+     * key as the new given sound event, it will be replaced
+     * by the given one.</p>
+     *
+     * @param soundEvent The sound event to add/update
+     * @since 1.0.0
+     */
     default void soundEvent(final @NotNull SoundEvent soundEvent) {
         requireNonNull(soundEvent, "soundEvent");
-        String namespace = soundEvent.key().namespace();
+        final String namespace = soundEvent.key().namespace();
 
-        Set<SoundEvent> soundEvents;
-        SoundRegistry soundRegistry = soundRegistry(namespace);
+        final Set<SoundEvent> soundEvents;
+        final SoundRegistry soundRegistry = soundRegistry(namespace);
         if (soundRegistry == null) {
             soundEvents = new HashSet<>();
         } else {
@@ -361,15 +373,48 @@ public interface ResourceContainer {
         soundRegistry(SoundRegistry.soundRegistry(namespace, soundEvents));
     }
 
+    /**
+     * Gets the sound event with the given key.
+     *
+     * @param key The sound event key
+     * @return The sound event, null if not found
+     * @since 1.0.0
+     */
     default @Nullable SoundEvent soundEvent(final @NotNull Key key) {
         requireNonNull(key, "key");
-        SoundRegistry registry = soundRegistry(key.namespace());
+        final SoundRegistry registry = soundRegistry(key.namespace());
         if (registry == null) {
             return null;
         }
         return registry.sound(key);
     }
 
+    /**
+     * Removes the sound event with the given key.
+     *
+     * @param key The sound event key
+     * @return True if the sound event existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    default boolean removeSoundEvent(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        final SoundRegistry registry = soundRegistry(key.namespace());
+        if (registry == null) {
+            return false;
+        }
+        final Set<SoundEvent> sounds = new HashSet<>(registry.sounds());
+        final boolean removed = sounds.removeIf(sound -> sound.key().equals(key));
+        soundRegistry(SoundRegistry.soundRegistry(key.namespace(), sounds));
+        return removed;
+    }
+
+    /**
+     * Gets all the sound events in this resource container.
+     *
+     * @return The sound events
+     * @since 1.0.0
+     */
     default @NotNull Collection<SoundEvent> soundEvents() {
         Collection<SoundEvent> soundEvents = new HashSet<>();
         for (SoundRegistry soundRegistry : soundRegistries()) {
