@@ -72,6 +72,12 @@ public class ResourceContainerImpl implements ResourceContainer {
     }
 
     @Override
+    public boolean removeAtlas(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return atlases.remove(key) != null;
+    }
+
+    @Override
     public @NotNull Collection<Atlas> atlases() {
         return atlases.values();
     }

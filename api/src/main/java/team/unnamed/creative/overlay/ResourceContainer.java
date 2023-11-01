@@ -53,10 +53,45 @@ import static java.util.Objects.requireNonNull;
 public interface ResourceContainer {
 
     //#region Atlases (Keyed)
+
+    /**
+     * Adds/updates an atlas to this resource container.
+     *
+     * <p>Note that there can't be two atlases with the
+     * same key, so if there was an atlas with the same
+     * key as the new given atlas, it will be replaced
+     * by the given one.</p>
+     *
+     * @param atlas The atlas to add/update
+     * @since 1.0.0
+     */
     void atlas(final @NotNull Atlas atlas);
 
+    /**
+     * Gets the atlas with the given key.
+     *
+     * @param key The atlas key
+     * @return The atlas, null if not found
+     * @since 1.0.0
+     */
     @Nullable Atlas atlas(final @NotNull Key key);
 
+    /**
+     * Removes the atlas with the given key.
+     *
+     * @param key The atlas key
+     * @return True if the atlas existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeAtlas(final @NotNull Key key);
+
+    /**
+     * Gets all the atlases in this resource container.
+     *
+     * @return The atlases
+     * @since 1.0.0
+     */
     @NotNull Collection<Atlas> atlases();
     //#endregion
 
