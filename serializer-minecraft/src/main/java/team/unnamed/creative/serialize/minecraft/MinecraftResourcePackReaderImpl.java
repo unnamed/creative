@@ -28,6 +28,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
+import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
 final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackReader {
@@ -62,8 +64,8 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
     @Override
     @SuppressWarnings("PatternValidation")
-    public ResourcePack read(FileTreeReader reader) {
-        ResourcePack resourcePack = ResourcePack.create();
+    public @NotNull ResourcePack read(final @NotNull FileTreeReader reader) {
+        ResourcePack resourcePack = ResourcePack.resourcePack();
 
         // textures that are waiting for metadata, or metadata
         // waiting for textures (because we can't know the order
@@ -223,10 +225,10 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
                         if (waiting == null) {
                             // found texture before metadata
-                            incompleteTexturesThisContainer.put(key, Texture.of(key, data));
+                            incompleteTexturesThisContainer.put(key, Texture.texture(key, data));
                         } else {
                             // metadata was found first
-                            container.texture(Texture.of(
+                            container.texture(Texture.texture(
                                     key,
                                     data,
                                     waiting.meta()
@@ -236,6 +238,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     continue;
                 }
                 default: {
+                    @SuppressWarnings("rawtypes")
                     ResourceCategory category = ResourceCategories.getByFolder(categoryName);
                     if (category == null) {
                         // unknown category!
@@ -248,6 +251,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     Key key = Key.key(namespace, keyValue);
                     try {
                         Object resource = category.deserializer().deserialize(input, key);
+                        //noinspection unchecked
                         category.setter().accept(container, resource);
                     } catch (IOException e) {
                         throw new UncheckedIOException("Failed to deserialize resource at: '" + path + "'", e);
@@ -273,6 +277,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             } else {
                 // from an overlay
                 container = resourcePack.overlay(overlayDir);
+                requireNonNull(container, "container"); // should never happen, but make ide happy
             }
 
             for (Texture texture : incompleteTexturesThisContainer.values()) {

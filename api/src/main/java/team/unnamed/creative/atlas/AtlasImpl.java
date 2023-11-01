@@ -62,7 +62,7 @@ final class AtlasImpl implements Atlas {
 
     @Override
     public @NotNull Builder toBuilder() {
-        return Atlas.builder().key(key).sources(sources);
+        return Atlas.atlas().key(key).sources(sources);
     }
 
     @Override

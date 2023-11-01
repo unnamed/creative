@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
@@ -38,7 +39,7 @@ import java.util.zip.ZipInputStream;
 public interface MinecraftResourcePackReader extends ResourcePackReader<FileTreeReader> {
 
     @Override
-    ResourcePack read(FileTreeReader tree);
+    @NotNull ResourcePack read(final @NotNull FileTreeReader tree);
 
     default ResourcePack readFromZipFile(Path path) {
         try (ZipInputStream inputStream = new ZipInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
