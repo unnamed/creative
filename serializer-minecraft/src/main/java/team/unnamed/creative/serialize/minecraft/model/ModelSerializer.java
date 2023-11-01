@@ -182,7 +182,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             }
         }
 
-        return Model.builder()
+        return Model.model()
                 .key(key)
                 .parent(parent)
                 .display(display)

@@ -53,72 +53,70 @@ class ModelDeserializationTest {
         );
 
         assertEquals(
-                Model.builder()
+                Model.model()
                         .key(Key.key("minecraft:block/cross"))
                         .ambientOcclusion(false)
                         .textures(ModelTextures.builder()
                                 .particle(ModelTexture.ofReference("cross"))
                                 .build())
-                        .elements(
-                                Element.element()
-                                        .from(new Vector3Float(0.8f, 0.0f, 8.0f))
-                                        .to(new Vector3Float(15.2f, 16.0f, 8.0f))
-                                        .rotation(
-                                                ElementRotation.builder()
-                                                        .origin(new Vector3Float(8.0f, 8.0f, 8.0f))
-                                                        .axis(Axis3D.Y)
-                                                        .angle(45.0f)
-                                                        .rescale(true)
-                                                        .build()
-                                        )
-                                        .shade(false)
-                                        .faces(new HashMap<CubeFace, ElementFace>() {{
-                                            put(CubeFace.SOUTH, ElementFace.face(
-                                                    TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
-                                                    "#cross",
-                                                    null,
-                                                    0,
-                                                    -1
-                                            ));
-                                            put(CubeFace.NORTH, ElementFace.face(
-                                                    TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
-                                                    "#cross",
-                                                    null,
-                                                    0,
-                                                    -1
-                                            ));
-                                        }})
-                                        .build(),
-                                Element.element()
-                                        .from(new Vector3Float(8.0f, 0.0f, 0.8f))
-                                        .to(new Vector3Float(8.0f, 16.0f, 15.2f))
-                                        .rotation(
-                                                ElementRotation.builder()
-                                                        .origin(new Vector3Float(8.0f, 8.0f, 8.0f))
-                                                        .axis(Axis3D.Y)
-                                                        .angle(45.0f)
-                                                        .rescale(true)
-                                                        .build()
-                                        )
-                                        .shade(false)
-                                        .faces(new HashMap<CubeFace, ElementFace>() {{
-                                            put(CubeFace.WEST, ElementFace.face(
-                                                    TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
-                                                    "#cross",
-                                                    null,
-                                                    0,
-                                                    -1
-                                            ));
-                                            put(CubeFace.EAST, ElementFace.face(
-                                                    TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
-                                                    "#cross",
-                                                    null,
-                                                    0,
-                                                    -1
-                                            ));
-                                        }})
-                                        .build()
-                        )
+                        .addElement(Element.element()
+                                .from(new Vector3Float(0.8f, 0.0f, 8.0f))
+                                .to(new Vector3Float(15.2f, 16.0f, 8.0f))
+                                .rotation(
+                                        ElementRotation.builder()
+                                                .origin(new Vector3Float(8.0f, 8.0f, 8.0f))
+                                                .axis(Axis3D.Y)
+                                                .angle(45.0f)
+                                                .rescale(true)
+                                                .build()
+                                )
+                                .shade(false)
+                                .faces(new HashMap<CubeFace, ElementFace>() {{
+                                    put(CubeFace.SOUTH, ElementFace.face(
+                                            TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
+                                            "#cross",
+                                            null,
+                                            0,
+                                            -1
+                                    ));
+                                    put(CubeFace.NORTH, ElementFace.face(
+                                            TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
+                                            "#cross",
+                                            null,
+                                            0,
+                                            -1
+                                    ));
+                                }})
+                                .build())
+                        .addElement(Element.element()
+                                .from(new Vector3Float(8.0f, 0.0f, 0.8f))
+                                .to(new Vector3Float(8.0f, 16.0f, 15.2f))
+                                .rotation(
+                                        ElementRotation.builder()
+                                                .origin(new Vector3Float(8.0f, 8.0f, 8.0f))
+                                                .axis(Axis3D.Y)
+                                                .angle(45.0f)
+                                                .rescale(true)
+                                                .build()
+                                )
+                                .shade(false)
+                                .faces(new HashMap<CubeFace, ElementFace>() {{
+                                    put(CubeFace.WEST, ElementFace.face(
+                                            TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
+                                            "#cross",
+                                            null,
+                                            0,
+                                            -1
+                                    ));
+                                    put(CubeFace.EAST, ElementFace.face(
+                                            TextureUV.uv(0.0f, 0.0f, 1.0f, 1.0f),
+                                            "#cross",
+                                            null,
+                                            0,
+                                            -1
+                                    ));
+                                }})
+                                .build())
                         .build(),
                 model
         );

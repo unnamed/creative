@@ -26,8 +26,8 @@ package team.unnamed.creative.model;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -35,114 +35,91 @@ import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.part.ResourcePackPart;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents the object responsible for specifying
- * a Minecraft block model
+ * Represents a Minecraft block/item model.
  *
  * @since 1.0.0
  */
-public class Model implements ResourcePackPart, Keyed, Examinable {
+@ApiStatus.NonExtendable
+public interface Model extends ResourcePackPart, Keyed, Examinable {
+    @Contract("-> new")
+    static @NotNull Builder model() {
+        return new ModelImpl.BuilderImpl();
+    }
+
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return model();
+    }
 
     /**
      * A {@link Model} can be set to extend this key to use
      * a model that is created out of the specified icon
+     *
+     * @since 1.0.0
      */
-    public static final Key ITEM_GENERATED = Key.key("item/generated");
+    Key ITEM_GENERATED = Key.key("item/generated");
 
-    public static final Key ITEM_HANDHELD = Key.key("item/handheld");
+    Key ITEM_HANDHELD = Key.key("item/handheld");
 
     /**
      * A {@link Model} can be set to extend this key to load
      * a model from an entity file. As you cannot specify the entity,
      * this does not work for all items (only for chests, ender chests,
      * mob heads, shields, banners and tridents)
+     *
+     * @since 1.0.0
      */
-    public static final Key BUILT_IN_ENTITY = Key.key("builtin/entity");
+    Key BUILT_IN_ENTITY = Key.key("builtin/entity");
 
-    public static final Key BUILT_IN_GENERATED = Key.key("builtin/generated");
+    Key BUILT_IN_GENERATED = Key.key("builtin/generated");
 
-    public static final boolean DEFAULT_AMBIENT_OCCLUSION = true;
-
-    private final Key key;
-    @Nullable private final Key parent;
-    private final boolean ambientOcclusion;
-    private final Map<ItemTransform.Type, ItemTransform> display;
-    private final ModelTextures textures;
-    @Nullable private final GuiLight guiLight;
-    private final List<Element> elements;
-    private final List<ItemOverride> overrides;
-
-    protected Model(
-            Key key,
-            @Nullable Key parent,
-            boolean ambientOcclusion,
-            Map<ItemTransform.Type, ItemTransform> display,
-            ModelTextures textures,
-            @Nullable GuiLight guiLight,
-            List<Element> elements,
-            List<ItemOverride> overrides
-    ) {
-        this.key = requireNonNull(key, "key");
-        this.parent = parent;
-        this.ambientOcclusion = ambientOcclusion;
-        this.display = requireNonNull(display, "display");
-        this.textures = requireNonNull(textures, "textures");
-        this.guiLight = guiLight;
-        this.elements = requireNonNull(elements, "elements");
-        this.overrides = requireNonNull(overrides, "oveerrides");
-    }
+    boolean DEFAULT_AMBIENT_OCCLUSION = true;
 
     @Override
-    public @NotNull Key key() {
-        return key;
-    }
+    @NotNull Key key();
 
     /**
      * Returns the parent model of this
      * model object
      *
      * @return The parent model location
+     * @since 1.0.0
      */
-    public @Nullable Key parent() {
-        return parent;
-    }
+    @Nullable Key parent();
 
     /**
      * Returns the boolean that determines whether
      * to use ambient occlusion or not for this block
      *
      * @return True to use ambient occlusion
+     * @since 1.0.0
      */
-    public boolean ambientOcclusion() {
-        return ambientOcclusion;
-    }
+    boolean ambientOcclusion();
 
     /**
      * Returns a map of the different places
      * where the model can be displayed
      *
      * @return An unmodifiable map of displays
+     * @since 1.0.0
      */
-    public @Unmodifiable Map<ItemTransform.Type, ItemTransform> display() {
-        return display;
-    }
+    @NotNull @Unmodifiable Map<ItemTransform.Type, ItemTransform> display();
 
     /**
      * Returns this model textures
      *
      * @return This model textures
+     * @since 1.0.0
      */
-    public ModelTextures textures() {
-        return textures;
-    }
+    @NotNull ModelTextures textures();
 
     /**
      * Returns the way how the item is rendered, can be "side"
@@ -152,10 +129,9 @@ public class Model implements ResourcePackPart, Keyed, Examinable {
      * If set to "front", model is shaded like a flat item</p>
      *
      * @return Value that determines how to render this item
+     * @since 1.0.0
      */
-    public @Nullable GuiLight guiLight() {
-        return guiLight;
-    }
+    @Nullable GuiLight guiLight();
 
     /**
      * Returns an unmodifiable list containing all
@@ -163,10 +139,9 @@ public class Model implements ResourcePackPart, Keyed, Examinable {
      * forms
      *
      * @return The model elements
+     * @since 1.0.0
      */
-    public @Unmodifiable List<Element> elements() {
-        return elements;
-    }
+    @NotNull @Unmodifiable List<Element> elements();
 
     /**
      * Returns a list of item overrides, item overrides determine cases
@@ -178,10 +153,9 @@ public class Model implements ResourcePackPart, Keyed, Examinable {
      * on overriding to the same model</p>
      *
      * @return This item model overrides
+     * @since 1.0.0
      */
-    public List<ItemOverride> overrides() {
-        return overrides;
-    }
+    @NotNull List<ItemOverride> overrides();
 
     /**
      * Adds this model to the given resource container.
@@ -190,7 +164,7 @@ public class Model implements ResourcePackPart, Keyed, Examinable {
      * @since 1.1.0
      */
     @Override
-    public void addTo(@NotNull ResourceContainer resourceContainer) {
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
         resourceContainer.model(this);
     }
 
@@ -200,127 +174,55 @@ public class Model implements ResourcePackPart, Keyed, Examinable {
      *
      * @since 1.0.0
      */
-    public enum GuiLight {
+    enum GuiLight {
         FRONT,
         SIDE
     }
 
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("key", key),
-                ExaminableProperty.of("parent", parent),
-                ExaminableProperty.of("ambientocclusion", ambientOcclusion),
-                ExaminableProperty.of("display", display),
-                ExaminableProperty.of("textures", textures),
-                ExaminableProperty.of("guiLight", guiLight),
-                ExaminableProperty.of("elements", elements),
-                ExaminableProperty.of("overrides", overrides)
-        );
-    }
+    interface Builder {
+        @Contract("_ -> this")
+        @NotNull Builder key(final @NotNull Key key);
 
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
+        @Contract("_ -> this")
+        @NotNull Builder parent(final @Nullable Key parent);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Model that = (Model) o;
-        return key.equals(that.key)
-                && ambientOcclusion == that.ambientOcclusion
-                && Objects.equals(parent, that.parent)
-                && display.equals(that.display)
-                && textures.equals(that.textures)
-                && guiLight == that.guiLight
-                && elements.equals(that.elements)
-                && overrides.equals(that.overrides);
-    }
+        @Contract("_ -> this")
+        @NotNull Builder ambientOcclusion(final boolean ambientOcclusion);
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(key, parent, ambientOcclusion, display, textures, guiLight, elements, overrides);
-    }
+        @Contract("_ -> this")
+        @NotNull Builder display(final @NotNull Map<ItemTransform.Type, ItemTransform> display);
 
-    public static Builder builder() {
-        return new Builder();
-    }
+        @Contract("_ -> this")
+        @NotNull Builder textures(final @NotNull ModelTextures textures);
 
-    public static class Builder {
+        @Contract("_ -> this")
+        @NotNull Builder guiLight(final @Nullable GuiLight guiLight);
 
-        private Key key;
-        private Key parent;
-        private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
-        private Map<ItemTransform.Type, ItemTransform> display = Collections.emptyMap();
-        private ModelTextures textures;
-        private GuiLight guiLight;
-        private List<Element> elements = Collections.emptyList();
-        private List<ItemOverride> overrides = Collections.emptyList();
+        @Contract("_ -> this")
+        @NotNull Builder elements(final @NotNull List<Element> elements);
 
-        protected Builder() {
-        }
-
-        public Builder key(Key key) {
-            this.key = key;
-            return this;
-        }
-
-        public Builder parent(@Nullable Key parent) {
-            this.parent = parent;
-            return this;
-        }
-
-        public Builder ambientOcclusion(boolean ambientOcclusion) {
-            this.ambientOcclusion = ambientOcclusion;
-            return this;
-        }
-
-        public Builder display(Map<ItemTransform.Type, ItemTransform> display) {
-            this.display = requireNonNull(display, "display");
-            return this;
-        }
-
-        public Builder textures(ModelTextures textures) {
-            this.textures = requireNonNull(textures, "textures");
-            return this;
-        }
-
-        public Builder guiLight(@Nullable GuiLight guiLight) {
-            this.guiLight = guiLight;
-            return this;
-        }
-
-        public Builder elements(List<Element> elements) {
-            this.elements = requireNonNull(elements, "elements");
-            return this;
-        }
-
-        public Builder elements(Element... elements) {
+        @Contract("_ -> this")
+        default @NotNull Builder elements(final @NotNull Element @NotNull ... elements) {
             requireNonNull(elements, "elements");
-            this.elements = Arrays.asList(elements);
-            return this;
+            return elements(Arrays.asList(elements));
         }
 
-        public Builder overrides(List<ItemOverride> overrides) {
-            this.overrides = requireNonNull(overrides, "overrides");
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder addElement(final @NotNull Element element);
 
-        public Builder overrides(ItemOverride... overrides) {
+        @Contract("_ -> this")
+        @NotNull Builder overrides(final @NotNull List<ItemOverride> overrides);
+
+        @Contract("_ -> this")
+        default @NotNull Builder overrides(final @NotNull ItemOverride @NotNull ... overrides) {
             requireNonNull(overrides, "overrides");
-            this.overrides = Arrays.asList(overrides);
-            return this;
+            return overrides(Arrays.asList(overrides));
         }
 
-        public Model build() {
-            return new Model(
-                    key, parent, ambientOcclusion, display,
-                    textures, guiLight, elements, overrides
-            );
-        }
+        @Contract("_ -> this")
+        @NotNull Builder addOverride(final @NotNull ItemOverride override);
 
+        @Contract("-> new")
+        @NotNull Model build();
     }
-
 }
