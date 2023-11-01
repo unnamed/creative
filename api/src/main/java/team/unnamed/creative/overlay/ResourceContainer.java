@@ -139,19 +139,79 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Fonts (Keyed)
+
+    /**
+     * Adds/updates a font to this resource container.
+     *
+     * <p>Note that there can't be two fonts with the
+     * same key, so if there was a font with the same
+     * key as the new given font, it will be replaced
+     * by the given one.</p>
+     *
+     * @param font The font to add/update
+     * @since 1.0.0
+     */
     void font(final @NotNull Font font);
 
+    /**
+     * Gets the font with the given key.
+     *
+     * @param key The font key
+     * @return The font, null if not found
+     * @since 1.0.0
+     */
     @Nullable Font font(final @NotNull Key key);
 
+    /**
+     * Removes the font with the given key.
+     *
+     * @param key The font key
+     * @return True if the font existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeFont(final @NotNull Key key);
+
+    /**
+     * Gets all the fonts in this resource container.
+     *
+     * @return The fonts
+     * @since 1.0.0
+     */
     @NotNull Collection<Font> fonts();
 
     //#region Font helpers
+
+    /**
+     * Adds/updates a font to this resource container.
+     *
+     * <p>Note that there can't be two fonts with the
+     * same key, so if there was a font with the same
+     * key as the new given font, it will be replaced
+     * by the given one.</p>
+     *
+     * @param key       The font key
+     * @param providers The font providers
+     * @since 1.0.0
+     */
     default void font(final @NotNull Key key, final @NotNull FontProvider @NotNull ... providers) {
-        font(Font.of(key, providers));
+        font(Font.font(key, providers));
     }
 
+    /**
+     * Adds/updates a font to this resource container.
+     *
+     * <p>Note that there can't be two fonts with the
+     * same key, so if there was a font with the same
+     * key as the new given font, it will be replaced
+     * by the given one.</p>
+     *
+     * @param key       The font key
+     * @param providers The font providers
+     * @since 1.0.0
+     */
     default void font(final @NotNull Key key, final @NotNull List<FontProvider> providers) {
-        font(Font.of(key, providers));
+        font(Font.font(key, providers));
     }
     //#endregion
     //#endregion

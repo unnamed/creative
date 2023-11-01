@@ -109,20 +109,28 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Fonts (Keyed)
-    public void font(Font font) {
+    @Override
+    public void font(final @NotNull Font font) {
         requireNonNull(font, "font");
         fonts.put(font.key(), font);
     }
 
-    public @Nullable Font font(Key key) {
+    @Override
+    public @Nullable Font font(final @NotNull Key key) {
         requireNonNull(key, "key");
         return fonts.get(key);
     }
 
-    public Collection<Font> fonts() {
-        return fonts.values();
+    @Override
+    public boolean removeFont(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return fonts.remove(key) != null;
     }
 
+    @Override
+    public @NotNull Collection<Font> fonts() {
+        return fonts.values();
+    }
     //#endregion
 
     //#region Languages (Keyed)
