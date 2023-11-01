@@ -70,13 +70,13 @@ class MetadataTest {
                                 OverlayEntry.of(PackFormat.format(18), "abc"),
                                 OverlayEntry.of(PackFormat.format(19, 19, 21), "def")
                         ))
-                        .add(AnimationMeta.builder()
+                        .add(AnimationMeta.animation()
                                 .width(16)
                                 .height(16)
                                 .frameTime(1)
                                 .frames(
-                                        AnimationFrame.of(0, 0),
-                                        AnimationFrame.of(1, 10)
+                                        AnimationFrame.frame(0, 0),
+                                        AnimationFrame.frame(1, 10)
                                 )
                                 .build())
                         .build(),

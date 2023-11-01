@@ -34,7 +34,7 @@ class AnimationMetaTest {
     @Test
     @DisplayName("Test simple AnimationMeta serialization")
     void test_serialization() {
-        final AnimationMeta meta = AnimationMeta.builder()
+        final AnimationMeta meta = AnimationMeta.animation()
                 .frameTime(6)
                 .interpolate(false)
                 .frames(0, 1, 2, 3, 2, 1)
@@ -49,16 +49,16 @@ class AnimationMetaTest {
     @Test
     @DisplayName("Test AnimationMeta serialization with specific frame time")
     void test_combined_serialization() {
-        final AnimationMeta meta = AnimationMeta.builder()
+        final AnimationMeta meta = AnimationMeta.animation()
                 .frameTime(6)
                 .interpolate(true)
                 .frames(
-                        AnimationFrame.of(0),
-                        AnimationFrame.of(1, 6), // <-- frame time specified, but same as container
-                        AnimationFrame.of(2),
-                        AnimationFrame.of(3, 10), // <-- longer frame time
-                        AnimationFrame.of(2),
-                        AnimationFrame.of(1)
+                        AnimationFrame.frame(0),
+                        AnimationFrame.frame(1, 6), // <-- frame time specified, but same as container
+                        AnimationFrame.frame(2),
+                        AnimationFrame.frame(3, 10), // <-- longer frame time
+                        AnimationFrame.frame(2),
+                        AnimationFrame.frame(1)
                 )
                 .build();
 

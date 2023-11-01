@@ -53,7 +53,7 @@ final class AnimationMetaCodec implements MetadataPartCodec<AnimationMeta> {
 
     @Override
     public @NotNull AnimationMeta read(final @NotNull JsonObject node) {
-        AnimationMeta.Builder animation = AnimationMeta.builder()
+        AnimationMeta.Builder animation = AnimationMeta.animation()
                 .interpolate(GsonUtil.getBoolean(node, "interpolate", AnimationMeta.DEFAULT_INTERPOLATE))
                 .width(GsonUtil.getInt(node, "width", AnimationMeta.DEFAULT_WIDTH))
                 .height(GsonUtil.getInt(node, "height", AnimationMeta.DEFAULT_HEIGHT))
@@ -67,11 +67,11 @@ final class AnimationMetaCodec implements MetadataPartCodec<AnimationMeta> {
                     // represents complete frame (index and frame time)
                     int time = GsonUtil.getInt(frameObject, "time", AnimationFrame.DELEGATE_FRAME_TIME);
                     int index = frameObject.get("index").getAsInt(); // required
-                    frames.add(AnimationFrame.of(index, time));
+                    frames.add(AnimationFrame.frame(index, time));
                 } else {
                     // represents the index only
                     int index = frameNode.getAsInt();
-                    frames.add(AnimationFrame.of(index));
+                    frames.add(AnimationFrame.frame(index));
                 }
             }
             animation.frames(frames);

@@ -23,20 +23,17 @@
  */
 package team.unnamed.creative.metadata.animation;
 
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
  * Block and item textures support animation by placing each
@@ -45,119 +42,23 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  *
  * @since 1.0.0
  */
-public class AnimationMeta implements MetadataPart {
-
-    public static final int DEFAULT_FRAMETIME = 1;
-    public static final int DEFAULT_WIDTH = -1;
-    public static final int DEFAULT_HEIGHT = -1;
-    public static final boolean DEFAULT_INTERPOLATE = false;
-
-    private final boolean interpolate;
-    private final int width;
-    private final int height;
-    private final int frameTime;
-    private final List<AnimationFrame> frames;
-
-    private AnimationMeta(
-            boolean interpolate,
-            int width,
-            int height,
-            int frameTime,
-            List<AnimationFrame> frames
-    ) {
-        requireNonNull(frames, "frames");
-        this.interpolate = interpolate;
-        this.width = width;
-        this.height = height;
-        this.frameTime = frameTime;
-        this.frames = immutableListOf(frames);
-    }
-
+@ApiStatus.NonExtendable
+public interface AnimationMeta extends MetadataPart {
     /**
-     * Determines if the animation is interpolated,
-     * in that case, Minecraft will generate frames
-     * between our frames
+     * Creates a new {@link AnimationMeta} instance
+     * using the provided values
      *
-     * @return True if animation is interpolated
+     * @param interpolate If frames must be interpolated
+     * @param width       Frame-texture width ratio
+     * @param height      Frame-texture height ratio
+     * @param frameTime   Default frame time
+     * @param frames      Animation frames
+     * @return A new {@link AnimationMeta} instance
+     * @since 1.3.0
      */
-    public boolean interpolate() {
-        return interpolate;
-    }
-
-    /**
-     * Returns the width of the tile, as a direct ratio
-     * rather than in pixels. Can be used by resource
-     * packs to have frames that are not perfect squares
-     *
-     * @return The tile width
-     */
-    public int width() {
-        return width;
-    }
-
-    /**
-     * Returns the height of the tile as a ratio rather than
-     * in pixels. Can be used by resource packs to have frames
-     * that are not perfect squares
-     *
-     * @return The tile height
-     */
-    public int height() {
-        return height;
-    }
-
-    /**
-     * The global frame time for all frames, it can
-     * be overwritten by specific {@link AnimationFrame} elements
-     *
-     * @return The fallback frame-time for frames that
-     * don't specify one
-     */
-    public int frameTime() {
-        return frameTime;
-    }
-
-    /**
-     * Returns an unmodifiable list of the animation
-     * {@link AnimationFrame} frames
-     *
-     * @return The animation frames
-     */
-    public List<AnimationFrame> frames() {
-        return Collections.unmodifiableList(frames);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("interpolate", interpolate),
-                ExaminableProperty.of("width", width),
-                ExaminableProperty.of("height", height),
-                ExaminableProperty.of("frameTime", frameTime),
-                ExaminableProperty.of("frames", frames)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AnimationMeta that = (AnimationMeta) o;
-        return interpolate == that.interpolate
-                && width == that.width
-                && height == that.height
-                && frameTime == that.frameTime
-                && frames.equals(that.frames);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(interpolate, width, height, frameTime, frames);
+    @Contract("_, _, _, _, _ -> new")
+    static @NotNull AnimationMeta animation(final boolean interpolate, final int width, final int height, final int frameTime, final @NotNull List<AnimationFrame> frames) {
+        return new AnimationMetaImpl(interpolate, width, height, frameTime, frames);
     }
 
     /**
@@ -170,21 +71,26 @@ public class AnimationMeta implements MetadataPart {
      * @param frameTime   Default frame time
      * @param frames      Animation frames
      * @return A new {@link AnimationMeta} instance
+     * @since 1.0.0
+     * @deprecated Use {@link #animation(boolean, int, int, int, List)} instead
      */
-    public static AnimationMeta of(
-            boolean interpolate,
-            int width,
-            int height,
-            int frameTime,
-            List<AnimationFrame> frames
-    ) {
-        return new AnimationMeta(
-                interpolate,
-                width,
-                height,
-                frameTime,
-                frames
-        );
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("_, _, _, _, _ -> new")
+    static @NotNull AnimationMeta of(final boolean interpolate, final int width, final int height, final int frameTime, final @NotNull List<AnimationFrame> frames) {
+        return animation(interpolate, width, height, frameTime, frames);
+    }
+
+    /**
+     * Returns a new instance of our builder implementation
+     * used to build {@link AnimationMeta} instances
+     *
+     * @return A new builder instance
+     * @since 1.3.0
+     */
+    @Contract("-> new")
+    static @NotNull Builder animation() {
+        return new AnimationMetaImpl.BuilderImpl();
     }
 
     /**
@@ -193,10 +99,68 @@ public class AnimationMeta implements MetadataPart {
      *
      * @return A new builder instance
      * @since 1.0.0
+     * @deprecated Use {@link #animation()} instead
      */
-    public static Builder builder() {
-        return new Builder();
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return animation();
     }
+
+    int DEFAULT_FRAMETIME = 1;
+    int DEFAULT_WIDTH = -1;
+    int DEFAULT_HEIGHT = -1;
+    boolean DEFAULT_INTERPOLATE = false;
+
+    /**
+     * Determines if the animation is interpolated,
+     * in that case, Minecraft will generate frames
+     * between our frames
+     *
+     * @return True if animation is interpolated
+     * @since 1.0.0
+     */
+    boolean interpolate();
+
+    /**
+     * Returns the width of the tile, as a direct ratio
+     * rather than in pixels. Can be used by resource
+     * packs to have frames that are not perfect squares
+     *
+     * @return The tile width
+     * @since 1.0.0
+     */
+    int width();
+
+    /**
+     * Returns the height of the tile as a ratio rather than
+     * in pixels. Can be used by resource packs to have frames
+     * that are not perfect squares
+     *
+     * @return The tile height
+     * @since 1.0.0
+     */
+    int height();
+
+    /**
+     * The global frame time for all frames, it can
+     * be overwritten by specific {@link AnimationFrame} elements
+     *
+     * @return The fallback frame-time for frames that
+     * don't specify one
+     * @since 1.0.0
+     */
+    int frameTime();
+
+    /**
+     * Returns an unmodifiable list of the animation
+     * {@link AnimationFrame} frames
+     *
+     * @return The animation frames
+     * @since 1.0.0
+     */
+    @NotNull @Unmodifiable List<AnimationFrame> frames();
 
     /**
      * Mutable and fluent-style builder for {@link AnimationMeta}
@@ -204,54 +168,49 @@ public class AnimationMeta implements MetadataPart {
      *
      * @since 1.0.0
      */
-    public static class Builder {
+    interface Builder {
+        @Contract("_ -> this")
+        @NotNull Builder interpolate(final boolean interpolate);
 
-        private boolean interpolate = DEFAULT_INTERPOLATE;
-        private int width = DEFAULT_WIDTH;
-        private int height = DEFAULT_HEIGHT;
-        private int frameTime = DEFAULT_FRAMETIME;
-        private List<AnimationFrame> frames = Collections.emptyList();
+        @Contract("_ -> this")
+        @NotNull Builder width(final int width);
 
-        private Builder() {
-        }
+        @Contract("_ -> this")
+        @NotNull Builder height(final int height);
 
-        public Builder interpolate(boolean interpolate) {
-            this.interpolate = interpolate;
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder frameTime(final int frameTime);
 
-        public Builder width(int width) {
-            this.width = width;
-            return this;
-        }
+        @Contract("_ -> this")
+        @NotNull Builder frames(final @NotNull List<AnimationFrame> frames);
 
-        public Builder height(int height) {
-            this.height = height;
-            return this;
-        }
-
-        public Builder frameTime(int frameTime) {
-            this.frameTime = frameTime;
-            return this;
-        }
-
-        public Builder frames(List<AnimationFrame> frames) {
-            this.frames = requireNonNull(frames, "frames");
-            return this;
-        }
-
-        public Builder frames(AnimationFrame... frames) {
+        @Contract("_ -> this")
+        default @NotNull Builder frames(final @NotNull AnimationFrame @NotNull ... frames) {
             requireNonNull(frames, "frames");
-            this.frames = Arrays.asList(frames);
-            return this;
+            return frames(Arrays.asList(frames));
         }
 
-        public Builder frames(int... indexes) {
-            this.frames = new ArrayList<>();
-            for (int index : indexes) {
-                this.frames.add(AnimationFrame.of(index));
+        @Contract("_ -> this")
+        default @NotNull Builder frames(final int @NotNull ... indexes) {
+            requireNonNull(indexes, "indexes");
+            final List<AnimationFrame> frames = new ArrayList<>();
+            for (final int index : indexes) {
+                frames.add(AnimationFrame.frame(index));
             }
-            return this;
+            return frames(frames);
+        }
+
+        @Contract("_ -> this")
+        @NotNull Builder addFrame(final @NotNull AnimationFrame frame);
+
+        @Contract("_ -> this")
+        default @NotNull Builder addFrame(final int index) {
+            return addFrame(AnimationFrame.frame(index));
+        }
+
+        @Contract("_, _ -> this")
+        default @NotNull Builder addFrame(final int index, final int frameTime) {
+            return addFrame(AnimationFrame.frame(index, frameTime));
         }
 
         /**
@@ -260,16 +219,9 @@ public class AnimationMeta implements MetadataPart {
          * provided
          *
          * @return The recently created animation meta
+         * @since 1.0.0
          */
-        public AnimationMeta build() {
-            return new AnimationMeta(
-                    interpolate,
-                    width,
-                    height,
-                    frameTime,
-                    frames
-            );
-        }
+        @Contract("-> new")
+        @NotNull AnimationMeta build();
     }
-
 }
