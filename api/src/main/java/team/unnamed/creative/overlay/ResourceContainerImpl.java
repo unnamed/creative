@@ -250,20 +250,28 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Unknown Files (By absolute path)
-    public void unknownFile(String path, Writable data) {
+    @Override
+    public void unknownFile(final @NotNull String path, final @NotNull Writable data) {
         requireNonNull(path, "path");
         requireNonNull(data, "data");
         files.put(path, data);
     }
 
-    public @Nullable Writable unknownFile(String path) {
+    @Override
+    public @Nullable Writable unknownFile(final @NotNull String path) {
         requireNonNull(path, "path");
         return files.get(path);
     }
 
-    public Map<String, Writable> unknownFiles() {
+    @Override
+    public boolean removeUnknownFile(final @NotNull String path) {
+        requireNonNull(path, "path");
+        return files.remove(path) != null;
+    }
+
+    @Override
+    public @NotNull Map<String, Writable> unknownFiles() {
         return files;
     }
     //#endregion
-
 }

@@ -484,11 +484,47 @@ public interface ResourceContainer {
         part.addTo(this);
     }
 
-    //#region Unknown Files (By absolute path)
+    //#region Unknown Files (By path, relative to current's resource container)
+
+    /**
+     * Adds/updates an unknown file to this resource container.
+     *
+     * <p>Note that there can't be two unknown files with the
+     * same path, so if there was an unknown file with the same
+     * path as the new given unknown file, it will be replaced
+     * by the given one.</p>
+     *
+     * @param path The unknown file path
+     * @param data The unknown file data
+     * @since 1.0.0
+     */
     void unknownFile(final @NotNull String path, final @NotNull Writable data);
 
+    /**
+     * Gets the unknown file with the given path.
+     *
+     * @param path The unknown file path
+     * @return The unknown file, null if not found
+     * @since 1.0.0
+     */
     @Nullable Writable unknownFile(final @NotNull String path);
 
+    /**
+     * Removes the unknown file with the given path.
+     *
+     * @param path The unknown file path
+     * @return True if the unknown file existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeUnknownFile(final @NotNull String path);
+
+    /**
+     * Gets all the unknown files in this resource container.
+     *
+     * @return The unknown files
+     * @since 1.0.0
+     */
     @NotNull Map<String, Writable> unknownFiles();
     //#endregion
 
