@@ -23,13 +23,16 @@
  */
 package team.unnamed.creative.serialize.minecraft.metadata;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import team.unnamed.creative.metadata.animation.AnimationFrame;
 import team.unnamed.creative.metadata.animation.AnimationMeta;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AnimationMetaTest {
     @Test
+    @DisplayName("Test simple AnimationMeta serialization")
     void test_serialization() {
         final AnimationMeta meta = AnimationMeta.builder()
                 .frameTime(6)
@@ -39,6 +42,28 @@ class AnimationMetaTest {
 
         assertEquals(
                 "{\"frametime\":6,\"frames\":[0,1,2,3,2,1]}",
+                AnimationMetaCodec.INSTANCE.toJson(meta)
+        );
+    }
+
+    @Test
+    @DisplayName("Test AnimationMeta serialization with specific frame time")
+    void test_combined_serialization() {
+        final AnimationMeta meta = AnimationMeta.builder()
+                .frameTime(6)
+                .interpolate(true)
+                .frames(
+                        AnimationFrame.of(0),
+                        AnimationFrame.of(1, 6), // <-- frame time specified, but same as container
+                        AnimationFrame.of(2),
+                        AnimationFrame.of(3, 10), // <-- longer frame time
+                        AnimationFrame.of(2),
+                        AnimationFrame.of(1)
+                )
+                .build();
+
+        assertEquals(
+                "{\"interpolate\":true,\"frametime\":6,\"frames\":[0,1,2,{\"index\":3,\"time\":10},2,1]}",
                 AnimationMetaCodec.INSTANCE.toJson(meta)
         );
     }
