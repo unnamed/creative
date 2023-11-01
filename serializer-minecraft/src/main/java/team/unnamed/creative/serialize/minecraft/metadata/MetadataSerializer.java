@@ -41,7 +41,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
     private static final Map<String, MetadataPartCodec<?>> CODECS = new HashMap<>();
 
     static {
-        registerCodec(new AnimationMetaCodec());
+        registerCodec(AnimationMetaCodec.INSTANCE);
         registerCodec(new FilterMetaCodec());
         registerCodec(new LanguageMetaCodec());
         registerCodec(PackMetaCodec.INSTANCE);

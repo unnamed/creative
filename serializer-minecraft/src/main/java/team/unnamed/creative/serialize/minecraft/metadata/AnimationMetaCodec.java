@@ -36,6 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class AnimationMetaCodec implements MetadataPartCodec<AnimationMeta> {
+    static final AnimationMetaCodec INSTANCE = new AnimationMetaCodec();
+
+    private AnimationMetaCodec() {
+    }
 
     @Override
     public @NotNull Class<AnimationMeta> type() {
