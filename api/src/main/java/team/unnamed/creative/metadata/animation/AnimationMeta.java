@@ -165,10 +165,10 @@ public class AnimationMeta implements MetadataPart {
      * using the provided values
      *
      * @param interpolate If frames must be interpolated
-     * @param width Frame-texture width ratio
-     * @param height Frame-texture height ratio
-     * @param frameTime Default frame time
-     * @param frames Animation frames
+     * @param width       Frame-texture width ratio
+     * @param height      Frame-texture height ratio
+     * @param frameTime   Default frame time
+     * @param frames      Animation frames
      * @return A new {@link AnimationMeta} instance
      */
     public static AnimationMeta of(
@@ -206,10 +206,10 @@ public class AnimationMeta implements MetadataPart {
      */
     public static class Builder {
 
-        private boolean interpolate;
-        private int width;
-        private int height;
-        private int frameTime;
+        private boolean interpolate = DEFAULT_INTERPOLATE;
+        private int width = DEFAULT_WIDTH;
+        private int height = DEFAULT_HEIGHT;
+        private int frameTime = DEFAULT_FRAMETIME;
         private List<AnimationFrame> frames = Collections.emptyList();
 
         private Builder() {
