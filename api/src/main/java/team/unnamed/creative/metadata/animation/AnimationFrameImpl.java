@@ -42,12 +42,12 @@ final class AnimationFrameImpl implements AnimationFrame {
 
     @Override
     public int index() {
-        return 0;
+        return index;
     }
 
     @Override
     public int frameTime() {
-        return 0;
+        return frameTime;
     }
 
     @Override
