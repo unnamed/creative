@@ -38,7 +38,7 @@ class AnimationMetaTest {
                 .build();
 
         assertEquals(
-                "{\"frametime\":6,\"interpolate\":false,\"frames\":[0,1,2,3,2,1]}",
+                "{\"frametime\":6,\"frames\":[0,1,2,3,2,1]}",
                 AnimationMetaCodec.INSTANCE.toJson(meta)
         );
     }
