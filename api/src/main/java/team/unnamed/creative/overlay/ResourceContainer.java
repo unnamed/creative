@@ -217,10 +217,45 @@ public interface ResourceContainer {
     //#endregion
 
     //#region Languages (Keyed)
+
+    /**
+     * Adds/updates a language to this resource container.
+     *
+     * <p>Note that there can't be two languages with the
+     * same key, so if there was a language with the same
+     * key as the new given language, it will be replaced
+     * by the given one.</p>
+     *
+     * @param language The language to add/update
+     * @since 1.0.0
+     */
     void language(final @NotNull Language language);
 
+    /**
+     * Gets the language with the given key.
+     *
+     * @param key The language key
+     * @return The language, null if not found
+     * @since 1.0.0
+     */
     @Nullable Language language(final @NotNull Key key);
 
+    /**
+     * Removes the language with the given key.
+     *
+     * @param key The language key
+     * @return True if the language existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeLanguage(final @NotNull Key key);
+
+    /**
+     * Gets all the languages in this resource container.
+     *
+     * @return The languages
+     * @since 1.0.0
+     */
     @NotNull Collection<Language> languages();
     //#endregion
 

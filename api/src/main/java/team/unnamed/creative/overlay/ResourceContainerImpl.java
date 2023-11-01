@@ -134,17 +134,26 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     //#region Languages (Keyed)
-    public void language(Language language) {
+    @Override
+    public void language(final @NotNull Language language) {
         requireNonNull(language, "language");
         languages.put(language.key(), language);
     }
 
-    public @Nullable Language language(Key key) {
+    @Override
+    public @Nullable Language language(final @NotNull Key key) {
         requireNonNull(key, "key");
         return languages.get(key);
     }
 
-    public Collection<Language> languages() {
+    @Override
+    public boolean removeLanguage(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return languages.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Language> languages() {
         return languages.values();
     }
     //#endregion
