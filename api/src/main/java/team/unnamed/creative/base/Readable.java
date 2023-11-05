@@ -113,6 +113,21 @@ public interface Readable {
     }
 
     /**
+     * Creates a new {@link Writable} instance that represents
+     * this {@link Readable} data.
+     *
+     * <p>The returned writable instance will open the readable
+     * everytime it needs to write the data, and will then write
+     * it to the output stream.</p>
+     *
+     * @return The writable representation
+     * @since 1.3.0
+     */
+    default @NotNull Writable asWritable() {
+        return Writable.inputStream(this::open);
+    }
+
+    /**
      * Creates a new {@link Readable} instance that represents
      * the named resource at the specified class loader
      *

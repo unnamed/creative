@@ -26,11 +26,13 @@ package team.unnamed.creative.serialize.minecraft.fs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Readable;
+import team.unnamed.creative.base.Writable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -45,7 +47,7 @@ final class ZipFileTreeReader implements FileTreeReader {
     private final ZipFile zipFile;
     private final Enumeration<? extends ZipEntry> entries;
 
-    private final Collection<ZipFileEntryReadable> createdContent = new HashSet<>();
+    private final Collection<WeakReference<ZipFileEntryReadable>> createdContent = new HashSet<>();
 
     private @Nullable ZipEntry currentEntry;
     private @Nullable ZipEntry nextEntry;
@@ -100,15 +102,19 @@ final class ZipFileTreeReader implements FileTreeReader {
             throw new IllegalStateException("No current entry, call next() first");
         }
         final ZipFileEntryReadable readable = new ZipFileEntryReadable(currentEntry);
-        createdContent.add(readable);
+        createdContent.add(new WeakReference<>(readable));
         return readable;
     }
 
     @Override
     public void close() throws IOException {
         // memoize created content before closing
-        for (final ZipFileEntryReadable readable : createdContent) {
-            readable.memoize();
+        for (final WeakReference<ZipFileEntryReadable> ref : createdContent) {
+            final ZipFileEntryReadable readable = ref.get();
+            if (readable != null) {
+                // only memoize if the reference to this readable is still valid
+                readable.memoize();
+            }
         }
 
         // close zip file
@@ -129,6 +135,15 @@ final class ZipFileTreeReader implements FileTreeReader {
                 return new ByteArrayInputStream(memoized);
             } else {
                 return zipFile.getInputStream(entry);
+            }
+        }
+
+        @Override
+        public @NotNull Writable asWritable() {
+            if (memoized != null) {
+                return Writable.bytes(memoized);
+            } else {
+                return Readable.super.asWritable();
             }
         }
 

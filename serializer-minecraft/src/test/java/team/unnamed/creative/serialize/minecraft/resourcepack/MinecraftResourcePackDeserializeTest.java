@@ -29,11 +29,13 @@ import org.junit.jupiter.api.Test;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackReader;
+import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.zip.ZipFile;
 
 class MinecraftResourcePackDeserializeTest {
     @Test
@@ -59,8 +61,8 @@ class MinecraftResourcePackDeserializeTest {
         System.out.println("Deserializing...");
 
         // read from temporary file
-        try {
-            final ResourcePack resourcePack = MinecraftResourcePackReader.minecraft().readFromZipFile(file);
+        try (final FileTreeReader reader = FileTreeReader.zip(new ZipFile(file))) {
+            final ResourcePack resourcePack = MinecraftResourcePackReader.minecraft().read(reader);
             System.out.println("Deserialized! There are:");
             System.out.println("  " + resourcePack.textures().size() + " textures");
             System.out.println("  " + resourcePack.models().size() + " models");

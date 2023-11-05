@@ -75,7 +75,6 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
         while (reader.hasNext()) {
             String path = reader.next();
-            InputStream input = reader.stream();
 
             // tokenize path in sections, e.g.: [ assets, minecraft, textures, ... ]
             Queue<String> tokens = tokenize(path);
@@ -93,18 +92,18 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 switch (tokens.poll()) {
                     case PACK_METADATA_FILE: {
                         // found pack.mcmeta file, deserialize and add
-                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(input));
+                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(reader.stream()));
                         resourcePack.metadata(metadata);
                         continue;
                     }
                     case PACK_ICON_FILE: {
                         // found pack.png file, add
-                        resourcePack.icon(writableFromInputStreamCopy(input));
+                        resourcePack.icon(reader.content().asWritable());
                         continue;
                     }
                     default: {
                         // unknown top level file
-                        resourcePack.unknownFile(path, writableFromInputStreamCopy(input));
+                        resourcePack.unknownFile(path, reader.content().asWritable());
                         continue;
                     }
                 }
@@ -132,7 +131,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 if (tokens.isEmpty()) {
                     // this means that there is a file directly
                     // inside the "overlays" folder, this is illegal
-                    resourcePack.unknownFile(containerPath, writableFromInputStreamCopy(input));
+                    resourcePack.unknownFile(containerPath, reader.content().asWritable());
                     continue;
                 }
 
@@ -151,7 +150,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             // null check to make ide happy
             if (folder == null || !folder.equals(ASSETS_FOLDER) || tokens.isEmpty()) {
                 // not assets! this is an unknown file
-                container.unknownFile(containerPath, writableFromInputStreamCopy(input));
+                container.unknownFile(containerPath, reader.content().asWritable());
                 continue;
             }
 
@@ -161,14 +160,14 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
             if (!Keys.isValidNamespace(namespace)) {
                 // invalid namespace found
-                container.unknownFile(containerPath, writableFromInputStreamCopy(input));
+                container.unknownFile(containerPath, reader.content().asWritable());
                 continue;
             }
 
             if (tokens.isEmpty()) {
                 // found a file directly inside "assets", like
                 // assets/<file>, it is not allowed
-                container.unknownFile(containerPath, writableFromInputStreamCopy(input));
+                container.unknownFile(containerPath, reader.content().asWritable());
                 continue;
             }
 
@@ -184,13 +183,13 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 if (categoryName.equals(SOUNDS_FILE)) {
                     // found a sound registry!
                     container.soundRegistry(SoundRegistrySerializer.INSTANCE.readFromTree(
-                            parse(input),
+                            parse(reader.stream()),
                             namespace
                     ));
                     continue;
                 } else {
                     // TODO: gpu_warnlist.json?
-                    container.unknownFile(containerPath, writableFromInputStreamCopy(input));
+                    container.unknownFile(containerPath, reader.content().asWritable());
                     continue;
                 }
             }
@@ -206,7 +205,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     if (keyOfMetadata != null) {
                         // found metadata for texture
                         Key key = Key.key(namespace, keyOfMetadata);
-                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(input));
+                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(reader.stream()));
 
                         Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
                         Texture texture = incompleteTexturesThisContainer.remove(key);
@@ -219,7 +218,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         }
                     } else {
                         Key key = Key.key(namespace, categoryPath);
-                        Writable data = writableFromInputStreamCopy(input);
+                        Writable data = reader.content().asWritable();
                         Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
                         Texture waiting = incompleteTexturesThisContainer.remove(key);
 
@@ -250,7 +249,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                     Key key = Key.key(namespace, keyValue);
                     try {
-                        Object resource = category.deserializer().deserialize(input, key);
+                        Object resource = category.deserializer().deserialize(reader.stream(), key);
                         //noinspection unchecked
                         category.setter().accept(container, resource);
                     } catch (IOException e) {
@@ -262,7 +261,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
             // unknown category or
             // file inside category had a wrong extension
-            container.unknownFile(containerPath, writableFromInputStreamCopy(input));
+            container.unknownFile(containerPath, reader.content().asWritable());
         }
 
         for (Map.Entry<String, Map<Key, Texture>> entry : incompleteTextures.entrySet()) {
@@ -295,14 +294,6 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         } else {
             // string doesn't end with extension
             return null;
-        }
-    }
-
-    private static Writable writableFromInputStreamCopy(InputStream inputStream) {
-        try {
-            return Writable.copyInputStream(inputStream);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to create a Writable instance from an InputStream copy", e);
         }
     }
 
