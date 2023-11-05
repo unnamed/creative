@@ -27,15 +27,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.ResourcePack;
-import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackReader;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 
 import java.io.File;
-import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 class MinecraftResourcePackDeserializeTest {
     @Test
@@ -49,8 +52,35 @@ class MinecraftResourcePackDeserializeTest {
         File file = null;
         try {
             file = File.createTempFile("minecraft-resource-pack-" + ref, ".zip");
-            try (final OutputStream output = Files.newOutputStream(file.toPath())) {
-                Writable.inputStream(url::openStream).write(output);
+            try (final ZipOutputStream output = new ZipOutputStream(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8)) {
+                try (final ZipInputStream input = new ZipInputStream(url.openStream(), StandardCharsets.UTF_8)) {
+                    ZipEntry entry;
+                    while ((entry = input.getNextEntry()) != null) {
+                        if (entry.isDirectory())
+                            continue;
+
+                        String name = entry.getName();
+
+                        if (name.endsWith("_all.json") || name.endsWith("_list.json")) {
+                            // set by mccloud
+                            continue;
+                        }
+
+                        // remove first folder from entry name and create a new one
+                        final String[] path = name.split("/");
+                        final String[] newPath = Arrays.copyOfRange(path, 1, path.length);
+                        name = String.join("/", newPath);
+
+                        ZipEntry outputEntry = new ZipEntry(name);
+                        output.putNextEntry(outputEntry);
+                        final byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = input.read(buffer)) != -1) {
+                            output.write(buffer, 0, length);
+                        }
+                        output.closeEntry();
+                    }
+                }
             }
         } finally {
             if (file != null) {
