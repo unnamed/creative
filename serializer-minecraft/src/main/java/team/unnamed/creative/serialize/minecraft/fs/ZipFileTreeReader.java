@@ -25,11 +25,16 @@ package team.unnamed.creative.serialize.minecraft.fs;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.base.Readable;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -39,6 +44,8 @@ import static java.util.Objects.requireNonNull;
 final class ZipFileTreeReader implements FileTreeReader {
     private final ZipFile zipFile;
     private final Enumeration<? extends ZipEntry> entries;
+
+    private final Collection<ZipFileEntryReadable> createdContent = new HashSet<>();
 
     private @Nullable ZipEntry currentEntry;
     private @Nullable ZipEntry nextEntry;
@@ -88,7 +95,67 @@ final class ZipFileTreeReader implements FileTreeReader {
     }
 
     @Override
+    public @NotNull Readable content() {
+        if (this.currentEntry == null) {
+            throw new IllegalStateException("No current entry, call next() first");
+        }
+        final ZipFileEntryReadable readable = new ZipFileEntryReadable(currentEntry);
+        createdContent.add(readable);
+        return readable;
+    }
+
+    @Override
     public void close() throws IOException {
+        // memoize created content before closing
+        for (final ZipFileEntryReadable readable : createdContent) {
+            readable.memoize();
+        }
+
+        // close zip file
         zipFile.close();
+    }
+
+    private class ZipFileEntryReadable implements Readable {
+        private final ZipEntry entry;
+        private byte @Nullable [] memoized;
+
+        ZipFileEntryReadable(final @NotNull ZipEntry entry) {
+            this.entry = requireNonNull(entry, "entry");
+        }
+
+        @Override
+        public @NotNull InputStream open() throws IOException {
+            if (memoized != null) {
+                return new ByteArrayInputStream(memoized);
+            } else {
+                return zipFile.getInputStream(entry);
+            }
+        }
+
+        void memoize() {
+            if (memoized != null) {
+                // already memoized!
+                return;
+            }
+            this.memoized = Readable.super.readAsByteArray();
+        }
+
+        @Override
+        public byte @NotNull [] readAsByteArray() {
+            if (memoized != null) {
+                return memoized.clone();
+            } else {
+                return Readable.super.readAsByteArray();
+            }
+        }
+
+        @Override
+        public @NotNull String readAsUTF8String() throws IOException {
+            if (memoized != null) {
+                return new String(memoized, StandardCharsets.UTF_8);
+            } else {
+                return Readable.super.readAsUTF8String();
+            }
+        }
     }
 }
