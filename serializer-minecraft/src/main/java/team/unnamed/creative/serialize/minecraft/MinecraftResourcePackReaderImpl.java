@@ -75,7 +75,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
 
         while (reader.hasNext()) {
             String path = reader.next();
-            InputStream input = reader.input();
+            InputStream input = reader.stream();
 
             // tokenize path in sections, e.g.: [ assets, minecraft, textures, ... ]
             Queue<String> tokens = tokenize(path);

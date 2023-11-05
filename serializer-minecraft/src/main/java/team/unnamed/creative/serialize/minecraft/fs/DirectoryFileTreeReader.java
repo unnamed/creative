@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -106,7 +107,7 @@ final class DirectoryFileTreeReader implements FileTreeReader {
     }
 
     @Override
-    public InputStream input() {
+    public @NotNull InputStream stream() {
         return currentStream;
     }
 

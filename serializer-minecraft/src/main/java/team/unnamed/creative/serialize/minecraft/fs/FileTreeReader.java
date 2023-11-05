@@ -23,7 +23,9 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.base.Readable;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +39,51 @@ public interface FileTreeReader extends AutoCloseable {
 
     String next();
 
-    InputStream input();
+    /**
+     * Returns the current entry's data as an input stream.
+     *
+     * <p>The returned input stream has a short lifetime and
+     * will be closed when next() is called again.</p>
+     *
+     * <p>To store any content of the entry use the {@link #content()}
+     * method.</p>
+     *
+     * @return The current entry's data as an input stream
+     * @since 1.3.0
+     */
+    @NotNull InputStream stream();
+
+    /**
+     * Returns the current entry's data as a {@link Readable}.
+     *
+     * <p>The returned readable instance can be used to store
+     * the entry's content.</p>
+     *
+     * @return The current entry's data as a readable
+     * @since 1.3.0
+     */
+    default @NotNull Readable content() {
+        return Readable.copyInputStream(stream());
+    }
+
+    /**
+     * Returns the current entry's data as an input stream.
+     *
+     * <p>The returned input stream has a short lifetime and
+     * will be closed when next() is called again.</p>
+     *
+     * <p>To store any content of the entry use the {@link #content()}
+     * method.</p>
+     *
+     * @return The current entry's data as an input stream
+     * @since 1.0.0
+     * @deprecated Use {@link #stream()} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    default @NotNull InputStream input() {
+        return stream();
+    }
 
     @Override
     void close() throws IOException;

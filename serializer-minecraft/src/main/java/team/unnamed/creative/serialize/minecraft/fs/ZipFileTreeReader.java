@@ -76,7 +76,7 @@ final class ZipFileTreeReader implements FileTreeReader {
     }
 
     @Override
-    public @NotNull InputStream input() {
+    public @NotNull InputStream stream() {
         if (this.currentEntry == null) {
             throw new IllegalStateException("No current entry, call next() first");
         }

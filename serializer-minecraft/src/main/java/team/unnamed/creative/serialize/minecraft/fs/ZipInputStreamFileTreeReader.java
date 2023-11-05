@@ -23,6 +23,8 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,7 +85,7 @@ final class ZipInputStreamFileTreeReader implements FileTreeReader {
     }
 
     @Override
-    public InputStream input() {
+    public @NotNull InputStream stream() {
         return new FilterInputStream(zip) {
             @Override
             public void close() throws IOException {

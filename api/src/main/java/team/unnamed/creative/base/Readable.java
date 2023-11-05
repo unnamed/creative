@@ -27,12 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
@@ -73,10 +68,9 @@ public interface Readable {
      * given {@link OutputStream}</p>
      *
      * @param output The output stream to transfer
-     * @throws IOException If transferring fails
      * @since 1.0.0
      */
-    default void readAndWrite(final @NotNull OutputStream output) throws IOException {
+    default void readAndWrite(final @NotNull OutputStream output) {
         requireNonNull(output, "output");
         try (final InputStream input = this.open()) {
             final byte[] buf = new byte[Writable.DEFAULT_BUFFER_LENGTH];
@@ -84,6 +78,8 @@ public interface Readable {
             while ((len = input.read(buf)) != -1) {
                 output.write(buf, 0, len);
             }
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Failed to read and write", e);
         }
     }
 
@@ -94,10 +90,9 @@ public interface Readable {
      * reads the data every time it is called
      *
      * @return The data in a byte array
-     * @throws IOException If conversion fails
      * @since 1.0.0
      */
-    default byte @NotNull [] readAsByteArray() throws IOException {
+    default byte @NotNull [] readAsByteArray() {
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
         readAndWrite(output);
         return output.toByteArray();
@@ -192,10 +187,9 @@ public interface Readable {
      *
      * @param inputStream The input stream to copy
      * @return The {@link Readable} representation
-     * @throws IOException If reading the input stream fails
      * @since 1.0.0
      */
-    static @NotNull Readable copyInputStream(final @NotNull InputStream inputStream) throws IOException {
+    static @NotNull Readable copyInputStream(final @NotNull InputStream inputStream) {
         requireNonNull(inputStream, "inputStream");
         // read the input stream as a byte array (kinda hacky)
         final byte[] bytes = ((Readable) (() -> inputStream)).readAsByteArray();

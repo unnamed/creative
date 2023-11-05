@@ -55,7 +55,7 @@ interface FileTreeReaderTest {
 
             while (reader.hasNext()) {
                 String path = reader.next();
-                InputStream input = reader.input();
+                InputStream input = reader.stream();
                 Assertions.assertNull(
                         files.putIfAbsent(path, Writable.copyInputStream(input)),
                         "Path was repeated: " + path
