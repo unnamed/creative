@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -82,7 +83,7 @@ public interface MinecraftResourcePackReader extends ResourcePackReader<FileTree
      */
     default @NotNull ResourcePack readFromInputStream(final @NotNull InputStream stream) {
         requireNonNull(stream, "stream");
-        return read(FileTreeReader.zip(stream instanceof ZipInputStream ? (ZipInputStream) stream : new ZipInputStream(stream)));
+        return read(FileTreeReader.zip(stream instanceof ZipInputStream ? (ZipInputStream) stream : new ZipInputStream(stream, StandardCharsets.UTF_8)));
     }
 
     default ResourcePack readFromDirectory(File directory) {
