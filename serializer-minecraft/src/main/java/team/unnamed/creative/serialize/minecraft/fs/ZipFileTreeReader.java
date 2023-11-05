@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -38,21 +39,40 @@ import static java.util.Objects.requireNonNull;
 final class ZipFileTreeReader implements FileTreeReader {
     private final ZipFile zipFile;
     private final Enumeration<? extends ZipEntry> entries;
+
     private @Nullable ZipEntry currentEntry;
+    private @Nullable ZipEntry nextEntry;
 
     ZipFileTreeReader(final @NotNull ZipFile zipFile) {
         this.zipFile = requireNonNull(zipFile, "zipFile");
         this.entries = zipFile.entries();
+        this.next0();
+    }
+
+    private void next0() {
+        nextEntry = null;
+        while (entries.hasMoreElements()) {
+            final ZipEntry entry = entries.nextElement();
+            if (!entry.isDirectory()) {
+                nextEntry = entry;
+                break;
+            }
+        }
     }
 
     @Override
     public boolean hasNext() {
-        return entries.hasMoreElements();
+        return nextEntry != null;
     }
 
     @Override
     public @NotNull String next() {
-        return (this.currentEntry = entries.nextElement()).getName();
+        if (nextEntry == null) {
+            throw new NoSuchElementException();
+        }
+        this.currentEntry = nextEntry;
+        this.next0();
+        return currentEntry.getName();
     }
 
     @Override
