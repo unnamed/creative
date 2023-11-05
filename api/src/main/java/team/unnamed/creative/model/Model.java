@@ -158,6 +158,25 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
     @NotNull List<ItemOverride> overrides();
 
     /**
+     * Converts this model object to a {@link Builder}
+     * with all the model-properties in this object.
+     *
+     * @return The builder
+     * @since 1.3.0
+     */
+    @Contract("-> new")
+    @NotNull default Builder toBuilder() {
+        return Model.model().key(key())
+                .parent(parent())
+                .ambientOcclusion(ambientOcclusion())
+                .display(display())
+                .textures(textures())
+                .guiLight(guiLight())
+                .elements(elements())
+                .overrides(overrides());
+    }
+
+    /**
      * Adds this model to the given resource container.
      *
      * @param resourceContainer The resource container
