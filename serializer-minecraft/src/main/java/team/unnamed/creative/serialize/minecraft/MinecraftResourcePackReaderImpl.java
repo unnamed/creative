@@ -305,4 +305,10 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         return PARSER.parse(reader(input));
     }
 
+    static final class BuilderImpl implements Builder {
+        @Override
+        public @NotNull MinecraftResourcePackReader build() {
+            return new MinecraftResourcePackReaderImpl();
+        }
+    }
 }

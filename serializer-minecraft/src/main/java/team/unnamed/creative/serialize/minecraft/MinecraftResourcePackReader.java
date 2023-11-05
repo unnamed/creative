@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.ResourcePackReader;
@@ -40,6 +41,29 @@ import java.util.zip.ZipInputStream;
 import static java.util.Objects.requireNonNull;
 
 public interface MinecraftResourcePackReader extends ResourcePackReader<FileTreeReader> {
+    /**
+     * Returns the standard {@link MinecraftResourcePackReader} instance.
+     *
+     * <p>If any customization is needed, use the {@link #builder()} method
+     * to change any options.</p>
+     *
+     * @return The standard Minecraft resource pack reader instance
+     * @since 1.0.0
+     */
+    static @NotNull MinecraftResourcePackReader minecraft() {
+        return MinecraftResourcePackReaderImpl.INSTANCE;
+    }
+
+    /**
+     * Returns a new {@link Builder} instance.
+     *
+     * @return The builder instance
+     * @since 1.3.0
+     */
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return new MinecraftResourcePackReaderImpl.BuilderImpl();
+    }
 
     @Override
     @NotNull ResourcePack read(final @NotNull FileTreeReader tree);
@@ -90,8 +114,34 @@ public interface MinecraftResourcePackReader extends ResourcePackReader<FileTree
         return read(FileTreeReader.directory(directory));
     }
 
-    static MinecraftResourcePackReader minecraft() {
-        return MinecraftResourcePackReaderImpl.INSTANCE;
-    }
+    /**
+     * A builder for {@link MinecraftResourcePackReader} instances.
+     *
+     * @since 1.3.0
+     */
+    interface Builder {
+        /*
+         * Makes the reader lenient.
+         *
+         * <p>A lenient reader will:</p>
+         * <ul>
+         *     <li>Use a <a href="https://www.javadoc.io/doc/com.google.code.gson/gson/2.8.0/com/google/gson/stream/JsonReader.html#setLenient-boolean-">lenient JSON reader</a></li>
+         * </ul>
+         *
+         * @param lenient Whether the reader should be lenient
+         * @return This builder
+         * @since 1.3.0
+         */
+        //@Contract("_ -> this")
+        //@NotNull Builder lenient(final boolean lenient);
 
+        /**
+         * Builds a new {@link MinecraftResourcePackReader} instance.
+         *
+         * @return The built instance
+         * @since 1.3.0
+         */
+        @Contract("-> new")
+        @NotNull MinecraftResourcePackReader build();
+    }
 }
