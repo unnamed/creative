@@ -28,29 +28,61 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.ResourcePackReader;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+
+import static java.util.Objects.requireNonNull;
 
 public interface MinecraftResourcePackReader extends ResourcePackReader<FileTreeReader> {
 
     @Override
     @NotNull ResourcePack read(final @NotNull FileTreeReader tree);
 
-    default ResourcePack readFromZipFile(Path path) {
-        try (ZipInputStream inputStream = new ZipInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
-            return read(FileTreeReader.zip(inputStream));
+    /**
+     * Reads a {@link ResourcePack} from a ZIP file at the given
+     * {@link Path path}.
+     *
+     * @param path The path to the ZIP file
+     * @return The read resource pack
+     * @since 1.0.0
+     */
+    default @NotNull ResourcePack readFromZipFile(final @NotNull Path path) {
+        requireNonNull(path, "path");
+        return readFromZipFile(path.toFile());
+    }
+
+    /**
+     * Reads a {@link ResourcePack} from a given ZIP {@link File file}.
+     *
+     * @param file The ZIP file
+     * @return The read resource pack
+     * @since 1.0.0
+     */
+    default @NotNull ResourcePack readFromZipFile(final @NotNull File file) {
+        try (final FileTreeReader reader = FileTreeReader.zip(new ZipFile(file))) {
+            return read(reader);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    default ResourcePack readFromZipFile(File zipFile) {
-        return readFromZipFile(zipFile.toPath());
+    /**
+     * Reads a {@link ResourcePack} from a given {@link InputStream}.
+     *
+     * <p>Note that this method WILL NOT close the given {@code stream}.</p>
+     *
+     * @param stream The input stream
+     * @return The read resource pack
+     * @since 1.3.0
+     */
+    default @NotNull ResourcePack readFromInputStream(final @NotNull InputStream stream) {
+        requireNonNull(stream, "stream");
+        return read(FileTreeReader.zip(stream instanceof ZipInputStream ? (ZipInputStream) stream : new ZipInputStream(stream)));
     }
 
     default ResourcePack readFromDirectory(File directory) {

@@ -23,78 +23,52 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
-import java.io.FilterInputStream;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.NoSuchElementException;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.ZipFile;
+
+import static java.util.Objects.requireNonNull;
 
 final class ZipFileTreeReader implements FileTreeReader {
+    private final ZipFile zipFile;
+    private final Enumeration<? extends ZipEntry> entries;
+    private @Nullable ZipEntry currentEntry;
 
-    private final ZipInputStream zip;
-    private ZipEntry current;
-    private boolean consumed;
-
-    public ZipFileTreeReader(ZipInputStream zip) {
-        this.zip = zip;
-    }
-
-    private void nextEntry() {
-        try {
-            ZipEntry entry;
-            do {
-                entry = zip.getNextEntry();
-            } while (entry != null && entry.isDirectory());
-            current = entry;
-            consumed = false;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    ZipFileTreeReader(final @NotNull ZipFile zipFile) {
+        this.zipFile = requireNonNull(zipFile, "zipFile");
+        this.entries = zipFile.entries();
     }
 
     @Override
     public boolean hasNext() {
-        if (current == null) {
-            if (consumed) {
-                return false;
-            } else {
-                nextEntry();
-                return current != null;
-            }
-        } else if (consumed) {
-            nextEntry();
-            return current != null;
-        } else {
-            // not null and not consumed, can call
-            // next() and should remain the same
-            return true;
-        }
+        return entries.hasMoreElements();
     }
 
     @Override
-    public String next() {
-        if (!hasNext()) {
-            throw new NoSuchElementException("No more elements");
-        }
-        consumed = true;
-        return current.getName();
+    public @NotNull String next() {
+        return (this.currentEntry = entries.nextElement()).getName();
     }
 
     @Override
-    public InputStream input() {
-        return new FilterInputStream(zip) {
-            @Override
-            public void close() throws IOException {
-                // do not close the zip stream
-                zip.closeEntry();
-            }
-        };
+    public @NotNull InputStream input() {
+        if (this.currentEntry == null) {
+            throw new IllegalStateException("No current entry, call next() first");
+        }
+        try {
+            return zipFile.getInputStream(currentEntry);
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Failed to get input stream for current entry: " + currentEntry, e);
+        }
     }
 
     @Override
     public void close() throws IOException {
-        zip.close();
+        zipFile.close();
     }
 }

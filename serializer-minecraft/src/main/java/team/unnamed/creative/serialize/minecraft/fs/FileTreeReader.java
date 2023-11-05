@@ -23,9 +23,12 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public interface FileTreeReader extends AutoCloseable {
@@ -40,7 +43,18 @@ public interface FileTreeReader extends AutoCloseable {
     void close() throws IOException;
 
     static FileTreeReader zip(ZipInputStream zip) {
-        return new ZipFileTreeReader(zip);
+        return new ZipInputStreamFileTreeReader(zip);
+    }
+
+    /**
+     * Creates a new {@link FileTreeReader} from the given {@link ZipFile}.
+     *
+     * @param zipFile The zip file to read
+     * @return The created file tree reader
+     * @since 1.3.0
+     */
+    static @NotNull FileTreeReader zip(final @NotNull ZipFile zipFile) {
+        return new ZipFileTreeReader(zipFile);
     }
 
     static FileTreeReader directory(File root) {
