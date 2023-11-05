@@ -207,76 +207,70 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             // path inside the category
             String categoryPath = path(tokens);
 
-            switch (categoryName) {
-                case TEXTURES_FOLDER: {
-                    String keyOfMetadata = withoutExtension(categoryPath, METADATA_EXTENSION);
-                    if (keyOfMetadata != null) {
-                        // found metadata for texture
-                        Key key = Key.key(namespace, keyOfMetadata);
-                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parseJson(reader.stream()));
+            if (categoryName.equals(TEXTURES_FOLDER)) {
+                String keyOfMetadata = withoutExtension(categoryPath, METADATA_EXTENSION);
+                if (keyOfMetadata != null) {
+                    // found metadata for texture
+                    Key key = Key.key(namespace, keyOfMetadata);
+                    Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parseJson(reader.stream()));
 
-                        Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
-                        Texture texture = incompleteTexturesThisContainer.remove(key);
-                        if (texture == null) {
-                            // metadata was found first, put
-                            incompleteTexturesThisContainer.put(key, Texture.of(key, Writable.EMPTY, metadata));
-                        } else {
-                            // texture was found before the metadata, nice!
-                            container.texture(texture.meta(metadata));
-                        }
+                    Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
+                    Texture texture = incompleteTexturesThisContainer.remove(key);
+                    if (texture == null) {
+                        // metadata was found first, put
+                        incompleteTexturesThisContainer.put(key, Texture.texture(key, Writable.EMPTY, metadata));
                     } else {
-                        Key key = Key.key(namespace, categoryPath);
-                        Writable data = reader.content().asWritable();
-                        Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
-                        Texture waiting = incompleteTexturesThisContainer.remove(key);
-
-                        if (waiting == null) {
-                            // found texture before metadata
-                            incompleteTexturesThisContainer.put(key, Texture.texture(key, data));
-                        } else {
-                            // metadata was found first
-                            container.texture(Texture.texture(
-                                    key,
-                                    data,
-                                    waiting.meta()
-                            ));
-                        }
+                        // texture was found before the metadata, nice!
+                        container.texture(texture.meta(metadata));
                     }
+                } else {
+                    Key key = Key.key(namespace, categoryPath);
+                    Writable data = reader.content().asWritable();
+                    Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
+                    Texture waiting = incompleteTexturesThisContainer.remove(key);
+
+                    if (waiting == null) {
+                        // found texture before metadata
+                        incompleteTexturesThisContainer.put(key, Texture.texture(key, data));
+                    } else {
+                        // metadata was found first
+                        container.texture(Texture.texture(
+                                key,
+                                data,
+                                waiting.meta()
+                        ));
+                    }
+                }
+            } else {
+                @SuppressWarnings("rawtypes")
+                ResourceCategory category = ResourceCategories.getByFolder(categoryName);
+                if (category == null) {
+                    // unknown category
+                    container.unknownFile(containerPath, reader.content().asWritable());
                     continue;
                 }
-                default: {
-                    @SuppressWarnings("rawtypes")
-                    ResourceCategory category = ResourceCategories.getByFolder(categoryName);
-                    if (category == null) {
-                        // unknown category!
-                        break;
-                    }
-                    String keyValue = withoutExtension(categoryPath, category.extension());
-                    if (keyValue == null) {
-                        break;
-                    }
-                    Key key = Key.key(namespace, keyValue);
-                    try {
-                        ResourceDeserializer<?> deserializer = category.deserializer();
-                        Object resource;
-                        if (deserializer instanceof JsonResourceDeserializer) {
-                            resource = ((JsonResourceDeserializer<?>) deserializer)
-                                    .deserializeFromJson(parseJson(reader.stream()), key);
-                        } else {
-                            resource = deserializer.deserialize(reader.stream(), key);
-                        }
-                        //noinspection unchecked
-                        category.setter().accept(container, resource);
-                    } catch (IOException e) {
-                        throw new UncheckedIOException("Failed to deserialize resource at: '" + path + "'", e);
-                    }
+                String keyValue = withoutExtension(categoryPath, category.extension());
+                if (keyValue == null) {
+                    // wrong extension
+                    container.unknownFile(containerPath, reader.content().asWritable());
                     continue;
+                }
+                Key key = Key.key(namespace, keyValue);
+                try {
+                    ResourceDeserializer<?> deserializer = category.deserializer();
+                    Object resource;
+                    if (deserializer instanceof JsonResourceDeserializer) {
+                        resource = ((JsonResourceDeserializer<?>) deserializer)
+                                .deserializeFromJson(parseJson(reader.stream()), key);
+                    } else {
+                        resource = deserializer.deserialize(reader.stream(), key);
+                    }
+                    //noinspection unchecked
+                    category.setter().accept(container, resource);
+                } catch (IOException e) {
+                    throw new UncheckedIOException("Failed to deserialize resource at: '" + path + "'", e);
                 }
             }
-
-            // unknown category or
-            // file inside category had a wrong extension
-            container.unknownFile(containerPath, reader.content().asWritable());
         }
 
         for (Map.Entry<String, Map<Key, Texture>> entry : incompleteTextures.entrySet()) {
