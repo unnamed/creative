@@ -36,6 +36,8 @@ import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
+import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
+import team.unnamed.creative.serialize.minecraft.io.ResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundRegistrySerializer;
 import team.unnamed.creative.texture.Texture;
@@ -54,12 +56,18 @@ import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
 final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackReader {
-
-    static final MinecraftResourcePackReaderImpl INSTANCE = new MinecraftResourcePackReaderImpl();
+    static final MinecraftResourcePackReader INSTANCE = MinecraftResourcePackReader.builder()
+            .lenient(false)
+            .build();
 
     private static final JsonParser PARSER = new JsonParser();
 
-    private MinecraftResourcePackReaderImpl() {
+    private final boolean lenient;
+
+    private MinecraftResourcePackReaderImpl(
+            final boolean lenient
+    ) {
+        this.lenient = lenient;
     }
 
     @Override
@@ -92,7 +100,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 switch (tokens.poll()) {
                     case PACK_METADATA_FILE: {
                         // found pack.mcmeta file, deserialize and add
-                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(reader.stream()));
+                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parseJson(reader.stream()));
                         resourcePack.metadata(metadata);
                         continue;
                     }
@@ -183,7 +191,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 if (categoryName.equals(SOUNDS_FILE)) {
                     // found a sound registry!
                     container.soundRegistry(SoundRegistrySerializer.INSTANCE.readFromTree(
-                            parse(reader.stream()),
+                            parseJson(reader.stream()),
                             namespace
                     ));
                     continue;
@@ -205,7 +213,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     if (keyOfMetadata != null) {
                         // found metadata for texture
                         Key key = Key.key(namespace, keyOfMetadata);
-                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parse(reader.stream()));
+                        Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parseJson(reader.stream()));
 
                         Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
                         Texture texture = incompleteTexturesThisContainer.remove(key);
@@ -249,7 +257,14 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                     Key key = Key.key(namespace, keyValue);
                     try {
-                        Object resource = category.deserializer().deserialize(reader.stream(), key);
+                        ResourceDeserializer<?> deserializer = category.deserializer();
+                        Object resource;
+                        if (deserializer instanceof JsonResourceDeserializer) {
+                            resource = ((JsonResourceDeserializer<?>) deserializer)
+                                    .deserializeFromJson(parseJson(reader.stream()), key);
+                        } else {
+                            resource = deserializer.deserialize(reader.stream(), key);
+                        }
                         //noinspection unchecked
                         category.setter().accept(container, resource);
                     } catch (IOException e) {
@@ -297,18 +312,27 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         }
     }
 
-    private static JsonReader reader(InputStream input) {
-        return new JsonReader(new InputStreamReader(input, StandardCharsets.UTF_8));
-    }
-
-    private static JsonElement parse(InputStream input) {
-        return PARSER.parse(reader(input));
+    private @NotNull JsonElement parseJson(final @NotNull InputStream input) {
+        try (final JsonReader jsonReader = new JsonReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
+            jsonReader.setLenient(lenient);
+            return PARSER.parse(jsonReader);
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Failed to close JSON reader", e);
+        }
     }
 
     static final class BuilderImpl implements Builder {
+        private boolean lenient = false;
+
+        @Override
+        public @NotNull Builder lenient(final boolean lenient) {
+            this.lenient = lenient;
+            return this;
+        }
+
         @Override
         public @NotNull MinecraftResourcePackReader build() {
-            return new MinecraftResourcePackReaderImpl();
+            return new MinecraftResourcePackReaderImpl(lenient);
         }
     }
 }
