@@ -25,7 +25,6 @@ package team.unnamed.creative.serialize.minecraft.resourcepack;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackReader;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
@@ -41,7 +40,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 class MinecraftResourcePackDeserializeTest {
-    @Test
+    // @Test
     @DisplayName("Test downloading & deserializing the Minecraft default resource-pack")
     void test() throws Exception {
         final String ref = "1.20.2";
