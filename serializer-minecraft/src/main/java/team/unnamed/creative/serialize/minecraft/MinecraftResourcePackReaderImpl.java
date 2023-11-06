@@ -36,6 +36,7 @@ import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
+import team.unnamed.creative.serialize.minecraft.io.BinaryResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
@@ -259,7 +260,10 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 try {
                     ResourceDeserializer<?> deserializer = category.deserializer();
                     Object resource;
-                    if (deserializer instanceof JsonResourceDeserializer) {
+                    if (deserializer instanceof BinaryResourceDeserializer) {
+                        resource = ((BinaryResourceDeserializer<?>) deserializer)
+                                .deserializeBinary(reader.content().asWritable(), key);
+                    } else if (deserializer instanceof JsonResourceDeserializer) {
                         resource = ((JsonResourceDeserializer<?>) deserializer)
                                 .deserializeFromJson(parseJson(reader.stream()), key);
                     } else {

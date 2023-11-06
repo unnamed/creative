@@ -21,24 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.sound;
+package team.unnamed.creative.serialize.minecraft.io;
 
-import org.jetbrains.annotations.ApiStatus;
-import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
-import team.unnamed.creative.serialize.minecraft.io.BinaryResourceDeserializer;
-import team.unnamed.creative.sound.Sound;
+import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.base.Readable;
+import team.unnamed.creative.base.Writable;
 
-@ApiStatus.Internal
-public class SoundSerializer {
+import java.io.IOException;
+import java.io.InputStream;
 
-    public static final ResourceCategory<Sound> CATEGORY = new ResourceCategory<>(
-            "sounds",
-            ".ogg",
-            ResourceContainer::sound,
-            ResourceContainer::sounds,
-            (BinaryResourceDeserializer<Sound>) (data, key) -> Sound.sound(key, data),
-            (sound, output) -> sound.data().write(output)
-    );
+public interface BinaryResourceDeserializer<T> extends ResourceDeserializer<T> {
+    @NotNull T deserializeBinary(final @NotNull Writable data, final @NotNull Key key);
 
+    @Override
+    default T deserialize(InputStream input, Key key) throws IOException {
+        return deserializeBinary(Writable.copyInputStream(input), key);
+    }
+
+    @Override
+    default T deserialize(Readable readable, Key key) throws IOException {
+        return deserializeBinary(readable.asWritable(), key);
+    }
 }
