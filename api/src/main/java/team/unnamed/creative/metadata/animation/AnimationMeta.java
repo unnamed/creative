@@ -169,27 +169,87 @@ public interface AnimationMeta extends MetadataPart {
      * @since 1.0.0
      */
     interface Builder {
+        /**
+         * Sets whether this animation should interpolate
+         * frames or not.
+         *
+         * <p>Interpolated animations will have some generated
+         * keyframes between the specified ones for a smoother
+         * look.</p>
+         *
+         * @param interpolate Whether this animation should interpolate frames or not
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder interpolate(final boolean interpolate);
 
+        /**
+         * Sets the width of the tile, as a direct ratio
+         * rather than in pixels. Can be used by resource
+         * packs to have frames that are not perfect squares
+         *
+         * @param width The tile width
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder width(final int width);
 
+        /**
+         * Sets the height of the tile as a ratio rather than
+         * in pixels. Can be used by resource packs to have frames
+         * that are not perfect squares
+         *
+         * @param height The tile height
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder height(final int height);
 
+        /**
+         * Sets the global frame time for all frames, it can
+         * be overwritten by specific {@link AnimationFrame} elements
+         *
+         * @param frameTime The fallback frame-time for frames that
+         *                  don't specify one
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder frameTime(final int frameTime);
 
+        /**
+         * Sets the animation {@link AnimationFrame} frames
+         *
+         * @param frames The animation frames
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         @NotNull Builder frames(final @NotNull List<AnimationFrame> frames);
 
+        /**
+         * Sets the animation {@link AnimationFrame} frames
+         *
+         * @param frames The animation frames
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         default @NotNull Builder frames(final @NotNull AnimationFrame @NotNull ... frames) {
             requireNonNull(frames, "frames");
             return frames(Arrays.asList(frames));
         }
 
+        /**
+         * Sets the animation {@link AnimationFrame} frames
+         *
+         * @param indexes The animation frames indexes
+         * @return This builder
+         * @since 1.0.0
+         */
         @Contract("_ -> this")
         default @NotNull Builder frames(final int @NotNull ... indexes) {
             requireNonNull(indexes, "indexes");
@@ -200,14 +260,37 @@ public interface AnimationMeta extends MetadataPart {
             return frames(frames);
         }
 
+        /**
+         * Adds an animation {@link AnimationFrame} frame
+         *
+         * @param frame The animation frame
+         * @return This builder
+         * @since 1.3.0
+         */
         @Contract("_ -> this")
         @NotNull Builder addFrame(final @NotNull AnimationFrame frame);
 
+        /**
+         * Adds an animation {@link AnimationFrame} frame index
+         *
+         * @param index The animation frame index
+         * @return This builder
+         * @since 1.3.0
+         */
         @Contract("_ -> this")
         default @NotNull Builder addFrame(final int index) {
             return addFrame(AnimationFrame.frame(index));
         }
 
+        /**
+         * Adds an animation {@link AnimationFrame} frame index
+         * with a specific frame time
+         *
+         * @param index     The animation frame index
+         * @param frameTime The animation frame time
+         * @return This builder
+         * @since 1.3.0
+         */
         @Contract("_, _ -> this")
         default @NotNull Builder addFrame(final int index, final int frameTime) {
             return addFrame(AnimationFrame.frame(index, frameTime));
