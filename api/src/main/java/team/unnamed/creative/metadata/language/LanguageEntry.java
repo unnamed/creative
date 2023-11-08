@@ -24,14 +24,9 @@
 package team.unnamed.creative.metadata.language;
 
 import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Object representing a Minecraft's Resource Pack language
@@ -43,95 +38,24 @@ import static java.util.Objects.requireNonNull;
  * same name in the default or a lower pack, or it creates a
  * new language as defined by pack.mcmeta</p>
  *
+ * @sincePackFormat 1
+ * @sinceMinecraft 1.6.1
  * @since 1.0.0
  */
-public class LanguageEntry implements Examinable {
-
-    public static final boolean DEFAULT_BIDIRECTIONAL = false;
-
-    private final String name;
-    private final String region;
-    private final boolean bidirectional;
-
-    private LanguageEntry(
-            String name,
-            String region,
-            boolean bidirectional
-    ) {
-        this.name = requireNonNull(name, "name");
-        this.region = requireNonNull(region, "region");
-        this.bidirectional = bidirectional;
-        validate();
-    }
-
-    private void validate() {
-        if (name.isEmpty())
-            throw new IllegalArgumentException("'name' is empty!");
-        if (region.isEmpty())
-            throw new IllegalArgumentException("'region' is empty!");
-    }
-
+public interface LanguageEntry extends Examinable {
     /**
-     * Returns the language full name, shown in the
-     * Minecraft language menu
+     * Creates a new Minecraft {@link LanguageEntry} instance
      *
-     * @return The language full name
+     * @param name          The language full name
+     * @param region        The language region or country
+     * @param bidirectional True if read from right to left
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.3.0
      */
-    public String name() {
-        return name;
-    }
-
-    /**
-     * Returns the region or country of this language,
-     * shown in the default Minecraft client language
-     * menu
-     *
-     * @return The language region or country
-     */
-    public String region() {
-        return region;
-    }
-
-    /**
-     * Determines if this language is bidirectional, in
-     * that case, it must be read from right to left
-     *
-     * @return True if this language is bidirectional
-     */
-    public boolean bidirectional() {
-        return bidirectional;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("name", name),
-                ExaminableProperty.of("region", region),
-                ExaminableProperty.of("bidirectional", bidirectional)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LanguageEntry entry = (LanguageEntry) o;
-        return bidirectional == entry.bidirectional
-                && name.equals(entry.name)
-                && region.equals(entry.region);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                name, region,
-                bidirectional
-        );
+    @Contract("_, _, _ -> new")
+    static @NotNull LanguageEntry languageEntry(final @NotNull String name, final @NotNull String region, final boolean bidirectional) {
+        return new LanguageEntryImpl(name, region, bidirectional);
     }
 
     /**
@@ -140,54 +64,132 @@ public class LanguageEntry implements Examinable {
      * @param name          The language full name
      * @param region        The language region or country
      * @param bidirectional True if read from right to left
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.0.0
+     * @deprecated Use {@link #languageEntry(String, String, boolean)} instead
      */
-    public static LanguageEntry of(
-            String name,
-            String region,
-            boolean bidirectional
-    ) {
-        return new LanguageEntry(name, region, bidirectional);
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("_, _, _ -> new")
+    static @NotNull LanguageEntry of(final @NotNull String name, final @NotNull String region, final boolean bidirectional) {
+        return languageEntry(name, region, bidirectional);
     }
 
     /**
      * Static factory method for our builder implementation
      *
      * @return A new builder for {@link LanguageEntry} instances
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.3.0
      */
-    public static Builder builder() {
-        return new Builder();
+    @Contract("-> new")
+    static @NotNull Builder languageEntry() {
+        return new LanguageEntryImpl.BuilderImpl();
     }
+
+    /**
+     * Static factory method for our builder implementation
+     *
+     * @return A new builder for {@link LanguageEntry} instances
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.0.0
+     * @deprecated Use {@link #languageEntry()} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return languageEntry();
+    }
+
+    boolean DEFAULT_BIDIRECTIONAL = false;
+
+    /**
+     * Returns the language full name, shown in the
+     * Minecraft language menu
+     *
+     * @return The language full name
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.0.0
+     */
+    @NotNull String name();
+
+    /**
+     * Returns the region or country of this language,
+     * shown in the default Minecraft client language
+     * menu
+     *
+     * @return The language region or country
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.0.0
+     */
+    @NotNull String region();
+
+    /**
+     * Determines if this language is bidirectional, in
+     * that case, it must be read from right to left
+     *
+     * @return True if this language is bidirectional
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
+     * @since 1.0.0
+     */
+    boolean bidirectional();
 
     /**
      * Mutable and fluent-style builder for {@link LanguageEntry}
      * instances, since it has a lot of parameters, we create
      * a builder for ease its creation
      *
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.6.1
      * @since 1.0.0
      */
-    public static class Builder {
+    interface Builder {
+        /**
+         * Sets the language full name, shown in the
+         * Minecraft language menu
+         *
+         * @param name The language full name
+         * @return This builder instance
+         * @sincePackFormat 1
+         * @sinceMinecraft 1.6.1
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder name(final @NotNull String name);
 
-        private String name;
-        private String region;
-        private boolean bidirectional = false;
+        /**
+         * Sets the region or country of this language,
+         * shown in the default Minecraft client language
+         * menu
+         *
+         * @param region The language region or country
+         * @return This builder instance
+         * @sincePackFormat 1
+         * @sinceMinecraft 1.6.1
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder region(final @NotNull String region);
 
-        private Builder() {
-        }
-
-        public Builder name(String name) {
-            this.name = requireNonNull(name, "name");
-            return this;
-        }
-
-        public Builder region(String region) {
-            this.region = requireNonNull(region, "region");
-            return this;
-        }
-
-        public Builder bidirectional(boolean bidirectional) {
-            this.bidirectional = bidirectional;
-            return this;
-        }
+        /**
+         * Sets if this language is bidirectional, in
+         * that case, it must be read from right to left
+         *
+         * @param bidirectional True if this language is bidirectional
+         * @return This builder instance
+         * @sincePackFormat 1
+         * @sinceMinecraft 1.6.1
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder bidirectional(final boolean bidirectional);
 
         /**
          * Finishes building the {@link LanguageEntry} instance,
@@ -195,11 +197,11 @@ public class LanguageEntry implements Examinable {
          * provided
          *
          * @return The recently created language
+         * @sincePackFormat 1
+         * @sinceMinecraft 1.6.1
+         * @since 1.0.0
          */
-        public LanguageEntry build() {
-            return new LanguageEntry(name, region, bidirectional);
-        }
-
+        @Contract("-> new")
+        @NotNull LanguageEntry build();
     }
-
 }

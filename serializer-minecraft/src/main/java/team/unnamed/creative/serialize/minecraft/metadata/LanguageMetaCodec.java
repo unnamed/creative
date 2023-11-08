@@ -55,14 +55,14 @@ final class LanguageMetaCodec implements MetadataPartCodec<LanguageMeta> {
             String code = entry.getKey();
             JsonObject languageEntryNode = entry.getValue().getAsJsonObject();
 
-            LanguageEntry languageEntry = LanguageEntry.builder()
+            LanguageEntry languageEntry = LanguageEntry.languageEntry()
                     .name(languageEntryNode.get("name").getAsString())
                     .region(languageEntryNode.get("region").getAsString())
                     .bidirectional(GsonUtil.getBoolean(languageEntryNode, "bidirectional", LanguageEntry.DEFAULT_BIDIRECTIONAL))
                     .build();
             languages.put(code, languageEntry);
         }
-        return LanguageMeta.of(languages);
+        return LanguageMeta.language(languages);
     }
 
     @Override

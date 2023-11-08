@@ -58,8 +58,8 @@ class MetadataTest {
         assertEquals(
                 Metadata.builder()
                         .add(PackMeta.of(PackFormat.format(16, 16, 17), Component.text("Description!")))
-                        .add(LanguageMeta.of(new HashMap<String, LanguageEntry>() {{
-                            put("english", LanguageEntry.of("English", "US", false));
+                        .add(LanguageMeta.language(new HashMap<String, LanguageEntry>() {{
+                            put("english", LanguageEntry.languageEntry("English", "US", false));
                         }}))
                         .add(FilterMeta.filter(
                                 KeyPattern.any(),
