@@ -21,47 +21,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.metadata;
+package team.unnamed.creative.metadata.texture;
 
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.metadata.texture.TextureMeta;
-import team.unnamed.creative.serialize.minecraft.GsonUtil;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-final class TextureMetaCodec implements MetadataPartCodec<TextureMeta> {
+final class TextureMetaImpl implements TextureMeta {
+    private final boolean blur;
+    private final boolean clamp;
 
-    @Override
-    public @NotNull Class<TextureMeta> type() {
-        return TextureMeta.class;
+    TextureMetaImpl(final boolean blur, final boolean clamp) {
+        this.blur = blur;
+        this.clamp = clamp;
     }
 
     @Override
-    public @NotNull String name() {
-        return "texture";
+    public boolean blur() {
+        return blur;
     }
 
     @Override
-    public @NotNull TextureMeta read(final @NotNull JsonObject node) {
-        boolean blur = GsonUtil.getBoolean(node, "blur", TextureMeta.DEFAULT_BLUR);
-        boolean clamp = GsonUtil.getBoolean(node, "clamp", TextureMeta.DEFAULT_CLAMP);
-        return TextureMeta.texture(blur, clamp);
+    public boolean clamp() {
+        return clamp;
     }
 
     @Override
-    public void write(final @NotNull JsonWriter writer, final @NotNull TextureMeta texture) throws IOException {
-        writer.beginObject();
-        boolean blur = texture.blur();
-        if (blur != TextureMeta.DEFAULT_BLUR) {
-            writer.name("blur").value(blur);
-        }
-        boolean clamp = texture.clamp();
-        if (clamp != TextureMeta.DEFAULT_CLAMP) {
-            writer.name("clamp").value(clamp);
-        }
-        writer.endObject();
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("blur", blur),
+                ExaminableProperty.of("clamp", clamp)
+        );
     }
 
+    @Override
+    public @NotNull String toString() {
+        return examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final TextureMetaImpl that = (TextureMetaImpl) o;
+        return blur == that.blur
+                && clamp == that.clamp;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(blur, clamp);
+    }
 }
