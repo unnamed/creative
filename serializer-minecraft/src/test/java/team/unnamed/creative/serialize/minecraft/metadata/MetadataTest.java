@@ -61,7 +61,7 @@ class MetadataTest {
                         .add(LanguageMeta.of(new HashMap<String, LanguageEntry>() {{
                             put("english", LanguageEntry.of("English", "US", false));
                         }}))
-                        .add(FilterMeta.of(
+                        .add(FilterMeta.filter(
                                 KeyPattern.any(),
                                 KeyPattern.ofNamespace("creative"),
                                 KeyPattern.of("fancy", "thing/.+")

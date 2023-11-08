@@ -23,18 +23,15 @@
  */
 package team.unnamed.creative.metadata.filter;
 
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.KeyPattern;
 import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static team.unnamed.creative.util.MoreCollections.immutableListOf;
 
 /**
  * Class representing the "filter" section of the
@@ -45,26 +42,100 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  * {@link KeyPattern filtering patterns}</p>
  *
  * @sincePackFormat 9
+ * @sinceMinecraft 1.19
  * @since 1.0.0
  */
-public class FilterMeta implements MetadataPart {
-
-    private final List<KeyPattern> patterns;
-
-    private FilterMeta(List<KeyPattern> patterns) {
-        Objects.requireNonNull(patterns, "patterns");
-        this.patterns = immutableListOf(patterns);
-        validate();
+@ApiStatus.NonExtendable
+public interface FilterMeta extends MetadataPart {
+    /**
+     * Creates a new {@link FilterMeta} from the given
+     * pattern list
+     *
+     * @param patterns The key patterns to use
+     * @return A new {@link FilterMeta} instance
+     * @sincePackFormat 9
+     * @sinceMinecraft 1.19
+     * @since 1.3.0
+     */
+    @Contract("_ -> new")
+    static @NotNull FilterMeta filter(final @NotNull List<KeyPattern> patterns) {
+        return new FilterMetaImpl(patterns);
     }
 
-    private void validate() {
-        if (patterns.isEmpty())
-            throw new IllegalArgumentException("Patterns list is empty!");
-        for (KeyPattern pattern : patterns) {
-            if (pattern == null) {
-                throw new NullPointerException("An element in the patterns list is null");
-            }
-        }
+    /**
+     * Creates a new {@link FilterMeta} from the given
+     * pattern array
+     *
+     * @param patterns The key patterns to use
+     * @return A new {@link FilterMeta} instance
+     * @sincePackFormat 9
+     * @sinceMinecraft 1.19
+     * @since 1.3.0
+     */
+    @Contract("_ -> new")
+    static @NotNull FilterMeta filter(final @NotNull KeyPattern @NotNull ... patterns) {
+        return filter(Arrays.asList(patterns));
+    }
+
+    /**
+     * @return Nothing.
+     * @throws UnsupportedOperationException Always.
+     * @since 1.3.0
+     * @deprecated Use {@link #filter(KeyPattern...)} instead
+     */
+    @Deprecated
+    @Contract("-> fail")
+    static @NotNull FilterMeta filter() {
+        throw new UnsupportedOperationException("Cannot create an empty filter meta");
+    }
+
+    /**
+     * Creates a new {@link FilterMeta} from the given
+     * pattern list
+     *
+     * @param patterns The key patterns to use
+     * @return A new {@link FilterMeta} instance
+     * @sincePackFormat 9
+     * @sinceMinecraft 1.19
+     * @since 1.0.0
+     * @deprecated Use {@link #filter(List)} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("_ -> new")
+    static @NotNull FilterMeta of(final @NotNull List<KeyPattern> patterns) {
+        return filter(patterns);
+    }
+
+    /**
+     * Creates a new {@link FilterMeta} from the given
+     * pattern array
+     *
+     * @param patterns The key patterns to use
+     * @return A new {@link FilterMeta} instance
+     * @sincePackFormat 9
+     * @sinceMinecraft 1.19
+     * @since 1.0.0
+     * @deprecated Use {@link #filter(KeyPattern...)} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("_ -> new")
+    static @NotNull FilterMeta of(final @NotNull KeyPattern @NotNull ... patterns) {
+        return filter(Arrays.asList(patterns));
+    }
+
+    /**
+     * @return Nothing.
+     * @throws UnsupportedOperationException Always.
+     * @since 1.0.0
+     * @deprecated Use {@link #filter(KeyPattern...)} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("-> fail")
+    static @NotNull FilterMeta of() {
+        throw new UnsupportedOperationException("Cannot create an empty filter meta");
     }
 
     /**
@@ -76,64 +147,9 @@ public class FilterMeta implements MetadataPart {
      * priority than this one</p>
      *
      * @return The key patterns to filter
+     * @sincePackFormat 9
+     * @sinceMinecraft 1.19
      * @since 1.0.0
      */
-    public List<KeyPattern> patterns() {
-        return patterns;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("patterns", patterns)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FilterMeta that = (FilterMeta) o;
-        return patterns.equals(that.patterns);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(patterns);
-    }
-
-    /**
-     * Creates a new {@link FilterMeta} from the given
-     * pattern list
-     *
-     * @param patterns The key patterns to use
-     * @return A new {@link FilterMeta} instance
-     * @since 1.0.0
-     */
-    public static FilterMeta of(List<KeyPattern> patterns) {
-        return new FilterMeta(patterns);
-    }
-
-    /**
-     * Creates a new {@link FilterMeta} from the given
-     * pattern array
-     *
-     * @param patterns The key patterns to use
-     * @return A new {@link FilterMeta} instance
-     * @since 1.0.0
-     */
-    public static FilterMeta of(KeyPattern... patterns) {
-        return new FilterMeta(Arrays.asList(patterns));
-    }
-
-    @Deprecated
-    public static FilterMeta of() {
-        throw new UnsupportedOperationException("Cannot create an empty filter meta");
-    }
-
+    @NotNull @Unmodifiable List<KeyPattern> patterns();
 }

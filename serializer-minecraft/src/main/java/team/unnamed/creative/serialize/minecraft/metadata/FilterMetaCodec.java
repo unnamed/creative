@@ -53,7 +53,7 @@ final class FilterMetaCodec implements MetadataPartCodec<FilterMeta> {
         for (JsonElement filterNode : node.getAsJsonArray("block")) {
             patterns.add(KeyPatternSerializer.deserialize(filterNode.getAsJsonObject()));
         }
-        return FilterMeta.of(patterns);
+        return FilterMeta.filter(patterns);
     }
 
     @Override
