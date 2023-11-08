@@ -21,44 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft.metadata;
+package team.unnamed.creative.metadata.villager;
 
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.metadata.villager.VillagerMeta;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-final class VillagerMetaCodec implements MetadataPartCodec<VillagerMeta> {
+import static java.util.Objects.requireNonNull;
 
-    @Override
-    public @NotNull Class<VillagerMeta> type() {
-        return VillagerMeta.class;
+final class VillagerMetaImpl implements VillagerMeta {
+    private final Hat hat;
+
+    VillagerMetaImpl(final @NotNull Hat hat) {
+        this.hat = requireNonNull(hat, "hat");
     }
 
     @Override
-    public @NotNull String name() {
-        return "villager";
+    public @NotNull Hat hat() {
+        return hat;
     }
 
     @Override
-    public @NotNull VillagerMeta read(final @NotNull JsonObject node) {
-        String hatName = node.get("hat").getAsString();
-        VillagerMeta.Hat hat = VillagerMeta.Hat.valueOf(hatName.toUpperCase(Locale.ROOT));
-        return VillagerMeta.villager(hat);
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+                ExaminableProperty.of("hat", hat)
+        );
     }
 
     @Override
-    public void write(final @NotNull JsonWriter writer, final @NotNull VillagerMeta villager) throws IOException {
-        writer.beginObject();
-        VillagerMeta.Hat hat = villager.hat();
-        if (hat != VillagerMeta.Hat.NONE) {
-            // only write if not default value
-            writer.name("hat").value(hat.name().toLowerCase(Locale.ROOT));
-        }
-        writer.endObject();
+    public @NotNull String toString() {
+        return examine(StringExaminer.simpleEscaping());
     }
 
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final VillagerMetaImpl that = (VillagerMetaImpl) o;
+        return hat == that.hat;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hat);
+    }
 }

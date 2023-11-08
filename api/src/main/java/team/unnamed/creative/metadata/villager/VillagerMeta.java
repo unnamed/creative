@@ -23,80 +23,98 @@
  */
 package team.unnamed.creative.metadata.villager;
 
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
-
 /**
- * Villager textures (from entity/villager and entity/zombie_villager)
- * support a .MCMETA file containing additional effects to apply to the
- * hat layer
+ * Metadata applicable to villager textures (from entity/villager
+ * and entity/zombie_villager) containing additional effects to
+ * apply to the villager hat layer.
  *
+ * @sincePackFormat 4
+ * @sinceMinecraft 1.14
  * @since 1.0.0
  */
-public class VillagerMeta implements MetadataPart {
-
-    private final Hat hat;
-
-    private VillagerMeta(Hat hat) {
-        this.hat = requireNonNull(hat, "hat");
-    }
-
+public interface VillagerMeta extends MetadataPart {
     /**
-     * Determines how the villager hat should render
-     * ("none", "partial", "full")
+     * Creates a new {@link VillagerMeta} instance
+     * from the given values
+     *
+     * @param hat The hat render mode
+     * @return A new instance of {@link VillagerMeta}
+     * @sinceMinecraft 1.14
+     * @sincePackFormat 4
+     * @since 1.3.0
      */
-    public Hat hat() {
-        return hat;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(
-                ExaminableProperty.of("hat", hat)
-        );
-    }
-
-    @Override
-    public String toString() {
-        return examine(StringExaminer.simpleEscaping());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        VillagerMeta that = (VillagerMeta) o;
-        return Objects.equals(hat, that.hat);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(hat);
+    @Contract("_ -> new")
+    static @NotNull VillagerMeta villager(final @NotNull Hat hat) {
+        return new VillagerMetaImpl(hat);
     }
 
     /**
      * Creates a new {@link VillagerMeta} instance
      * from the given values
      *
-     * @param hat Hat mode
+     * @param hat The hat render mode
      * @return A new instance of {@link VillagerMeta}
+     * @sinceMinecraft 1.14
+     * @sincePackFormat 4
+     * @since 1.0.0
+     * @deprecated Use {@link #villager(Hat)} instead
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+    @Contract("_ -> new")
+    static @NotNull VillagerMeta of(final @NotNull Hat hat) {
+        return new VillagerMetaImpl(hat);
+    }
+
+    /**
+     * Determines how the villager hat should render
+     * ("none", "partial", "full")
+     *
+     * @return The hat render mode
+     * @sincePackFormat 4
+     * @sinceMinecraft 1.14
      * @since 1.0.0
      */
-    public static VillagerMeta of(Hat hat) {
-        return new VillagerMeta(hat);
-    }
+    @NotNull Hat hat();
 
-    public enum Hat {
-        NONE, // default
+    /**
+     * Represents the hat render mode for villager textures.
+     *
+     * @sincePackFormat 4
+     * @sinceMinecraft 1.14
+     * @since 1.0.0
+     */
+    enum Hat {
+        /**
+         * No hat rendering.
+         *
+         * @sinceMinecraft 1.14
+         * @sincePackFormat 4
+         * @since 1.0.0
+         */
+        NONE,
+
+        /**
+         * Partial hat rendering.
+         *
+         * @sinceMinecraft 1.14
+         * @sincePackFormat 4
+         * @since 1.0.0
+         */
         PARTIAL,
+
+        /**
+         * Full hat rendering.
+         *
+         * @sinceMinecraft 1.14
+         * @sincePackFormat 4
+         * @since 1.0.0
+         */
         FULL
     }
-
 }
