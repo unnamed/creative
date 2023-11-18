@@ -39,6 +39,7 @@ import team.unnamed.creative.part.ResourcePackPart;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
+import team.unnamed.creative.text.Text;
 import team.unnamed.creative.texture.Texture;
 
 import java.util.Collection;
@@ -257,6 +258,49 @@ public interface ResourceContainer {
      * @since 1.0.0
      */
     @NotNull Collection<Language> languages();
+    //#endregion
+
+    //#region Texts (Keyed)
+
+    /**
+     * Adds/updates a text to this resource container.
+     *
+     * <p>Note that there can't be two texts with the
+     * same key, so if there was a text with the same
+     * key as the new given text, it will be replaced
+     * by the given one.</p>
+     *
+     * @param text The text to add/update
+     * @since 1.3.0
+     */
+    void text(final @NotNull Text text);
+
+    /**
+     * Gets the text with the given key.
+     *
+     * @param key The text key
+     * @return The text, null if not found
+     * @since 1.3.0
+     */
+    @Nullable Text text(final @NotNull Key key);
+
+    /**
+     * Removes the text with the given key.
+     *
+     * @param key The text key
+     * @return True if the text existed and was removed,
+     * false otherwise
+     * @since 1.3.0
+     */
+    boolean removeText(final @NotNull Key key);
+
+    /**
+     * Gets all the texts in this resource container.
+     *
+     * @return The texts
+     * @since 1.3.0
+     */
+    @NotNull Collection<Text> texts();
     //#endregion
 
     //#region Models (Keyed)

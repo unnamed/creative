@@ -35,6 +35,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundRegistry;
+import team.unnamed.creative.text.Text;
 import team.unnamed.creative.texture.Texture;
 
 import java.util.Collection;
@@ -53,6 +54,7 @@ public class ResourceContainerImpl implements ResourceContainer {
     private final Map<Key, Model> models = new HashMap<>();
     private final Map<String, SoundRegistry> soundRegistries = new HashMap<>();
     private final Map<Key, Sound> sounds = new HashMap<>();
+    private final Map<Key, Text> texts = new HashMap<>();
     private final Map<Key, Texture> textures = new HashMap<>();
 
     // Unknown files we don't know how to parse
@@ -155,6 +157,32 @@ public class ResourceContainerImpl implements ResourceContainer {
     @Override
     public @NotNull Collection<Language> languages() {
         return languages.values();
+    }
+    //#endregion
+
+    //#region Texts (Keyed)
+
+    @Override
+    public void text(final @NotNull Text text) {
+        requireNonNull(text, "text");
+        texts.put(text.key(), text);
+    }
+
+    @Override
+    public @Nullable Text text(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return texts.get(key);
+    }
+
+    @Override
+    public boolean removeText(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return texts.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Text> texts() {
+        return texts.values();
     }
     //#endregion
 
