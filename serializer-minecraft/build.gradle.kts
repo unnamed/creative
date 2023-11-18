@@ -2,6 +2,8 @@ plugins {
     id("creative.publishing-conventions")
 }
 
+description = "Minecraft: Java Edition vanilla serialization for the creative API"
+
 dependencies {
     api(project(":creative-api"))
     api("com.google.code.gson:gson:2.8.0")
