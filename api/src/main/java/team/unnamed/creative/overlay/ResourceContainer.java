@@ -621,4 +621,13 @@ public interface ResourceContainer {
     @NotNull Map<String, Writable> unknownFiles();
     //#endregion
 
+    /**
+     * Merges the given {@code other} resource container
+     * with this resource container.
+     *
+     * @param other The other resource container
+     * @param mode  The merge mode
+     * @since 1.4.0
+     */
+    void merge(final @NotNull ResourceContainer other, final @NotNull MergeMode mode);
 }

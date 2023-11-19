@@ -27,12 +27,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
+import team.unnamed.creative.overlay.MergeMode;
 import team.unnamed.creative.overlay.Overlay;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.overlay.ResourceContainerImpl;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -82,4 +86,74 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
         return overlays.values();
     }
 
+    @Override
+    public void merge(final @NotNull ResourceContainer other, final @NotNull MergeMode mode) {
+        super.merge(other, mode);
+
+        if (!(other instanceof ResourcePack)) {
+            return;
+        }
+
+        // merge ResourcePack properties
+        final ResourcePack otherPack = (ResourcePack) other;
+
+        // merge icon
+        final Writable newIcon = otherPack.icon();
+        switch (mode) {
+            case OVERRIDE:
+                if (newIcon != null) {
+                    icon = newIcon;
+                }
+                break;
+            case MERGE_AND_FAIL_ON_ERROR:
+                if (newIcon != null && icon != null) {
+                    throw new IllegalStateException("Can't merge resource packs, icons are already set for both packs");
+                } else if (newIcon != null) {
+                    icon = newIcon;
+                }
+                break;
+            case MERGE_AND_KEEP_FIRST_ON_ERROR:
+                if (icon == null && newIcon != null) {
+                    icon = newIcon;
+                }
+                break;
+        }
+
+        // merge metadata
+        final Metadata newMetadata = otherPack.metadata();
+        if (mode == MergeMode.OVERRIDE) {
+            metadata = newMetadata;
+        } else {
+            // O(n^2) :C
+            final Collection<MetadataPart> oldParts = new HashSet<>(metadata.parts());
+            for (final MetadataPart part : newMetadata.parts()) {
+                boolean duplicate = false;
+                for (final MetadataPart oldPart : oldParts) {
+                    if (oldPart.type() == part.type()) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (duplicate && mode == MergeMode.MERGE_AND_FAIL_ON_ERROR) {
+                    throw new IllegalStateException("Can't merge resource packs, metadata part of type " +
+                            part.type().getSimpleName() + " is already set for both packs");
+                }
+
+                oldParts.add(part);
+            }
+            metadata = Metadata.metadata()
+                    .parts(oldParts)
+                    .build();
+        }
+
+        // merge overlays
+        for (final Overlay overlay : otherPack.overlays()) {
+            final Overlay existingOverlay = overlays.get(overlay.directory());
+            if (existingOverlay == null) {
+                overlays.put(overlay.directory(), overlay);
+            } else {
+                existingOverlay.merge(overlay, mode);
+            }
+        }
+    }
 }
