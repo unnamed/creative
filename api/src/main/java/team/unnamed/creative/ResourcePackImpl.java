@@ -121,7 +121,7 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
 
         // merge metadata
         final Metadata newMetadata = otherPack.metadata();
-        if (mode == MergeMode.OVERRIDE) {
+        if (metadata == null || mode == MergeMode.OVERRIDE) {
             metadata = newMetadata;
         } else {
             // O(n^2) :C
