@@ -28,6 +28,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +58,11 @@ final class AnimationMetaImpl implements AnimationMeta {
         this.height = height;
         this.frameTime = frameTime;
         this.frames = immutableListOf(requireNonNull(frames, "frames"));
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return AnimationMeta.class;
     }
 
     @Override

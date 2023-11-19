@@ -28,6 +28,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -46,6 +47,11 @@ final class PackMetaImpl implements PackMeta {
     ) {
         this.format = requireNonNull(format, "format");
         this.description = requireNonNull(description, "description");
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return PackMeta.class;
     }
 
     @Override

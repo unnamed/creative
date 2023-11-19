@@ -24,6 +24,7 @@
 package team.unnamed.creative.metadata;
 
 import net.kyori.examination.Examinable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a resource-pack resource metadata
@@ -34,4 +35,22 @@ import net.kyori.examination.Examinable;
  * @since 1.0.0
  */
 public interface MetadataPart extends Examinable {
+    /**
+     * Returns the type of this metadata part.
+     *
+     * <p>By default this method will just call
+     * {@code getClass()}, but it has another
+     * function.</p>
+     *
+     * <p>The main function of this method is to
+     * identify this metadata part type. So, classes
+     * that implement the same metadata part type
+     * should return the same class value.</p>
+     *
+     * @return The metadata part type
+     * @since 1.4.0
+     */
+    default @NotNull Class<? extends MetadataPart> type() {
+        return getClass();
+    }
 }

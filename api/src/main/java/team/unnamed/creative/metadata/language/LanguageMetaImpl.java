@@ -29,6 +29,7 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Map;
 import java.util.Objects;
@@ -53,6 +54,11 @@ final class LanguageMetaImpl implements LanguageMeta {
             if (code.length() > MAX_LANGUAGE_LENGTH)
                 throw new IllegalArgumentException("Language code is more than " + MAX_LANGUAGE_LENGTH + " characters long");
         }
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return LanguageMeta.class;
     }
 
     @Override

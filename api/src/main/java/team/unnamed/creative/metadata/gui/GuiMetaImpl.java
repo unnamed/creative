@@ -27,6 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -38,6 +39,11 @@ final class GuiMetaImpl implements GuiMeta {
 
     GuiMetaImpl(final @NotNull GuiScaling scaling) {
         this.scaling = requireNonNull(scaling, "scaling");
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return GuiMeta.class;
     }
 
     @Override

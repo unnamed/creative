@@ -27,6 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -38,6 +39,11 @@ final class VillagerMetaImpl implements VillagerMeta {
 
     VillagerMetaImpl(final @NotNull Hat hat) {
         this.hat = requireNonNull(hat, "hat");
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return VillagerMeta.class;
     }
 
     @Override

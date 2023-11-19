@@ -67,8 +67,7 @@ final class MetadataImpl implements Metadata {
     public @NotNull Builder toBuilder() {
         Builder builder = Metadata.metadata();
         for (Map.Entry<Class<?>, MetadataPart> entry : parts.entrySet()) {
-            //noinspection unchecked,rawtypes
-            builder.add((Class) entry.getKey(), entry.getValue());
+            builder.addPart(entry.getValue());
         }
         return builder;
     }
@@ -103,10 +102,19 @@ final class MetadataImpl implements Metadata {
         private final Map<Class<?>, MetadataPart> parts = new HashMap<>();
 
         @Override
-        public @NotNull <T extends MetadataPart> Builder add(@NotNull Class<T> type, @NotNull T part) {
-            requireNonNull(type, "type");
+        public @NotNull Builder parts(final @NotNull Collection<MetadataPart> parts) {
+            requireNonNull(parts, "parts");
+            this.parts.clear();
+            for (final MetadataPart part : parts) {
+                this.parts.put(part.type(), part);
+            }
+            return this;
+        }
+
+        @Override
+        public @NotNull Builder addPart(final @NotNull MetadataPart part) {
             requireNonNull(part, "part");
-            parts.put(type, part);
+            parts.put(part.type(), part);
             return this;
         }
 

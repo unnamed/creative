@@ -27,6 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -38,6 +39,11 @@ final class TextureMetaImpl implements TextureMeta {
     TextureMetaImpl(final boolean blur, final boolean clamp) {
         this.blur = blur;
         this.clamp = clamp;
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return TextureMeta.class;
     }
 
     @Override

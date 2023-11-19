@@ -124,6 +124,24 @@ public interface Metadata extends Examinable {
 
     interface Builder {
         /**
+         * Sets the metadata parts of this builder.
+         *
+         * @param parts The metadata parts
+         * @return This builder
+         * @since 1.4.0
+         */
+        @NotNull Builder parts(final @NotNull Collection<MetadataPart> parts);
+
+        /**
+         * Adds a metadata part to this builder.
+         *
+         * @param part The metadata part
+         * @return This builder
+         * @since 1.4.0
+         */
+        @NotNull Builder addPart(final @NotNull MetadataPart part);
+
+        /**
          * Adds a metadata part to this builder.
          *
          * @param type The metadata part type
@@ -131,9 +149,14 @@ public interface Metadata extends Examinable {
          * @param <T>  The metadata part type
          * @return This builder
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_, _ -> this")
-        <T extends MetadataPart> @NotNull Builder add(final @NotNull Class<T> type, final @NotNull T part);
+        default <T extends MetadataPart> @NotNull Builder add(final @NotNull Class<T> type, final @NotNull T part) {
+            return addPart(part);
+        }
 
         // overloads of known metadata parts
 
@@ -143,7 +166,10 @@ public interface Metadata extends Examinable {
          * @param meta The added animation meta part.
          * @return This builder.
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull AnimationMeta meta) {
             return add(AnimationMeta.class, meta);
@@ -156,7 +182,10 @@ public interface Metadata extends Examinable {
          * @return This builder.
          * @sincePackFormat 9
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull FilterMeta meta) {
             return add(FilterMeta.class, meta);
@@ -168,7 +197,10 @@ public interface Metadata extends Examinable {
          * @param meta The added language meta part.
          * @return This builder.
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull LanguageMeta meta) {
             return add(LanguageMeta.class, meta);
@@ -180,7 +212,10 @@ public interface Metadata extends Examinable {
          * @param meta The added pack meta part.
          * @return This builder.
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull PackMeta meta) {
             return add(PackMeta.class, meta);
@@ -192,7 +227,10 @@ public interface Metadata extends Examinable {
          * @param meta The added texture meta part.
          * @return This builder.
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull TextureMeta meta) {
             return add(TextureMeta.class, meta);
@@ -204,7 +242,10 @@ public interface Metadata extends Examinable {
          * @param meta The added villager meta part.
          * @return This builder.
          * @since 1.0.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull VillagerMeta meta) {
             return add(VillagerMeta.class, meta);
@@ -218,7 +259,10 @@ public interface Metadata extends Examinable {
          * @sinceMinecraft 1.20.2
          * @sincePackFormat 18
          * @since 1.2.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull GuiMeta meta) {
             return add(GuiMeta.class, meta);
@@ -232,7 +276,10 @@ public interface Metadata extends Examinable {
          * @sinceMinecraft 1.20.2
          * @sincePackFormat 18
          * @since 1.1.0
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
          */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull OverlaysMeta meta) {
             return add(OverlaysMeta.class, meta);

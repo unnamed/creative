@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.KeyPattern;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,6 +54,11 @@ final class FilterMetaImpl implements FilterMeta {
                 throw new NullPointerException("An element in the patterns list is null");
             }
         }
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return FilterMeta.class;
     }
 
     @Override

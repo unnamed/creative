@@ -26,6 +26,7 @@ package team.unnamed.creative.metadata.overlays;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +38,11 @@ final class OverlaysMetaImpl implements OverlaysMeta {
 
     OverlaysMetaImpl(final @NotNull List<OverlayEntry> overlays) {
         this.overlays = Objects.requireNonNull(overlays, "overlays");
+    }
+
+    @Override
+    public @NotNull Class<? extends MetadataPart> type() {
+        return OverlaysMeta.class;
     }
 
     @Override
