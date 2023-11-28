@@ -5,6 +5,7 @@ fonts.md
 language.md
 sounds.md
 putting-all-together.md
+merging.md
 examples
 serialization
 server

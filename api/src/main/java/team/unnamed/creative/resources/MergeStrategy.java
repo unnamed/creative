@@ -51,7 +51,7 @@ public interface MergeStrategy {
     /**
      * Gets a merge strategy that merges the resources of the
      * first container with the resources of the second container,
-     * resulting in a exception if there are duplicates that can't
+     * resulting in an exception if there are duplicates that can't
      * be merged.
      *
      * @return The merge and fail on error merge strategy
