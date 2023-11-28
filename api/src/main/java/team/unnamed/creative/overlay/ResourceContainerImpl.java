@@ -44,8 +44,10 @@ import team.unnamed.creative.texture.Texture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -300,11 +302,10 @@ public class ResourceContainerImpl implements ResourceContainer {
                 continue;
             }
 
-            final Atlas.Builder oldAtlasBuilder = oldAtlas.toBuilder();
-            for (final AtlasSource source : atlas.sources()) {
-                oldAtlasBuilder.addSource(source);
-            }
-            atlases.put(atlas.key(), oldAtlasBuilder.build());
+            // merge atlas sources (use a set to avoid duplicated sources)
+            final Set<AtlasSource> sources = new LinkedHashSet<>(oldAtlas.sources());
+            sources.addAll(atlas.sources());
+            atlases.put(atlas.key(), oldAtlas.toBuilder().sources(new ArrayList<>(sources)).build());
         }
 
         // merge block states
