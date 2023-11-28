@@ -29,7 +29,7 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
-import team.unnamed.creative.overlay.MergeMode;
+import team.unnamed.creative.overlay.MergeStrategy;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.overlay.ResourceContainerImpl;
@@ -87,8 +87,8 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
     }
 
     @Override
-    public void merge(final @NotNull ResourceContainer other, final @NotNull MergeMode mode) {
-        super.merge(other, mode);
+    public void merge(final @NotNull ResourceContainer other, final @NotNull MergeStrategy strategy) {
+        super.merge(other, strategy);
 
         if (!(other instanceof ResourcePack)) {
             return;
@@ -99,29 +99,25 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
 
         // merge icon
         final Writable newIcon = otherPack.icon();
-        switch (mode) {
-            case OVERRIDE:
-                if (newIcon != null) {
-                    icon = newIcon;
-                }
-                break;
-            case MERGE_AND_FAIL_ON_ERROR:
-                if (newIcon != null && icon != null) {
-                    throw new IllegalStateException("Can't merge resource packs, icons are already set for both packs");
-                } else if (newIcon != null) {
-                    icon = newIcon;
-                }
-                break;
-            case MERGE_AND_KEEP_FIRST_ON_ERROR:
-                if (icon == null && newIcon != null) {
-                    icon = newIcon;
-                }
-                break;
+        if (strategy == MergeStrategy.override()) {
+            if (newIcon != null) {
+                icon = newIcon;
+            }
+        } else if (strategy == MergeStrategy.mergeAndFailOnError()) {
+            if (newIcon != null && icon != null) {
+                throw new IllegalStateException("Can't merge resource packs, icons are already set for both packs");
+            } else if (newIcon != null) {
+                icon = newIcon;
+            }
+        } else if (strategy == MergeStrategy.mergeAndKeepFirstOnError()) {
+            if (icon == null && newIcon != null) {
+                icon = newIcon;
+            }
         }
 
         // merge metadata
         final Metadata newMetadata = otherPack.metadata();
-        if (metadata == null || mode == MergeMode.OVERRIDE) {
+        if (metadata == null || strategy == MergeStrategy.override()) {
             metadata = newMetadata;
         } else {
             // O(n^2) :C
@@ -134,7 +130,7 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
                         break;
                     }
                 }
-                if (duplicate && mode == MergeMode.MERGE_AND_FAIL_ON_ERROR) {
+                if (duplicate && strategy == MergeStrategy.mergeAndFailOnError()) {
                     throw new IllegalStateException("Can't merge resource packs, metadata part of type " +
                             part.type().getSimpleName() + " is already set for both packs");
                 }
@@ -152,7 +148,7 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
             if (existingOverlay == null) {
                 overlays.put(overlay.directory(), overlay);
             } else {
-                existingOverlay.merge(overlay, mode);
+                existingOverlay.merge(overlay, strategy);
             }
         }
     }

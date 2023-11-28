@@ -70,7 +70,7 @@ class ResourcePackMergeTest {
                 .build());
 
         // merge!
-        base.merge(added, MergeMode.OVERRIDE);
+        base.merge(added, MergeStrategy.override());
 
         assertEquals(ICON_1, base.icon());
         assertEquals(AB, base.unknownFile("te"));
@@ -120,7 +120,7 @@ class ResourcePackMergeTest {
                 .build());
 
         // merge!
-        base.merge(added, MergeMode.MERGE_AND_KEEP_FIRST_ON_ERROR);
+        base.merge(added, MergeStrategy.mergeAndKeepFirstOnError());
 
         assertEquals(ICON_0, base.icon()); // keeps first
         assertEquals(TE, base.unknownFile("te")); // keeps first

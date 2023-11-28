@@ -293,11 +293,11 @@ public class ResourceContainerImpl implements ResourceContainer {
     //#endregion
 
     @Override
-    public void merge(final @NotNull ResourceContainer other, final @NotNull MergeMode mode) {
+    public void merge(final @NotNull ResourceContainer other, final @NotNull MergeStrategy strategy) {
         // merge atlases
         for (final Atlas atlas : other.atlases()) {
             final Atlas oldAtlas = atlases.get(atlas.key());
-            if (oldAtlas == null || mode == MergeMode.OVERRIDE) {
+            if (oldAtlas == null || strategy == MergeStrategyImpl.OVERRIDE) {
                 atlases.put(atlas.key(), atlas);
                 continue;
             }
@@ -311,14 +311,10 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge block states
         for (final BlockState blockState : other.blockStates()) {
             if (blockStates.containsKey(blockState.key())) {
-                switch (mode) {
-                    case OVERRIDE:
-                        blockStates.put(blockState.key(), blockState);
-                        break;
-                    case MERGE_AND_FAIL_ON_ERROR:
-                        throw new IllegalStateException("Block state " + blockState.key() + " already exists");
-                    case MERGE_AND_KEEP_FIRST_ON_ERROR:
-                        break;
+                if (strategy == MergeStrategyImpl.OVERRIDE) {
+                    blockStates.put(blockState.key(), blockState);
+                } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
+                    throw new IllegalStateException("Block state " + blockState.key() + " already exists");
                 }
             } else {
                 blockStates.put(blockState.key(), blockState);
@@ -328,7 +324,7 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge fonts
         for (final Font font : other.fonts()) {
             final Font oldFont = fonts.get(font.key());
-            if (oldFont == null || mode == MergeMode.OVERRIDE) {
+            if (oldFont == null || strategy == MergeStrategyImpl.OVERRIDE) {
                 fonts.put(font.key(), font);
                 continue;
             }
@@ -342,7 +338,7 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge languages
         for (final Language language : other.languages()) {
             final Language oldLanguage = languages.get(language.key());
-            if (oldLanguage == null || mode == MergeMode.OVERRIDE) {
+            if (oldLanguage == null || strategy == MergeStrategyImpl.OVERRIDE) {
                 languages.put(language.key(), language);
                 continue;
             }
@@ -350,7 +346,7 @@ public class ResourceContainerImpl implements ResourceContainer {
             final Map<String, String> translations = new HashMap<>(oldLanguage.translations());
             for (final Map.Entry<String, String> translation : language.translations().entrySet()) {
                 final String replaced = translations.put(translation.getKey(), translation.getValue());
-                if (replaced != null && mode == MergeMode.MERGE_AND_FAIL_ON_ERROR) {
+                if (replaced != null && strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
                     throw new IllegalStateException(
                             "Duplicated translation keys in language " + language.key()
                                     + ". Translation key: " + translation.getKey()
@@ -363,7 +359,7 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge models
         for (final Model model : other.models()) {
             final Model oldModel = models.get(model.key());
-            if (oldModel == null || mode == MergeMode.OVERRIDE) {
+            if (oldModel == null || strategy == MergeStrategyImpl.OVERRIDE) {
                 models.put(model.key(), model);
                 continue;
             }
@@ -379,7 +375,7 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge sound registries
         for (final SoundRegistry soundRegistry : other.soundRegistries()) {
             final SoundRegistry oldSoundRegistry = soundRegistries.get(soundRegistry.namespace());
-            if (oldSoundRegistry == null || mode == MergeMode.OVERRIDE) {
+            if (oldSoundRegistry == null || strategy == MergeStrategyImpl.OVERRIDE) {
                 soundRegistries.put(soundRegistry.namespace(), soundRegistry);
                 continue;
             }
@@ -391,13 +387,8 @@ public class ResourceContainerImpl implements ResourceContainer {
 
             for (final SoundEvent soundEvent : soundRegistry.sounds()) {
                 final SoundEvent replacedSoundEvent = soundEvents.put(soundEvent.key(), soundEvent);
-                if (replacedSoundEvent != null) {
-                    switch (mode) {
-                        case MERGE_AND_FAIL_ON_ERROR:
-                            throw new IllegalStateException("Sound event " + soundEvent + " already exists");
-                        case MERGE_AND_KEEP_FIRST_ON_ERROR:
-                            break;
-                    }
+                if (replacedSoundEvent != null && strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
+                    throw new IllegalStateException("Sound event " + soundEvent + " already exists");
                 }
             }
 
@@ -413,14 +404,10 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge sounds
         for (final Sound sound : other.sounds()) {
             if (sounds.containsKey(sound.key())) {
-                switch (mode) {
-                    case OVERRIDE:
-                        sounds.put(sound.key(), sound);
-                        break;
-                    case MERGE_AND_FAIL_ON_ERROR:
-                        throw new IllegalStateException("Sound " + sound.key() + " already exists");
-                    case MERGE_AND_KEEP_FIRST_ON_ERROR:
-                        break;
+                if (strategy == MergeStrategyImpl.OVERRIDE) {
+                    sounds.put(sound.key(), sound);
+                } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
+                    throw new IllegalStateException("Sound " + sound.key() + " already exists");
                 }
             } else {
                 sounds.put(sound.key(), sound);
@@ -431,14 +418,10 @@ public class ResourceContainerImpl implements ResourceContainer {
         // todo: should we merge metadata?
         for (final Texture texture : other.textures()) {
             if (textures.containsKey(texture.key())) {
-                switch (mode) {
-                    case OVERRIDE:
-                        textures.put(texture.key(), texture);
-                        break;
-                    case MERGE_AND_FAIL_ON_ERROR:
-                        throw new IllegalStateException("Texture " + texture.key() + " already exists");
-                    case MERGE_AND_KEEP_FIRST_ON_ERROR:
-                        break;
+                if (strategy == MergeStrategyImpl.OVERRIDE) {
+                    textures.put(texture.key(), texture);
+                } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
+                    throw new IllegalStateException("Texture " + texture.key() + " already exists");
                 }
             } else {
                 textures.put(texture.key(), texture);
@@ -448,14 +431,10 @@ public class ResourceContainerImpl implements ResourceContainer {
         // merge unknown files
         for (final Map.Entry<String, Writable> entry : other.unknownFiles().entrySet()) {
             if (files.containsKey(entry.getKey())) {
-                switch (mode) {
-                    case OVERRIDE:
-                        files.put(entry.getKey(), entry.getValue());
-                        break;
-                    case MERGE_AND_FAIL_ON_ERROR:
-                        throw new IllegalStateException("Unknown file " + entry.getKey() + " already exists");
-                    case MERGE_AND_KEEP_FIRST_ON_ERROR:
-                        break;
+                if (strategy == MergeStrategyImpl.OVERRIDE) {
+                    files.put(entry.getKey(), entry.getValue());
+                } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
+                    throw new IllegalStateException("Unknown file " + entry.getKey() + " already exists");
                 }
             } else {
                 files.put(entry.getKey(), entry.getValue());

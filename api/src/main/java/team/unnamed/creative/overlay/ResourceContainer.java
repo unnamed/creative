@@ -625,9 +625,9 @@ public interface ResourceContainer {
      * Merges the given {@code other} resource container
      * with this resource container.
      *
-     * @param other The other resource container
-     * @param mode  The merge mode
+     * @param other    The other resource container
+     * @param strategy The merge strategy
      * @since 1.4.0
      */
-    void merge(final @NotNull ResourceContainer other, final @NotNull MergeMode mode);
+    void merge(final @NotNull ResourceContainer other, final @NotNull MergeStrategy strategy);
 }

@@ -23,41 +23,8 @@
  */
 package team.unnamed.creative.overlay;
 
-/**
- * Represents a merging mode, determines how to merge
- * two {@link ResourceContainer} instances in one.
- *
- * @see ResourceContainer#merge(ResourceContainer, MergeMode)
- * @since 1.4.0
- */
-public enum MergeMode {
-    /**
-     * Overrides the resources of the first container
-     * with the resources of the second container.
-     *
-     * @since 1.4.0
-     */
+enum MergeStrategyImpl implements MergeStrategy {
     OVERRIDE,
-
-    /**
-     * Merges the resources of the first container
-     * with the resources of the second container.
-     *
-     * <p>If there are duplicates that can't be merged,
-     * the merging will fail.</p>
-     *
-     * @since 1.4.0
-     */
     MERGE_AND_FAIL_ON_ERROR,
-
-    /**
-     * Merges the resources of the first container
-     * with the resources of the second container.
-     *
-     * <p>If there are duplicates that can't be merged,
-     * the resources of the first container will be kept.</p>
-     *
-     * @since 1.4.0
-     */
     MERGE_AND_KEEP_FIRST_ON_ERROR
 }
