@@ -36,6 +36,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.part.ResourcePackPart;
+import team.unnamed.creative.resources.MergeStrategy;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;

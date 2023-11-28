@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.overlay;
-
-enum MergeStrategyImpl implements MergeStrategy {
-    OVERRIDE,
-    MERGE_AND_FAIL_ON_ERROR,
-    MERGE_AND_KEEP_FIRST_ON_ERROR
-}
+/**
+ * Package containing miscellaneous classes for handling resources
+ * and resource-packs.
+ *
+ * @since 1.4.0
+ */
+package team.unnamed.creative.resources;

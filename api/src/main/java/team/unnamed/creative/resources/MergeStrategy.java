@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.overlay;
+package team.unnamed.creative.resources;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.overlay.ResourceContainer;
 
 /**
  * Represents a merging strategy, determines how to merge

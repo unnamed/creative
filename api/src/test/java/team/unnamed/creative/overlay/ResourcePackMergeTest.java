@@ -28,6 +28,7 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
+import team.unnamed.creative.resources.MergeStrategy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

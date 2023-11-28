@@ -29,7 +29,7 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
-import team.unnamed.creative.overlay.MergeStrategy;
+import team.unnamed.creative.resources.MergeStrategy;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.overlay.ResourceContainerImpl;

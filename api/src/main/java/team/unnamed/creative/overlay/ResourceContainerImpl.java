@@ -36,6 +36,8 @@ import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.model.ItemOverride;
 import team.unnamed.creative.model.Model;
+import team.unnamed.creative.resources.MergeStrategy;
+import team.unnamed.creative.resources.MergeStrategyImpl;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
