@@ -1,16 +1,13 @@
 ## Installation
 
-You can add `creative-api` to your project using [Gradle](https://gradle.org/)
+You can add `creative` to your project using [Gradle](https://gradle.org/)
 *(recommended)*, [Maven](https://maven.apache.org/) or manually downloading the
-JAR files.
+JAR files from [GitHub Releases](https://github.com/unnamed/creative/releases).
+
+Note that `creative` and all of its submodules are available in the
+Maven Central Repository.
 
 ### Gradle
-
-```kotlin
-repositories {
-    maven("https://repo.unnamed.team/repository/unnamed-public/")
-}
-```
 
 ```kotlin
 dependencies {
@@ -27,12 +24,6 @@ dependencies {
 ### Maven
 
 <!--@formatter:off-->
-```xml
-<repository>
-    <id>unnamed-public</id>
-    <url>https://repo.unnamed.team/repository/unnamed-public/</url>
-</repository>
-```
 ```xml
 <dependency>
     <groupId>team.unnamed</groupId>
