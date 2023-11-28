@@ -314,7 +314,8 @@ public class ResourceContainerImpl implements ResourceContainer {
                 if (strategy == MergeStrategyImpl.OVERRIDE) {
                     blockStates.put(blockState.key(), blockState);
                 } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
-                    throw new IllegalStateException("Block state " + blockState.key() + " already exists");
+                    throw new IllegalStateException("Duplicate block state '" + blockState.key()
+                            + "': exists in both resource containers");
                 }
             } else {
                 blockStates.put(blockState.key(), blockState);
@@ -350,6 +351,7 @@ public class ResourceContainerImpl implements ResourceContainer {
                     throw new IllegalStateException(
                             "Duplicated translation keys in language " + language.key()
                                     + ". Translation key: " + translation.getKey()
+                                    + ". Exists in both resource containers."
                     );
                 }
             }
@@ -388,7 +390,8 @@ public class ResourceContainerImpl implements ResourceContainer {
             for (final SoundEvent soundEvent : soundRegistry.sounds()) {
                 final SoundEvent replacedSoundEvent = soundEvents.put(soundEvent.key(), soundEvent);
                 if (replacedSoundEvent != null && strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
-                    throw new IllegalStateException("Sound event " + soundEvent + " already exists");
+                    throw new IllegalStateException("Duplicated sound event '" + soundEvent + "': exists" +
+                            " in both resource-packs");
                 }
             }
 
@@ -407,7 +410,8 @@ public class ResourceContainerImpl implements ResourceContainer {
                 if (strategy == MergeStrategyImpl.OVERRIDE) {
                     sounds.put(sound.key(), sound);
                 } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
-                    throw new IllegalStateException("Sound " + sound.key() + " already exists");
+                    throw new IllegalStateException("Duplicated sound '" + sound.key()
+                            + "': exists in both resource containers");
                 }
             } else {
                 sounds.put(sound.key(), sound);
@@ -421,7 +425,8 @@ public class ResourceContainerImpl implements ResourceContainer {
                 if (strategy == MergeStrategyImpl.OVERRIDE) {
                     textures.put(texture.key(), texture);
                 } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
-                    throw new IllegalStateException("Texture " + texture.key() + " already exists");
+                    throw new IllegalStateException("Duplicated texture '" + texture.key()
+                            + "': exists in both resource containers");
                 }
             } else {
                 textures.put(texture.key(), texture);
@@ -434,7 +439,8 @@ public class ResourceContainerImpl implements ResourceContainer {
                 if (strategy == MergeStrategyImpl.OVERRIDE) {
                     files.put(entry.getKey(), entry.getValue());
                 } else if (strategy == MergeStrategyImpl.MERGE_AND_FAIL_ON_ERROR) {
-                    throw new IllegalStateException("Unknown file " + entry.getKey() + " already exists");
+                    throw new IllegalStateException("Duplicated unknown file: '" + entry.getKey()
+                            + "': exists in both resource containers");
                 }
             } else {
                 files.put(entry.getKey(), entry.getValue());
