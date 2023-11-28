@@ -36,6 +36,7 @@ import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.part.ResourcePackPart;
+import team.unnamed.creative.resources.MergeException;
 import team.unnamed.creative.resources.MergeStrategy;
 import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
@@ -628,6 +629,7 @@ public interface ResourceContainer {
      *
      * @param other    The other resource container
      * @param strategy The merge strategy
+     * @throws MergeException If the merge fails
      * @since 1.4.0
      */
     void merge(final @NotNull ResourceContainer other, final @NotNull MergeStrategy strategy);
