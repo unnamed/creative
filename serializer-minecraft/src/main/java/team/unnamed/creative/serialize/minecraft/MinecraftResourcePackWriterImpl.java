@@ -33,6 +33,7 @@ import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
+import team.unnamed.creative.serialize.minecraft.io.ResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundRegistrySerializer;
 import team.unnamed.creative.sound.SoundRegistry;
@@ -64,10 +65,18 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
     ) {
         for (T resource : category.lister().apply(resourceContainer)) {
             String path = basePath + category.pathOf(resource);
-            try (OutputStream output = target.openStream(path)) {
-                category.serializer().serialize(resource, output);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            final ResourceSerializer<T> serializer = category.serializer();
+
+            if (serializer instanceof JsonResourceSerializer) {
+                // if it's a JSON serializer, we can use our own method, that will
+                // do some extra configuration
+                writeToJson(target, (JsonResourceSerializer<T>) serializer, resource, path);
+            } else {
+                try (OutputStream output = target.openStream(path)) {
+                    category.serializer().serialize(resource, output);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
             }
         }
     }
