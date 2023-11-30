@@ -46,10 +46,14 @@ import java.util.Map;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
 final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWriter {
+    static final MinecraftResourcePackWriter INSTANCE = MinecraftResourcePackWriter.builder()
+            .prettyPrinting(false)
+            .build();
 
-    static final MinecraftResourcePackWriterImpl INSTANCE = new MinecraftResourcePackWriterImpl();
+    private final boolean prettyPrinting;
 
-    private MinecraftResourcePackWriterImpl() {
+    private MinecraftResourcePackWriterImpl(final boolean prettyPrinting) {
+        this.prettyPrinting = prettyPrinting;
     }
 
     public <T extends Keyed> void writeFullCategory(
@@ -99,7 +103,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
     }
 
     @Override
-    public void write(FileTreeWriter target, ResourcePack resourcePack) {
+    public void write(final @NotNull FileTreeWriter target, final @NotNull ResourcePack resourcePack) {
         // write icon
         {
             Writable icon = resourcePack.icon();
@@ -125,10 +129,27 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
 
     private <T> void writeToJson(FileTreeWriter writer, JsonResourceSerializer<T> serializer, T object, String path) {
         try (JsonWriter jsonWriter = new JsonWriter(writer.openWriter(path))) {
+            if (prettyPrinting) {
+                jsonWriter.setIndent("  ");
+            }
             serializer.serializeToJson(object, jsonWriter);
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to write to " + path, e);
         }
     }
 
+    static final class BuilderImpl implements Builder {
+        private boolean prettyPrinting;
+
+        @Override
+        public @NotNull Builder prettyPrinting(final boolean prettyPrinting) {
+            this.prettyPrinting = prettyPrinting;
+            return this;
+        }
+
+        @Override
+        public @NotNull MinecraftResourcePackWriter build() {
+            return new MinecraftResourcePackWriterImpl(prettyPrinting);
+        }
+    }
 }

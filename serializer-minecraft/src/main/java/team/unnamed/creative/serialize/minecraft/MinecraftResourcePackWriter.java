@@ -23,6 +23,8 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
@@ -44,9 +46,32 @@ import java.util.function.Consumer;
 import java.util.zip.ZipOutputStream;
 
 public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTreeWriter> {
+    /**
+     * Returns the standard {@link MinecraftResourcePackWriter} instance.
+     *
+     * <p>If any customization is needed, use the {@link #builder()} method
+     * instead</p>
+     *
+     * @return The standard Minecraft resource pack writer instance
+     * @since 1.5.0
+     */
+    static @NotNull MinecraftResourcePackWriter minecraft() {
+        return MinecraftResourcePackWriterImpl.INSTANCE;
+    }
+
+    /**
+     * Returns a new {@link Builder} instance.
+     *
+     * @return The builder instance
+     * @since 1.5.0
+     */
+    @Contract("-> new")
+    static @NotNull Builder builder() {
+        return new MinecraftResourcePackWriterImpl.BuilderImpl();
+    }
 
     @Override
-    void write(FileTreeWriter tree, ResourcePack resourcePack);
+    void write(final @NotNull FileTreeWriter tree, final @NotNull ResourcePack resourcePack);
 
     default void writeToZipFile(Path path, ResourcePack resourcePack) {
         try (ZipOutputStream outputStream = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(path)))) {
@@ -106,8 +131,30 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
         return build(resourcePack);
     }
 
-    static MinecraftResourcePackWriter minecraft() {
-        return MinecraftResourcePackWriterImpl.INSTANCE;
-    }
+    /**
+     * A builder for {@link MinecraftResourcePackWriter} instances.
+     *
+     * @since 1.5.0
+     */
+    interface Builder {
+        /**
+         * Sets whether the writer should use pretty printing
+         * when writing JSON files.
+         *
+         * @param prettyPrinting Whether the writer should use pretty printing
+         *                       when writing JSON files
+         * @return This builder
+         * @since 1.5.0
+         */
+        @NotNull Builder prettyPrinting(final boolean prettyPrinting);
 
+        /**
+         * Builds a new {@link MinecraftResourcePackWriter} instance.
+         *
+         * @return The built instance
+         * @since 1.5.0
+         */
+        @Contract("-> new")
+        @NotNull MinecraftResourcePackWriter build();
+    }
 }
