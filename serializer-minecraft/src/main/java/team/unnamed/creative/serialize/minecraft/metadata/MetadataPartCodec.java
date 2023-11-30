@@ -24,10 +24,10 @@
 package team.unnamed.creative.serialize.minecraft.metadata;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,7 +42,7 @@ interface MetadataPartCodec<T extends MetadataPart> {
     @NotNull T read(final @NotNull JsonObject node);
 
     default @NotNull T fromJson(final @NotNull String json) {
-        return read(new JsonParser().parse(json).getAsJsonObject());
+        return read(GsonUtil.parseString(json).getAsJsonObject());
     }
 
     void write(final @NotNull JsonWriter writer, final @NotNull T part) throws IOException;

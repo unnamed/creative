@@ -23,7 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft.metadata;
 
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +38,7 @@ import team.unnamed.creative.metadata.overlays.OverlayEntry;
 import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ class MetadataTest {
     void test_deserialization() throws Exception {
         Metadata metadata;
         try (JsonReader reader = new JsonReader(new InputStreamReader(MetadataTest.class.getClassLoader().getResourceAsStream("metadata/pack.mcmeta")))) {
-            metadata = MetadataSerializer.INSTANCE.readFromTree(new JsonParser().parse(reader));
+            metadata = MetadataSerializer.INSTANCE.readFromTree(GsonUtil.parseReader(reader));
         }
 
         assertEquals(

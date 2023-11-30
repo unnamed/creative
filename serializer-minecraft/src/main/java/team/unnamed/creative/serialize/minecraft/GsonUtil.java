@@ -26,16 +26,40 @@ package team.unnamed.creative.serialize.minecraft;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Vector2Float;
 import team.unnamed.creative.base.Vector3Float;
 
 import java.io.IOException;
+import java.io.Reader;
 
 @ApiStatus.Internal
 public final class GsonUtil {
+    // we use deprecated methods to ensure backwards compatibility with
+    // old versions of Gson, since some Minecraft server implementations
+    // use them
+    @SuppressWarnings("deprecation")
+    private static final JsonParser JSON_PARSER = new JsonParser();
+
+    @SuppressWarnings("deprecation")
+    public static @NotNull JsonElement parseString(final @NotNull String string) {
+        return JSON_PARSER.parse(string);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static @NotNull JsonElement parseReader(final @NotNull Reader reader) {
+        return JSON_PARSER.parse(reader);
+    }
+
+    @SuppressWarnings("deprecation")
+    public static @NotNull JsonElement parseReader(final @NotNull JsonReader reader) {
+        return JSON_PARSER.parse(reader);
+    }
 
     /*
      * Determines if a property with the given name

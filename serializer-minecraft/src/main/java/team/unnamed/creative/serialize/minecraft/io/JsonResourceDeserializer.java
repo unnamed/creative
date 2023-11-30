@@ -26,6 +26,7 @@ package team.unnamed.creative.serialize.minecraft.io;
 import com.google.gson.JsonElement;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Language;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,13 +39,13 @@ public interface JsonResourceDeserializer<T> extends ResourceDeserializer<T> {
     T deserializeFromJson(JsonElement node, Key key) throws IOException;
 
     default T deserializeFromJsonString(@Language("JSON") String json, Key key) throws IOException {
-        return deserializeFromJson(JsonParserHolder.INSTANCE.parse(json), key);
+        return deserializeFromJson(GsonUtil.parseString(json), key);
     }
 
     @Override
     default T deserialize(InputStream input, Key key) throws IOException {
         try (Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
-            return deserializeFromJson(JsonParserHolder.INSTANCE.parse(reader), key);
+            return deserializeFromJson(GsonUtil.parseReader(reader), key);
         }
     }
 

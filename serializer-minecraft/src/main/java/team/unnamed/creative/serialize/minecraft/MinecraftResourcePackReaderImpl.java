@@ -24,7 +24,6 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
 import org.intellij.lang.annotations.Subst;
@@ -60,8 +59,6 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
     static final MinecraftResourcePackReader INSTANCE = MinecraftResourcePackReader.builder()
             .lenient(false)
             .build();
-
-    private static final JsonParser PARSER = new JsonParser();
 
     private final boolean lenient;
 
@@ -313,7 +310,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
     private @NotNull JsonElement parseJson(final @NotNull InputStream input) {
         try (final JsonReader jsonReader = new JsonReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
             jsonReader.setLenient(lenient);
-            return PARSER.parse(jsonReader);
+            return GsonUtil.parseReader(jsonReader);
         } catch (final IOException e) {
             throw new UncheckedIOException("Failed to close JSON reader", e);
         }

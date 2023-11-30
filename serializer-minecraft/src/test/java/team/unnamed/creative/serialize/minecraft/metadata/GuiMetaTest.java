@@ -23,13 +23,13 @@
  */
 package team.unnamed.creative.serialize.minecraft.metadata;
 
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.gui.GuiBorder;
 import team.unnamed.creative.metadata.gui.GuiMeta;
 import team.unnamed.creative.metadata.gui.GuiScaling;
+import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -55,7 +55,7 @@ class GuiMetaTest {
         for (final Map.Entry<String, GuiScaling> entry : expectations.entrySet()) {
             final Metadata metadata;
             try (final JsonReader reader = new JsonReader(new InputStreamReader(GuiMetaTest.class.getClassLoader().getResourceAsStream("metadata/gui/" + entry.getKey())))) {
-                metadata = MetadataSerializer.INSTANCE.readFromTree(new JsonParser().parse(reader));
+                metadata = MetadataSerializer.INSTANCE.readFromTree(GsonUtil.parseReader(reader));
             }
 
             assertEquals(
