@@ -29,12 +29,14 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsServer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.server.handler.ResourcePackRequestHandler;
 import team.unnamed.creative.server.request.ResourcePackDownloadRequest;
 import team.unnamed.creative.server.util.ResourcePackDownloadRequestParser;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
 
 import static java.util.Objects.requireNonNull;
 
@@ -91,6 +93,7 @@ final class ResourcePackServerImpl implements ResourcePackServer {
 
     static final class BuilderImpl implements Builder {
         private InetSocketAddress address;
+        private Executor executor;
         private int backlog;
         private ResourcePackRequestHandler handler;
         private String path = "/";
@@ -99,6 +102,12 @@ final class ResourcePackServerImpl implements ResourcePackServer {
         @Override
         public @NotNull Builder address(final @NotNull InetSocketAddress address) {
             this.address = requireNonNull(address, "address");
+            return this;
+        }
+
+        @Override
+        public @NotNull Builder executor(final @Nullable Executor executor) {
+            this.executor = executor;
             return this;
         }
 
@@ -133,7 +142,9 @@ final class ResourcePackServerImpl implements ResourcePackServer {
 
         @Override
         public @NotNull ResourcePackServer build() throws IOException {
-            return new ResourcePackServerImpl(serverFactory.create(address, backlog), path, handler);
+            final HttpServer server = serverFactory.create(address, backlog);
+            server.setExecutor(executor);
+            return new ResourcePackServerImpl(server, path, handler);
         }
     }
 

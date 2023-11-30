@@ -29,6 +29,7 @@ import com.sun.net.httpserver.HttpsParameters;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.server.handler.ResourcePackRequestHandler;
 
@@ -36,6 +37,7 @@ import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -162,6 +164,22 @@ public interface ResourcePackServer {
         default @NotNull Builder address(final int port) {
             return address(new InetSocketAddress(port));
         }
+
+        /**
+         * Sets the server's executor, optional.
+         *
+         * <p>All requests are handled in tasks given to the executor.
+         * if the executor is not specified or if it's set to null, then
+         * a default implementation is used, which uses the thread
+         * which was created by the {@link ResourcePackServer#start()}
+         * method.</p>
+         *
+         * @param executor The server's executor
+         * @return This builder
+         * @since 1.5.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder executor(final @Nullable Executor executor);
 
         /**
          * Sets the server's HTTPS configurator, optional.
