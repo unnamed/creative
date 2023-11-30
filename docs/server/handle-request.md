@@ -82,3 +82,23 @@ ResourcePackRequestHandler handler = (request, exchange) -> {
 };
 ```
 <!--@formatter:on-->
+
+### Executor
+
+By default, the requests handlers will be executed in a single thread, the same
+thread that receives the requests. This means that if a request takes a long time
+to process, the next request will have to wait until the previous one finishes.
+
+To avoid this, we can set a multithreaded executor to the server, so the requests
+will be processed in different threads, allowing multiple requests to be processed
+at the same time:
+
+<!--@formatter:off-->
+```java
+ResourcePackServer server = ResourcePackServer.server()
+        .address("127.0.0.1", 7270)
+        .handler(...)
+        .executor(Executors.newFixedThreadPool(8)) // <-- will use 8 threads
+        .build();
+```
+<!--@formatter:on-->

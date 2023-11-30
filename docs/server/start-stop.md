@@ -11,6 +11,7 @@ Example:
 ResourcePackServer server = ResourcePackServer.server()
         .address("127.0.0.1", 7270) // (required) address and port
         .pack(ResourcePack) // (required) pack to serve
+        .executor(Executor) // (optional) request executor (IMPORTANT!)
         .secure(...) // (optional) SSL/TLS configuration
         .path("/get/") // (optional) handler path, default = "/"
         .build();
@@ -22,6 +23,9 @@ ResourcePackServer server = ResourcePackServer.server()
 - This **will not** automatically start the server
 - `pack(...)` can be replaced by `handler(...)`, see
   [Handling Requests](./handle-request.md)
+- If you do not set the executor, the requests will be blocking. So a request
+  will have to finish before the next one can be processed. It is recommended
+  to set a multithreaded executor to avoid this, for example: `.executor(Executors.newFixedThreadPool(numberOfThreads))`
 
 ### Start
 
