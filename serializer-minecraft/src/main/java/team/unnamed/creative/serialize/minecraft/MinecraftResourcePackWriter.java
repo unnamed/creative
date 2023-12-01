@@ -126,7 +126,7 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
     }
 
     default BuiltResourcePack build(Consumer<ResourcePack> consumer) {
-        ResourcePack resourcePack = ResourcePack.create();
+        ResourcePack resourcePack = ResourcePack.resourcePack();
         consumer.accept(resourcePack);
         return build(resourcePack);
     }

@@ -56,6 +56,7 @@ final class ResourcePackServerImpl implements ResourcePackServer {
     }
 
     @Override
+    @Deprecated
     public @NotNull HttpServer httpServer() {
         return server;
     }
