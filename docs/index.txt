@@ -4,6 +4,7 @@ textures.md
 fonts.md
 language.md
 sounds.md
+models.md
 putting-all-together.md
 merging.md
 examples
