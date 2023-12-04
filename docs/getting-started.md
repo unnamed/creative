@@ -10,7 +10,7 @@ See this example of the `creative` API:
 
 <!--@formatter:off-->
 ```java
-ResourcePack resourcePack = ResourcePack.create();
+ResourcePack resourcePack = ResourcePack.resourcePack();
         
 // Required to have a valid resource pack
 resourcePack.packMeta(9, "Description!");
