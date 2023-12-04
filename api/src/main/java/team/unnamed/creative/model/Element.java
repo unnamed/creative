@@ -136,6 +136,20 @@ public interface Element extends Examinable {
         @NotNull Builder from(final @NotNull Vector3Float from);
 
         /**
+         * Sets the starting point of the element cuboid.
+         *
+         * @param x The x coordinate
+         * @param y The y coordinate
+         * @param z The z coordinate
+         * @return This builder
+         * @since 1.5.0
+         */
+        @Contract("_, _, _ -> this")
+        default @NotNull Builder from(final float x, final float y, final float z) {
+            return from(new Vector3Float(x, y, z));
+        }
+
+        /**
          * Sets the stop point of the element cuboid.
          *
          * @param to The cuboid stop point
@@ -144,6 +158,19 @@ public interface Element extends Examinable {
          */
         @Contract("_ -> this")
         @NotNull Builder to(final @NotNull Vector3Float to);
+
+        /**
+         * Sets the stop point of the element cuboid.
+         *
+         * @param x The x coordinate
+         * @param y The y coordinate
+         * @param z The z coordinate
+         * @return This builder
+         * @since 1.5.0
+         */
+        default @NotNull Builder to(final float x, final float y, final float z) {
+            return to(new Vector3Float(x, y, z));
+        }
 
         /**
          * Sets the element rotation.
