@@ -50,6 +50,7 @@ import static team.unnamed.creative.util.MoreCollections.immutableMapOf;
  * @since 1.0.0
  */
 public class ModelTextures implements Examinable {
+    static final ModelTextures EMPTY = new ModelTextures(Collections.emptyList(), null, Collections.emptyMap());
 
     @Unmodifiable private final List<ModelTexture> layers;
     @Nullable private final ModelTexture particle;
@@ -142,8 +143,8 @@ public class ModelTextures implements Examinable {
      * Creates a new {@link ModelTextures} from
      * the given values
      *
-     * @param layers The texture layers
-     * @param particle The particle texture
+     * @param layers    The texture layers
+     * @param particle  The particle texture
      * @param variables The texture variables
      * @return A new {@link ModelTextures} instance
      * @since 1.0.0

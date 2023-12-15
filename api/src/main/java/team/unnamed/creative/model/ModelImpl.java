@@ -153,7 +153,7 @@ final class ModelImpl implements Model {
         private Key parent;
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
         private Map<ItemTransform.Type, ItemTransform> display = new HashMap<>();
-        private ModelTextures textures;
+        private ModelTextures textures = ModelTextures.EMPTY;
         private GuiLight guiLight;
         private List<Element> elements = new ArrayList<>();
         private List<ItemOverride> overrides = new ArrayList<>();
