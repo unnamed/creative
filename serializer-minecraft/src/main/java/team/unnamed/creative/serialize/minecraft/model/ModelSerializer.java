@@ -114,7 +114,6 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             writer.name("ambientocclusion").value(ambientOcclusion);
         }
 
-        writer.name("textures");
         writeTextures(writer, model.textures());
 
         Model.GuiLight guiLight = model.guiLight();
@@ -449,18 +448,26 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
     }
 
     private static void writeTextures(JsonWriter writer, ModelTextures texture) throws IOException {
+        final ModelTexture particle = texture.particle();
+        final List<ModelTexture> layers = texture.layers();
+        final Map<String, ModelTexture> variables = texture.variables();
+
+        if (particle == null && layers.isEmpty() && variables.isEmpty()) {
+            // do not write if completely empty
+            return;
+        }
+
+        writer.name("textures");
         writer.beginObject();
-        ModelTexture particle = texture.particle();
         if (particle != null) {
             writer.name("particle");
             writeModelTexture(writer, particle);
         }
-        List<ModelTexture> layers = texture.layers();
         for (int i = 0; i < layers.size(); i++) {
             writer.name("layer" + i);
             writeModelTexture(writer, layers.get(i));
         }
-        for (Map.Entry<String, ModelTexture> variable : texture.variables().entrySet()) {
+        for (Map.Entry<String, ModelTexture> variable : variables.entrySet()) {
             writer.name(variable.getKey());
             writeModelTexture(writer, variable.getValue());
         }
