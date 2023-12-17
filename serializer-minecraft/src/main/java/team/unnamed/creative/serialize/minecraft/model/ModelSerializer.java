@@ -119,7 +119,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
 
         Model.GuiLight guiLight = model.guiLight();
         if (guiLight != null) {
-            // only write if not default
+            // only write if not null
             writer.name("gui_light").value(guiLight.name().toLowerCase(Locale.ROOT));
         }
 

@@ -119,10 +119,13 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
 
     /**
      * Returns the way how the item is rendered, can be "side"
-     * or "front"
+     * or "front".
+     *
+     * <p>If not set, it will try to use the parent's guiLight,
+     * if no parent, it will default to "side".</p>
      *
      * <p>If set to "side", the model is rendered like a block.
-     * If set to "front", model is shaded like a flat item</p>
+     * If set to "front", model is shaded like a flat item.</p>
      *
      * @return Value that determines how to render this item
      * @since 1.0.0
