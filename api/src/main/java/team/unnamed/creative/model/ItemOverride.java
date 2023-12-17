@@ -47,6 +47,8 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  * <p>Overrides are ignored if it has been already overridden once,
  * for example this avoids recursion on overriding to the same model</p>
  *
+ * @sincePackFormat 2
+ * @sinceMinecraft 1.9
  * @since 1.0.0
  */
 public class ItemOverride implements Examinable {
@@ -116,7 +118,7 @@ public class ItemOverride implements Examinable {
      * Creates a new {@link ItemOverride} instance
      * from the given values
      *
-     * @param model The new item model
+     * @param model      The new item model
      * @param predicates The item override predicates
      * @return A new {@link ItemOverride} instance
      * @since 1.0.0
@@ -132,7 +134,7 @@ public class ItemOverride implements Examinable {
      * Creates a new {@link ItemOverride} instance
      * from the given values
      *
-     * @param model The new item model
+     * @param model      The new item model
      * @param predicates The item override predicates
      * @return A new {@link ItemOverride} instance
      * @since 1.0.0

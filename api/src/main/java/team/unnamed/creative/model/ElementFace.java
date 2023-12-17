@@ -34,6 +34,8 @@ import team.unnamed.creative.texture.TextureUV;
  * Defines the properties of a {@link CubeFace}
  * from a {@link Element}
  *
+ * @sinceMinecraft 1.8
+ * @sincePackFormat 1
  * @since 1.0.0
  */
 public interface ElementFace extends Examinable {
@@ -75,6 +77,8 @@ public interface ElementFace extends Examinable {
      * generated based on the element's position and face.</p>
      *
      * @return The texture area to use
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 2.0.0
      */
     @Nullable TextureUV uv();
@@ -84,6 +88,8 @@ public interface ElementFace extends Examinable {
      * form prepended with a "#"
      *
      * @return The face texture
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull String texture();
@@ -95,6 +101,8 @@ public interface ElementFace extends Examinable {
      * use the light level from for lighting the face
      *
      * @return The element cull face
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @Nullable CubeFace cullFace();

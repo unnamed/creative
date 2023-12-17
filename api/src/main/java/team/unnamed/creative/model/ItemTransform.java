@@ -51,6 +51,8 @@ public interface ItemTransform extends Examinable {
      * display
      *
      * @return The model display rotation
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull Vector3Float rotation();
@@ -62,6 +64,8 @@ public interface ItemTransform extends Examinable {
      * and {@code MAX_TRANSLATION}</p>
      *
      * @return The model display translation
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull Vector3Float translation();
@@ -73,6 +77,8 @@ public interface ItemTransform extends Examinable {
      * and {@code MAX_SCALE} constants</p>
      *
      * @return The model display scale
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull Vector3Float scale();
@@ -83,12 +89,91 @@ public interface ItemTransform extends Examinable {
      * @since 1.0.0
      */
     enum Type {
+        /**
+         * Displayed in the player's right-hand, in
+         * third person view.
+         *
+         * <p>Note that, for Minecraft 1.8.x, this will
+         * become only {@code THIRDPERSON}. So both {@code THIRDPERSON_RIGHTHAND}
+         * and {@link #THIRDPERSON_LEFTHAND} will become
+         * the same display.</p>
+         *
+         * @sinceMinecraft 1.9
+         * @sincePackFormat 2
+         * @since 1.0.0
+         */
         THIRDPERSON_RIGHTHAND,
+
+        /**
+         * Displayed in the player's left-hand, in
+         * third person view.
+         *
+         * <p>Note that, for Minecraft 1.8.x, this will
+         * become only {@code THIRDPERSON}. So both {@link #THIRDPERSON_RIGHTHAND}
+         * and {@code THIRDPERSON_LEFTHAND} will become
+         * the same display.</p>
+         *
+         * @sinceMinecraft 1.9
+         * @sincePackFormat 2
+         * @since 1.0.0
+         */
         THIRDPERSON_LEFTHAND,
+
+        /**
+         * Displayed in the player's right-hand, in
+         * first person view.
+         *
+         * <p>Note that, for Minecraft 1.8.x, this will
+         * become only {@code FIRSTPERSON}. So both {@code FIRSTPERSON_RIGHTHAND}
+         * and {@link #FIRSTPERSON_LEFTHAND} will become
+         * the same display.</p>
+         *
+         * @sinceMinecraft 1.9
+         * @sincePackFormat 2
+         * @since 1.0.0
+         */
         FIRSTPERSON_RIGHTHAND,
+
+        /**
+         * Displayed in the player's left-hand, in
+         * first person view.
+         *
+         * <p>Note that, for Minecraft 1.8.x, this will
+         * become only {@code FIRSTPERSON}. So both {@link #FIRSTPERSON_RIGHTHAND}
+         * and {@code FIRSTPERSON_LEFTHAND} will become
+         * the same display.</p>
+         *
+         * @sinceMinecraft 1.9
+         * @sincePackFormat 2
+         * @since 1.0.0
+         */
         FIRSTPERSON_LEFTHAND,
+
+        /**
+         * Displayed in the inventory.
+         *
+         * @sinceMinecraft 1.8
+         * @sincePackFormat 1
+         * @since 1.0.0
+         */
         GUI,
+
+        /**
+         * Displayed in the player's head.
+         *
+         * @sinceMinecraft 1.9
+         * @sincePackFormat 2
+         * @since 1.0.0
+         */
         HEAD,
+
+        /**
+         * Displayed in the ground.
+         *
+         * @sinceMinecraft 1.9
+         * @sincePackFormat 2
+         * @since 1.0.0
+         */
         GROUND,
         FIXED
     }

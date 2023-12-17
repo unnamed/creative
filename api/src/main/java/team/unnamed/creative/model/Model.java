@@ -85,6 +85,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * model object
      *
      * @return The parent model location
+     * @sinceMinecraft 1.8
+     * @sincePackFormat 1
      * @since 1.0.0
      */
     @Nullable Key parent();
@@ -98,6 +100,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * default to {@code true}</p>
      *
      * @return True to use ambient occlusion
+     * @sinceMinecraft 1.8
+     * @sincePackFormat 1
      * @since 2.0.0
      */
     @NotNull TriState ambientOcclusion();
@@ -107,6 +111,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * where the model can be displayed
      *
      * @return An unmodifiable map of displays
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull @Unmodifiable Map<ItemTransform.Type, ItemTransform> display();
@@ -115,6 +121,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * Returns this model textures
      *
      * @return This model textures
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull ModelTextures textures();
@@ -140,6 +148,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * forms
      *
      * @return The model elements
+     * @sinceMinecraft 1.8
+     * @sincePackFormat 1
      * @since 1.0.0
      */
     @NotNull @Unmodifiable List<Element> elements();
@@ -154,6 +164,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * on overriding to the same model</p>
      *
      * @return This item model overrides
+     * @sinceMinecraft 1.9
+     * @sincePackFormat 2
      * @since 1.0.0
      */
     @NotNull List<ItemOverride> overrides();

@@ -37,6 +37,8 @@ import static java.util.Objects.requireNonNull;
  * Represents an item predicate, used to know
  * whether to override an item model or not
  *
+ * @sincePackFormat 2
+ * @sinceMinecraft 1.9
  * @since 1.0.0
  */
 public class ItemPredicate implements Examinable {

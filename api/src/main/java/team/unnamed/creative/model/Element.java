@@ -38,6 +38,8 @@ import java.util.Map;
  * has "from" and "to" locations, rotation,
  * translation and scale
  *
+ * @sinceMinecraft 1.8
+ * @sincePackFormat 1
  * @since 1.0.0
  */
 public interface Element extends Examinable {
@@ -62,6 +64,8 @@ public interface Element extends Examinable {
      * element cuboid.
      *
      * @return The cuboid origin
+     * @sinceMinecraft 1.8
+     * @sincePackFormat 1
      * @since 1.0.0
      */
     @NotNull Vector3Float from();
@@ -71,6 +75,8 @@ public interface Element extends Examinable {
      * cuboid.
      *
      * @return The cuboid stop point
+     * @sinceMinecraft 1.8
+     * @sincePackFormat 1
      * @since 1.0.0
      */
     @NotNull Vector3Float to();
@@ -79,6 +85,8 @@ public interface Element extends Examinable {
      * Gets the element rotation.
      *
      * @return The element rotation
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @NotNull ElementRotation rotation();
@@ -88,6 +96,8 @@ public interface Element extends Examinable {
      * for this element or not
      *
      * @return True to render shadows
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     boolean shade();
@@ -99,6 +109,8 @@ public interface Element extends Examinable {
      * <p>If a face is left out, it does not render</p>
      *
      * @return The element faces
+     * @sincePackFormat 1
+     * @sinceMinecraft 1.8
      * @since 1.0.0
      */
     @Unmodifiable @NotNull Map<CubeFace, ElementFace> faces();

@@ -39,6 +39,8 @@ import static java.util.Objects.requireNonNull;
  * Class for representing {@link Element}
  * rotations in a single axis
  *
+ * @sincePackFormat 1
+ * @sinceMinecraft 1.8
  * @since 1.0.0
  */
 public class ElementRotation implements Examinable {
