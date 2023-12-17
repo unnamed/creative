@@ -23,8 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.base.Writable;
 
 import java.io.File;
@@ -78,12 +76,6 @@ public interface FileTreeWriter extends AutoCloseable {
         return new OutputStreamWriter(openStream(path), StandardCharsets.UTF_8);
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    default JsonWriter openJsonWriter(String path) {
-        return new JsonWriter(openWriter(path));
-    }
-
     /**
      * Opens and writes the given data to the
      * specified file path
@@ -121,7 +113,7 @@ public interface FileTreeWriter extends AutoCloseable {
      * <p>Will delete all the contents of the {@code root}
      * folder if {@code clear} is set to true</p>
      *
-     * @param root The root folder
+     * @param root  The root folder
      * @param clear True to delete the folder contents
      * @return The created file tree for the given folder
      */
@@ -153,7 +145,7 @@ public interface FileTreeWriter extends AutoCloseable {
      * close the given output stream, but it may be
      * finished ({@link ZipOutputStream#finish()})</p>
      *
-     * @param zipStream The underlying zip stream
+     * @param zipStream             The underlying zip stream
      * @param entryLifecycleHandler The ZIP archive entry lifecycle handler
      * @return The file tree for the given zip output
      * stream
@@ -171,7 +163,7 @@ public interface FileTreeWriter extends AutoCloseable {
      * close the given output stream, but it may be
      * finished ({@link ZipOutputStream#finish()})</p>
      *
-     * @param zipStream The underlying zip stream
+     * @param zipStream    The underlying zip stream
      * @param entryFactory The ZIP archive entry factory
      * @return The file tree for the given zip output
      * stream

@@ -56,24 +56,6 @@ public interface LanguageMeta extends MetadataPart {
         return new LanguageMetaImpl(languages);
     }
 
-    /**
-     * Creates a new {@link LanguageMeta} instance from
-     * the given languages map
-     *
-     * @param languages The registered languages
-     * @return A new {@link LanguageMeta} instance
-     * @sincePackFormat 1
-     * @sinceMinecraft 1.6.1
-     * @since 1.0.0
-     * @deprecated Use {@link #language(Map)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_ -> new")
-    static @NotNull LanguageMeta of(final @NotNull Map<String, LanguageEntry> languages) {
-        return language(languages);
-    }
-
     int MAX_LANGUAGE_LENGTH = 16;
 
     /**

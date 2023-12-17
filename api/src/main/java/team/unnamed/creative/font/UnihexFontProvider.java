@@ -120,26 +120,6 @@ public interface UnihexFontProvider extends FontProvider {
         }
 
         /**
-         * Creates a new {@link SizeOverride} instance
-         * with the given parameters.
-         *
-         * @param from  The start of the codepoint range (inclusive)
-         * @param to    The end of the codepoint range (inclusive)
-         * @param left  The left-most column of the glyph
-         * @param right The right-most column of the glyph
-         * @return The new instance
-         * @sinceMinecraft 1.20
-         * @sincePackFormat 15
-         * @since 1.0.0
-         * @deprecated Use {@link #override(int, int, int, int)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        static @NotNull SizeOverride of(final int from, final int to, final int left, final int right) {
-            return override(from, to, left, right);
-        }
-
-        /**
          * The start of the codepoint range (inclusive).
          *
          * @return The start of the codepoint range

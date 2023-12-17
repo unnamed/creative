@@ -23,7 +23,6 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Readable;
 
@@ -64,25 +63,6 @@ public interface FileTreeReader extends AutoCloseable {
      */
     default @NotNull Readable content() {
         return Readable.copyInputStream(stream());
-    }
-
-    /**
-     * Returns the current entry's data as an input stream.
-     *
-     * <p>The returned input stream has a short lifetime and
-     * will be closed when next() is called again.</p>
-     *
-     * <p>To store any content of the entry use the {@link #content()}
-     * method.</p>
-     *
-     * @return The current entry's data as an input stream
-     * @since 1.0.0
-     * @deprecated Use {@link #stream()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    default @NotNull InputStream input() {
-        return stream();
     }
 
     @Override

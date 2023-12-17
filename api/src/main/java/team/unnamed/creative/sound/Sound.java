@@ -54,21 +54,6 @@ public interface Sound extends ResourcePackPart, Keyed, Examinable {
     }
 
     /**
-     * Creates a new sound instance with the given key and data.
-     *
-     * @param key  The sound key
-     * @param data The sound data
-     * @return The sound instance
-     * @since 1.0.0
-     * @deprecated Use {@link #sound(Key, Writable)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Sound of(final @NotNull Key key, final @NotNull Writable data) {
-        return new SoundImpl(key, data);
-    }
-
-    /**
      * Returns this sound's key (location), the key contains
      * the sound namespace and path, so that the full sound
      * path is formatted like {@code assets/<namespace>/sounds/<path>}

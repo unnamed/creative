@@ -37,24 +37,6 @@ import team.unnamed.creative.metadata.MetadataPart;
  */
 @ApiStatus.NonExtendable
 public interface PackMeta extends MetadataPart {
-
-    /**
-     * Returns the pack version. If this number does not match the
-     * current required number, the resource pack displays an error
-     * and requires additional confirmation to load the pack
-     *
-     * <p>There are format versions assigned to specific Minecraft
-     * client versions, e.g.: 7 for Minecraft 1.17 and 1.17.1, 8
-     * for Minecraft 1.18 and 1.18.1</p>
-     *
-     * @return The resource pack format number
-     * @since 1.0.0
-     * @deprecated Use {@link PackMeta#formats()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    int format();
-
     /**
      * Returns the supported pack formats. The pack format specifies
      * how the resource-pack is structured and which features it
@@ -72,28 +54,12 @@ public interface PackMeta extends MetadataPart {
     /**
      * Returns the pack description. Text shown below the pack name in
      * the resource pack menu. The text is shown on two lines. If the
-     * text is too long it is truncated
-     *
-     * @return The resource-pack description
-     * @since 1.0.0
-     */
-    @NotNull String description();
-
-    /**
-     * Returns the pack description. Text shown below the pack name in
-     * the resource pack menu. The text is shown on two lines. If the
      * text is too long, it is truncated.
      *
      * @return The resource-pack description
-     * @since 1.1.0
-     * @deprecated This method will be renamed to description() and the
-     * description() method that returns a string will be removed in
-     * release 2.0.0
+     * @since 2.0.0
      */
-    @ApiStatus.Internal
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Deprecated
-    @NotNull Component description0();
+    @NotNull Component description();
 
     /**
      * Creates a new {@link PackMeta} instance from

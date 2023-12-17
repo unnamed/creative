@@ -29,14 +29,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import team.unnamed.creative.metadata.animation.AnimationMeta;
-import team.unnamed.creative.metadata.filter.FilterMeta;
-import team.unnamed.creative.metadata.gui.GuiMeta;
-import team.unnamed.creative.metadata.language.LanguageMeta;
-import team.unnamed.creative.metadata.overlays.OverlaysMeta;
-import team.unnamed.creative.metadata.pack.PackMeta;
-import team.unnamed.creative.metadata.texture.TextureMeta;
-import team.unnamed.creative.metadata.villager.VillagerMeta;
 
 import java.util.Collection;
 
@@ -69,30 +61,6 @@ public interface Metadata extends Examinable {
     static @NotNull Metadata empty() {
         return MetadataImpl.EMPTY;
     }
-
-    /**
-     * Creates a new {@link Metadata} builder.
-     *
-     * @return The builder
-     * @since 1.0.0
-     * @deprecated Use {@link #metadata()} instead
-     */
-    @Contract("-> new")
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Builder builder() {
-        return metadata();
-    }
-
-    /**
-     * An empty metadata.
-     *
-     * @since 1.0.0
-     * @deprecated Use {@link #empty()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    Metadata EMPTY = MetadataImpl.EMPTY;
 
     /**
      * Gets all the metadata parts in this metadata object.
@@ -140,150 +108,6 @@ public interface Metadata extends Examinable {
          * @since 1.4.0
          */
         @NotNull Builder addPart(final @NotNull MetadataPart part);
-
-        /**
-         * Adds a metadata part to this builder.
-         *
-         * @param type The metadata part type
-         * @param part The metadata part
-         * @param <T>  The metadata part type
-         * @return This builder
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_, _ -> this")
-        default <T extends MetadataPart> @NotNull Builder add(final @NotNull Class<T> type, final @NotNull T part) {
-            return addPart(part);
-        }
-
-        // overloads of known metadata parts
-
-        /**
-         * Adds an animation meta part.
-         *
-         * @param meta The added animation meta part.
-         * @return This builder.
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull AnimationMeta meta) {
-            return add(AnimationMeta.class, meta);
-        }
-
-        /**
-         * Adds a filter meta part.
-         *
-         * @param meta The added filter meta part.
-         * @return This builder.
-         * @sincePackFormat 9
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull FilterMeta meta) {
-            return add(FilterMeta.class, meta);
-        }
-
-        /**
-         * Adds a language meta part.
-         *
-         * @param meta The added language meta part.
-         * @return This builder.
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull LanguageMeta meta) {
-            return add(LanguageMeta.class, meta);
-        }
-
-        /**
-         * Adds a pack meta part.
-         *
-         * @param meta The added pack meta part.
-         * @return This builder.
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull PackMeta meta) {
-            return add(PackMeta.class, meta);
-        }
-
-        /**
-         * Adds a texture meta part.
-         *
-         * @param meta The added texture meta part.
-         * @return This builder.
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull TextureMeta meta) {
-            return add(TextureMeta.class, meta);
-        }
-
-        /**
-         * Adds a villager meta part.
-         *
-         * @param meta The added villager meta part.
-         * @return This builder.
-         * @since 1.0.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull VillagerMeta meta) {
-            return add(VillagerMeta.class, meta);
-        }
-
-        /**
-         * Adds a gui meta part.
-         *
-         * @param meta The added gui meta part
-         * @return This builder
-         * @sinceMinecraft 1.20.2
-         * @sincePackFormat 18
-         * @since 1.2.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull GuiMeta meta) {
-            return add(GuiMeta.class, meta);
-        }
-
-        /**
-         * Adds an overlay meta part.
-         *
-         * @param meta The added overlay meta part.
-         * @return This builder.
-         * @sinceMinecraft 1.20.2
-         * @sincePackFormat 18
-         * @since 1.1.0
-         * @deprecated Use {@link #addPart(MetadataPart)} instead
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-        @Contract("_ -> this")
-        default @NotNull Builder add(final @NotNull OverlaysMeta meta) {
-            return add(OverlaysMeta.class, meta);
-        }
 
         /**
          * Builds a new {@link Metadata} instance.

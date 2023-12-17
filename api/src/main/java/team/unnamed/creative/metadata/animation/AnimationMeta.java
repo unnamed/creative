@@ -62,26 +62,6 @@ public interface AnimationMeta extends MetadataPart {
     }
 
     /**
-     * Creates a new {@link AnimationMeta} instance
-     * using the provided values
-     *
-     * @param interpolate If frames must be interpolated
-     * @param width       Frame-texture width ratio
-     * @param height      Frame-texture height ratio
-     * @param frameTime   Default frame time
-     * @param frames      Animation frames
-     * @return A new {@link AnimationMeta} instance
-     * @since 1.0.0
-     * @deprecated Use {@link #animation(boolean, int, int, int, List)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_, _, _, _, _ -> new")
-    static @NotNull AnimationMeta of(final boolean interpolate, final int width, final int height, final int frameTime, final @NotNull List<AnimationFrame> frames) {
-        return animation(interpolate, width, height, frameTime, frames);
-    }
-
-    /**
      * Returns a new instance of our builder implementation
      * used to build {@link AnimationMeta} instances
      *
@@ -91,21 +71,6 @@ public interface AnimationMeta extends MetadataPart {
     @Contract("-> new")
     static @NotNull Builder animation() {
         return new AnimationMetaImpl.BuilderImpl();
-    }
-
-    /**
-     * Returns a new instance of our builder implementation
-     * used to build {@link AnimationMeta} instances
-     *
-     * @return A new builder instance
-     * @since 1.0.0
-     * @deprecated Use {@link #animation()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("-> new")
-    static @NotNull Builder builder() {
-        return animation();
     }
 
     int DEFAULT_FRAMETIME = 1;

@@ -222,7 +222,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             writer.name(type.name().toLowerCase(Locale.ROOT))
                     .beginObject();
             if (face.uv() != null) {
-                TextureUV uv = face.uv0();
+                TextureUV uv = face.uv();
                 TextureUV defaultUv = getDefaultUvForFace(type, element.from(), element.to());
                 if (uv != null && !uv.equals(defaultUv)) {
                     writer.name("uv");

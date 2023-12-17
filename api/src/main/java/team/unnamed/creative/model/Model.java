@@ -52,13 +52,6 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
         return new ModelImpl.BuilderImpl();
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("-> new")
-    static @NotNull Builder builder() {
-        return model();
-    }
-
     /**
      * A {@link Model} can be set to extend this key to use
      * a model that is created out of the specified icon
@@ -165,7 +158,8 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      * @since 1.3.0
      */
     @Contract("-> new")
-    @NotNull default Builder toBuilder() {
+    @NotNull
+    default Builder toBuilder() {
         return Model.model().key(key())
                 .parent(parent())
                 .ambientOcclusion(ambientOcclusion())

@@ -68,19 +68,6 @@ public interface ResourcePack extends ResourceContainer {
     }
 
     /**
-     * Creates a new, empty resource-pack instance.
-     *
-     * @return A new resource-pack instance
-     * @since 1.0.0
-     * @deprecated Use {@link #resourcePack()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull ResourcePack create() {
-        return resourcePack();
-    }
-
-    /**
      * Returns the resource-pack icon
      * in <bold>PNG</bold> format
      *
@@ -130,7 +117,7 @@ public interface ResourcePack extends ResourceContainer {
 
     default void packMeta(final @NotNull PackMeta packMeta) {
         requireNonNull(packMeta, "packMeta");
-        editMetadata(metadata -> metadata.add(packMeta));
+        editMetadata(metadata -> metadata.addPart(packMeta));
     }
 
     default void packMeta(final int format, final @NotNull String description) {
@@ -162,24 +149,6 @@ public interface ResourcePack extends ResourceContainer {
     }
 
     /**
-     * Returns the pack format that this resource-pack uses.
-     *
-     * @return The pack format
-     * @since 1.0.0
-     * @deprecated Use {@link ResourcePack#formats()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    default int format() {
-        PackMeta meta = packMeta();
-        if (meta == null) {
-            return -1;
-        } else {
-            return meta.format();
-        }
-    }
-
-    /**
      * Returns the pack format range that this resource-pack
      * supports.
      *
@@ -195,7 +164,7 @@ public interface ResourcePack extends ResourceContainer {
         }
     }
 
-    default @Nullable String description() {
+    default @Nullable Component description() {
         PackMeta meta = packMeta();
         if (meta == null) {
             return null;
@@ -210,7 +179,7 @@ public interface ResourcePack extends ResourceContainer {
 
     default void languageMeta(final @NotNull LanguageMeta languageMeta) {
         requireNonNull(languageMeta, "languageMeta");
-        editMetadata(metadata -> metadata.add(languageMeta));
+        editMetadata(metadata -> metadata.addPart(languageMeta));
     }
 
     default @Nullable FilterMeta filterMeta() {
@@ -219,7 +188,7 @@ public interface ResourcePack extends ResourceContainer {
 
     default void filterMeta(final @NotNull FilterMeta filterMeta) {
         requireNonNull(filterMeta, "filterMeta");
-        editMetadata(metadata -> metadata.add(filterMeta));
+        editMetadata(metadata -> metadata.addPart(filterMeta));
     }
 
     /**
@@ -246,7 +215,7 @@ public interface ResourcePack extends ResourceContainer {
      */
     default void overlaysMeta(final @NotNull OverlaysMeta overlaysMeta) {
         requireNonNull(overlaysMeta, "overlaysMeta");
-        editMetadata(metadata -> metadata.add(overlaysMeta));
+        editMetadata(metadata -> metadata.addPart(overlaysMeta));
     }
     //#endregion
 

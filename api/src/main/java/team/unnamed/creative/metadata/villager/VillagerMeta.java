@@ -23,7 +23,6 @@
  */
 package team.unnamed.creative.metadata.villager;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.metadata.MetadataPart;
@@ -50,24 +49,6 @@ public interface VillagerMeta extends MetadataPart {
      */
     @Contract("_ -> new")
     static @NotNull VillagerMeta villager(final @NotNull Hat hat) {
-        return new VillagerMetaImpl(hat);
-    }
-
-    /**
-     * Creates a new {@link VillagerMeta} instance
-     * from the given values
-     *
-     * @param hat The hat render mode
-     * @return A new instance of {@link VillagerMeta}
-     * @sinceMinecraft 1.14
-     * @sincePackFormat 4
-     * @since 1.0.0
-     * @deprecated Use {@link #villager(Hat)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_ -> new")
-    static @NotNull VillagerMeta of(final @NotNull Hat hat) {
         return new VillagerMetaImpl(hat);
     }
 

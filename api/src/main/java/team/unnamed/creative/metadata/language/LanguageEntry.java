@@ -24,7 +24,6 @@
 package team.unnamed.creative.metadata.language;
 
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,24 +58,6 @@ public interface LanguageEntry extends Examinable {
     }
 
     /**
-     * Creates a new Minecraft {@link LanguageEntry} instance
-     *
-     * @param name          The language full name
-     * @param region        The language region or country
-     * @param bidirectional True if read from right to left
-     * @sincePackFormat 1
-     * @sinceMinecraft 1.6.1
-     * @since 1.0.0
-     * @deprecated Use {@link #languageEntry(String, String, boolean)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_, _, _ -> new")
-    static @NotNull LanguageEntry of(final @NotNull String name, final @NotNull String region, final boolean bidirectional) {
-        return languageEntry(name, region, bidirectional);
-    }
-
-    /**
      * Static factory method for our builder implementation
      *
      * @return A new builder for {@link LanguageEntry} instances
@@ -87,22 +68,6 @@ public interface LanguageEntry extends Examinable {
     @Contract("-> new")
     static @NotNull Builder languageEntry() {
         return new LanguageEntryImpl.BuilderImpl();
-    }
-
-    /**
-     * Static factory method for our builder implementation
-     *
-     * @return A new builder for {@link LanguageEntry} instances
-     * @sincePackFormat 1
-     * @sinceMinecraft 1.6.1
-     * @since 1.0.0
-     * @deprecated Use {@link #languageEntry()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("-> new")
-    static @NotNull Builder builder() {
-        return languageEntry();
     }
 
     boolean DEFAULT_BIDIRECTIONAL = false;

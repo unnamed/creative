@@ -28,10 +28,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Writable;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.Objects;
-
 /**
  * Represents a built server-side resource-pack ready
  * to be downloaded by a player via HTTP.
@@ -57,23 +53,6 @@ public interface BuiltResourcePack extends Examinable {
     }
 
     /**
-     * Creates a new {@link BuiltResourcePack} instance
-     * from the given bytes and hash.
-     *
-     * @param bytes The resource-pack zip archive bytes
-     * @param hash  The SHA-1 hash of the resource-pack
-     * @return The built resource-pack instance
-     * @since 1.0.0
-     * @deprecated Use {@link #of(Writable, String)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull BuiltResourcePack of(final byte @NotNull [] bytes, final @NotNull String hash) {
-        Objects.requireNonNull(bytes, "bytes");
-        return new BuiltResourcePackImpl(Writable.bytes(bytes), hash);
-    }
-
-    /**
      * Returns the resource-pack zip archive
      * data.
      *
@@ -81,24 +60,6 @@ public interface BuiltResourcePack extends Examinable {
      * @since 1.1.0
      */
     @NotNull Writable data();
-
-    /**
-     * Returns the resource-pack zip archive
-     * bytes.
-     *
-     * @return The resource-pack file data
-     * @since 1.0.0
-     * @deprecated Use {@link #data()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    default byte @NotNull [] bytes() {
-        try {
-            return data().toByteArray();
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to convert data to byte array", e);
-        }
-    }
 
     /**
      * Returns the SHA-1 hash of the resource-pack.

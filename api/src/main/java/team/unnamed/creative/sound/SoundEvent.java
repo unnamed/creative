@@ -74,39 +74,6 @@ public interface SoundEvent extends ResourcePackPart, Sound.Type, Examinable {
         return new SoundEventImpl.BuilderImpl();
     }
 
-    /**
-     * Creates a new {@link SoundEvent} from the
-     * given values
-     *
-     * @param key      The sound event's key
-     * @param replace  True to replace default sounds
-     * @param subtitle The sound event subtitle
-     * @param sounds   The sound event sounds
-     * @return A new {@link SoundEvent} instance
-     * @since 1.0.0
-     * @deprecated Use {@link #soundEvent(Key, boolean, String, List)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull SoundEvent of(final @NotNull Key key, final boolean replace, final @Nullable String subtitle, final @NotNull List<SoundEntry> sounds) {
-        return new SoundEventImpl(key, replace, subtitle, sounds);
-    }
-
-    /**
-     * Creates a new {@link Builder} instance,
-     * it eases the creation of {@link SoundEvent}
-     * objects
-     *
-     * @return A new {@link Builder} instance
-     * @since 1.0.0
-     * @deprecated Use {@link #soundEvent()} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Builder builder() {
-        return new SoundEventImpl.BuilderImpl();
-    }
-
     boolean DEFAULT_REPLACE = false;
 
     /**

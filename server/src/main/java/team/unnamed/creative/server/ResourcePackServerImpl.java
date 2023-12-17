@@ -56,12 +56,6 @@ final class ResourcePackServerImpl implements ResourcePackServer {
     }
 
     @Override
-    @Deprecated
-    public @NotNull HttpServer httpServer() {
-        return server;
-    }
-
-    @Override
     public @NotNull InetSocketAddress address() {
         return server.getAddress();
     }

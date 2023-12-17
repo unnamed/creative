@@ -40,23 +40,6 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.NonExtendable
 public interface ReferenceFontProvider extends FontProvider {
     /**
-     * Creates a new {@link ReferenceFontProvider} with the
-     * given {@code id}.
-     *
-     * @param id The referenced font key
-     * @return A new {@link ReferenceFontProvider}
-     * @sinceMinecraft 1.20
-     * @sincePackFormat 15
-     * @since 1.0.0
-     * @deprecated Use {@link FontProvider#reference(Key)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull ReferenceFontProvider of(final @NotNull Key id) {
-        return FontProvider.reference(id);
-    }
-
-    /**
      * Returns the referenced font key.
      *
      * @return The referenced font key

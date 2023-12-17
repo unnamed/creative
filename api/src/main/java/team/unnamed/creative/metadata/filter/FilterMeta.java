@@ -90,55 +90,6 @@ public interface FilterMeta extends MetadataPart {
     }
 
     /**
-     * Creates a new {@link FilterMeta} from the given
-     * pattern list
-     *
-     * @param patterns The key patterns to use
-     * @return A new {@link FilterMeta} instance
-     * @sincePackFormat 9
-     * @sinceMinecraft 1.19
-     * @since 1.0.0
-     * @deprecated Use {@link #filter(List)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_ -> new")
-    static @NotNull FilterMeta of(final @NotNull List<KeyPattern> patterns) {
-        return filter(patterns);
-    }
-
-    /**
-     * Creates a new {@link FilterMeta} from the given
-     * pattern array
-     *
-     * @param patterns The key patterns to use
-     * @return A new {@link FilterMeta} instance
-     * @sincePackFormat 9
-     * @sinceMinecraft 1.19
-     * @since 1.0.0
-     * @deprecated Use {@link #filter(KeyPattern...)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_ -> new")
-    static @NotNull FilterMeta of(final @NotNull KeyPattern @NotNull ... patterns) {
-        return filter(Arrays.asList(patterns));
-    }
-
-    /**
-     * @return Nothing.
-     * @throws UnsupportedOperationException Always.
-     * @since 1.0.0
-     * @deprecated Use {@link #filter(KeyPattern...)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("-> fail")
-    static @NotNull FilterMeta of() {
-        throw new UnsupportedOperationException("Cannot create an empty filter meta");
-    }
-
-    /**
      * Returns the list of key patterns to block from
      * resource packs that are below this one.
      *

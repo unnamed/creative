@@ -91,53 +91,6 @@ public interface Texture extends ResourcePackPart, Keyed, Examinable, Metadatabl
     }
 
     /**
-     * Creates a texture.
-     *
-     * @param key  The texture key
-     * @param data The texture data
-     * @return The created texture
-     * @since 1.0.0
-     * @deprecated Use {@link Texture#texture(Key, Writable)} instead,
-     * it's better for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Texture of(final @NotNull Key key, final @NotNull Writable data) {
-        return of(key, data, Metadata.empty());
-    }
-
-    /**
-     * Creates a texture.
-     *
-     * @param key  The texture key
-     * @param data The texture data
-     * @param meta The texture metadata
-     * @return The created texture
-     * @since 1.0.0
-     * @deprecated Use {@link Texture#texture(Key, Writable)} instead,
-     * it's better for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Texture of(final @NotNull Key key, final @NotNull Writable data, final @NotNull Metadata meta) {
-        return new TextureImpl(key, data, meta);
-    }
-
-    /**
-     * Creates a new builder for textures.
-     *
-     * @return The created builder
-     * @since 1.0.0
-     * @deprecated Use {@link Texture#texture()} instead,
-     * it's better for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Builder builder() {
-        return new TextureImpl.BuilderImpl();
-    }
-
-    /**
      * Returns this texture's key (location), a key contains
      * the texture namespace and path, so that the full texture
      * path is formatted like {@code assets/<namespace>/textures/<path>}
@@ -224,7 +177,7 @@ public interface Texture extends ResourcePackPart, Keyed, Examinable, Metadatabl
      */
     @Contract("-> new")
     default @NotNull Builder toBuilder() {
-        return builder()
+        return texture()
                 .key(this.key())
                 .data(this.data());
     }

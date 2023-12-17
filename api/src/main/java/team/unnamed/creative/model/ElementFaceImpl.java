@@ -64,7 +64,7 @@ final class ElementFaceImpl implements ElementFace {
     }
 
     @Override
-    public @Nullable TextureUV uv0() {
+    public @Nullable TextureUV uv() {
         return uv;
     }
 

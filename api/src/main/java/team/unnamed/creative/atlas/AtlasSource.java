@@ -130,25 +130,6 @@ public interface AtlasSource extends Examinable {
     }
 
     /**
-     * Creates a new {@link UnstitchAtlasSource}, unstitch atlas sources
-     * copy rectangular regions from other images.
-     *
-     * @param resource The resource
-     * @param regions  The regions to copy
-     * @param xDivisor The X divisor, used to determine the units used by the regions
-     * @param yDivisor The Y divisor, used to determine the units used by the regions
-     * @sincePackFormat 12
-     * @sinceMinecraft 1.19.3
-     * @since 1.0.0
-     * @deprecated Use {@link #unstitch(Key, List, Vector2Float)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull UnstitchAtlasSource unstitch(final @NotNull Key resource, final @NotNull List<UnstitchAtlasSource.Region> regions, final double xDivisor, final double yDivisor) {
-        return unstitch(resource, regions, new Vector2Float((float) xDivisor, (float) yDivisor));
-    }
-
-    /**
      * Creates a new {@link PalettedPermutationsAtlasSource}, paletted permutations
      * atlas sources dynamically generate textures in-memory with specific color sets.
      *

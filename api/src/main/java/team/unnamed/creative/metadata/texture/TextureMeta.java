@@ -53,25 +53,6 @@ public interface TextureMeta extends MetadataPart {
         return new TextureMetaImpl(blur, clamp);
     }
 
-    /**
-     * Creates a new {@link TextureMeta} instance to
-     * be applied to a texture
-     *
-     * @param blur  To make the texture blur
-     * @param clamp To stretch the texture
-     * @return A new texture metadata instance
-     * @sincePackFormat 1
-     * @sinceMinecraft 1.6.1
-     * @since 1.0.0
-     * @deprecated Use {@link #texture(boolean, boolean)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    @Contract("_, _ -> new")
-    static @NotNull TextureMeta of(final boolean blur, final boolean clamp) {
-        return new TextureMetaImpl(blur, clamp);
-    }
-
     boolean DEFAULT_BLUR = false;
     boolean DEFAULT_CLAMP = false;
 

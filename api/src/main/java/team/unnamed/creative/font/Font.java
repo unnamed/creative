@@ -74,7 +74,7 @@ public interface Font extends ResourcePackPart, Keyed, Examinable {
      * @since 1.1.0
      */
     static @NotNull Font font(final @NotNull Key key, final @NotNull FontProvider @NotNull ... providers) {
-        return of(key, Arrays.asList(providers));
+        return font(key, Arrays.asList(providers));
     }
 
     /**
@@ -85,40 +85,6 @@ public interface Font extends ResourcePackPart, Keyed, Examinable {
      */
     static @NotNull Builder font() {
         return new FontImpl.BuilderImpl();
-    }
-
-    /**
-     * Creates a new {@link Font} instance from
-     * the given provider list
-     *
-     * @param key       The font key
-     * @param providers The font providers
-     * @return A new {@link Font} instance
-     * @since 1.0.0
-     * @deprecated Use {@link Font#font} as it is better
-     * for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Font of(final @NotNull Key key, final @NotNull List<FontProvider> providers) {
-        return font(key, providers);
-    }
-
-    /**
-     * Creates a new {@link Font} instance from
-     * the given providers
-     *
-     * @param key       The font key
-     * @param providers The font providers
-     * @return A new {@link Font} instance
-     * @since 1.0.0
-     * @deprecated Use {@link Font#font} as it is better
-     * for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Font of(final @NotNull Key key, final @NotNull FontProvider @NotNull ... providers) {
-        return font(key, Arrays.asList(providers));
     }
 
     /**

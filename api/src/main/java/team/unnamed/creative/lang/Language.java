@@ -76,36 +76,6 @@ public interface Language extends ResourcePackPart, Keyed, Examinable {
     }
 
     /**
-     * Creates a new {@link Language} object which holds
-     * the given translations in a Map
-     *
-     * @param translations The language translations
-     * @return The language
-     * @since 1.0.0
-     * @deprecated Use {@link Language#language(Key, Map)} instead,
-     * it is better for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Language of(final @NotNull Key key, final @NotNull Map<String, String> translations) {
-        return new LanguageImpl(key, translations);
-    }
-
-    /**
-     * Creates a new {@link Language} instance builder.
-     *
-     * @return The created builder
-     * @since 1.0.0
-     * @deprecated Use {@link Language#language()} instead,
-     * it is better for static imports
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    static @NotNull Builder builder() {
-        return new LanguageImpl.BuilderImpl();
-    }
-
-    /**
      * Returns the language key.
      *
      * <p>For example, the English language key is "minecraft:en_us"</p>
