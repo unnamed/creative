@@ -25,6 +25,7 @@ package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.util.TriState;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -74,8 +75,6 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
 
     Key BUILT_IN_GENERATED = Key.key("builtin/generated");
 
-    boolean DEFAULT_AMBIENT_OCCLUSION = true;
-
     @Override
     @NotNull Key key();
 
@@ -89,13 +88,17 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
     @Nullable Key parent();
 
     /**
-     * Returns the boolean that determines whether
-     * to use ambient occlusion or not for this block
+     * Determines whether to use ambient occlusion or not
+     * for this (block) model.
+     *
+     * <p>If {@link TriState#NOT_SET}, it will use the parent's
+     * ambient occlusion value, and if there is no parent, it will
+     * default to {@code true}</p>
      *
      * @return True to use ambient occlusion
-     * @since 1.0.0
+     * @since 2.0.0
      */
-    boolean ambientOcclusion();
+    @NotNull TriState ambientOcclusion();
 
     /**
      * Returns a map of the different places
@@ -200,7 +203,7 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
         @NotNull Builder parent(final @Nullable Key parent);
 
         @Contract("_ -> this")
-        @NotNull Builder ambientOcclusion(final boolean ambientOcclusion);
+        @NotNull Builder ambientOcclusion(final @NotNull TriState ambientOcclusion);
 
         @Contract("_ -> this")
         @NotNull Builder display(final @NotNull Map<ItemTransform.Type, ItemTransform> display);

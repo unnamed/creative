@@ -24,6 +24,7 @@
 package team.unnamed.creative.serialize.minecraft.model;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.TriState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.base.Axis3D;
@@ -55,7 +56,7 @@ class ModelDeserializationTest {
         assertEquals(
                 Model.model()
                         .key(Key.key("minecraft:block/cross"))
-                        .ambientOcclusion(false)
+                        .ambientOcclusion(TriState.FALSE)
                         .textures(ModelTextures.builder()
                                 .particle(ModelTexture.ofReference("cross"))
                                 .build())

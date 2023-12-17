@@ -30,6 +30,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.base.Vector2Float;
@@ -68,6 +69,18 @@ public final class GsonUtil {
      */
     public static boolean isNullOrAbsent(JsonObject object, String name) {
         return !object.has(name) || object.get(name).isJsonNull();
+    }
+
+    public static @NotNull TriState getTriState(final @NotNull JsonObject object, final @NotNull String key) {
+        if (!object.has(key)) {
+            return TriState.NOT_SET;
+        }
+        final JsonElement element = object.get(key);
+        if (element.isJsonPrimitive() && ((JsonPrimitive) element).isBoolean()) {
+            return TriState.byBoolean(element.getAsBoolean());
+        } else {
+            throw new IllegalStateException("Field '" + key + "' must be a boolean.");
+        }
     }
 
     public static boolean getBoolean(JsonObject object, String key, boolean def) {

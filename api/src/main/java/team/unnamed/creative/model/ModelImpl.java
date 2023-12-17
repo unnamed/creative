@@ -24,6 +24,7 @@
 package team.unnamed.creative.model;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.TriState;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 final class ModelImpl implements Model {
     private final Key key;
     private final Key parent;
-    private final boolean ambientOcclusion;
+    private final TriState ambientOcclusion;
     private final Map<ItemTransform.Type, ItemTransform> display;
     private final ModelTextures textures;
     private final GuiLight guiLight;
@@ -52,7 +53,7 @@ final class ModelImpl implements Model {
     ModelImpl(
             final @NotNull Key key,
             final @Nullable Key parent,
-            final boolean ambientOcclusion,
+            final @NotNull TriState ambientOcclusion,
             final @NotNull Map<ItemTransform.Type, ItemTransform> display,
             final @NotNull ModelTextures textures,
             final @Nullable GuiLight guiLight,
@@ -61,7 +62,7 @@ final class ModelImpl implements Model {
     ) {
         this.key = requireNonNull(key, "key");
         this.parent = parent;
-        this.ambientOcclusion = ambientOcclusion;
+        this.ambientOcclusion = requireNonNull(ambientOcclusion, "ambientOcclusion");
         this.display = requireNonNull(display, "display");
         this.textures = requireNonNull(textures, "textures");
         this.guiLight = guiLight;
@@ -80,7 +81,7 @@ final class ModelImpl implements Model {
     }
 
     @Override
-    public boolean ambientOcclusion() {
+    public @NotNull TriState ambientOcclusion() {
         return ambientOcclusion;
     }
 
@@ -151,7 +152,7 @@ final class ModelImpl implements Model {
     static final class BuilderImpl implements Builder {
         private Key key;
         private Key parent;
-        private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
+        private TriState ambientOcclusion = TriState.NOT_SET;
         private Map<ItemTransform.Type, ItemTransform> display = new HashMap<>();
         private ModelTextures textures = ModelTextures.EMPTY;
         private GuiLight guiLight;
@@ -171,8 +172,8 @@ final class ModelImpl implements Model {
         }
 
         @Override
-        public @NotNull Builder ambientOcclusion(final boolean ambientOcclusion) {
-            this.ambientOcclusion = ambientOcclusion;
+        public @NotNull Builder ambientOcclusion(final @NotNull TriState ambientOcclusion) {
+            this.ambientOcclusion = requireNonNull(ambientOcclusion, "ambientOcclusion");
             return this;
         }
 

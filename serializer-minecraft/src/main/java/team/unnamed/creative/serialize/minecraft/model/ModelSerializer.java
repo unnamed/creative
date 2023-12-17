@@ -29,6 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.base.Axis3D;
 import team.unnamed.creative.base.CubeFace;
@@ -108,10 +109,10 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             writer.endArray();
         }
 
-        boolean ambientOcclusion = model.ambientOcclusion();
-        if (ambientOcclusion != Model.DEFAULT_AMBIENT_OCCLUSION) {
-            // only write if not default value
-            writer.name("ambientocclusion").value(ambientOcclusion);
+        final TriState ambientOcclusion = model.ambientOcclusion();
+        if (ambientOcclusion != TriState.NOT_SET) {
+            // only write if set
+            writer.name("ambientocclusion").value(ambientOcclusion.toBoolean());
         }
 
         writeTextures(writer, model.textures());
@@ -186,7 +187,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
                 .parent(parent)
                 .display(display)
                 .elements(elements)
-                .ambientOcclusion(GsonUtil.getBoolean(objectNode, "ambientocclusion", Model.DEFAULT_AMBIENT_OCCLUSION))
+                .ambientOcclusion(GsonUtil.getTriState(objectNode, "ambientocclusion"))
                 .textures(texture)
                 .guiLight(guiLight)
                 .overrides(overrides)
