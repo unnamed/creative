@@ -44,6 +44,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents a Minecraft block/item model.
  *
+ * @sinceMinecraft 1.8
+ * @sincePackFormat 1
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
