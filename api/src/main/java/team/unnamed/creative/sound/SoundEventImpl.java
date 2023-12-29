@@ -80,6 +80,11 @@ final class SoundEventImpl implements SoundEvent {
     }
 
     @Override
+    public @NotNull Builder toBuilder() {
+        return SoundEvent.soundEvent().key(key).replace(replace).subtitle(subtitle).sounds(sounds);
+    }
+
+    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("replace", replace),
