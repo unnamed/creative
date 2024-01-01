@@ -226,7 +226,8 @@ public interface Texture extends ResourcePackPart, Keyed, Examinable, Metadatabl
     default @NotNull Builder toBuilder() {
         return builder()
                 .key(this.key())
-                .data(this.data());
+                .data(this.data())
+                .meta(this.meta());
     }
 
     /**
