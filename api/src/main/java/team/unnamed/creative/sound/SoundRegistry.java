@@ -58,6 +58,19 @@ public interface SoundRegistry extends ResourcePackPart, Namespaced, Examinable 
     }
 
     /**
+     * Creates a new registry from the given
+     * sounds.
+     *
+     * @param namespace The sound registry namespace
+     * @param sounds    The registered sounds
+     * @return A new sound registry instance
+     * @since 1.6.0
+     */
+    static @NotNull SoundRegistry soundRegistry(final @NotNull String namespace, final @NotNull Collection<SoundEvent> sounds) {
+        return new SoundRegistryImpl(namespace, sounds);
+    }
+
+    /**
      * Creates a new registry builder.
      *
      * @return A new registry builder

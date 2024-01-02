@@ -127,6 +127,16 @@ public interface SoundEvent extends ResourcePackPart, Sound.Type, Examinable {
     }
 
     /**
+     * Converts this sound event instance to its builder type,
+     * with all the properties already set
+     *
+     * @return The created builder
+     * @since 1.6.0
+     */
+    @Contract("-> new")
+    @NotNull Builder toBuilder();
+
+    /**
      * Builder implementation for ease the
      * construction of {@link SoundEvent}
      * instances

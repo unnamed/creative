@@ -123,6 +123,11 @@ final class SoundEntryImpl implements SoundEntry {
     }
 
     @Override
+    public @NotNull Builder toBuilder() {
+        return SoundEntry.soundEntry().key(key).volume(volume).pitch(pitch).weight(weight).stream(stream).attenuationDistance(attenuationDistance).preload(preload).type(type);
+    }
+
+    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("key", key),

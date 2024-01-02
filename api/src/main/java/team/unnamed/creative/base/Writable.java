@@ -23,6 +23,7 @@
  */
 package team.unnamed.creative.base;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
@@ -140,7 +141,10 @@ public interface Writable {
      * @param name The full resource name
      * @return The {@link Writable} representation
      * @since 1.1.0
+     * @deprecated Use {@link #resource(ClassLoader, String)} instead
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     @CallerSensitive
     static @NotNull Writable resource(final @NotNull String name) {
         requireNonNull(name, "name");
