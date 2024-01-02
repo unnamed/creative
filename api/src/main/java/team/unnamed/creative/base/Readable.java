@@ -23,11 +23,18 @@
  */
 package team.unnamed.creative.base;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
@@ -155,7 +162,10 @@ public interface Readable {
      * @param name The full resource name
      * @return The {@link Readable} representation
      * @since 1.1.0
+     * @deprecated Use {@link #resource(ClassLoader, String)} instead
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
     @CallerSensitive
     static @NotNull Readable resource(final @NotNull String name) {
         requireNonNull(name, "name");
