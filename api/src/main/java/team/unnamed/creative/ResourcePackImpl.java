@@ -1,7 +1,7 @@
 /*
  * This file is part of creative, licensed under the MIT license
  *
- * Copyright (c) 2021-2023 Unnamed Team
+ * Copyright (c) 2021-2024 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
-import team.unnamed.creative.resources.MergeStrategy;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.overlay.ResourceContainerImpl;
+import team.unnamed.creative.resources.MergeStrategy;
 
 import java.util.Collection;
 import java.util.HashMap;

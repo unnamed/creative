@@ -1,7 +1,7 @@
 /*
  * This file is part of creative, licensed under the MIT license
  *
- * Copyright (c) 2021-2023 Unnamed Team
+ * Copyright (c) 2021-2024 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,9 +43,9 @@ import static java.util.Objects.requireNonNull;
  * <p>A legacy unicode font. This format is deprecated and only
  * prioritized when the "Force Unicode Font" option is turned on</p>
  *
+ * @see UnihexFontProvider
  * @since 1.0.0
  * @deprecated Removed on Minecraft 1.20
- * @see UnihexFontProvider
  */
 @Deprecated
 public class LegacyUnicodeFontProvider implements FontProvider {

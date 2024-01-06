@@ -1,7 +1,7 @@
 /*
  * This file is part of creative, licensed under the MIT license
  *
- * Copyright (c) 2021-2023 Unnamed Team
+ * Copyright (c) 2021-2024 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,9 +34,9 @@ import java.util.List;
  * Represents the "overlays" metadata part. It declares
  * all the available overlays for this resource-pack.
  *
- * @since 1.1.0
  * @sinceMinecraft 1.20.2
  * @sincePackFormat 18
+ * @since 1.1.0
  */
 @ApiStatus.NonExtendable
 public interface OverlaysMeta extends MetadataPart {
@@ -45,9 +45,9 @@ public interface OverlaysMeta extends MetadataPart {
      * Gets the ordered list of declared overlays.
      *
      * @return The overlays.
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
     @NotNull List<OverlayEntry> entries();
 
@@ -57,9 +57,9 @@ public interface OverlaysMeta extends MetadataPart {
      *
      * @param overlays The overlays.
      * @return The overlays meta.
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
     static @NotNull OverlaysMeta of(final @NotNull List<OverlayEntry> overlays) {
         return new OverlaysMetaImpl(overlays);
@@ -71,9 +71,9 @@ public interface OverlaysMeta extends MetadataPart {
      *
      * @param overlays The overlays.
      * @return The overlays meta.
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
     static @NotNull OverlaysMeta of(final @NotNull OverlayEntry @NotNull ... overlays) {
         return of(Arrays.asList(overlays));

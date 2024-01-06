@@ -1,7 +1,7 @@
 /*
  * This file is part of creative, licensed under the MIT license
  *
- * Copyright (c) 2021-2023 Unnamed Team
+ * Copyright (c) 2021-2024 Unnamed Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,9 +45,9 @@ import static java.lang.annotation.ElementType.*;
  * <p>An overlay entry tells the client that there is an
  * available overlay for an specific pack format range.</p>
  *
- * @since 1.1.0
  * @sinceMinecraft 1.20.2
  * @sincePackFormat 18
+ * @since 1.1.0
  */
 @ApiStatus.NonExtendable
 public interface OverlayEntry extends Examinable {
@@ -57,9 +57,9 @@ public interface OverlayEntry extends Examinable {
      * supports.
      *
      * @return The pack formats.
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
     @NotNull PackFormat formats();
 
@@ -67,22 +67,24 @@ public interface OverlayEntry extends Examinable {
      * Gets the directory name that this overlay uses.
      *
      * @return The directory name.
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
-    @NotNull @Subst("dir") String directory();
+    @NotNull
+    @Subst("dir")
+    String directory();
 
     /**
      * Creates a new {@link OverlayEntry} instance with the
      * given pack formats range and directory name.
      *
-     * @param formats The pack formats.
+     * @param formats   The pack formats.
      * @param directory The directory name.
      * @return The overlay entry.
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
     static @NotNull OverlayEntry of(
             final @NotNull PackFormat formats,
@@ -96,15 +98,15 @@ public interface OverlayEntry extends Examinable {
      * string for overlay entries. They must match a specific regex
      * pattern.
      *
-     * @since 1.1.0
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @since 1.1.0
      */
     @Retention(RetentionPolicy.CLASS)
     @Pattern(OverlayEntryImpl.DIRECTORY_PATTERN)
     @Documented
     @NonNls
-    @Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE })
+    @Target({METHOD, FIELD, PARAMETER, LOCAL_VARIABLE})
     @interface Directory {
     }
 
