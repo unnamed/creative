@@ -113,6 +113,13 @@ public class ModelTextures implements Examinable {
         return variables;
     }
 
+    public @NotNull Builder toBuilder() {
+        return builder()
+                .layers(layers)
+                .particle(particle)
+                .variables(variables);
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
