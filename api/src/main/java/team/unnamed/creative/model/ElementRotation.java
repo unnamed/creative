@@ -180,6 +180,45 @@ public class ElementRotation implements Examinable {
     }
 
     /**
+     * Creates a new {@link ElementRotation} instance
+     * from the provided values
+     *
+     * @param origin  The rotation origin or pivot
+     * @param angles  The rotation angle (value)
+     * @param rescale Whether to rescale the faces
+     *                to the whole block
+     * @return A new {@link ElementRotation} instance
+     * @since 1.6.0
+     */
+    public static ElementRotation of(
+            Vector3Float origin,
+            Vector3Float angles,
+            boolean rescale
+    ) {
+        float x = angles.x();
+        float y = angles.y();
+        float z = angles.z();
+
+        Axis3D axis;
+        float angle;
+
+        if ((((x != 0) ? 1 : 0) ^ ((y != 0) ? 1 : 0) ^ ((z != 0) ? 1 : 0)) == 0 && (x != 0 || y != 0)) {
+            throw new UnsupportedOperationException("Cube can't be rotated in multiple axis");
+        } else if (x != 0) {
+            axis = Axis3D.X;
+            angle = x;
+        } else if (y != 0) {
+            axis = Axis3D.Y;
+            angle = y;
+        } else {
+            axis = Axis3D.Z;
+            angle = z;
+        }
+
+        return ElementRotation.of(origin, axis, angle, rescale);
+    }
+
+    /**
      * Static factory method for instantiating our
      * builder implementation
      *
