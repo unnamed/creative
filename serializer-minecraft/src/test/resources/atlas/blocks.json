@@ -1,7 +1,7 @@
 {
     "sources": [
         {
-            "type": "directory",
+            "type": "minecraft:directory",
             "source": "block",
             "prefix": "block/"
         },
@@ -11,7 +11,7 @@
             "prefix": "item/"
         },
         {
-            "type": "directory",
+            "type": "minecraft:directory",
             "source": "entity/conduit",
             "prefix": "entity/conduit/"
         },
@@ -24,11 +24,11 @@
             "resource": "entity/decorated_pot/decorated_pot_side"
         },
         {
-            "type": "single",
+            "type": "minecraft:single",
             "resource": "entity/enchanting_table_book"
         },
         {
-            "type": "paletted_permutations",
+            "type": "minecraft:paletted_permutations",
             "textures": [
                 "trims/items/leggings_trim",
                 "trims/items/chestplate_trim",
