@@ -32,7 +32,7 @@ import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ResourceCategories {
@@ -40,7 +40,7 @@ public class ResourceCategories {
     private static final Map<String, ResourceCategory<?>> CATEGORIES;
 
     static {
-        CATEGORIES = new HashMap<>();
+        CATEGORIES = new LinkedHashMap<>();
         registerCategory(AtlasSerializer.CATEGORY);
         registerCategory(SoundSerializer.CATEGORY);
         registerCategory(ModelSerializer.CATEGORY);

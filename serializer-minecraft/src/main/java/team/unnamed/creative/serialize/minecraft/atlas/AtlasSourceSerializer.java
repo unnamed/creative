@@ -42,7 +42,7 @@ import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -216,7 +216,7 @@ final class AtlasSourceSerializer {
             @Subst("minecraft:resource")
             String paletteKeyStr = node.get("palette_key").getAsString();
             Key paletteKey = Key.key(paletteKeyStr);
-            Map<String, Key> permutations = new HashMap<>();
+            Map<String, Key> permutations = new LinkedHashMap<>();
             for (Map.Entry<String, JsonElement> entry : node.getAsJsonObject("permutations").entrySet()) {
                 @Subst("minecraft:resource")
                 String value = entry.getValue().getAsString();

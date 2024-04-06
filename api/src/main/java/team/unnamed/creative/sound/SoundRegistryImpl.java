@@ -34,8 +34,9 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.util.Keys;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -55,7 +56,7 @@ final class SoundRegistryImpl implements SoundRegistry {
     ) {
         this.namespace = requireNonNull(namespace, "namespace");
         requireNonNull(sounds, "sounds");
-        this.sounds = new HashMap<>();
+        this.sounds = new LinkedHashMap<>();
         for (SoundEvent soundEvent : sounds) {
             this.sounds.put(soundEvent.key(), soundEvent);
         }
@@ -138,7 +139,7 @@ final class SoundRegistryImpl implements SoundRegistry {
         @Override
         public @NotNull Builder sounds(final @NotNull Collection<? extends SoundEvent> sounds) {
             requireNonNull(sounds, "sounds");
-            this.sounds = new HashSet<>(sounds);
+            this.sounds = new LinkedHashSet<>(sounds);
             return this;
         }
 

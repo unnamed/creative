@@ -27,7 +27,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public final class MoreCollections {
     public static <K, V> Map<K, V> immutableMapOf(Map<K, V> map) {
         return map.isEmpty()
                 ? Collections.emptyMap()
-                : Collections.unmodifiableMap(new HashMap<>(map));
+                : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
 }
