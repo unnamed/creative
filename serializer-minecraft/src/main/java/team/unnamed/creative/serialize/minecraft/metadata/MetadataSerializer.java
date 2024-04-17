@@ -32,13 +32,14 @@ import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
 
     public static final MetadataSerializer INSTANCE = new MetadataSerializer();
 
-    private static final Map<String, MetadataPartCodec<?>> CODECS = new HashMap<>();
+    private static final Map<String, MetadataPartCodec<?>> CODECS = new LinkedHashMap<>();
 
     static {
         registerCodec(AnimationMetaCodec.INSTANCE);
