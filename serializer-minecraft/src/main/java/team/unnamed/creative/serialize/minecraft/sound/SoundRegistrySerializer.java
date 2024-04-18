@@ -38,6 +38,7 @@ import team.unnamed.creative.sound.SoundRegistry;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -116,7 +117,7 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
     }
 
     public SoundRegistry readFromTree(JsonElement node, @Subst("minecraft") String namespace) {
-        Set<SoundEvent> soundEvents = new HashSet<>();
+        Set<SoundEvent> soundEvents = new LinkedHashSet<>();
         JsonObject objectNode = node.getAsJsonObject();
 
         for (Map.Entry<String, JsonElement> soundEventEntry : objectNode.entrySet()) {
@@ -140,7 +141,7 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
                         // complete sound object
                         JsonObject soundObjectNode = soundNode.getAsJsonObject();
 
-                        SoundEntry.Builder sound = SoundEntry.builder()
+                        SoundEntry.Builder sound = SoundEntry.soundEntry()
                                 .key(Key.key(soundObjectNode.get("name").getAsString()))
                                 .volume(GsonUtil.getFloat(soundObjectNode, "volume", SoundEntry.DEFAULT_VOLUME))
                                 .pitch(GsonUtil.getFloat(soundObjectNode, "pitch", SoundEntry.DEFAULT_PITCH))
