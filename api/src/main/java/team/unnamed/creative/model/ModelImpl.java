@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -152,7 +152,7 @@ final class ModelImpl implements Model {
         private Key key;
         private Key parent;
         private boolean ambientOcclusion = DEFAULT_AMBIENT_OCCLUSION;
-        private Map<ItemTransform.Type, ItemTransform> display = new HashMap<>();
+        private Map<ItemTransform.Type, ItemTransform> display = new LinkedHashMap<>();
         private ModelTextures textures = ModelTextures.EMPTY;
         private GuiLight guiLight;
         private List<Element> elements = new ArrayList<>();
@@ -179,7 +179,7 @@ final class ModelImpl implements Model {
         @Override
         public @NotNull Builder display(final @NotNull Map<ItemTransform.Type, ItemTransform> display) {
             requireNonNull(display, "display");
-            this.display = new HashMap<>(display);
+            this.display = new LinkedHashMap<>(display);
             return this;
         }
 

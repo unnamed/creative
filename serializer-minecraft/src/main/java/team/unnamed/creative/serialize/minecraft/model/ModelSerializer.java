@@ -53,7 +53,7 @@ import team.unnamed.creative.texture.TextureUV;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -145,7 +145,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         }
 
         // display
-        Map<ItemTransform.Type, ItemTransform> display = new HashMap<>();
+        Map<ItemTransform.Type, ItemTransform> display = new LinkedHashMap<>();
         if (objectNode.has("display")) {
             JsonObject displayNode = objectNode.getAsJsonObject("display");
             for (Map.Entry<String, JsonElement> entry : displayNode.entrySet()) {
@@ -278,7 +278,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
             rotation = readElementRotation(objectNode.get("rotation"));
         }
 
-        Map<CubeFace, ElementFace> faces = new HashMap<>();
+        Map<CubeFace, ElementFace> faces = new LinkedHashMap<>();
         for (Map.Entry<String, JsonElement> entry : objectNode.getAsJsonObject("faces").entrySet()) {
             CubeFace face = CubeFace.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
             JsonObject elementFaceNode = entry.getValue().getAsJsonObject();
@@ -487,7 +487,7 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         JsonObject objectNode = node.getAsJsonObject();
         ModelTexture particle = null;
         List<ModelTexture> layers = new ArrayList<>(objectNode.entrySet().size());
-        Map<String, ModelTexture> variables = new HashMap<>();
+        Map<String, ModelTexture> variables = new LinkedHashMap<>();
 
         for (Map.Entry<String, JsonElement> entry : objectNode.entrySet()) {
             String key = entry.getKey();

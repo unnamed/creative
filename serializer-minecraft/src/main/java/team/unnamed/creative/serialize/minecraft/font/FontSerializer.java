@@ -46,7 +46,7 @@ import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -194,7 +194,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
 
     private static SpaceFontProvider readSpace(JsonObject node) {
         JsonObject advancesNode = node.getAsJsonObject("advances");
-        Map<String, Integer> advances = new HashMap<>();
+        Map<String, Integer> advances = new LinkedHashMap<>();
         for (Map.Entry<String, JsonElement> advanceEntryNode : advancesNode.entrySet()) {
             String character = advanceEntryNode.getKey();
             int advance = advanceEntryNode.getValue().getAsInt();

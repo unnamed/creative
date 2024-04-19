@@ -45,7 +45,7 @@ import team.unnamed.creative.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,17 +56,17 @@ import static java.util.Objects.requireNonNull;
 @ApiStatus.Internal
 public class ResourceContainerImpl implements ResourceContainer {
 
-    private final Map<Key, Atlas> atlases = new HashMap<>();
-    private final Map<Key, BlockState> blockStates = new HashMap<>();
-    private final Map<Key, Font> fonts = new HashMap<>();
-    private final Map<Key, Language> languages = new HashMap<>();
-    private final Map<Key, Model> models = new HashMap<>();
-    private final Map<String, SoundRegistry> soundRegistries = new HashMap<>();
-    private final Map<Key, Sound> sounds = new HashMap<>();
-    private final Map<Key, Texture> textures = new HashMap<>();
+    private final Map<Key, Atlas> atlases = new LinkedHashMap<>();
+    private final Map<Key, BlockState> blockStates = new LinkedHashMap<>();
+    private final Map<Key, Font> fonts = new LinkedHashMap<>();
+    private final Map<Key, Language> languages = new LinkedHashMap<>();
+    private final Map<Key, Model> models = new LinkedHashMap<>();
+    private final Map<String, SoundRegistry> soundRegistries = new LinkedHashMap<>();
+    private final Map<Key, Sound> sounds = new LinkedHashMap<>();
+    private final Map<Key, Texture> textures = new LinkedHashMap<>();
 
     // Unknown files we don't know how to parse
-    private final Map<String, Writable> files = new HashMap<>();
+    private final Map<String, Writable> files = new LinkedHashMap<>();
 
     //#region Atlases (Keyed)
     @Override
@@ -348,7 +348,7 @@ public class ResourceContainerImpl implements ResourceContainer {
                 continue;
             }
 
-            final Map<String, String> translations = new HashMap<>(oldLanguage.translations());
+            final Map<String, String> translations = new LinkedHashMap<>(oldLanguage.translations());
             for (final Map.Entry<String, String> translation : language.translations().entrySet()) {
                 final String replaced = translations.put(translation.getKey(), translation.getValue());
                 if (replaced != null && strategy == MergeStrategy.mergeAndFailOnError()) {
@@ -386,7 +386,7 @@ public class ResourceContainerImpl implements ResourceContainer {
                 continue;
             }
 
-            final Map<Key, SoundEvent> soundEvents = new HashMap<>();
+            final Map<Key, SoundEvent> soundEvents = new LinkedHashMap<>();
             for (final SoundEvent soundEvent : oldSoundRegistry.sounds()) {
                 soundEvents.put(soundEvent.key(), soundEvent);
             }

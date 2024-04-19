@@ -32,7 +32,7 @@ import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 final class LanguageMetaCodec implements MetadataPartCodec<LanguageMeta> {
@@ -49,7 +49,7 @@ final class LanguageMetaCodec implements MetadataPartCodec<LanguageMeta> {
 
     @Override
     public @NotNull LanguageMeta read(final @NotNull JsonObject node) {
-        Map<String, LanguageEntry> languages = new HashMap<>();
+        Map<String, LanguageEntry> languages = new LinkedHashMap<>();
 
         for (Map.Entry<String, JsonElement> entry : node.entrySet()) {
             String code = entry.getKey();

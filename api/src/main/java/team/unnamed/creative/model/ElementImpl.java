@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.base.CubeFace;
 import team.unnamed.creative.base.Vector3Float;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -138,7 +138,7 @@ final class ElementImpl implements Element {
         private Vector3Float to;
         private ElementRotation rotation = null;
         private boolean shade = DEFAULT_SHADE;
-        private Map<CubeFace, ElementFace> faces = new HashMap<>();
+        private Map<CubeFace, ElementFace> faces = new LinkedHashMap<>();
 
 
         @Override
@@ -167,7 +167,7 @@ final class ElementImpl implements Element {
 
         @Override
         public @NotNull Builder faces(final @NotNull Map<CubeFace, ElementFace> faces) {
-            this.faces = new HashMap<>(requireNonNull(faces, "faces"));
+            this.faces = new LinkedHashMap<>(requireNonNull(faces, "faces"));
             return this;
         }
 

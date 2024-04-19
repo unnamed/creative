@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -237,7 +237,7 @@ public class ModelTextures implements Examinable {
         @Contract("_ -> this")
         public @NotNull Builder variables(final @NotNull Map<String, ModelTexture> variables) {
             requireNonNull(variables, "variables");
-            this.variables = new HashMap<>(variables);
+            this.variables = new LinkedHashMap<>(variables);
             return this;
         }
 
@@ -246,7 +246,7 @@ public class ModelTextures implements Examinable {
             requireNonNull(id, "id");
             requireNonNull(texture, "texture");
             if (variables == null) {
-                variables = new HashMap<>();
+                variables = new LinkedHashMap<>();
             }
             variables.put(id, texture);
             return this;
