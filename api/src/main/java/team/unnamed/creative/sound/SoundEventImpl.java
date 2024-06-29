@@ -103,7 +103,8 @@ final class SoundEventImpl implements SoundEvent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SoundEventImpl that = (SoundEventImpl) o;
-        return replace == that.replace
+        return key == that.key
+                && replace == that.replace
                 && Objects.equals(subtitle, that.subtitle)
                 && Objects.equals(sounds, that.sounds);
     }
