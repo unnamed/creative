@@ -67,50 +67,48 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
             }
 
             List<SoundEntry> sounds = event.sounds();
-            if (!sounds.isEmpty()) {
-                writer.name("sounds").beginArray();
-                for (SoundEntry sound : sounds) {
-                    // in order to make some optimizations,
-                    // we have to do this
-                    if (sound.allDefault()) {
-                        // everything is default, just write the name
-                        writer.value(KeySerializer.toString(sound.key()));
-                    } else {
-                        writer.beginObject()
-                                .name("name").value(KeySerializer.toString(sound.key()));
-                        float volume = sound.volume();
-                        if (volume != SoundEntry.DEFAULT_VOLUME) {
-                            writer.name("volume").value(volume);
-                        }
-                        float pitch = sound.pitch();
-                        if (pitch != SoundEntry.DEFAULT_PITCH) {
-                            writer.name("pitch").value(pitch);
-                        }
-                        float weight = sound.weight();
-                        if (weight != SoundEntry.DEFAULT_WEIGHT) {
-                            writer.name("weight").value(weight);
-                        }
-                        boolean stream = sound.stream();
-                        if (stream != SoundEntry.DEFAULT_STREAM) {
-                            writer.name("stream").value(stream);
-                        }
-                        int attenuationDistance = sound.attenuationDistance();
-                        if (attenuationDistance != SoundEntry.DEFAULT_ATTENUATION_DISTANCE) {
-                            writer.name("attenuation_distance").value(attenuationDistance);
-                        }
-                        boolean preload = sound.preload();
-                        if (preload != SoundEntry.DEFAULT_PRELOAD) {
-                            writer.name("preload").value(preload);
-                        }
-                        SoundEntry.Type type = sound.type();
-                        if (type != SoundEntry.DEFAULT_TYPE) {
-                            writer.name("type").value(type.name().toLowerCase(Locale.ROOT));
-                        }
-                        writer.endObject();
+            writer.name("sounds").beginArray();
+            for (SoundEntry sound : sounds) {
+                // in order to make some optimizations,
+                // we have to do this
+                if (sound.allDefault()) {
+                    // everything is default, just write the name
+                    writer.value(KeySerializer.toString(sound.key()));
+                } else {
+                    writer.beginObject()
+                            .name("name").value(KeySerializer.toString(sound.key()));
+                    float volume = sound.volume();
+                    if (volume != SoundEntry.DEFAULT_VOLUME) {
+                        writer.name("volume").value(volume);
                     }
+                    float pitch = sound.pitch();
+                    if (pitch != SoundEntry.DEFAULT_PITCH) {
+                        writer.name("pitch").value(pitch);
+                    }
+                    float weight = sound.weight();
+                    if (weight != SoundEntry.DEFAULT_WEIGHT) {
+                        writer.name("weight").value(weight);
+                    }
+                    boolean stream = sound.stream();
+                    if (stream != SoundEntry.DEFAULT_STREAM) {
+                        writer.name("stream").value(stream);
+                    }
+                    int attenuationDistance = sound.attenuationDistance();
+                    if (attenuationDistance != SoundEntry.DEFAULT_ATTENUATION_DISTANCE) {
+                        writer.name("attenuation_distance").value(attenuationDistance);
+                    }
+                    boolean preload = sound.preload();
+                    if (preload != SoundEntry.DEFAULT_PRELOAD) {
+                        writer.name("preload").value(preload);
+                    }
+                    SoundEntry.Type type = sound.type();
+                    if (type != SoundEntry.DEFAULT_TYPE) {
+                        writer.name("type").value(type.name().toLowerCase(Locale.ROOT));
+                    }
+                    writer.endObject();
                 }
-                writer.endArray();
             }
+            writer.endArray();
             writer.endObject();
         }
         writer.endObject();
