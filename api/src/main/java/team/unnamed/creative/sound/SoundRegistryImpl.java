@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.util.Keys;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -130,7 +129,7 @@ final class SoundRegistryImpl implements SoundRegistry {
         public @NotNull Builder sound(final @NotNull SoundEvent event) {
             requireNonNull(event, "event");
             if (sounds == null) {
-                sounds = new HashSet<>();
+                sounds = new LinkedHashSet<>();
             }
             sounds.add(event);
             return this;
