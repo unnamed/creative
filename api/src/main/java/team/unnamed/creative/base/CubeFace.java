@@ -85,7 +85,15 @@ public enum CubeFace {
      *
      * @since 1.0.0
      */
-    SOUTH(Axis3D.Z, 1);
+    SOUTH(Axis3D.Z, 1),
+
+    /**
+     * The bottom face. It faces the negative Y direction.
+     * Only applicable to block/scaffolding_unstable
+     *
+     * @since 1.7.4
+     */
+    BOTTOM(Axis3D.Y, -1);
 
     private final Axis3D axis;
     private final int factor;
