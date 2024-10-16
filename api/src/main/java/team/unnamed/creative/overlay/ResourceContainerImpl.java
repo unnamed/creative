@@ -35,6 +35,7 @@ import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.model.ItemOverride;
+import team.unnamed.creative.model.ItemPredicate;
 import team.unnamed.creative.model.Model;
 import team.unnamed.creative.resources.MergeException;
 import team.unnamed.creative.resources.MergeStrategy;
@@ -45,6 +46,7 @@ import team.unnamed.creative.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -370,11 +372,24 @@ public class ResourceContainerImpl implements ResourceContainer {
                 continue;
             }
 
+            final List<ItemOverride> overrides = new ArrayList<>(oldModel.overrides());
+            overrides.addAll(model.overrides());
+
+            // Sort by custom model data if possible (TODO: detect duplicates)
+            overrides.sort(Comparator.comparing(ov -> {
+                ItemPredicate customModelDataPredicate = null;
+
+                for (final ItemPredicate predicate : ov.predicate()) {
+                    if (predicate.name().equals(ItemPredicate.CUSTOM_MODEL_DATA)) {
+                        customModelDataPredicate = predicate;
+                        break;
+                    }
+                }
+                return customModelDataPredicate == null ? 0 : (int) customModelDataPredicate.value();
+            }));
+
             final Model.Builder oldModelBuilder = oldModel.toBuilder();
-            for (final ItemOverride itemOverride : model.overrides()) {
-                // todo: detect duplicated override keys
-                oldModelBuilder.addOverride(itemOverride);
-            }
+            oldModelBuilder.overrides(overrides);
             models.put(model.key(), oldModelBuilder.build());
         }
 

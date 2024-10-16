@@ -23,11 +23,15 @@
  */
 package team.unnamed.creative.overlay;
 
+import net.kyori.adventure.key.Key;
 import org.junit.jupiter.api.Test;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
+import team.unnamed.creative.model.ItemOverride;
+import team.unnamed.creative.model.ItemPredicate;
+import team.unnamed.creative.model.Model;
 import team.unnamed.creative.resources.MergeStrategy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -145,6 +149,52 @@ class ResourcePackMergeTest {
                         )
                         .build(),
                 base.font(Font.MINECRAFT_DEFAULT)
+        );
+    }
+
+    @Test
+    void test_model_predicate_sorting() {
+        final ResourcePack base = ResourcePack.resourcePack();
+        final ResourcePack added = ResourcePack.resourcePack();
+
+        // unknown files
+        base.model(
+                Model.model()
+                        .key(Key.key("item/paper"))
+                        .overrides(
+                                ItemOverride.of(Key.key("other/model1"), ItemPredicate.customModelData(20)),
+                                ItemOverride.of(Key.key("other/model2"), ItemPredicate.customModelData(25)),
+                                ItemOverride.of(Key.key("other/model3"), ItemPredicate.customModelData(30))
+                        )
+                        .build()
+        );
+        added.model(
+                Model.model()
+                        .key(Key.key("item/paper"))
+                        .overrides(
+                                ItemOverride.of(Key.key("other/model4"), ItemPredicate.customModelData(35)),
+                                ItemOverride.of(Key.key("other/model5"), ItemPredicate.customModelData(22)),
+                                ItemOverride.of(Key.key("other/model6"), ItemPredicate.customModelData(14))
+                        )
+                        .build()
+        );
+
+        // merge!
+        base.merge(added, MergeStrategy.mergeAndFailOnError());
+
+        assertEquals(
+                Model.model()
+                        .key(Key.key("item/paper"))
+                        .overrides(
+                                ItemOverride.of(Key.key("other/model6"), ItemPredicate.customModelData(14)),
+                                ItemOverride.of(Key.key("other/model1"), ItemPredicate.customModelData(20)),
+                                ItemOverride.of(Key.key("other/model5"), ItemPredicate.customModelData(22)),
+                                ItemOverride.of(Key.key("other/model2"), ItemPredicate.customModelData(25)),
+                                ItemOverride.of(Key.key("other/model3"), ItemPredicate.customModelData(30)),
+                                ItemOverride.of(Key.key("other/model4"), ItemPredicate.customModelData(35))
+                        )
+                        .build(),
+                base.model(Key.key("item/paper"))
         );
     }
 }

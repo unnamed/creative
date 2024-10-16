@@ -43,6 +43,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class ItemPredicate implements Examinable {
 
+    public static final String CUSTOM_MODEL_DATA = "custom_model_data";
+
     private final String name;
     private final Object value;
 
@@ -214,7 +216,7 @@ public class ItemPredicate implements Examinable {
      * predicate is positive
      */
     public static ItemPredicate customModelData(int data) {
-        return new ItemPredicate("custom_model_data", data);
+        return new ItemPredicate(CUSTOM_MODEL_DATA, data);
     }
 
     /**
