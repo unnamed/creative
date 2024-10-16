@@ -49,6 +49,8 @@ import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
 
@@ -77,7 +79,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         // waiting for textures (because we can't know the order
         // they come in)
         // (null key means it is root resource pack)
-        Map<@Nullable String, Map<Key, Texture>> incompleteTextures = new HashMap<>();
+        Map<@Nullable String, Map<Key, Texture>> incompleteTextures = new LinkedHashMap<>();
 
         while (reader.hasNext()) {
             String path = reader.next();
@@ -212,7 +214,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     Key key = Key.key(namespace, keyOfMetadata);
                     Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parseJson(reader.stream()));
 
-                    Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
+                    Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new LinkedHashMap<>());
                     Texture texture = incompleteTexturesThisContainer.remove(key);
                     if (texture == null) {
                         // metadata was found first, put
@@ -224,7 +226,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 } else {
                     Key key = Key.key(namespace, categoryPath);
                     Writable data = reader.content().asWritable();
-                    Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new HashMap<>());
+                    Map<Key, Texture> incompleteTexturesThisContainer = incompleteTextures.computeIfAbsent(overlayDir, k -> new LinkedHashMap<>());
                     Texture waiting = incompleteTexturesThisContainer.remove(key);
 
                     if (waiting == null) {

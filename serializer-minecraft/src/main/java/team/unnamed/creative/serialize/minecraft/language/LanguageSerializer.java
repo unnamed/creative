@@ -34,7 +34,7 @@ import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class LanguageSerializer implements JsonResourceSerializer<Language>, JsonResourceDeserializer<Language> {
@@ -70,7 +70,7 @@ public final class LanguageSerializer implements JsonResourceSerializer<Language
     @Override
     public Language deserializeFromJson(JsonElement node, Key key) {
         JsonObject objectNode = node.getAsJsonObject();
-        Map<String, String> translations = new HashMap<>();
+        Map<String, String> translations = new LinkedHashMap<>();
 
         for (Map.Entry<String, JsonElement> translationEntry : objectNode.entrySet()) {
             String translationKey = translationEntry.getKey();

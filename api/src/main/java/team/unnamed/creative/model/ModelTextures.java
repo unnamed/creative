@@ -27,12 +27,15 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -110,6 +113,13 @@ public class ModelTextures implements Examinable {
         return variables;
     }
 
+    public @NotNull Builder toBuilder() {
+        return builder()
+                .layers(layers)
+                .particle(particle)
+                .variables(variables);
+    }
+
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
@@ -177,31 +187,68 @@ public class ModelTextures implements Examinable {
      */
     public static class Builder {
 
-        private List<ModelTexture> layers = Collections.emptyList();
-        private ModelTexture particle;
-        private Map<String, ModelTexture> variables = Collections.emptyMap();
+        private List<ModelTexture> layers = null;
+        private ModelTexture particle = null;
+        private Map<String, ModelTexture> variables = null;
 
         private Builder() {
         }
 
-        public Builder layers(List<ModelTexture> layers) {
-            this.layers = requireNonNull(layers, "layers");
-            return this;
-        }
-
-        public Builder layers(ModelTexture... layers) {
+        @Contract("_ -> this")
+        public @NotNull Builder layers(final @NotNull List<ModelTexture> layers) {
             requireNonNull(layers, "layers");
-            this.layers = Arrays.asList(layers);
+            this.layers = new ArrayList<>(layers);
             return this;
         }
 
-        public Builder particle(@Nullable ModelTexture particle) {
+        @Contract("_ -> this")
+        public @NotNull Builder layers(final @NotNull ModelTexture @NotNull ... layers) {
+            requireNonNull(layers, "layers");
+            this.layers = new ArrayList<>(Arrays.asList(layers));
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public @NotNull Builder addLayer(final @NotNull ModelTexture layer) {
+            requireNonNull(layer, "layer");
+            if (layers == null) {
+                layers = new ArrayList<>();
+            }
+            layers.add(layer);
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public @NotNull Builder addLayers(final @NotNull ModelTexture @NotNull ... layers) {
+            requireNonNull(layers, "layers");
+            if (this.layers == null) {
+                this.layers = new ArrayList<>();
+            }
+            Collections.addAll(this.layers, layers);
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public @NotNull Builder particle(final @Nullable ModelTexture particle) {
             this.particle = particle;
             return this;
         }
 
-        public Builder variables(Map<String, ModelTexture> variables) {
-            this.variables = requireNonNull(variables, "variables");
+        @Contract("_ -> this")
+        public @NotNull Builder variables(final @NotNull Map<String, ModelTexture> variables) {
+            requireNonNull(variables, "variables");
+            this.variables = new LinkedHashMap<>(variables);
+            return this;
+        }
+
+        @Contract("_, _ -> this")
+        public @NotNull Builder addVariable(final @NotNull String id, final @NotNull ModelTexture texture) {
+            requireNonNull(id, "id");
+            requireNonNull(texture, "texture");
+            if (variables == null) {
+                variables = new LinkedHashMap<>();
+            }
+            variables.put(id, texture);
             return this;
         }
 
@@ -212,8 +259,9 @@ public class ModelTextures implements Examinable {
          *
          * @return A new {@link ModelTextures} instance
          */
-        public ModelTextures build() {
-            return new ModelTextures(layers, particle, variables);
+        @Contract("-> new")
+        public @NotNull ModelTextures build() {
+            return new ModelTextures(layers == null ? Collections.emptyList() : layers, particle, variables == null ? Collections.emptyMap() : variables);
         }
 
     }

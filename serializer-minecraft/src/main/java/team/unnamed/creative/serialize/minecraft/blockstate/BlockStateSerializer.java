@@ -41,7 +41,7 @@ import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,7 +95,7 @@ public final class BlockStateSerializer implements JsonResourceSerializer<BlockS
 
         JsonObject objectNode = node.getAsJsonObject();
 
-        Map<String, MultiVariant> variants = new HashMap<>();
+        Map<String, MultiVariant> variants = new LinkedHashMap<>();
         List<Selector> multipart = new ArrayList<>();
 
         // read variants

@@ -27,7 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -121,7 +121,7 @@ public class SpaceFontProvider implements FontProvider {
 
         public Builder advance(String character, int value) {
             if (this.advances == null) {
-                this.advances = new HashMap<>();
+                this.advances = new LinkedHashMap<>();
             }
             this.advances.put(character, value);
             return this;

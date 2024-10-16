@@ -42,7 +42,7 @@ import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,29 +50,29 @@ final class AtlasSourceSerializer {
 
     private static final String TYPE_FIELD = "type";
 
-    private static final String SINGLE_TYPE = "single";
-    private static final String DIRECTORY_TYPE = "directory";
-    private static final String FILTER_TYPE = "filter";
-    private static final String UNSTITCH_TYPE = "unstitch";
-    private static final String PALETTED_PERMUTATIONS_TYPE = "paletted_permutations";
+    private static final Key SINGLE_TYPE = Key.key("single");
+    private static final Key DIRECTORY_TYPE = Key.key("directory");
+    private static final Key FILTER_TYPE = Key.key("filter");
+    private static final Key UNSTITCH_TYPE = Key.key("unstitch");
+    private static final Key PALETTED_PERMUTATIONS_TYPE = Key.key("paletted_permutations");
 
     // ------- TYPES ---------
     // {
-    //     "type": "single",
+    //     "type": "minecraft:single",
     //     "resource": <key>,
     //     "sprite": <optional key>
     // },
     // {
-    //     "type": "directory",
+    //     "type": "minecraft:directory",
     //     "source": <string>,
     //     "prefix": <string>
     // },
     // {
-    //     "type": "filter",
+    //     "type": "minecraft:filter",
     //     "pattern": <KeyPattern>
     // },
     // {
-    //     "type": "unstitch",
+    //     "type": "minecraft:unstitch",
     //     "resource": <key>,
     //     "regions": [<
     //         {
@@ -87,7 +87,7 @@ final class AtlasSourceSerializer {
     //     "divisor_y": <optional double = 1>
     // },
     // {
-    //     "type": "paletted_permutations",
+    //     "type": "minecraft:paletted_permutations",
     //     "textures": [<key>],
     //     "palette_key": <key>,
     //     "permutations": <{
@@ -101,7 +101,7 @@ final class AtlasSourceSerializer {
             SingleAtlasSource singleSource = (SingleAtlasSource) source;
             Key resource = singleSource.resource();
             @Nullable Key sprite = singleSource.sprite();
-            writer.name(TYPE_FIELD).value(SINGLE_TYPE)
+            writer.name(TYPE_FIELD).value(KeySerializer.toString(SINGLE_TYPE))
                     .name("resource").value(KeySerializer.toString(resource));
             if (sprite != null && !sprite.equals(resource)) {
                 writer.name("sprite").value(KeySerializer.toString(sprite));
@@ -109,19 +109,19 @@ final class AtlasSourceSerializer {
         } else if (source instanceof DirectoryAtlasSource) {
             DirectoryAtlasSource dirSource = (DirectoryAtlasSource) source;
             writer
-                    .name(TYPE_FIELD).value(DIRECTORY_TYPE)
+                    .name(TYPE_FIELD).value(KeySerializer.toString(DIRECTORY_TYPE))
                     .name("source").value(dirSource.source())
                     .name("prefix").value(dirSource.prefix());
         } else if (source instanceof FilterAtlasSource) {
             FilterAtlasSource filterSource = (FilterAtlasSource) source;
             writer
-                    .name(TYPE_FIELD).value(FILTER_TYPE)
+                    .name(TYPE_FIELD).value(KeySerializer.toString(FILTER_TYPE))
                     .name("pattern");
             KeyPatternSerializer.serialize(filterSource.pattern(), writer);
         } else if (source instanceof UnstitchAtlasSource) {
             UnstitchAtlasSource unstitchSource = (UnstitchAtlasSource) source;
             writer
-                    .name(TYPE_FIELD).value(UNSTITCH_TYPE)
+                    .name(TYPE_FIELD).value(KeySerializer.toString(UNSTITCH_TYPE))
                     .name("resource").value(KeySerializer.toString(unstitchSource.resource()));
             double divisorX = unstitchSource.divisor().x();
             if (divisorX != UnstitchAtlasSource.DEFAULT_DIVISOR.x()) {
@@ -145,7 +145,7 @@ final class AtlasSourceSerializer {
         } else if (source instanceof PalettedPermutationsAtlasSource) {
             PalettedPermutationsAtlasSource ppSource = (PalettedPermutationsAtlasSource) source;
             writer
-                    .name(TYPE_FIELD).value(PALETTED_PERMUTATIONS_TYPE)
+                    .name(TYPE_FIELD).value(KeySerializer.toString(PALETTED_PERMUTATIONS_TYPE))
                     .name("textures").beginArray();
             for (Key texture : ppSource.textures()) {
                 writer.value(KeySerializer.toString(texture));
@@ -164,73 +164,67 @@ final class AtlasSourceSerializer {
     }
 
     static AtlasSource deserialize(JsonObject node) {
-        String type = node.get(TYPE_FIELD).getAsString();
-        switch (type) {
-            case SINGLE_TYPE: {
-                @Subst("minecraft:resource")
-                String resourceStr = node.get("resource").getAsString();
-                @Subst("minecraft:resource")
-                @Nullable
-                String spriteStr = node.has("sprite") ? node.get("sprite").getAsString() : null;
+        Key type = Key.key(node.get(TYPE_FIELD).getAsString());
+        if (type.equals(SINGLE_TYPE)) {
+            @Subst("minecraft:resource")
+            String resourceStr = node.get("resource").getAsString();
+            @Subst("minecraft:resource")
+            @Nullable
+            String spriteStr = node.has("sprite") ? node.get("sprite").getAsString() : null;
 
-                Key resource = Key.key(resourceStr);
-                @Nullable Key sprite = spriteStr == null ? null : Key.key(spriteStr);
-                return AtlasSource.single(resource, sprite);
-            }
-            case DIRECTORY_TYPE: {
-                String source = node.get("source").getAsString();
-                String prefix = node.get("prefix").getAsString();
-                return AtlasSource.directory(source, prefix);
-            }
-            case FILTER_TYPE: {
-                KeyPattern pattern = KeyPatternSerializer.deserialize(node.getAsJsonObject("pattern"));
-                return AtlasSource.filter(pattern);
-            }
-            case UNSTITCH_TYPE: {
+            Key resource = Key.key(resourceStr);
+            @Nullable Key sprite = spriteStr == null ? null : Key.key(spriteStr);
+            return AtlasSource.single(resource, sprite);
+        } else if (type.equals(DIRECTORY_TYPE)) {
+            String source = node.get("source").getAsString();
+            String prefix = node.get("prefix").getAsString();
+            return AtlasSource.directory(source, prefix);
+        } else if (type.equals(FILTER_TYPE)) {
+            KeyPattern pattern = KeyPatternSerializer.deserialize(node.getAsJsonObject("pattern"));
+            return AtlasSource.filter(pattern);
+        } else if (type.equals(UNSTITCH_TYPE)) {
+            @Subst("minecraft:resource")
+            String resourceStr = node.get("resource").getAsString();
+            Key resource = Key.key(resourceStr);
+            float xDivisor = node.has("divisor_x") ? node.get("divisor_x").getAsFloat() : UnstitchAtlasSource.DEFAULT_DIVISOR.x();
+            float yDivisor = node.has("divisor_y") ? node.get("divisor_y").getAsFloat() : UnstitchAtlasSource.DEFAULT_DIVISOR.y();
+            List<UnstitchAtlasSource.Region> regions = new ArrayList<>();
+            for (JsonElement regionElement : node.getAsJsonArray("regions")) {
+                JsonObject regionNode = regionElement.getAsJsonObject();
                 @Subst("minecraft:resource")
-                String resourceStr = node.get("resource").getAsString();
-                Key resource = Key.key(resourceStr);
-                float xDivisor = node.has("divisor_x") ? node.get("divisor_x").getAsFloat() : UnstitchAtlasSource.DEFAULT_DIVISOR.x();
-                float yDivisor = node.has("divisor_y") ? node.get("divisor_y").getAsFloat() : UnstitchAtlasSource.DEFAULT_DIVISOR.y();
-                List<UnstitchAtlasSource.Region> regions = new ArrayList<>();
-                for (JsonElement regionElement : node.getAsJsonArray("regions")) {
-                    JsonObject regionNode = regionElement.getAsJsonObject();
-                    @Subst("minecraft:resource")
-                    String spriteStr = regionNode.get("sprite").getAsString();
-                    regions.add(UnstitchAtlasSource.Region.region(
-                            Key.key(spriteStr),
-                            new Vector2Float(
-                                    regionNode.get("x").getAsFloat(),
-                                    regionNode.get("y").getAsFloat()
-                            ),
-                            new Vector2Float(
-                                    regionNode.get("width").getAsFloat(),
-                                    regionNode.get("height").getAsFloat()
-                            )
-                    ));
-                }
-                return AtlasSource.unstitch(resource, regions, new Vector2Float(xDivisor, yDivisor));
+                String spriteStr = regionNode.get("sprite").getAsString();
+                regions.add(UnstitchAtlasSource.Region.region(
+                        Key.key(spriteStr),
+                        new Vector2Float(
+                                regionNode.get("x").getAsFloat(),
+                                regionNode.get("y").getAsFloat()
+                        ),
+                        new Vector2Float(
+                                regionNode.get("width").getAsFloat(),
+                                regionNode.get("height").getAsFloat()
+                        )
+                ));
             }
-            case PALETTED_PERMUTATIONS_TYPE: {
-                List<Key> textures = new ArrayList<>();
-                for (JsonElement keyElement : node.getAsJsonArray("textures")) {
-                    @Subst("minecraft:resource")
-                    String key = keyElement.getAsString();
-                    textures.add(Key.key(key));
-                }
+            return AtlasSource.unstitch(resource, regions, new Vector2Float(xDivisor, yDivisor));
+        } else if (type.equals(PALETTED_PERMUTATIONS_TYPE)) {
+            List<Key> textures = new ArrayList<>();
+            for (JsonElement keyElement : node.getAsJsonArray("textures")) {
                 @Subst("minecraft:resource")
-                String paletteKeyStr = node.get("palette_key").getAsString();
-                Key paletteKey = Key.key(paletteKeyStr);
-                Map<String, Key> permutations = new HashMap<>();
-                for (Map.Entry<String, JsonElement> entry : node.getAsJsonObject("permutations").entrySet()) {
-                    @Subst("minecraft:resource")
-                    String value = entry.getValue().getAsString();
-                    permutations.put(entry.getKey(), Key.key(value));
-                }
-                return AtlasSource.palettedPermutations(textures, paletteKey, permutations);
+                String key = keyElement.getAsString();
+                textures.add(Key.key(key));
             }
-            default:
-                throw new IllegalArgumentException("Unknown atlas source type: '" + type + "'.");
+            @Subst("minecraft:resource")
+            String paletteKeyStr = node.get("palette_key").getAsString();
+            Key paletteKey = Key.key(paletteKeyStr);
+            Map<String, Key> permutations = new LinkedHashMap<>();
+            for (Map.Entry<String, JsonElement> entry : node.getAsJsonObject("permutations").entrySet()) {
+                @Subst("minecraft:resource")
+                String value = entry.getValue().getAsString();
+                permutations.put(entry.getKey(), Key.key(value));
+            }
+            return AtlasSource.palettedPermutations(textures, paletteKey, permutations);
+        } else {
+            throw new IllegalArgumentException("Unknown atlas source type: '" + type + "'.");
         }
     }
 

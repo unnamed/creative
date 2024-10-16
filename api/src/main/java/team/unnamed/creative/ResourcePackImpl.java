@@ -35,15 +35,15 @@ import team.unnamed.creative.overlay.ResourceContainerImpl;
 import team.unnamed.creative.resources.MergeStrategy;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
 final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePack {
 
-    private final Map<String, Overlay> overlays = new HashMap<>();
+    private final Map<String, Overlay> overlays = new LinkedHashMap<>();
 
     private @Nullable Writable icon;
     private Metadata metadata;

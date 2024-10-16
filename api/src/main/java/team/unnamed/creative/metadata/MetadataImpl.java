@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -99,7 +99,7 @@ final class MetadataImpl implements Metadata {
     }
 
     static final class BuilderImpl implements Builder {
-        private final Map<Class<?>, MetadataPart> parts = new HashMap<>();
+        private final Map<Class<?>, MetadataPart> parts = new LinkedHashMap<>();
 
         @Override
         public @NotNull Builder parts(final @NotNull Collection<MetadataPart> parts) {
