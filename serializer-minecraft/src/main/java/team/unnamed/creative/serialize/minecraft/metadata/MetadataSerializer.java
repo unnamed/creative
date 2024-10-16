@@ -75,7 +75,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
 
     public Metadata readFromTree(JsonElement element) {
         JsonObject object = element.getAsJsonObject();
-        Metadata.Builder builder = Metadata.builder();
+        Metadata.Builder builder = Metadata.metadata();
         for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
             String partName = entry.getKey();
             JsonObject partObject = entry.getValue().getAsJsonObject();
@@ -91,7 +91,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
 
     private <T extends MetadataPart> void deserializeAndAdd(Metadata.Builder builder, MetadataPartCodec<T> codec, JsonObject node) {
         T part = codec.read(node);
-        builder.add(codec.type(), part);
+        builder.addPart(part);
     }
 
     private static void registerCodec(MetadataPartCodec<?> codec) {

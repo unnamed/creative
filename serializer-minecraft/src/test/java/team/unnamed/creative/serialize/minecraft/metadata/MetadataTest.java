@@ -43,6 +43,8 @@ import team.unnamed.creative.serialize.minecraft.GsonUtil;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class MetadataTest {
 
     @Test
@@ -54,21 +56,21 @@ class MetadataTest {
         }
 
         assertEquals(
-                Metadata.builder()
-                        .add(PackMeta.of(PackFormat.format(16, 16, 17), Component.text("Description!")))
-                        .add(LanguageMeta.language(new HashMap<String, LanguageEntry>() {{
+                Metadata.metadata()
+                        .addPart(PackMeta.of(PackFormat.format(16, 16, 17), Component.text("Description!")))
+                        .addPart(LanguageMeta.language(new HashMap<String, LanguageEntry>() {{
                             put("english", LanguageEntry.languageEntry("English", "US", false));
                         }}))
-                        .add(FilterMeta.filter(
+                        .addPart(FilterMeta.filter(
                                 KeyPattern.any(),
                                 KeyPattern.ofNamespace("creative"),
                                 KeyPattern.of("fancy", "thing/.+")
                         ))
-                        .add(OverlaysMeta.of(
+                        .addPart(OverlaysMeta.of(
                                 OverlayEntry.of(PackFormat.format(18), "abc"),
                                 OverlayEntry.of(PackFormat.format(19, 19, 21), "def")
                         ))
-                        .add(AnimationMeta.animation()
+                        .addPart(AnimationMeta.animation()
                                 .width(16)
                                 .height(16)
                                 .frameTime(1)

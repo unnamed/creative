@@ -86,7 +86,7 @@ public final class AtlasSerializer implements JsonResourceSerializer<Atlas>, Jso
         for (JsonElement sourceElement : node.getAsJsonObject().getAsJsonArray(SOURCES_FIELD)) {
             sources.add(AtlasSourceSerializer.deserialize(sourceElement.getAsJsonObject()));
         }
-        return Atlas.builder()
+        return Atlas.atlas()
                 .key(key)
                 .sources(sources)
                 .build();

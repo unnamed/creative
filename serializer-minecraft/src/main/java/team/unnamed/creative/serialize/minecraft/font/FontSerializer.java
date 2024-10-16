@@ -127,7 +127,7 @@ public final class FontSerializer implements JsonResourceSerializer<Font>, JsonR
                     throw new IllegalStateException("Unknown font provider type: " + type);
             }
         }
-        return Font.of(key, providers);
+        return Font.font(key, providers);
     }
 
     private static void writeBitMap(JsonWriter writer, BitMapFontProvider provider) throws IOException {

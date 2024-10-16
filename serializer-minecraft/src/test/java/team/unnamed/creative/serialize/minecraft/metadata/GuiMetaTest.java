@@ -36,6 +36,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class GuiMetaTest {
     @Test
     void test_deserialization() throws IOException {
@@ -58,7 +60,7 @@ class GuiMetaTest {
 
             assertEquals(
                     Metadata.metadata()
-                            .add(GuiMeta.of(entry.getValue()))
+                            .addPart(GuiMeta.of(entry.getValue()))
                             .build(),
                     metadata,
                     "Not equal for entry: " + entry.getKey()
