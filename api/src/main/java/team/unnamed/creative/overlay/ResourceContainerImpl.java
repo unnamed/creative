@@ -31,6 +31,7 @@ import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.equipment.Equipment;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
@@ -64,6 +65,7 @@ public class ResourceContainerImpl implements ResourceContainer {
     private final Map<String, SoundRegistry> soundRegistries = new LinkedHashMap<>();
     private final Map<Key, Sound> sounds = new LinkedHashMap<>();
     private final Map<Key, Texture> textures = new LinkedHashMap<>();
+    private final Map<Key, Equipment> equipments = new LinkedHashMap<>();
 
     // Unknown files we don't know how to parse
     private final Map<String, Writable> files = new LinkedHashMap<>();
@@ -265,6 +267,31 @@ public class ResourceContainerImpl implements ResourceContainer {
     @Override
     public @NotNull Collection<Texture> textures() {
         return textures.values();
+    }
+    //#endregion
+
+    //#region Fonts (Keyed)
+    @Override
+    public void equipment(final @NotNull Equipment equipment) {
+        requireNonNull(equipment, "equipment");
+        equipments.put(equipment.key(), equipment);
+    }
+
+    @Override
+    public @Nullable Equipment equipment(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return equipments.get(key);
+    }
+
+    @Override
+    public boolean removeEquipment(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return equipments.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Equipment> equipments() {
+        return equipments.values();
     }
     //#endregion
 

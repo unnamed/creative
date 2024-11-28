@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.equipment.Equipment;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
@@ -302,6 +303,14 @@ public interface ResourceContainer {
      * @since 1.0.0
      */
     @NotNull Collection<Model> models();
+    //#endregion
+
+    //#region Equipment Models
+
+    void equipment(final @NotNull Equipment equipmentModel);
+    @Nullable Equipment equipment(final @NotNull Key key);
+    boolean removeEquipment(final @NotNull Key key);
+    @NotNull Collection<Equipment> equipments();
     //#endregion
 
     //#region Sound Registries (Namespaced)
