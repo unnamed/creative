@@ -53,15 +53,23 @@ public interface Equipment extends ResourcePackPart, Keyed, Examinable {
 
     @Nullable Key humanoidLeggings();
 
+    @Nullable Key wings();
+
     @Nullable Key horseBody();
 
-    @Nullable Key wings();
+    @Nullable Key llamaBody();
+
+    @Nullable Key wolfBody();
 
     @Contract("-> new")
     @NotNull default Builder toBuilder() {
         return Equipment.equipment().key(key())
                 .humanoid(humanoid())
-                .humanoidLeggings(humanoidLeggings());
+                .humanoidLeggings(humanoidLeggings())
+                .wings(wings())
+                .horseBody(horseBody())
+                .llamaBody(llamaBody())
+                .wolfBody(wolfBody());
     }
 
     @Override
@@ -80,10 +88,16 @@ public interface Equipment extends ResourcePackPart, Keyed, Examinable {
         @NotNull Builder humanoidLeggings(final @Nullable Key humanoidLeggings);
 
         @Contract("_ -> this")
+        @NotNull Builder wings(final @Nullable Key wings);
+
+        @Contract("_ -> this")
         @NotNull Builder horseBody(final @Nullable Key horseBody);
 
         @Contract("_ -> this")
-        @NotNull Builder wings(final @Nullable Key wings);
+        @NotNull Builder llamaBody(final @Nullable Key llamaBody);
+
+        @Contract("_ -> this")
+        @NotNull Builder wolfBody(final @Nullable Key wolfBody);
 
         @Contract("-> new")
         @NotNull Equipment build();

@@ -38,21 +38,27 @@ public class EquipmentImpl implements Equipment {
     private final Key key;
     private final Key humanoid;
     private final Key humanoidLeggings;
-    private final Key horseBody;
     private final Key wings;
+    private final Key horseBody;
+    private final Key llamaBody;
+    private final Key wolfBody;
 
     EquipmentImpl(
             final Key key,
             final @Nullable Key humanoid,
             final @Nullable Key humanoidLeggings,
+            final @Nullable Key wings,
             final @Nullable Key horseBody,
-            final @Nullable Key wings
+            final @Nullable Key llamaBody,
+            final @Nullable Key wolfBody
     ) {
         this.key = key;
         this.humanoid = humanoid;
         this.humanoidLeggings = humanoidLeggings;
-        this.horseBody = horseBody;
         this.wings = wings;
+        this.horseBody = horseBody;
+        this.llamaBody = llamaBody;
+        this.wolfBody = wolfBody;
     }
 
     @Override
@@ -71,13 +77,23 @@ public class EquipmentImpl implements Equipment {
     }
 
     @Override
+    public @Nullable Key wings() {
+        return wings;
+    }
+
+    @Override
     public @Nullable Key horseBody() {
         return horseBody;
     }
 
     @Override
-    public @Nullable Key wings() {
-        return wings;
+    public @Nullable Key llamaBody() {
+        return llamaBody;
+    }
+
+    @Override
+    public @Nullable Key wolfBody() {
+        return wolfBody;
     }
 
     @Override
@@ -86,8 +102,10 @@ public class EquipmentImpl implements Equipment {
                 ExaminableProperty.of("key", key),
                 ExaminableProperty.of("humanoid", humanoid),
                 ExaminableProperty.of("humanoidLeggings", humanoidLeggings),
+                ExaminableProperty.of("wings", wings),
                 ExaminableProperty.of("horseBody", horseBody),
-                ExaminableProperty.of("wings", wings)
+                ExaminableProperty.of("llamaBody", llamaBody),
+                ExaminableProperty.of("wolfBody", wolfBody)
         );
     }
 
@@ -104,8 +122,10 @@ public class EquipmentImpl implements Equipment {
         return key.equals(that.key)
                 && Objects.equals(humanoid, that.humanoid)
                 && Objects.equals(humanoidLeggings, that.humanoidLeggings)
+                && Objects.equals(wings, that.wings)
                 && Objects.equals(horseBody, that.horseBody)
-                && Objects.equals(wings, that.wings);
+                && Objects.equals(llamaBody, that.llamaBody)
+                && Objects.equals(wolfBody, that.wolfBody);
     }
 
     @Override
@@ -119,8 +139,10 @@ public class EquipmentImpl implements Equipment {
         private Key key;
         private Key humanoid;
         private Key humanoidLeggings;
-        private Key horseBody;
         private Key wings;
+        private Key horseBody;
+        private Key llamaBody;
+        private Key wolfBody;
 
         @Override
         public @NotNull Builder key(final @NotNull Key key) {
@@ -141,20 +163,32 @@ public class EquipmentImpl implements Equipment {
         }
 
         @Override
-        public @NotNull Builder horseBody(final @Nullable Key horseBody) {
-            this.horseBody = horseBody;
-            return this;
-        }
-
-        @Override
         public @NotNull Builder wings(final @Nullable Key wings) {
             this.wings = wings;
             return this;
         }
 
         @Override
+        public @NotNull Builder horseBody(final @Nullable Key horseBody) {
+            this.horseBody = horseBody;
+            return this;
+        }
+
+        @Override
+        public @NotNull Builder llamaBody(final @Nullable Key llamaBody) {
+            this.llamaBody = llamaBody;
+            return this;
+        }
+
+        @Override
+        public @NotNull Builder wolfBody(final @Nullable Key wolfBody) {
+            this.wolfBody = wolfBody;
+            return this;
+        }
+
+        @Override
         public @NotNull Equipment build() {
-            return new EquipmentImpl(key, humanoid, humanoidLeggings, horseBody, wings);
+            return new EquipmentImpl(key, humanoid, humanoidLeggings, wings, horseBody, llamaBody, wolfBody);
         }
 
     }

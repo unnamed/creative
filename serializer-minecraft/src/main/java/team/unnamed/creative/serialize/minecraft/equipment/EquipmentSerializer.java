@@ -73,6 +73,14 @@ public class EquipmentSerializer implements JsonResourceSerializer<Equipment>, J
             writer.endArray();
         }
 
+        // wings
+        Key wings = equipment.wings();
+        if (wings != null) {
+            writer.name("wings").beginArray();
+            writer.name("texture").value(wings.toString());
+            writer.endArray();
+        }
+
         // horse_body
         Key horseBody = equipment.horseBody();
         if (horseBody != null) {
@@ -81,11 +89,19 @@ public class EquipmentSerializer implements JsonResourceSerializer<Equipment>, J
             writer.endArray();
         }
 
-        // wings
-        Key wings = equipment.wings();
-        if (horseBody != null) {
-            writer.name("wings").beginArray();
-            writer.name("texture").value(wings.toString());
+        // llama_body
+        Key llamaBody = equipment.llamaBody();
+        if (llamaBody != null) {
+            writer.name("llama_body").beginArray();
+            writer.name("texture").value(llamaBody.toString());
+            writer.endArray();
+        }
+
+        // wolf_body
+        Key wolfBody = equipment.wolfBody();
+        if (wolfBody != null) {
+            writer.name("wolf_body").beginArray();
+            writer.name("texture").value(wolfBody.toString());
             writer.endArray();
         }
 
@@ -110,23 +126,37 @@ public class EquipmentSerializer implements JsonResourceSerializer<Equipment>, J
             humanoidLeggings = Key.key(objectNode.getAsJsonArray("humanoid_leggings").get(0).getAsJsonObject().get("texture").getAsString());
         }
 
+        // wings
+        Key wings = null;
+        if (objectNode.has("wings")) {
+            wings = Key.key(objectNode.getAsJsonArray("wings").get(0).getAsJsonObject().get("texture").getAsString());
+        }
+
         // horse_body
         Key horseBody = null;
         if (objectNode.has("horse_body")) {
             horseBody = Key.key(objectNode.getAsJsonArray("horse_body").get(0).getAsJsonObject().get("texture").getAsString());
         }
 
-        // humanoid_leggings
-        Key wings = null;
-        if (objectNode.has("wings")) {
-            wings = Key.key(objectNode.getAsJsonArray("wings").get(0).getAsJsonObject().get("texture").getAsString());
+        // llama_body
+        Key llamaBody = null;
+        if (objectNode.has("llama_body")) {
+            llamaBody = Key.key(objectNode.getAsJsonArray("llama_body").get(0).getAsJsonObject().get("texture").getAsString());
+        }
+
+        // wolf_body
+        Key wolfBody = null;
+        if (objectNode.has("wolf_body")) {
+            wolfBody = Key.key(objectNode.getAsJsonArray("wolf_body").get(0).getAsJsonObject().get("texture").getAsString());
         }
 
         return Equipment.equipment().key(key)
                 .humanoid(humanoid)
                 .humanoidLeggings(humanoidLeggings)
-                .horseBody(horseBody)
                 .wings(wings)
+                .horseBody(horseBody)
+                .llamaBody(llamaBody)
+                .wolfBody(wolfBody)
                 .build();
     }
 }
