@@ -295,7 +295,11 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
 
             CubeFace cullFace = null;
             if (elementFaceNode.has("cullface")) {
-                cullFace = CubeFace.valueOf(elementFaceNode.get("cullface").getAsString().toUpperCase(Locale.ROOT));
+                try {
+                    cullFace = CubeFace.valueOf(elementFaceNode.get("cullface").getAsString().toUpperCase(Locale.ROOT));
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
             }
 
             faces.put(

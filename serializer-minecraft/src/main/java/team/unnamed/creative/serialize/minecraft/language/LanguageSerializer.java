@@ -74,9 +74,9 @@ public final class LanguageSerializer implements JsonResourceSerializer<Language
 
         for (Map.Entry<String, JsonElement> translationEntry : objectNode.entrySet()) {
             String translationKey = translationEntry.getKey();
-            String translationValue = translationEntry.getValue().getAsString();
+            JsonElement translationValue = translationEntry.getValue();
 
-            translations.put(translationKey, translationValue);
+            if (translationValue.isJsonPrimitive()) translations.put(translationKey, translationValue.getAsString());
         }
 
         return Language.language(key, translations);
