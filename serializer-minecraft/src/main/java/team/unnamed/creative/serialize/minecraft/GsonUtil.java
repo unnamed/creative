@@ -76,7 +76,7 @@ public final class GsonUtil {
             return def;
         }
         JsonElement element = object.get(key);
-        if (element.isJsonPrimitive() && ((JsonPrimitive) element).isBoolean()) {
+        if (element.isJsonPrimitive() && (((JsonPrimitive) element).isBoolean() || ((JsonPrimitive) element).isString())) {
             // valid value
             return element.getAsBoolean();
         } else {

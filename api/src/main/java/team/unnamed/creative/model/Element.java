@@ -118,6 +118,8 @@ public interface Element extends Examinable {
      */
     @Unmodifiable @NotNull Map<CubeFace, ElementFace> faces();
 
+    int lightEmission();
+
     /**
      * A builder for {@link Element} instances.
      *
@@ -227,6 +229,16 @@ public interface Element extends Examinable {
         default @NotNull Builder face(final @NotNull CubeFace type, final @NotNull ElementFace face) {
             return addFace(type, face);
         }
+
+        /**
+         * Sets whether the light-emission of the element.
+         *
+         * @param lightEmission The light-level of the element
+         * @return This builder
+         * @since 1.0.0
+         */
+        @Contract("_ -> this")
+        @NotNull Builder lightEmission(final int lightEmission);
 
         /**
          * Builds the element.
