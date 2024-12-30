@@ -77,6 +77,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         Metadata.Builder builder = Metadata.builder();
         for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
             String partName = entry.getKey();
+            if (!entry.getValue().isJsonObject()) continue;
             JsonObject partObject = entry.getValue().getAsJsonObject();
 
             MetadataPartCodec<?> codec = CODECS.get(partName);
