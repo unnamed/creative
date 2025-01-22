@@ -36,11 +36,13 @@ final class NineSliceGuiScalingImpl implements NineSliceGuiScaling {
     private final int width;
     private final int height;
     private final GuiBorder border;
+    private final boolean stretchInner;
 
-    NineSliceGuiScalingImpl(final int width, final int height, final @NotNull GuiBorder border) {
+    NineSliceGuiScalingImpl(final int width, final int height, final @NotNull GuiBorder border, final boolean stretchInner) {
         this.width = width;
         this.height = height;
         this.border = requireNonNull(border, "border");
+        this.stretchInner = stretchInner;
         validate();
     }
 
@@ -72,11 +74,17 @@ final class NineSliceGuiScalingImpl implements NineSliceGuiScaling {
     }
 
     @Override
+    public boolean stretchInner() {
+        return stretchInner;
+    }
+
+    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("width", width),
                 ExaminableProperty.of("height", height),
-                ExaminableProperty.of("border", border)
+                ExaminableProperty.of("border", border),
+                ExaminableProperty.of("stretch_inner", stretchInner)
         );
     }
 
@@ -92,7 +100,8 @@ final class NineSliceGuiScalingImpl implements NineSliceGuiScaling {
         final NineSliceGuiScalingImpl that = (NineSliceGuiScalingImpl) o;
         if (width != that.width) return false;
         if (height != that.height) return false;
-        return border.equals(that.border);
+        if (!border.equals(that.border)) return false;
+        return stretchInner == that.stretchInner;
     }
 
     @Override
@@ -100,6 +109,7 @@ final class NineSliceGuiScalingImpl implements NineSliceGuiScaling {
         int result = width;
         result = 31 * result + height;
         result = 31 * result + border.hashCode();
+        result = 31 * result + (stretchInner ? 1 : 0);
         return result;
     }
 }
