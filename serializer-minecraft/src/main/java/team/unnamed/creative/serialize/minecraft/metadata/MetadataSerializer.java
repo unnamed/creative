@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
+import team.unnamed.creative.metadata.sodium.SodiumMeta;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         registerCodec(new TextureMetaCodec());
         registerCodec(new VillagerMetaCodec());
         registerCodec(OverlaysMetaCodec.INSTANCE);
+        registerCodec(SodiumMetaCodec.INSTANCE);
         registerCodec(new GuiMetaCodec());
     }
 
