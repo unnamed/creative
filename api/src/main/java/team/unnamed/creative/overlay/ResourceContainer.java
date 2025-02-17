@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.equipment.Equipment;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
@@ -138,6 +139,52 @@ public interface ResourceContainer {
      * @since 1.0.0
      */
     @NotNull Collection<BlockState> blockStates();
+    //#endregion
+
+    //#region Equipment (Keyed)
+    /**
+     * Adds/updates equipment to this resource container.
+     *
+     * <p>Note that there can't be two equipment with the
+     * same key, so if there was equipment with the same
+     * key as the new given equipment, it will be replaced
+     * by the given one.</p>
+     *
+     * @param equipment The equipment to add/update
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.2
+     */
+    void equipment(final @NotNull Equipment equipment);
+
+    /**
+     * Gets the equipment with the given key.
+     *
+     * @param key The equipment key
+     * @return The equipment, null if not found
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.2
+     */
+    @Nullable Equipment equipment(final @NotNull Key key);
+
+    /**
+     * Removes the equipment with the given key.
+     *
+     * @param key The equipment key
+     * @return True if the equipment existed and was removed,
+     * false otherwise
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.2
+     */
+    boolean removeEquipment(final @NotNull Key key);
+
+    /**
+     * Gets all the equipment in this resource container.
+     *
+     * @return The equipment
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.2
+     */
+    @NotNull Collection<Equipment> equipment();
     //#endregion
 
     //#region Fonts (Keyed)

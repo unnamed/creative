@@ -26,6 +26,7 @@ package team.unnamed.creative.serialize.minecraft;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
+import team.unnamed.creative.serialize.minecraft.equipment.EquipmentSerializer;
 import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
 import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
 import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
@@ -47,6 +48,7 @@ public class ResourceCategories {
         registerCategory(LanguageSerializer.CATEGORY);
         registerCategory(BlockStateSerializer.CATEGORY);
         registerCategory(FontSerializer.CATEGORY);
+        registerCategory(EquipmentSerializer.CATEGORY);
     }
 
     private ResourceCategories() {

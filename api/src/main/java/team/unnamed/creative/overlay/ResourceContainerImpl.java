@@ -31,6 +31,9 @@ import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
+import team.unnamed.creative.equipment.Equipment;
+import team.unnamed.creative.equipment.EquipmentLayer;
+import team.unnamed.creative.equipment.EquipmentLayerType;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
 import team.unnamed.creative.lang.Language;
@@ -58,6 +61,7 @@ public class ResourceContainerImpl implements ResourceContainer {
 
     private final Map<Key, Atlas> atlases = new LinkedHashMap<>();
     private final Map<Key, BlockState> blockStates = new LinkedHashMap<>();
+    private final Map<Key, Equipment> equipment = new LinkedHashMap<>();
     private final Map<Key, Font> fonts = new LinkedHashMap<>();
     private final Map<Key, Language> languages = new LinkedHashMap<>();
     private final Map<Key, Model> models = new LinkedHashMap<>();
@@ -115,6 +119,31 @@ public class ResourceContainerImpl implements ResourceContainer {
     @Override
     public @NotNull Collection<BlockState> blockStates() {
         return blockStates.values();
+    }
+    //#endregion
+
+    //#region Equipment (Keyed)
+    @Override
+    public void equipment(final @NotNull Equipment equipment) {
+        requireNonNull(equipment, "equipment");
+        this.equipment.put(equipment.key(), equipment);
+    }
+
+    @Override
+    public @Nullable Equipment equipment(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return equipment.get(key);
+    }
+
+    @Override
+    public boolean removeEquipment(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return equipment.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Equipment> equipment() {
+        return equipment.values();
     }
     //#endregion
 
@@ -324,6 +353,31 @@ public class ResourceContainerImpl implements ResourceContainer {
             } else {
                 blockStates.put(blockState.key(), blockState);
             }
+        }
+
+        // merge equipment
+        for (final Equipment equipment : other.equipment()) {
+            final Equipment oldEquipment = this.equipment.get(equipment.key());
+            if (oldEquipment == null || override) {
+                this.equipment.put(equipment.key(), equipment);
+                continue;
+            }
+
+            // merge layers
+            final Map<EquipmentLayerType, List<EquipmentLayer>> layersByType = new LinkedHashMap<>(oldEquipment.layers());
+            for (final Map.Entry<EquipmentLayerType, List<EquipmentLayer>> entry : equipment.layers().entrySet()) {
+                final List<EquipmentLayer> oldLayers = layersByType.get(entry.getKey());
+                if (oldLayers == null) {
+                    layersByType.put(entry.getKey(), entry.getValue());
+                    continue;
+                }
+
+                final List<EquipmentLayer> newLayers = new ArrayList<>(oldLayers);
+                newLayers.addAll(entry.getValue());
+                layersByType.put(entry.getKey(), newLayers);
+            }
+
+            this.equipment.put(equipment.key(), oldEquipment.layers(layersByType));
         }
 
         // merge fonts
