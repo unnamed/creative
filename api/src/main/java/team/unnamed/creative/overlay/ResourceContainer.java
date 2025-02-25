@@ -33,6 +33,7 @@ import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.equipment.Equipment;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
+import team.unnamed.creative.item.Item;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.model.Model;
@@ -263,6 +264,56 @@ public interface ResourceContainer {
         font(Font.font(key, providers));
     }
     //#endregion
+    //#endregion
+
+    //#region Items (Keyed)
+    /**
+     * Adds/updates an item to this resource container.
+     *
+     * <p>Note that there can't be two items with the
+     * same key, so if there was an item with the same
+     * key as the new given item, it will be replaced
+     * by the given one.</p>
+     *
+     * @param item The item to add/update
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.4
+     * @sincePackFormat 43
+     */
+    void item(final @NotNull Item item);
+
+    /**
+     * Gets the item with the given key.
+     *
+     * @param key The item key
+     * @return The item, null if not found
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.4
+     * @sincePackFormat 43
+     */
+    @Nullable Item item(final @NotNull Key key);
+
+    /**
+     * Removes the item with the given key.
+     *
+     * @param key The item key
+     * @return True if the item existed and was removed,
+     * false otherwise
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.4
+     * @sincePackFormat 43
+     */
+    boolean removeItem(final @NotNull Key key);
+
+    /**
+     * Gets all the items in this resource container.
+     *
+     * @return The items
+     * @since 1.8.0
+     * @sinceMinecraft 1.21.4
+     * @sincePackFormat 43
+     */
+    @NotNull Collection<Item> items();
     //#endregion
 
     //#region Languages (Keyed)

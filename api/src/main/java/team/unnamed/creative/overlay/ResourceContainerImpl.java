@@ -36,6 +36,7 @@ import team.unnamed.creative.equipment.EquipmentLayer;
 import team.unnamed.creative.equipment.EquipmentLayerType;
 import team.unnamed.creative.font.Font;
 import team.unnamed.creative.font.FontProvider;
+import team.unnamed.creative.item.Item;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.model.ItemOverride;
 import team.unnamed.creative.model.Model;
@@ -63,6 +64,7 @@ public class ResourceContainerImpl implements ResourceContainer {
     private final Map<Key, BlockState> blockStates = new LinkedHashMap<>();
     private final Map<Key, Equipment> equipment = new LinkedHashMap<>();
     private final Map<Key, Font> fonts = new LinkedHashMap<>();
+    private final Map<Key, Item> items = new LinkedHashMap<>();
     private final Map<Key, Language> languages = new LinkedHashMap<>();
     private final Map<Key, Model> models = new LinkedHashMap<>();
     private final Map<String, SoundRegistry> soundRegistries = new LinkedHashMap<>();
@@ -169,6 +171,31 @@ public class ResourceContainerImpl implements ResourceContainer {
     @Override
     public @NotNull Collection<Font> fonts() {
         return fonts.values();
+    }
+    //#endregion
+
+    //#region Items (Keyed)
+    @Override
+    public void item(final @NotNull Item item) {
+        requireNonNull(item, "item");
+        items.put(item.key(), item);
+    }
+
+    @Override
+    public @Nullable Item item(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return items.get(key);
+    }
+
+    @Override
+    public boolean removeItem(final @NotNull Key key) {
+        requireNonNull(key, "key");
+        return items.remove(key) != null;
+    }
+
+    @Override
+    public @NotNull Collection<Item> items() {
+        return items.values();
     }
     //#endregion
 
