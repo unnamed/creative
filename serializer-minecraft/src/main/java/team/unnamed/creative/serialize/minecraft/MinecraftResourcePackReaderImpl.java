@@ -255,6 +255,13 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     container.unknownFile(containerPath, reader.content().asWritable());
                     continue;
                 }
+
+                if (keyValue.startsWith("equipment/")) {
+                    // skip trying to load "namespace:equipment/X.json" as a normal model
+                    container.unknownFile(containerPath, reader.content().asWritable());
+                    continue;
+                }
+
                 Key key = Key.key(namespace, keyValue);
                 try {
                     ResourceDeserializer<?> deserializer = category.deserializer();

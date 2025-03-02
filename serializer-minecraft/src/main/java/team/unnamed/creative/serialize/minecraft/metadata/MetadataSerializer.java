@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
+import team.unnamed.creative.metadata.sodium.SodiumMeta;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         registerCodec(new TextureMetaCodec());
         registerCodec(new VillagerMetaCodec());
         registerCodec(OverlaysMetaCodec.INSTANCE);
+        registerCodec(SodiumMetaCodec.INSTANCE);
         registerCodec(new GuiMetaCodec());
     }
 
@@ -78,6 +80,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
         Metadata.Builder builder = Metadata.builder();
         for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
             String partName = entry.getKey();
+            if (!entry.getValue().isJsonObject()) continue;
             JsonObject partObject = entry.getValue().getAsJsonObject();
 
             MetadataPartCodec<?> codec = CODECS.get(partName);

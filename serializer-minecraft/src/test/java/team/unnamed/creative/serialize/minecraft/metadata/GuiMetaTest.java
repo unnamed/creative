@@ -42,15 +42,15 @@ class GuiMetaTest {
     @Test
     void test_deserialization() throws IOException {
         final Map<String, GuiScaling> expectations = new HashMap<>();
-        expectations.put("button.png.mcmeta", GuiScaling.nineSlice(200, 20, 3));
-        expectations.put("button_disabled.png.mcmeta", GuiScaling.nineSlice(200, 20, 1));
-        expectations.put("slider_handle.png.mcmeta", GuiScaling.nineSlice(8, 20, GuiBorder.border(2, 3, 2, 2)));
-        expectations.put("slider_handle_highlighted.png.mcmeta", GuiScaling.nineSlice(8, 20, GuiBorder.border(2, 3, 2, 2)));
+        expectations.put("button.png.mcmeta", GuiScaling.nineSlice(200, 20, 3, true));
+        expectations.put("button_disabled.png.mcmeta", GuiScaling.nineSlice(200, 20, 1, false));
+        expectations.put("slider_handle.png.mcmeta", GuiScaling.nineSlice(8, 20, GuiBorder.border(2, 3, 2, 2), false));
+        expectations.put("slider_handle_highlighted.png.mcmeta", GuiScaling.nineSlice(8, 20, GuiBorder.border(2, 3, 2, 2), false));
         expectations.put("stretch_custom.png.mcmeta", GuiScaling.stretch());
         expectations.put("tile_custom.png.mcmeta", GuiScaling.tile(8, 20));
         expectations.put("tile_custom_2.png.mcmeta", GuiScaling.tile(200, 20));
         expectations.put("tile_custom_3.png.mcmeta", GuiScaling.tile(200, 26));
-        expectations.put("title_box.png.mcmeta", GuiScaling.nineSlice(200, 26, 10));
+        expectations.put("title_box.png.mcmeta", GuiScaling.nineSlice(200, 26, 10, false));
 
         for (final Map.Entry<String, GuiScaling> entry : expectations.entrySet()) {
             final Metadata metadata;

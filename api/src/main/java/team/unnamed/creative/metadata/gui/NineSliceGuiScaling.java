@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @sinceMinecraft 1.20.2
  * @sincePackFormat 18
- * @see GuiScaling#nineSlice(int, int, GuiBorder)
+ * @see GuiScaling#nineSlice(int, int, GuiBorder, boolean)
  * @since 1.2.0
  */
 @ApiStatus.NonExtendable
@@ -71,4 +71,14 @@ public interface NineSliceGuiScaling extends GuiScaling {
      * @since 1.2.0
      */
     @NotNull GuiBorder border();
+
+    /**
+     * Returns if inner parts of texture is stretched instead of tiled
+     *
+     * @return if inner parts are stretched
+     * @sinceMinecraft 1.21.2
+     * @sincePackFormat 42
+     * @since 1.7.7
+     */
+    boolean stretchInner();
 }

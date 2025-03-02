@@ -35,6 +35,7 @@ import team.unnamed.creative.metadata.overlays.OverlayEntry;
 import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.metadata.pack.PackMeta;
+import team.unnamed.creative.metadata.sodium.SodiumMeta;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 
@@ -280,4 +281,13 @@ public interface ResourcePack extends ResourceContainer {
      * @since 1.1.0
      */
     @NotNull Collection<Overlay> overlays();
+
+    default @Nullable SodiumMeta sodiumMeta() {
+        return metadata().meta(SodiumMeta.class);
+    }
+
+    default void sodiumMeta(final @NotNull SodiumMeta sodiumMeta) {
+        requireNonNull(sodiumMeta, "sodiumMeta");
+        editMetadata(metadata -> metadata.add(sodiumMeta));
+    }
 }
