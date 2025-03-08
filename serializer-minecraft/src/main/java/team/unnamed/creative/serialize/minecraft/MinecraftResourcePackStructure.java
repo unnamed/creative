@@ -25,6 +25,7 @@ package team.unnamed.creative.serialize.minecraft;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
 
@@ -33,7 +34,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringJoiner;
 
-final class MinecraftResourcePackStructure {
+@ApiStatus.Internal
+public final class MinecraftResourcePackStructure {
 
     // file extensions
     public static final String TEXTURE_EXTENSION = ".png";

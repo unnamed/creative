@@ -23,47 +23,51 @@
  */
 package team.unnamed.creative.serialize.minecraft;
 
-import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
-import team.unnamed.creative.serialize.minecraft.equipment.EquipmentSerializer;
+import team.unnamed.creative.serialize.minecraft.equipment.EquipmentCategory;
 import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
 import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
 import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ResourceCategories {
 
-    private static final Map<String, ResourceCategory<?>> CATEGORIES;
+    private static final List<ResourceCategory<?>> CATEGORIES;
 
     static {
-        CATEGORIES = new LinkedHashMap<>();
+        CATEGORIES = new ArrayList<>();
         registerCategory(AtlasSerializer.CATEGORY);
         registerCategory(SoundSerializer.CATEGORY);
         registerCategory(ModelSerializer.CATEGORY);
         registerCategory(LanguageSerializer.CATEGORY);
         registerCategory(BlockStateSerializer.CATEGORY);
         registerCategory(FontSerializer.CATEGORY);
-        registerCategory(EquipmentSerializer.CATEGORY);
+        registerCategory(EquipmentCategory.INSTANCE);
     }
 
     private ResourceCategories() {
     }
 
     private static void registerCategory(ResourceCategory<?> category) {
-        CATEGORIES.put(category.folder(), category);
+        CATEGORIES.add(category);
     }
 
     public static Collection<ResourceCategory<?>> categories() {
-        return CATEGORIES.values();
+        return CATEGORIES;
     }
 
-    public static @Nullable ResourceCategory<?> getByFolder(String folder) {
-        return CATEGORIES.get(folder);
+    public static Map<String, ResourceCategory<?>> buildCategoryMapByFolder(final int packFormat) {
+        Map<String, ResourceCategory<?>> map = new HashMap<>(); // note: no need to be linked list
+        for (ResourceCategory<?> category : ResourceCategories.categories()) {
+            map.put(category.folder(packFormat), category);
+        }
+        return map;
     }
-
 }

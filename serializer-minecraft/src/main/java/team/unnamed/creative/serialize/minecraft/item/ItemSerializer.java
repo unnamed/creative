@@ -28,7 +28,7 @@ import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.item.Item;
 import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
@@ -36,14 +36,13 @@ import java.io.IOException;
 
 public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonResourceDeserializer<Item> {
     public static final ItemSerializer INSTANCE;
-    public static final ResourceCategory<Item> CATEGORY;
+    public static final ResourceCategoryImpl<Item> CATEGORY;
 
     static {
         INSTANCE = new ItemSerializer();
-        CATEGORY = new ResourceCategory<>(
+        CATEGORY = new ResourceCategoryImpl<>(
                 "items",
                 ".json",
-                ResourceContainer::item,
                 ResourceContainer::items,
                 INSTANCE
         );
@@ -53,7 +52,7 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
     }
 
     @Override
-    public void serializeToJson(Item item, JsonWriter writer) throws IOException {
+    public void serializeToJson(Item item, JsonWriter writer, int targetPackFormat) throws IOException {
 
     }
 

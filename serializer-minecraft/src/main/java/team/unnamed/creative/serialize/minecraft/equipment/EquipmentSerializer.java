@@ -27,12 +27,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.equipment.Equipment;
 import team.unnamed.creative.equipment.EquipmentLayer;
 import team.unnamed.creative.equipment.EquipmentLayerDye;
 import team.unnamed.creative.equipment.EquipmentLayerType;
-import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
 import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
@@ -41,27 +40,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@ApiStatus.Internal
 public final class EquipmentSerializer implements JsonResourceSerializer<Equipment>, JsonResourceDeserializer<Equipment> {
-    public static final EquipmentSerializer INSTANCE;
-    public static final ResourceCategory<Equipment> CATEGORY;
-
-    static {
-        INSTANCE = new EquipmentSerializer();
-        CATEGORY = new ResourceCategory<>(
-                // todo: fix!, this was moved from models/equipment to just equipment in 1.21.4, so we're currently not supporting 1.21.2 and 1.21.3 !!!
-                "equipment",
-                ".json",
-                ResourceContainer::equipment,
-                ResourceContainer::equipment,
-                INSTANCE
-        );
-    }
+    public static final EquipmentSerializer INSTANCE = new EquipmentSerializer();
 
     private EquipmentSerializer() {
     }
 
     @Override
-    public void serializeToJson(Equipment equipment, JsonWriter writer) throws IOException {
+    public void serializeToJson(Equipment equipment, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject()
             .name("layers")
             .beginObject();

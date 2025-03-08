@@ -28,6 +28,6 @@ import java.io.OutputStream;
 
 public interface ResourceSerializer<T> {
 
-    void serialize(T object, OutputStream output) throws IOException;
+    void serialize(T object, OutputStream output, int targetPackFormat) throws IOException;
 
 }

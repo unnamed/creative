@@ -32,8 +32,12 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
+import team.unnamed.creative.metadata.overlays.OverlayEntry;
+import team.unnamed.creative.metadata.overlays.OverlaysMeta;
+import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
+import team.unnamed.creative.part.ResourcePackPart;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeReader;
 import team.unnamed.creative.serialize.minecraft.io.BinaryResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
@@ -50,7 +54,6 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
 
@@ -81,6 +84,11 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
         // (null key means it is root resource pack)
         Map<@Nullable String, Map<Key, Texture>> incompleteTextures = new LinkedHashMap<>();
 
+        // fill in with the default ones first (pack format is unknown at the start)
+        Map<String, ResourceCategory<?>> categoriesByFolderThisPackFormat = ResourceCategories.buildCategoryMapByFolder(-1);
+        Map<String, Integer> packFormatsByOverlayDir = new HashMap<>();
+        int packFormat = -1;
+
         while (reader.hasNext()) {
             String path = reader.next();
 
@@ -102,6 +110,23 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         // found pack.mcmeta file, deserialize and add
                         Metadata metadata = MetadataSerializer.INSTANCE.readFromTree(parseJson(reader.stream()));
                         resourcePack.metadata(metadata);
+
+                        // get the pack format from the metadata
+                        PackMeta packMeta = metadata.meta(PackMeta.class);
+                        if (packMeta == null) {
+                            // TODO: better warning system
+                            System.err.println("Reading a resource-pack with no pack meta in its pack.mcmeta file! Unknown pack format version :(");
+                        } else {
+                            // update the pack format and categories
+                            packFormat = packMeta.formats().min();
+                            categoriesByFolderThisPackFormat = ResourceCategories.buildCategoryMapByFolder(packFormat);
+                        }
+
+                        // overlays info
+                        OverlaysMeta overlaysMeta = metadata.meta(OverlaysMeta.class);
+                        if (overlaysMeta != null) for (OverlayEntry entry : overlaysMeta.entries()) {
+                            packFormatsByOverlayDir.put(entry.directory(), entry.formats().min());
+                        }
                         continue;
                     }
                     case PACK_ICON_FILE: {
@@ -121,6 +146,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
             // but it may change if the file is inside an overlay folder
             @Subst("dir")
             @Nullable String overlayDir = null;
+            int localPackFormat = packFormat;
 
             // the file path, relative to the container
             String containerPath = path;
@@ -153,6 +179,7 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 container = overlay;
                 folder = tokens.poll();
                 containerPath = path.substring((OVERLAYS_FOLDER + '/' + overlayDir + '/').length());
+                localPackFormat = packFormatsByOverlayDir.getOrDefault(overlayDir, -1);
             }
 
             // null check to make ide happy
@@ -242,14 +269,18 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                     }
                 }
             } else {
-                @SuppressWarnings("rawtypes")
-                ResourceCategory category = ResourceCategories.getByFolder(categoryName);
+                // get the resource category, if the local pack format (overlay or root) is the same as the
+                // root pack format, we can use the previously computed map, otherwise we need to compute it
+                // (we could save some time by caching the computed map, but, is it worth it?)
+                ResourceCategory<?> category = (localPackFormat == packFormat
+                        ? categoriesByFolderThisPackFormat
+                        : ResourceCategories.buildCategoryMapByFolder(localPackFormat)).get(categoryName);
                 if (category == null) {
                     // unknown category
                     container.unknownFile(containerPath, reader.content().asWritable());
                     continue;
                 }
-                String keyValue = withoutExtension(categoryPath, category.extension());
+                String keyValue = withoutExtension(categoryPath, category.extension(-1));
                 if (keyValue == null) {
                     // wrong extension
                     container.unknownFile(containerPath, reader.content().asWritable());
@@ -257,19 +288,18 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                 }
                 Key key = Key.key(namespace, keyValue);
                 try {
-                    ResourceDeserializer<?> deserializer = category.deserializer();
-                    Object resource;
+                    ResourceDeserializer<? extends ResourcePackPart> deserializer = category.deserializer();
+                    ResourcePackPart resource;
                     if (deserializer instanceof BinaryResourceDeserializer) {
-                        resource = ((BinaryResourceDeserializer<?>) deserializer)
+                        resource = ((BinaryResourceDeserializer<? extends ResourcePackPart>) deserializer)
                                 .deserializeBinary(reader.content().asWritable(), key);
                     } else if (deserializer instanceof JsonResourceDeserializer) {
-                        resource = ((JsonResourceDeserializer<?>) deserializer)
+                        resource = ((JsonResourceDeserializer<? extends ResourcePackPart>) deserializer)
                                 .deserializeFromJson(parseJson(reader.stream()), key);
                     } else {
                         resource = deserializer.deserialize(reader.stream(), key);
                     }
-                    //noinspection unchecked
-                    category.setter().accept(container, resource);
+                    resource.addTo(container);
                 } catch (IOException e) {
                     throw new UncheckedIOException("Failed to deserialize resource at: '" + path + "'", e);
                 }

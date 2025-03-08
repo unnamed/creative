@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.BuiltResourcePack;
 import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
+import team.unnamed.creative.metadata.pack.PackFormat;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
 import team.unnamed.creative.serialize.minecraft.fs.ZipEntryLifecycleHandler;
@@ -73,6 +74,21 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
 
     @Override
     void write(final @NotNull FileTreeWriter tree, final @NotNull ResourcePack resourcePack);
+
+    /**
+     * Returns the target pack format version number, which will
+     * be considered when writing resource pack elements that vary
+     * depending on the pack format version, for example, item
+     * overrides and models.
+     *
+     * <p>{@code -1} if not set in the builder.</p>
+     *
+     * @return The target pack format version number
+     * @since 1.8.0
+     */
+    default int targetPackFormat() {
+        return -1;
+    }
 
     /**
      * Returns the {@link ZipEntryLifecycleHandler} to be used
@@ -175,6 +191,25 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
          * @since 1.5.0
          */
         @NotNull Builder prettyPrinting(final boolean prettyPrinting);
+
+        /**
+         * Sets the target pack format version number, which will
+         * be considered when writing resource pack elements that vary
+         * depending on the pack format version, for example, item
+         * overrides and models.
+         *
+         * <p>Set to {@code -1} to ignore the pack format version and
+         * just write using the easiest method, that is, for example,
+         * if the resource-pack is still using item overrides, they will be
+         * written, but in other cases, where the information doesn't
+         * need a complex transformation, it will be written in the
+         * latest format.</p>
+         *
+         * @param packFormat The target pack format version number
+         * @return This builder
+         * @since 1.8.0
+         */
+        @NotNull Builder targetPackFormat(final int packFormat);
 
         /**
          * Builds a new {@link MinecraftResourcePackWriter} instance.

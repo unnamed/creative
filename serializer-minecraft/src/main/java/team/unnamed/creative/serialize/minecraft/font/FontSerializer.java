@@ -39,7 +39,7 @@ import team.unnamed.creative.font.TrueTypeFontProvider;
 import team.unnamed.creative.font.UnihexFontProvider;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
@@ -53,21 +53,20 @@ import java.util.Map;
 public final class FontSerializer implements JsonResourceSerializer<Font>, JsonResourceDeserializer<Font> {
 
     public static final FontSerializer INSTANCE;
-    public static final ResourceCategory<Font> CATEGORY;
+    public static final ResourceCategoryImpl<Font> CATEGORY;
 
     static {
         INSTANCE = new FontSerializer();
-        CATEGORY = new ResourceCategory<>(
+        CATEGORY = new ResourceCategoryImpl<>(
                 "font",
                 ".json",
-                ResourceContainer::font,
                 ResourceContainer::fonts,
                 INSTANCE
         );
     }
 
     @Override
-    public void serializeToJson(Font font, JsonWriter writer) throws IOException {
+    public void serializeToJson(Font font, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject()
                 .name("providers")
                 .beginArray();

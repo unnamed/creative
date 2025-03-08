@@ -34,21 +34,25 @@ import java.nio.charset.StandardCharsets;
 
 public interface JsonResourceSerializer<T> extends ResourceSerializer<T> {
 
-    void serializeToJson(T object, JsonWriter writer) throws IOException;
+    void serializeToJson(T object, JsonWriter writer, int targetPackFormat) throws IOException;
 
     @Override
-    default void serialize(T object, OutputStream output) throws IOException {
+    default void serialize(T object, OutputStream output, int targetPackFormat) throws IOException {
         try (JsonWriter writer = new JsonWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8))) {
-            serializeToJson(object, writer);
+            serializeToJson(object, writer, targetPackFormat);
         }
     }
 
-    default @NotNull String serializeToJsonString(final @NotNull T object) throws IOException {
+    default @NotNull String serializeToJsonString(final @NotNull T object, final int targetPackFormat) throws IOException {
         final StringWriter writer = new StringWriter();
         try (final JsonWriter jsonWriter = new JsonWriter(writer)) {
-            serializeToJson(object, jsonWriter);
+            serializeToJson(object, jsonWriter, targetPackFormat);
         }
         return writer.toString();
+    }
+
+    default @NotNull String serializeToJsonString(final @NotNull T object) throws IOException {
+        return serializeToJsonString(object, -1);
     }
 
 }

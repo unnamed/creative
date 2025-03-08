@@ -32,7 +32,7 @@ import team.unnamed.creative.atlas.AtlasSource;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,17 +42,16 @@ import java.util.List;
 public final class AtlasSerializer implements JsonResourceSerializer<Atlas>, JsonResourceDeserializer<Atlas> {
 
     public static final AtlasSerializer INSTANCE;
-    public static final ResourceCategory<Atlas> CATEGORY;
+    public static final ResourceCategoryImpl<Atlas> CATEGORY;
 
     private static final String SOURCES_FIELD = "sources";
 
 
     static {
         INSTANCE = new AtlasSerializer();
-        CATEGORY = new ResourceCategory<>(
+        CATEGORY = new ResourceCategoryImpl<>(
                 "atlases",
                 ".json",
-                ResourceContainer::atlas,
                 ResourceContainer::atlases,
                 INSTANCE
         );
@@ -70,7 +69,7 @@ public final class AtlasSerializer implements JsonResourceSerializer<Atlas>, Jso
     // }
 
     @Override
-    public void serializeToJson(Atlas object, JsonWriter writer) throws IOException {
+    public void serializeToJson(Atlas object, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject()
                 .name(SOURCES_FIELD)
                 .beginArray();

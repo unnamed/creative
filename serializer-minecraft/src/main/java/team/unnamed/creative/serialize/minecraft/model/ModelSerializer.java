@@ -45,7 +45,7 @@ import team.unnamed.creative.model.ModelTexture;
 import team.unnamed.creative.model.ModelTextures;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
@@ -64,21 +64,20 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
     private static final float MINECRAFT_UV_UNIT = 16F;
 
     public static final ModelSerializer INSTANCE;
-    public static final ResourceCategory<Model> CATEGORY;
+    public static final ResourceCategoryImpl<Model> CATEGORY;
 
     static {
         INSTANCE = new ModelSerializer();
-        CATEGORY = new ResourceCategory<>(
+        CATEGORY = new ResourceCategoryImpl<>(
                 "models",
                 ".json",
-                ResourceContainer::model,
                 ResourceContainer::models,
                 ModelSerializer.INSTANCE
         );
     }
 
     @Override
-    public void serializeToJson(Model model, JsonWriter writer) throws IOException {
+    public void serializeToJson(Model model, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject();
 
         // parent

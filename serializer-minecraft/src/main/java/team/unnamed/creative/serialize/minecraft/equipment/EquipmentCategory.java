@@ -21,56 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.serialize.minecraft;
+package team.unnamed.creative.serialize.minecraft.equipment;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.equipment.Equipment;
 import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.part.ResourcePackPart;
+import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure;
 import team.unnamed.creative.serialize.minecraft.io.ResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceSerializer;
 
 import java.util.Collection;
 import java.util.function.Function;
 
-/**
- * Generalization for all the kinds of resource-pack elements that
- * have keys specifying their location in the resource-pack zip,
- * for example: {@code assets/<namespace>/<category>/<key><extension>}.
- *
- * @param <T>
- */
 @ApiStatus.Internal
-public interface ResourceCategory<T extends Keyed & ResourcePackPart> {
-    /**
-     * Returns the folder name for this category,
-     * based on the given pack format.
-     *
-     * @param packFormat The pack format
-     * @return The folder name
-     */
-    @NotNull String folder(final int packFormat);
+public final class EquipmentCategory implements ResourceCategory<Equipment> {
+    public static final ResourceCategory<Equipment> INSTANCE = new EquipmentCategory();
 
-    /**
-     * Returns the extension for this category,
-     * based on the given pack format.
-     *
-     * @param packFormat The pack format
-     * @return The extension
-     */
-    @NotNull String extension(final int packFormat);
+    private EquipmentCategory() {
+    }
 
-    @NotNull ResourceDeserializer<T> deserializer();
+    @Override
+    public @NotNull String folder(int packFormat) {
+        // In 1.21.4 (pack format 43), the equipment stuff was
+        // moved from models/equipment to just equipment
+        if (packFormat >= 43 || packFormat < 0) {
+            // <0 means that the pack format is unknown, use latest
+            return "equipment";
+        } else {
+            return "models/equipment";
+        }
+    }
 
-    @NotNull Function<ResourceContainer, Collection<T>> lister();
+    @Override
+    public @NotNull String extension(int packFormat) {
+        return MinecraftResourcePackStructure.OBJECT_EXTENSION;
+    }
 
-    @NotNull ResourceSerializer<T> serializer();
+    @Override
+    public @NotNull ResourceDeserializer<Equipment> deserializer() {
+        return EquipmentSerializer.INSTANCE;
+    }
 
-    default @NotNull String pathOf(final @NotNull T resource, final int packFormat) {
-        Key key = resource.key();
-        // assets/<namespace>/<category>/<path><extension>
-        return "assets/" + key.namespace() + "/" + folder(packFormat) + "/" + key.value() + extension(packFormat);
+    @Override
+    public @NotNull Function<ResourceContainer, Collection<Equipment>> lister() {
+        return ResourceContainer::equipment;
+    }
+
+    @Override
+    public @NotNull ResourceSerializer<Equipment> serializer() {
+        return EquipmentSerializer.INSTANCE;
     }
 }

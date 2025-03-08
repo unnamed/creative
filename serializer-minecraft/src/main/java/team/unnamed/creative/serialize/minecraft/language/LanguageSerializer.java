@@ -29,7 +29,7 @@ import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.key.Key;
 import team.unnamed.creative.lang.Language;
 import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
@@ -40,22 +40,21 @@ import java.util.Map;
 public final class LanguageSerializer implements JsonResourceSerializer<Language>, JsonResourceDeserializer<Language> {
 
     public static final LanguageSerializer INSTANCE;
-    public static final ResourceCategory<Language> CATEGORY;
+    public static final ResourceCategoryImpl<Language> CATEGORY;
 
 
     static {
         INSTANCE = new LanguageSerializer();
-        CATEGORY = new ResourceCategory<>(
+        CATEGORY = new ResourceCategoryImpl<>(
                 "lang",
                 ".json",
-                ResourceContainer::language,
                 ResourceContainer::languages,
                 INSTANCE
         );
     }
 
     @Override
-    public void serializeToJson(Language language, JsonWriter writer) throws IOException {
+    public void serializeToJson(Language language, JsonWriter writer, int targetPackFormat) throws IOException {
         // {
         //   "key.1": "value 1",
         //   "key.2": "value 2"

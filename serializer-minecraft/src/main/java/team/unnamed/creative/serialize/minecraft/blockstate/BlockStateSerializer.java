@@ -34,7 +34,7 @@ import team.unnamed.creative.blockstate.Selector;
 import team.unnamed.creative.blockstate.Variant;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.GsonUtil;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 import team.unnamed.creative.serialize.minecraft.base.KeySerializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceDeserializer;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
@@ -49,21 +49,20 @@ import java.util.Set;
 public final class BlockStateSerializer implements JsonResourceSerializer<BlockState>, JsonResourceDeserializer<BlockState> {
 
     public static final BlockStateSerializer INSTANCE;
-    public static final ResourceCategory<BlockState> CATEGORY;
+    public static final ResourceCategoryImpl<BlockState> CATEGORY;
 
     static {
         INSTANCE = new BlockStateSerializer();
-        CATEGORY = new ResourceCategory<>(
+        CATEGORY = new ResourceCategoryImpl<>(
                 "blockstates",
                 ".json",
-                ResourceContainer::blockState,
                 ResourceContainer::blockStates,
                 INSTANCE
         );
     }
 
     @Override
-    public void serializeToJson(BlockState state, JsonWriter writer) throws IOException {
+    public void serializeToJson(BlockState state, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject();
 
         // write "variants" part if not empty

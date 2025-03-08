@@ -31,7 +31,6 @@ import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -53,7 +52,7 @@ public class MetadataSerializer implements JsonResourceSerializer<Metadata> {
     }
 
     @Override
-    public void serializeToJson(Metadata metadata, JsonWriter writer) throws IOException {
+    public void serializeToJson(Metadata metadata, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject();
         for (MetadataPart part : metadata.parts()) {
             MetadataPartCodec codec = null;

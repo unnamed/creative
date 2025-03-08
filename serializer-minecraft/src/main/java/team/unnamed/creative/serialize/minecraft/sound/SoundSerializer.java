@@ -25,20 +25,19 @@ package team.unnamed.creative.serialize.minecraft.sound;
 
 import org.jetbrains.annotations.ApiStatus;
 import team.unnamed.creative.overlay.ResourceContainer;
-import team.unnamed.creative.serialize.minecraft.ResourceCategory;
+import team.unnamed.creative.serialize.minecraft.ResourceCategoryImpl;
 import team.unnamed.creative.serialize.minecraft.io.BinaryResourceDeserializer;
 import team.unnamed.creative.sound.Sound;
 
 @ApiStatus.Internal
 public class SoundSerializer {
 
-    public static final ResourceCategory<Sound> CATEGORY = new ResourceCategory<>(
+    public static final ResourceCategoryImpl<Sound> CATEGORY = new ResourceCategoryImpl<>(
             "sounds",
             ".ogg",
-            ResourceContainer::sound,
             ResourceContainer::sounds,
             (BinaryResourceDeserializer<Sound>) (data, key) -> Sound.sound(key, data),
-            (sound, output) -> sound.data().write(output)
+            (sound, output, targetPackFormat) -> sound.data().write(output)
     );
 
 }

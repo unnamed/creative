@@ -37,7 +37,6 @@ import team.unnamed.creative.sound.SoundRegistry;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +48,7 @@ public final class SoundRegistrySerializer implements JsonResourceSerializer<Sou
     public static final SoundRegistrySerializer INSTANCE = new SoundRegistrySerializer();
 
     @Override
-    public void serializeToJson(SoundRegistry registry, JsonWriter writer) throws IOException {
+    public void serializeToJson(SoundRegistry registry, JsonWriter writer, int targetPackFormat) throws IOException {
         writer.beginObject();
         for (SoundEvent event : registry.sounds()) {
             writer.name(event.key().value())
