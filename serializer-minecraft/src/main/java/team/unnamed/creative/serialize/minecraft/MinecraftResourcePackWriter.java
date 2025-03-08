@@ -30,6 +30,7 @@ import team.unnamed.creative.ResourcePack;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.serialize.ResourcePackWriter;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.fs.ZipEntryLifecycleHandler;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -73,9 +74,23 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
     @Override
     void write(final @NotNull FileTreeWriter tree, final @NotNull ResourcePack resourcePack);
 
+    /**
+     * Returns the {@link ZipEntryLifecycleHandler} to be used
+     * when writing the resource pack files in the resource pack zip.
+     * Can be used to set random fields in the zip entries, so that
+     * the resulting resource pack zip is harder to open (for protection
+     * against stealing for example).
+     *
+     * @return The zip entry lifecycle handler
+     * @since 1.8.0
+     */
+    default @NotNull ZipEntryLifecycleHandler zipEntryLifecycleHandler() {
+        return ZipEntryLifecycleHandler.DEFAULT;
+    }
+
     default void writeToZipFile(Path path, ResourcePack resourcePack) {
         try (ZipOutputStream outputStream = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(path)))) {
-            write(FileTreeWriter.zip(outputStream), resourcePack);
+            write(FileTreeWriter.zip(outputStream, zipEntryLifecycleHandler()), resourcePack);
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("Failed to write resource pack to zip file: File not found: " + path, e);
         } catch (IOException e) {
@@ -101,7 +116,7 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         // write resource to zip
-        try (FileTreeWriter writer = FileTreeWriter.zip(new ZipOutputStream(new DigestOutputStream(output, digest)))) {
+        try (FileTreeWriter writer = FileTreeWriter.zip(new ZipOutputStream(new DigestOutputStream(output, digest)), zipEntryLifecycleHandler())) {
             write(writer, resourcePack);
         }
 
@@ -137,6 +152,19 @@ public interface MinecraftResourcePackWriter extends ResourcePackWriter<FileTree
      * @since 1.5.0
      */
     interface Builder {
+        /**
+         * Sets the {@link ZipEntryLifecycleHandler} to be used when writing
+         * the resource pack files in the resource pack zip. Can be used to
+         * set random fields in the zip entries, so that the resulting resource
+         * pack zip is harder to open (for protection against stealing for
+         * example).
+         *
+         * @param zipEntryLifecycleHandler The zip entry lifecycle handler
+         * @return This builder
+         * @since 1.8.0
+         */
+        @NotNull Builder zipEntryLifecycleHandler(final @NotNull ZipEntryLifecycleHandler zipEntryLifecycleHandler);
+
         /**
          * Sets whether the writer should use pretty printing
          * when writing JSON files.

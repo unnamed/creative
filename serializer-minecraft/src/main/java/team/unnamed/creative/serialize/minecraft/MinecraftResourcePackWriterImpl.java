@@ -32,6 +32,7 @@ import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.serialize.minecraft.fs.FileTreeWriter;
+import team.unnamed.creative.serialize.minecraft.fs.ZipEntryLifecycleHandler;
 import team.unnamed.creative.serialize.minecraft.io.JsonResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.io.ResourceSerializer;
 import team.unnamed.creative.serialize.minecraft.metadata.MetadataSerializer;
@@ -44,6 +45,7 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
 import static team.unnamed.creative.serialize.minecraft.MinecraftResourcePackStructure.*;
 
 final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWriter {
@@ -51,10 +53,17 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
             .prettyPrinting(false)
             .build();
 
+    private final ZipEntryLifecycleHandler zipEntryLifecycleHandler;
     private final boolean prettyPrinting;
 
-    private MinecraftResourcePackWriterImpl(final boolean prettyPrinting) {
+    private MinecraftResourcePackWriterImpl(final @NotNull ZipEntryLifecycleHandler zipEntryLifecycleHandler, final boolean prettyPrinting) {
+        this.zipEntryLifecycleHandler = zipEntryLifecycleHandler; // trust the caller (builder)
         this.prettyPrinting = prettyPrinting;
+    }
+
+    @Override
+    public @NotNull ZipEntryLifecycleHandler zipEntryLifecycleHandler() {
+        return zipEntryLifecycleHandler;
     }
 
     public <T extends Keyed> void writeFullCategory(
@@ -148,7 +157,14 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
     }
 
     static final class BuilderImpl implements Builder {
+        private ZipEntryLifecycleHandler zipEntryLifecycleHandler = ZipEntryLifecycleHandler.DEFAULT;
         private boolean prettyPrinting;
+
+        @Override
+        public @NotNull Builder zipEntryLifecycleHandler(final @NotNull ZipEntryLifecycleHandler zipEntryLifecycleHandler) {
+            this.zipEntryLifecycleHandler = requireNonNull(zipEntryLifecycleHandler, "zipEntryLifecycleHandler");
+            return this;
+        }
 
         @Override
         public @NotNull Builder prettyPrinting(final boolean prettyPrinting) {
@@ -158,7 +174,7 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
 
         @Override
         public @NotNull MinecraftResourcePackWriter build() {
-            return new MinecraftResourcePackWriterImpl(prettyPrinting);
+            return new MinecraftResourcePackWriterImpl(zipEntryLifecycleHandler, prettyPrinting);
         }
     }
 }
