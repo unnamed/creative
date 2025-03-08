@@ -23,13 +23,17 @@
  */
 package team.unnamed.creative.item;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.part.ResourcePackPart;
 
 /**
- * Represents an item model
+ * Represents an item model, information needed to render an item
  *
  * <p>Added in <a href="https://feedback.minecraft.net/hc/en-us/articles/32385811139085-Minecraft-Java-Edition-1-21-4-The-Garden-Awakens">Minecraft: Java Edition 1.21.4 - The Garden Awakens</a></p>
  *
@@ -41,5 +45,49 @@ public interface Item extends Keyed, ResourcePackPart, Examinable {
     @ApiStatus.Internal
     boolean DEFAULT_HAND_ANIMATION_ON_SWAP = true;
 
+    /**
+     * Describes if down-and-up animation should be played in first-person view
+     * when item stack is changed (either type, count or components).
+     *
+     * <p>Only the value from the new item is taken into account</p>
+     *
+     * <p>Does not control "pop" animation in GUI when item is picked up or changes
+     * count</p>
+     *
+     * @return If hand animation should be played
+     */
     boolean handAnimationOnSwap();
+
+    @NotNull ItemModel model();
+
+    @Override
+    default void addTo(final @NotNull ResourceContainer resourceContainer) {
+        resourceContainer.item(this);
+    }
+
+    /**
+     * Creates a new {@link Item} instance with the given key, model and hand animation on swap.
+     *
+     * @param key The item key
+     * @param model The item model
+     * @param handAnimationOnSwap If hand animation should be played
+     * @return The item
+     * @since 1.8.0
+     */
+    @Contract(value = "_, _, _ -> new", pure = true)
+    static @NotNull Item item(final @NotNull Key key, final @NotNull ItemModel model, final boolean handAnimationOnSwap) {
+        return new ItemImpl(key, model, handAnimationOnSwap);
+    }
+
+    /**
+     * Creates a new {@link Item} instance with the given key and model.
+     *
+     * @param key The item key
+     * @param model The item model
+     * @return The item
+     * @since 1.8.0
+     */
+    static @NotNull Item item(final @NotNull Key key, final @NotNull ItemModel model) {
+        return item(key, model, DEFAULT_HAND_ANIMATION_ON_SWAP);
+    }
 }
