@@ -44,6 +44,15 @@ public interface RangeDispatchItemModel extends ItemModel {
 
     @Nullable ItemModel fallback();
 
+    @Contract("-> new")
+    default @NotNull Builder toBuilder() {
+        return ItemModel.rangeDispatch()
+                .property(property())
+                .scale(scale())
+                .fallback(fallback())
+                .addEntries(entries());
+    }
+
     interface Entry extends Examinable {
         float threshold();
 
@@ -61,8 +70,19 @@ public interface RangeDispatchItemModel extends ItemModel {
         @Contract("_ -> this")
         @NotNull Builder scale(final float scale);
 
+        @Contract("_ -> this")
+        @NotNull Builder addEntry(final @NotNull Entry entry);
+
         @Contract("_, _ -> this")
-        @NotNull Builder addEntry(final float threshold, final @NotNull ItemModel model);
+        default @NotNull Builder addEntry(final float threshold, final @NotNull ItemModel model) {
+            return addEntry(Entry.entry(threshold, model));
+        }
+
+        @Contract("_ -> this")
+        default @NotNull Builder addEntries(final @NotNull List<Entry> entries) {
+            entries.forEach(this::addEntry);
+            return this;
+        }
 
         @Contract("_ -> this")
         @NotNull Builder fallback(final @Nullable ItemModel fallback);

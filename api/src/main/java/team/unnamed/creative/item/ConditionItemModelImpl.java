@@ -27,7 +27,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.item.condition.ItemCondition;
+import team.unnamed.creative.item.property.ItemBooleanProperty;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -35,18 +35,18 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 final class ConditionItemModelImpl implements ConditionItemModel {
-    private final ItemCondition condition;
+    private final ItemBooleanProperty condition;
     private final ItemModel onTrue;
     private final ItemModel onFalse;
 
-    ConditionItemModelImpl(final @NotNull ItemCondition condition, final @NotNull ItemModel onTrue, final @NotNull ItemModel onFalse) {
+    ConditionItemModelImpl(final @NotNull ItemBooleanProperty condition, final @NotNull ItemModel onTrue, final @NotNull ItemModel onFalse) {
         this.condition = requireNonNull(condition, "condition");
         this.onTrue = requireNonNull(onTrue, "onTrue");
         this.onFalse = requireNonNull(onFalse, "onFalse");
     }
 
     @Override
-    public @NotNull ItemCondition condition() {
+    public @NotNull ItemBooleanProperty condition() {
         return condition;
     }
 

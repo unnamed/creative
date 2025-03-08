@@ -21,15 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package team.unnamed.creative.item.property;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Contains the ItemCondition interface and its implementations,
- * which are used to determine which item models should be shown
- * in conditional item models.
+ * Represents an item condition that checks whether the item has a specific type
+ * of component.
  *
  * @since 1.8.0
  * @sinceMinecraft 1.21.4
  * @sincePackFormat 43
- * @see team.unnamed.creative.item.ConditionItemModel
+ * @see ItemBooleanProperty
  */
-package team.unnamed.creative.item.condition;
+public interface HasComponentItemBooleanProperty extends ItemBooleanProperty {
+    @ApiStatus.Internal
+    boolean DEFAULT_IGNORE_DEFAULT = false;
+
+    /**
+     * Returns the component type to check for.
+     *
+     * @return The component type
+     */
+    @NotNull String component();
+
+    /**
+     * Determines if the default component value for the item type should
+     * be treated as "no component", defaults to false.
+     *
+     * @return Whether to ignore the default component value
+     */
+    boolean ignoreDefault();
+}

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -33,11 +33,11 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-final class HasComponentItemConditionImpl implements HasComponentItemCondition {
+final class HasComponentItemBooleanPropertyImpl implements HasComponentItemBooleanProperty {
     private final String component;
     private final boolean ignoreDefault;
 
-    HasComponentItemConditionImpl(final @NotNull String component, final boolean ignoreDefault) {
+    HasComponentItemBooleanPropertyImpl(final @NotNull String component, final boolean ignoreDefault) {
         this.component = requireNonNull(component, "component");
         this.ignoreDefault = ignoreDefault;
     }
@@ -63,7 +63,7 @@ final class HasComponentItemConditionImpl implements HasComponentItemCondition {
     @Override
     public boolean equals(final @Nullable Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        final HasComponentItemConditionImpl that = (HasComponentItemConditionImpl) o;
+        final HasComponentItemBooleanPropertyImpl that = (HasComponentItemBooleanPropertyImpl) o;
         return ignoreDefault == that.ignoreDefault && component.equals(that.component);
     }
 

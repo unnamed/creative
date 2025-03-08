@@ -27,7 +27,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.item.condition.ItemCondition;
+import team.unnamed.creative.item.property.ItemBooleanProperty;
 import team.unnamed.creative.item.property.ItemNumericProperty;
 import team.unnamed.creative.item.property.ItemStringProperty;
 import team.unnamed.creative.item.special.SpecialRender;
@@ -151,7 +151,7 @@ public interface ItemModel extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ConditionItemModel conditional(final @NotNull ItemCondition condition, final @NotNull ItemModel onTrue, final @NotNull ItemModel onFalse) {
+    static @NotNull ConditionItemModel conditional(final @NotNull ItemBooleanProperty condition, final @NotNull ItemModel onTrue, final @NotNull ItemModel onFalse) {
         return new ConditionItemModelImpl(condition, onTrue, onFalse);
     }
 
@@ -238,6 +238,10 @@ public interface ItemModel extends Examinable {
 
     static @NotNull RangeDispatchItemModel rangeDispatch(final @NotNull ItemNumericProperty property, final float scale, final @NotNull RangeDispatchItemModel.Entry @NotNull ... entries) {
         return rangeDispatch(property, scale, Arrays.asList(entries));
+    }
+
+    static @NotNull RangeDispatchItemModel rangeDispatch(final @NotNull ItemNumericProperty property, final @NotNull RangeDispatchItemModel.Entry @NotNull ... entries) {
+        return rangeDispatch(property, RangeDispatchItemModel.DEFAULT_SCALE, Arrays.asList(entries));
     }
 
     static @NotNull RangeDispatchItemModel.Builder rangeDispatch() {

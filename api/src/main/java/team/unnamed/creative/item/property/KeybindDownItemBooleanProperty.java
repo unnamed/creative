@@ -21,32 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents an item condition that checks the item's custom model data component,
- * it has the following behavior:
- * <ul>
- *     <li>Returns a value from the flags list in the minecraft:custom_model_data component, if present</li>
- *     <li>Returns false if the component is not present</li>
- * </ul>
+ * Represents an item condition that checks whether a keybind is currently
+ * active.
  *
  * @since 1.8.0
  * @sinceMinecraft 1.21.4
  * @sincePackFormat 43
- * @see ItemCondition
+ * @see ItemBooleanProperty
  */
-public interface CustomModelDataItemCondition extends ItemCondition {
-    @ApiStatus.Internal
-    int DEFAULT_INDEX = 0;
-
+public interface KeybindDownItemBooleanProperty extends ItemBooleanProperty {
     /**
-     * Returns the index for the entry to use in {@code flags} (minecraft:custom_model_data
-     * item component), defaults to 0.
+     * Returns the keybind that is checked to be down, e.g.
+     * "key.use", "key.left". It is the same as the value in a
+     * keybind text component.
      *
-     * @return The index
+     * @return The keybind
+     * @see net.kyori.adventure.text.KeybindComponent
      */
-    int index();
+    @NotNull String key();
 }

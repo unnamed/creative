@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -33,10 +33,10 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-final class KeybindDownItemConditionImpl implements KeybindDownItemCondition {
+final class KeybindDownItemBooleanPropertyImpl implements KeybindDownItemBooleanProperty {
     private final String key;
 
-    KeybindDownItemConditionImpl(final @NotNull String key) {
+    KeybindDownItemBooleanPropertyImpl(final @NotNull String key) {
         this.key = requireNonNull(key, "key");
     }
 
@@ -55,7 +55,7 @@ final class KeybindDownItemConditionImpl implements KeybindDownItemCondition {
     @Override
     public boolean equals(final @Nullable Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        final KeybindDownItemConditionImpl that = (KeybindDownItemConditionImpl) o;
+        final KeybindDownItemBooleanPropertyImpl that = (KeybindDownItemBooleanPropertyImpl) o;
         return key.equals(that.key);
     }
 

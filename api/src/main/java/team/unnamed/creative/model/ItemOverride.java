@@ -27,8 +27,11 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.item.ItemModel;
+import team.unnamed.creative.item.RangeDispatchItemModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +51,12 @@ import static team.unnamed.creative.util.MoreCollections.immutableListOf;
  * for example this avoids recursion on overriding to the same model</p>
  *
  * @since 1.0.0
+ * @deprecated Removed from Minecraft in 1.21.4, resource-pack format 43,
+ * {@link RangeDispatchItemModel} is used instead. Convenience methods for
+ * converting from item overrides to range dispatch item models are provided
+ * here.
  */
+@Deprecated
 public class ItemOverride implements Examinable {
 
     private final Key model;
@@ -110,6 +118,15 @@ public class ItemOverride implements Examinable {
     @Override
     public int hashCode() {
         return Objects.hash(predicate, model);
+    }
+
+    @ApiStatus.Experimental
+    public static @NotNull List<ItemModel> toItemModels(final @NotNull ItemModel fallback, final @NotNull List<ItemOverride> overrides) {
+        final ItemOverrideConverter converter = ItemOverrideConverter.converter(fallback);
+        for (final ItemOverride override : overrides) {
+            converter.addOverride(override);
+        }
+        return converter.convert();
     }
 
     /**

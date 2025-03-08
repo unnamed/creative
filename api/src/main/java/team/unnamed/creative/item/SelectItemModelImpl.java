@@ -145,8 +145,9 @@ final class SelectItemModelImpl implements SelectItemModel {
         }
 
         @Override
-        public @NotNull Builder addCase(final @NotNull ItemModel model, final @NotNull List<String> when) {
-            cases.add(new CaseImpl(when, model));
+        public @NotNull Builder addCase(final @NotNull Case _case) {
+            requireNonNull(_case, "_case");
+            cases.add(_case);
             return this;
         }
 

@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,7 +35,12 @@ import org.jetbrains.annotations.NotNull;
  * @sincePackFormat 43
  * @see team.unnamed.creative.item.ConditionItemModel
  */
-public interface ItemCondition extends Examinable {
+public interface ItemBooleanProperty extends ItemProperty {
+    @Override
+    default boolean isBoolean() {
+        return true;
+    }
+
     /**
      * Returns an item condition that checks whether the item is
      * damageable and has only one use remaining before breaking.
@@ -46,8 +50,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition broken() {
-        return NoFieldItemConditionImpl.BROKEN;
+    static @NotNull ItemBooleanProperty broken() {
+        return NoFieldItemBooleanPropertyImpl.BROKEN;
     }
 
     /**
@@ -59,8 +63,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition bundleHasSelectedItem() {
-        return NoFieldItemConditionImpl.BUNDLE_HAS_SELECTED_ITEM;
+    static @NotNull ItemBooleanProperty bundleHasSelectedItem() {
+        return NoFieldItemBooleanPropertyImpl.BUNDLE_HAS_SELECTED_ITEM;
     }
 
     /**
@@ -72,8 +76,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition carried() {
-        return NoFieldItemConditionImpl.CARRIED;
+    static @NotNull ItemBooleanProperty carried() {
+        return NoFieldItemBooleanPropertyImpl.CARRIED;
     }
 
     /**
@@ -85,8 +89,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition damaged() {
-        return NoFieldItemConditionImpl.DAMAGED;
+    static @NotNull ItemBooleanProperty damaged() {
+        return NoFieldItemBooleanPropertyImpl.DAMAGED;
     }
 
     /**
@@ -100,8 +104,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition extendedView() {
-        return NoFieldItemConditionImpl.EXTENDED_VIEW;
+    static @NotNull ItemBooleanProperty extendedView() {
+        return NoFieldItemBooleanPropertyImpl.EXTENDED_VIEW;
     }
 
     /**
@@ -113,8 +117,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition fishingRodCast() {
-        return NoFieldItemConditionImpl.FISHING_ROD_CAST;
+    static @NotNull ItemBooleanProperty fishingRodCast() {
+        return NoFieldItemBooleanPropertyImpl.FISHING_ROD_CAST;
     }
 
     /**
@@ -125,8 +129,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition selected() {
-        return NoFieldItemConditionImpl.SELECTED;
+    static @NotNull ItemBooleanProperty selected() {
+        return NoFieldItemBooleanPropertyImpl.SELECTED;
     }
 
     /**
@@ -137,8 +141,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition usingItem() {
-        return NoFieldItemConditionImpl.USING_ITEM;
+    static @NotNull ItemBooleanProperty usingItem() {
+        return NoFieldItemBooleanPropertyImpl.USING_ITEM;
     }
 
     /**
@@ -154,8 +158,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull ItemCondition viewEntity() {
-        return NoFieldItemConditionImpl.VIEW_ENTITY;
+    static @NotNull ItemBooleanProperty viewEntity() {
+        return NoFieldItemBooleanPropertyImpl.VIEW_ENTITY;
     }
 
     /**
@@ -171,8 +175,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull CustomModelDataItemCondition customModelData(final int index) {
-        return new CustomModelDataItemConditionImpl(index);
+    static @NotNull CustomModelDataItemBooleanProperty customModelData(final int index) {
+        return new CustomModelDataItemBooleanPropertyImpl(index);
     }
 
     /**
@@ -185,8 +189,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull HasComponentItemCondition hasComponent(final @NotNull String component, final boolean ignoreDefault) {
-        return new HasComponentItemConditionImpl(component, ignoreDefault);
+    static @NotNull HasComponentItemBooleanProperty hasComponent(final @NotNull String component, final boolean ignoreDefault) {
+        return new HasComponentItemBooleanPropertyImpl(component, ignoreDefault);
     }
 
     /**
@@ -198,8 +202,8 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull HasComponentItemCondition hasComponent(final @NotNull String component) {
-        return hasComponent(component, HasComponentItemCondition.DEFAULT_IGNORE_DEFAULT);
+    static @NotNull HasComponentItemBooleanProperty hasComponent(final @NotNull String component) {
+        return hasComponent(component, HasComponentItemBooleanProperty.DEFAULT_IGNORE_DEFAULT);
     }
 
     /**
@@ -212,7 +216,7 @@ public interface ItemCondition extends Examinable {
      * @sinceMinecraft 1.21.4
      * @sincePackFormat 43
      */
-    static @NotNull KeybindDownItemCondition keybindDown(final @NotNull String keybind) {
-        return new KeybindDownItemConditionImpl(keybind);
+    static @NotNull KeybindDownItemBooleanProperty keybindDown(final @NotNull String keybind) {
+        return new KeybindDownItemBooleanPropertyImpl(keybind);
     }
 }

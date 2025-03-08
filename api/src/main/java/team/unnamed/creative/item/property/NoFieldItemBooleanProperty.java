@@ -21,27 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents an item condition that checks whether a keybind is currently
- * active.
+ * Represents an item condition that does not have any field.
+ *
+ * <p>Might be "minecraft:broken", "minecraft:bundle/has_selected_item",
+ * "minecraft:carried", "minecraft:damaged", "minecraft:extended_view",
+ * "minecraft:fishing_rod/cast", "minecraft:selected", "minecraft:using_item",
+ * "minecraft:view_entity", and others added in the future. See more in the
+ * {@link ItemBooleanProperty} static factory methods</p>
  *
  * @since 1.8.0
  * @sinceMinecraft 1.21.4
  * @sincePackFormat 43
- * @see ItemCondition
+ * @see ItemBooleanProperty
  */
-public interface KeybindDownItemCondition extends ItemCondition {
+@ApiStatus.Experimental
+public interface NoFieldItemBooleanProperty extends ItemBooleanProperty, Keyed {
     /**
-     * Returns the keybind that is checked to be down, e.g.
-     * "key.use", "key.left". It is the same as the value in a
-     * keybind text component.
+     * Returns the identifier for this item condition.
      *
-     * @return The keybind
-     * @see net.kyori.adventure.text.KeybindComponent
+     * @return The identifier
      */
-    @NotNull String key();
+    @Override
+    @NotNull Key key();
 }

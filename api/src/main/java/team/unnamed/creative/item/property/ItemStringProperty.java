@@ -23,10 +23,8 @@
  */
 package team.unnamed.creative.item.property;
 
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import team.unnamed.creative.item.condition.CustomModelDataItemCondition;
 
 /**
  * Represents an item string property, check implementations for more information.
@@ -38,7 +36,12 @@ import team.unnamed.creative.item.condition.CustomModelDataItemCondition;
  * @sinceMinecraft 1.21.4
  * @sincePackFormat 43
  */
-public interface ItemStringProperty extends Examinable {
+public interface ItemStringProperty extends ItemProperty {
+    @Override
+    default boolean isString() {
+        return true;
+    }
+
     /**
      * Returns the <strong>block state</strong> item string property, which evaluates to
      * some property from the {@code minecraft:block_state} component
@@ -132,7 +135,7 @@ public interface ItemStringProperty extends Examinable {
      * @sincePackFormat 43
      */
     static @NotNull CustomModelDataItemStringProperty customModelData() {
-        return customModelData(CustomModelDataItemCondition.DEFAULT_INDEX);
+        return customModelData(CustomModelDataItemBooleanProperty.DEFAULT_INDEX);
     }
 
     /**

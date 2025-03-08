@@ -24,7 +24,7 @@
 package team.unnamed.creative.item;
 
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.creative.item.condition.ItemCondition;
+import team.unnamed.creative.item.property.ItemBooleanProperty;
 
 /**
  * Represents a conditional item model, which
@@ -34,7 +34,7 @@ import team.unnamed.creative.item.condition.ItemCondition;
  * @sinceMinecraft 1.21.4
  * @sincePackFormat 43
  * @see ItemModel
- * @see ItemCondition
+ * @see ItemBooleanProperty
  */
 public interface ConditionItemModel extends ItemModel {
     /**
@@ -42,7 +42,7 @@ public interface ConditionItemModel extends ItemModel {
      *
      * @return The condition to check
      */
-    @NotNull ItemCondition condition();
+    @NotNull ItemBooleanProperty condition();
 
     /**
      * Returns the item model to render if the condition is true.

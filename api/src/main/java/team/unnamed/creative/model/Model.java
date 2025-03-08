@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import team.unnamed.creative.item.RangeDispatchItemModel;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.part.ResourcePackPart;
 
@@ -154,7 +155,12 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
      *
      * @return This item model overrides
      * @since 1.0.0
+     * @deprecated Removed from Minecraft in 1.21.4, resource-pack format 43,
+     * {@link RangeDispatchItemModel} is used instead. Convenience methods for
+     * converting from item overrides to range dispatch item models are provided
+     * in the {@link ItemOverride} class.
      */
+    @Deprecated
     @NotNull List<ItemOverride> overrides();
 
     /**
@@ -230,15 +236,18 @@ public interface Model extends ResourcePackPart, Keyed, Examinable {
         @NotNull Builder addElement(final @NotNull Element element);
 
         @Contract("_ -> this")
+        @Deprecated
         @NotNull Builder overrides(final @NotNull List<ItemOverride> overrides);
 
         @Contract("_ -> this")
+        @Deprecated
         default @NotNull Builder overrides(final @NotNull ItemOverride @NotNull ... overrides) {
             requireNonNull(overrides, "overrides");
             return overrides(Arrays.asList(overrides));
         }
 
         @Contract("_ -> this")
+        @Deprecated
         @NotNull Builder addOverride(final @NotNull ItemOverride override);
 
         @Contract("-> new")

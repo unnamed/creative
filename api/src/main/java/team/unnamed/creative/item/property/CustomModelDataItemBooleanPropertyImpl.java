@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -30,10 +30,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-final class CustomModelDataItemConditionImpl implements CustomModelDataItemCondition {
+final class CustomModelDataItemBooleanPropertyImpl implements CustomModelDataItemBooleanProperty {
     private final int index;
 
-    CustomModelDataItemConditionImpl(final int index) {
+    CustomModelDataItemBooleanPropertyImpl(final int index) {
         this.index = index;
         if (index < 0) {
             throw new IllegalArgumentException("custom_model_data condition must have a non-negative index, got " + index);
@@ -55,7 +55,7 @@ final class CustomModelDataItemConditionImpl implements CustomModelDataItemCondi
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        CustomModelDataItemConditionImpl that = (CustomModelDataItemConditionImpl) o;
+        CustomModelDataItemBooleanPropertyImpl that = (CustomModelDataItemBooleanPropertyImpl) o;
         return index == that.index;
     }
 

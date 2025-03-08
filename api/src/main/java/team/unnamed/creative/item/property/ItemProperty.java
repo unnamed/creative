@@ -21,34 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import net.kyori.examination.Examinable;
 
 /**
- * Represents an item condition that does not have any field.
- *
- * <p>Might be "minecraft:broken", "minecraft:bundle/has_selected_item",
- * "minecraft:carried", "minecraft:damaged", "minecraft:extended_view",
- * "minecraft:fishing_rod/cast", "minecraft:selected", "minecraft:using_item",
- * "minecraft:view_entity", and others added in the future. See more in the
- * {@link ItemCondition} static factory methods</p>
+ * Represents an item property that can be checked using item model
+ * conditions, range dispatch or selects.
  *
  * @since 1.8.0
- * @sinceMinecraft 1.21.4
- * @sincePackFormat 43
- * @see ItemCondition
  */
-@ApiStatus.Experimental
-public interface NoFieldItemCondition extends ItemCondition, Keyed {
+public interface ItemProperty extends Examinable {
     /**
-     * Returns the identifier for this item condition.
+     * Determines if the item property is a boolean property.
      *
-     * @return The identifier
+     * @since 1.8.0
      */
-    @Override
-    @NotNull Key key();
+    default boolean isBoolean() {
+        return false;
+    }
+
+    /**
+     * Determines if the item property is a numeric property.
+     *
+     * @since 1.8.0
+     */
+    default boolean isNumeric() {
+        return false;
+    }
+
+    /**
+     * Determines if the item property is a string property.
+     *
+     * @since 1.8.0
+     */
+    default boolean isString() {
+        return false;
+    }
 }

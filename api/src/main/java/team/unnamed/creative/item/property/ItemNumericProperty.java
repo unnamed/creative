@@ -23,10 +23,14 @@
  */
 package team.unnamed.creative.item.property;
 
-import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.NotNull;
 
-public interface ItemNumericProperty extends Examinable {
+public interface ItemNumericProperty extends ItemProperty {
+    @Override
+    default boolean isNumeric() {
+        return true;
+    }
+
     static @NotNull NoFieldItemNumericProperty bundleFullness() {
         return NoFieldItemNumericPropertyImpl.BUNDLE_FULLNESS;
     }

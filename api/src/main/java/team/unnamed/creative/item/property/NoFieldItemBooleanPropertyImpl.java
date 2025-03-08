@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package team.unnamed.creative.item.condition;
+package team.unnamed.creative.item.property;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
@@ -35,24 +35,24 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-final class NoFieldItemConditionImpl implements NoFieldItemCondition {
-    static final NoFieldItemCondition BROKEN = new NoFieldItemConditionImpl("broken");
-    static final NoFieldItemCondition BUNDLE_HAS_SELECTED_ITEM = new NoFieldItemConditionImpl("bundle/has_selected_item");
-    static final NoFieldItemCondition CARRIED = new NoFieldItemConditionImpl("carried");
-    static final NoFieldItemCondition DAMAGED = new NoFieldItemConditionImpl("damaged");
-    static final NoFieldItemCondition EXTENDED_VIEW = new NoFieldItemConditionImpl("extended_view");
-    static final NoFieldItemCondition FISHING_ROD_CAST = new NoFieldItemConditionImpl("fishing_rod/cast");
-    static final NoFieldItemCondition SELECTED = new NoFieldItemConditionImpl("selected");
-    static final NoFieldItemCondition USING_ITEM = new NoFieldItemConditionImpl("using_item");
-    static final NoFieldItemCondition VIEW_ENTITY = new NoFieldItemConditionImpl("view_entity");
+final class NoFieldItemBooleanPropertyImpl implements NoFieldItemBooleanProperty {
+    static final NoFieldItemBooleanProperty BROKEN = new NoFieldItemBooleanPropertyImpl("broken");
+    static final NoFieldItemBooleanProperty BUNDLE_HAS_SELECTED_ITEM = new NoFieldItemBooleanPropertyImpl("bundle/has_selected_item");
+    static final NoFieldItemBooleanProperty CARRIED = new NoFieldItemBooleanPropertyImpl("carried");
+    static final NoFieldItemBooleanProperty DAMAGED = new NoFieldItemBooleanPropertyImpl("damaged");
+    static final NoFieldItemBooleanProperty EXTENDED_VIEW = new NoFieldItemBooleanPropertyImpl("extended_view");
+    static final NoFieldItemBooleanProperty FISHING_ROD_CAST = new NoFieldItemBooleanPropertyImpl("fishing_rod/cast");
+    static final NoFieldItemBooleanProperty SELECTED = new NoFieldItemBooleanPropertyImpl("selected");
+    static final NoFieldItemBooleanProperty USING_ITEM = new NoFieldItemBooleanPropertyImpl("using_item");
+    static final NoFieldItemBooleanProperty VIEW_ENTITY = new NoFieldItemBooleanPropertyImpl("view_entity");
 
     private final Key key;
 
-    NoFieldItemConditionImpl(final @NotNull Key key) {
+    NoFieldItemBooleanPropertyImpl(final @NotNull Key key) {
         this.key = requireNonNull(key, "key");
     }
 
-    NoFieldItemConditionImpl(@Subst("minecraft:broken") final @NotNull String key) {
+    NoFieldItemBooleanPropertyImpl(@Subst("minecraft:broken") final @NotNull String key) {
         this.key = Key.key(key);
     }
 
@@ -69,7 +69,7 @@ final class NoFieldItemConditionImpl implements NoFieldItemCondition {
     @Override
     public boolean equals(final @Nullable Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        final NoFieldItemConditionImpl that = (NoFieldItemConditionImpl) o;
+        final NoFieldItemBooleanPropertyImpl that = (NoFieldItemBooleanPropertyImpl) o;
         return key.equals(that.key);
     }
 

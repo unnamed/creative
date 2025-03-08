@@ -52,6 +52,13 @@ public interface SelectItemModel extends ItemModel {
 
     @Nullable ItemModel fallback();
 
+    default @NotNull Builder toBuilder() {
+        return ItemModel.select()
+                .property(property())
+                .fallback(fallback())
+                .addCases(cases());
+    }
+
     interface Case extends Examinable {
         @NotNull List<String> when();
 
@@ -76,8 +83,13 @@ public interface SelectItemModel extends ItemModel {
         @Contract("_ -> this")
         @NotNull Builder property(final @NotNull ItemStringProperty property);
 
+        @Contract("_ -> this")
+        @NotNull Builder addCase(final @NotNull Case _case);
+
         @Contract("_, _ -> this")
-        @NotNull Builder addCase(final @NotNull ItemModel model, final @NotNull List<String> when);
+        default @NotNull Builder addCase(final @NotNull ItemModel model, final @NotNull List<String> when) {
+            return addCase(Case._case(model, when));
+        }
 
         @Contract("_, _ -> this")
         default @NotNull Builder addCase(final @NotNull ItemModel model, final @NotNull String @NotNull ... when) {
@@ -89,6 +101,12 @@ public interface SelectItemModel extends ItemModel {
         @Contract("_ -> this")
         default @NotNull Builder addCase(final @NotNull ItemModel model) {
             return addCase(model, Collections.emptyList());
+        }
+
+        @Contract("_ -> this")
+        default @NotNull Builder addCases(final @NotNull List<Case> cases) {
+            cases.forEach(this::addCase);
+            return this;
         }
 
         @Contract("_ -> this")

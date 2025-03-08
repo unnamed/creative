@@ -27,6 +27,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.item.RangeDispatchItemModel;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -38,7 +39,12 @@ import static java.util.Objects.requireNonNull;
  * whether to override an item model or not
  *
  * @since 1.0.0
+ * @deprecated Removed from Minecraft in 1.21.4, resource-pack format 43,
+ * {@link RangeDispatchItemModel} is used instead. Convenience methods for
+ * converting from item overrides to range dispatch item models are provided
+ * in {@link ItemOverride}.
  */
+@Deprecated
 public class ItemPredicate implements Examinable {
 
     private final String name;

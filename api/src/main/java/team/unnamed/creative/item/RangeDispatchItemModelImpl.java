@@ -164,8 +164,8 @@ final class RangeDispatchItemModelImpl implements RangeDispatchItemModel {
         }
 
         @Override
-        public @NotNull Builder addEntry(float threshold, @NotNull ItemModel model) {
-            entries.add(new EntryImpl(threshold, model));
+        public @NotNull Builder addEntry(final @NotNull Entry entry) {
+            entries.add(requireNonNull(entry, "entry"));
             return this;
         }
 
