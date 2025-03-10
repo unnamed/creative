@@ -100,8 +100,11 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
 
     private @NotNull ItemModel deserializeItemModel(JsonElement unknownNode) throws IOException {
         final JsonObject node = unknownNode.getAsJsonObject();
-        final String type = node.get("type").getAsString();
-        switch (type) {
+        final Key type = Key.key(node.get("type").getAsString());
+        if (!type.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            throw new IllegalArgumentException("Unknown item model type: " + type);
+        }
+        switch (type.value()) {
             case "empty": return ItemModel.empty();
             case "model": return readReference(node);
             case "special": return readSpecial(node);
@@ -177,7 +180,8 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
     private @NotNull ReferenceItemModel readReference(final @NotNull JsonObject node) {
         final Key model = Key.key(node.get("model").getAsString());
         final List<TintSource> tints = new ArrayList<>();
-        for (JsonElement tintElement : node.getAsJsonArray("tints")) {
+
+        if (node.has("tints")) for (JsonElement tintElement : node.getAsJsonArray("tints")) {
             final JsonObject tintObject = tintElement.getAsJsonObject();
             final String type = tintObject.get("type").getAsString();
             switch (type) {
@@ -388,8 +392,11 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
 
     private @NotNull ConditionItemModel readCondition(final @NotNull JsonObject node) throws IOException {
         final ItemBooleanProperty condition;
-        final String property = node.get("property").getAsString();
-        switch (property) {
+        final Key property = Key.key(node.get("property").getAsString());
+        if (!property.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            throw new IllegalArgumentException("Unknown condition property: " + property);
+        }
+        switch (property.value()) {
             case "custom_model_data":
                 final int index = node.has("index")
                         ? node.get("index").getAsInt()
@@ -503,8 +510,11 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
 
     private @NotNull SelectItemModel readSelect(final @NotNull JsonObject node) throws IOException {
         final ItemStringProperty property;
-        final String propertyType = node.get("property").getAsString();
-        switch (propertyType) {
+        final Key propertyType = Key.key(node.get("property").getAsString());
+        if (!propertyType.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            throw new IllegalArgumentException("Unknown select property type: " + propertyType);
+        }
+        switch (propertyType.value()) {
             case "block_state":
                 property = ItemStringProperty.blockState(node.get("block_state_property").getAsString());
                 break;
@@ -647,8 +657,11 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
 
     private @NotNull RangeDispatchItemModel readRangeDispatch(final @NotNull JsonObject node) throws IOException {
         final ItemNumericProperty property;
-        final String propertyType = node.get("property").getAsString();
-        switch (propertyType) {
+        final Key propertyType = Key.key(node.get("property").getAsString());
+        if (!propertyType.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            throw new IllegalArgumentException("Unknown range dispatch property type: " + propertyType);
+        }
+        switch (propertyType.value()) {
             case "compass":
                 final CompassItemNumericProperty.Target target = CompassItemNumericProperty.Target.valueOf(node.get("target").getAsString().toUpperCase());
                 final boolean wobble = node.has("wobble")
