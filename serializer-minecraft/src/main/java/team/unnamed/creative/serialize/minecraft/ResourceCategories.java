@@ -27,6 +27,7 @@ import team.unnamed.creative.serialize.minecraft.atlas.AtlasSerializer;
 import team.unnamed.creative.serialize.minecraft.blockstate.BlockStateSerializer;
 import team.unnamed.creative.serialize.minecraft.equipment.EquipmentCategory;
 import team.unnamed.creative.serialize.minecraft.font.FontSerializer;
+import team.unnamed.creative.serialize.minecraft.item.ItemSerializer;
 import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
 import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
@@ -50,6 +51,7 @@ public class ResourceCategories {
         registerCategory(BlockStateSerializer.CATEGORY);
         registerCategory(FontSerializer.CATEGORY);
         registerCategory(EquipmentCategory.INSTANCE);
+        registerCategory(ItemSerializer.CATEGORY);
     }
 
     private ResourceCategories() {

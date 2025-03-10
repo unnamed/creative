@@ -48,5 +48,4 @@ public interface JsonResourceDeserializer<T> extends ResourceDeserializer<T> {
             return deserializeFromJson(GsonUtil.parseReader(reader), key);
         }
     }
-
 }
