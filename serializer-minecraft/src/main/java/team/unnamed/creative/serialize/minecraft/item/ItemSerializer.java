@@ -183,8 +183,11 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
 
         if (node.has("tints")) for (JsonElement tintElement : node.getAsJsonArray("tints")) {
             final JsonObject tintObject = tintElement.getAsJsonObject();
-            final String type = tintObject.get("type").getAsString();
-            switch (type) {
+            final Key type = Key.key(tintObject.get("type").getAsString());
+            if (!type.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+                throw new IllegalArgumentException("Unknown tint source type: " + type);
+            }
+            switch (type.value()) {
                 case "constant":
                     tints.add(TintSource.constant(tintObject.get("value").getAsInt()));
                     break;
@@ -202,6 +205,15 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
                     break;
                 case "dye":
                     tints.add(TintSource.dye(tintObject.get("default").getAsInt()));
+                    break;
+                case "firework":
+                    tints.add(TintSource.firework(tintObject.get("default").getAsInt()));
+                    break;
+                case "map_color":
+                    tints.add(TintSource.mapColor(tintObject.get("default").getAsInt()));
+                    break;
+                case "potion":
+                    tints.add(TintSource.potion(tintObject.get("default").getAsInt()));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown tint source type: " + type);
@@ -279,8 +291,11 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
     private @NotNull SpecialItemModel readSpecial(final @NotNull JsonObject node) {
         final JsonObject modelNode = node.getAsJsonObject("model");
         final SpecialRender render;
-        final String type = modelNode.get("type").getAsString();
-        switch (type) {
+        final Key type = Key.key(modelNode.get("type").getAsString());
+        if (!type.namespace().equals(Key.MINECRAFT_NAMESPACE)) {
+            throw new IllegalArgumentException("Unknown special render type: " + type);
+        }
+        switch (type.value()) {
             case "banner":
                 render = SpecialRender.banner(DyeColor.valueOf(modelNode.get("color").getAsString().toUpperCase()));
                 break;
@@ -485,6 +500,7 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
 
         writer.name("cases").beginArray();
         for (final SelectItemModel.Case _case : model.cases()) {
+            writer.beginObject();
             writer.name("when");
             final List<String> when = _case.when();
             if (when.size() == 1) {
@@ -498,6 +514,7 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
             }
             writer.name("model");
             serializeItemModel(_case.model(), writer, targetPackFormat);
+            writer.endObject();
         }
         writer.endArray();
 
@@ -560,8 +577,14 @@ public final class ItemSerializer implements JsonResourceSerializer<Item>, JsonR
         for (JsonElement caseElement : node.getAsJsonArray("cases")) {
             final JsonObject caseObject = caseElement.getAsJsonObject();
             final List<String> when = new ArrayList<>();
-            for (JsonElement whenElement : caseObject.getAsJsonArray("when")) {
-                when.add(whenElement.getAsString());
+
+            JsonElement whenNode = caseObject.get("when");
+            if (whenNode.isJsonArray()) {
+                for (JsonElement whenElement : whenNode.getAsJsonArray()) {
+                    when.add(whenElement.getAsString());
+                }
+            } else {
+                when.add(whenNode.getAsString());
             }
             cases.add(SelectItemModel.Case._case(
                     deserializeItemModel(caseObject.get("model")),
