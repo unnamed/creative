@@ -170,6 +170,19 @@ public final class ItemOverrideConverter {
                     break;
                 }
 
+                case "trim_type": {
+                    ItemStringProperty property = ItemStringProperty.trimMaterial();
+                    SelectItemModel selectItemModel = (SelectItemModel) byProperty.get(property);
+                    String when = override.model().asString().split("_")[2];
+                    SelectItemModel.Case _case = SelectItemModel.Case._case(model, when);
+                    if (selectItemModel == null) {
+                        byProperty.put(property, ItemModel.select(property, Collections.singletonList(_case), fallback));
+                    } else {
+                        byProperty.put(property, selectItemModel.toBuilder().addCase(_case).build());
+                    }
+                    break;
+                }
+
                 // plain boolean properties, values are ignored
                 case "broken": {
                     addPredicate(ItemBooleanProperty.broken(), model);
