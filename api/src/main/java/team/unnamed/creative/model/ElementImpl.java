@@ -45,19 +45,22 @@ final class ElementImpl implements Element {
     private final ElementRotation rotation;
     private final boolean shade;
     private final Map<CubeFace, ElementFace> faces;
+    private final int lightEmission;
 
     ElementImpl(
             final @NotNull Vector3Float from,
             final @NotNull Vector3Float to,
             final @Nullable ElementRotation rotation,
             final boolean shade,
-            final @NotNull Map<CubeFace, ElementFace> faces
+            final @NotNull Map<CubeFace, ElementFace> faces,
+            final int lightEmission
     ) {
         this.from = requireNonNull(from, "from");
         this.to = requireNonNull(to, "to");
         this.rotation = rotation;
         this.shade = shade;
         this.faces = immutableMapOf(requireNonNull(faces, "faces"));
+        this.lightEmission = lightEmission;
         validate();
     }
 
@@ -105,13 +108,19 @@ final class ElementImpl implements Element {
     }
 
     @Override
+    public int lightEmission() {
+        return lightEmission;
+    }
+
+    @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
         return Stream.of(
                 ExaminableProperty.of("from", from),
                 ExaminableProperty.of("to", to),
                 ExaminableProperty.of("rotation", rotation),
                 ExaminableProperty.of("shade", shade),
-                ExaminableProperty.of("faces", faces)
+                ExaminableProperty.of("faces", faces),
+                ExaminableProperty.of("light_emission", lightEmission)
         );
     }
 
@@ -124,12 +133,13 @@ final class ElementImpl implements Element {
                 && to.equals(element.to)
                 && Objects.equals(rotation, element.rotation)
                 && shade == element.shade
-                && faces.equals(element.faces);
+                && faces.equals(element.faces)
+                && lightEmission == element.lightEmission;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to, rotation, shade, faces);
+        return Objects.hash(from, to, rotation, shade, faces, lightEmission);
     }
 
     static final class BuilderImpl implements Builder {
@@ -139,6 +149,7 @@ final class ElementImpl implements Element {
         private ElementRotation rotation = null;
         private boolean shade = DEFAULT_SHADE;
         private Map<CubeFace, ElementFace> faces = new LinkedHashMap<>();
+        private int lightEmission = 0;
 
 
         @Override
@@ -180,8 +191,14 @@ final class ElementImpl implements Element {
         }
 
         @Override
+        public @NotNull Builder lightEmission(final int lightEmission) {
+            this.lightEmission = lightEmission;
+            return this;
+        }
+
+        @Override
         public @NotNull Element build() {
-            return new ElementImpl(from, to, rotation, shade, faces);
+            return new ElementImpl(from, to, rotation, shade, faces, lightEmission);
         }
     }
 }

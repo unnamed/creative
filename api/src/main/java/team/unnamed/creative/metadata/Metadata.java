@@ -35,6 +35,7 @@ import team.unnamed.creative.metadata.gui.GuiMeta;
 import team.unnamed.creative.metadata.language.LanguageMeta;
 import team.unnamed.creative.metadata.overlays.OverlaysMeta;
 import team.unnamed.creative.metadata.pack.PackMeta;
+import team.unnamed.creative.metadata.sodium.SodiumMeta;
 import team.unnamed.creative.metadata.texture.TextureMeta;
 import team.unnamed.creative.metadata.villager.VillagerMeta;
 
@@ -283,6 +284,23 @@ public interface Metadata extends Examinable {
         @Contract("_ -> this")
         default @NotNull Builder add(final @NotNull OverlaysMeta meta) {
             return add(OverlaysMeta.class, meta);
+        }
+
+        /**
+         * Adds a sodium meta part.
+         *
+         * @param meta The added sodium meta part.
+         * @return This builder.
+         * @sinceMinecraft 1.21.3
+         * @sincePackFormat 48
+         * @since 1.7.8
+         * @deprecated Use {@link #addPart(MetadataPart)} instead
+         */
+        @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
+        @Contract("_ -> this")
+        default @NotNull Builder add(final @NotNull SodiumMeta meta) {
+            return add(SodiumMeta.class, meta);
         }
 
         /**

@@ -76,13 +76,14 @@ public interface GuiScaling extends Examinable {
      * @param height The number of pixels for the sprite to cover
      *               on-screen across its height, must be positive
      * @param border The border sizes
+     * @param stretchInner If the texture should be stretched instead of tiled
      * @return The created {@link GuiScaling} instance
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
      * @since 1.2.0
      */
-    static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final @NotNull GuiBorder border) {
-        return new NineSliceGuiScalingImpl(width, height, border);
+    static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final @NotNull GuiBorder border, final boolean stretchInner) {
+        return new NineSliceGuiScalingImpl(width, height, border, stretchInner);
     }
 
     /**
@@ -95,12 +96,13 @@ public interface GuiScaling extends Examinable {
      * @param height The number of pixels for the sprite to cover
      *               on-screen across its height, must be positive
      * @param border The border size for all sides
+     * @param stretchInner If the texture should be stretched instead of tiled
      * @return The created {@link GuiScaling} instance
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
      * @since 1.2.0
      */
-    static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final int border) {
-        return new NineSliceGuiScalingImpl(width, height, GuiBorder.border(border));
+    static @NotNull NineSliceGuiScaling nineSlice(final int width, final int height, final int border, final boolean stretchInner) {
+        return new NineSliceGuiScalingImpl(width, height, GuiBorder.border(border), stretchInner);
     }
 }

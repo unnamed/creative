@@ -85,7 +85,8 @@ final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
                         border = GuiBorder.border(top, bottom, left, right);
                     }
                 }
-                return GuiMeta.of(GuiScaling.nineSlice(width, height, border));
+                final boolean stretchInner = GsonUtil.getBoolean(scalingNode, "stretch_inner", false);
+                return GuiMeta.of(GuiScaling.nineSlice(width, height, border, stretchInner));
             }
             default:
                 throw new IllegalArgumentException("Unknown gui scaling type: " + typeString);
@@ -129,6 +130,7 @@ final class GuiMetaCodec implements MetadataPartCodec<GuiMeta> {
                         .name("right").value(right)
                         .endObject();
             }
+            writer.name("stretch_inner").value(nineSlice.stretchInner());
         }
         writer.endObject();
         writer.endObject();
