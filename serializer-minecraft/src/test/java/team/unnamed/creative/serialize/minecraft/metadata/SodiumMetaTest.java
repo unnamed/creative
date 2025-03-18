@@ -40,7 +40,7 @@ public class SodiumMetaTest {
         List<String> ignoredShaders = new ArrayList<>();
         ignoredShaders.add("rendertype_entity_translucent.fsh");
         ignoredShaders.add("rendertype_entity_translucent.vsh");
-        SodiumMeta sodiumMeta = SodiumMeta.of(ignoredShaders);
+        SodiumMeta sodiumMeta = SodiumMeta.sodium(ignoredShaders);
         assertEquals(
                 "{\"ignored_shaders\":[\"rendertype_entity_translucent.fsh\",\"rendertype_entity_translucent.vsh\"]}",
                 SodiumMetaCodec.INSTANCE.toJson(sodiumMeta)

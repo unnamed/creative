@@ -60,7 +60,7 @@ public class SodiumMetaCodec implements MetadataPartCodec<SodiumMeta> {
             }
         }
 
-        return SodiumMeta.of(ignoredShaders);
+        return SodiumMeta.sodium(ignoredShaders);
     }
 
     @Override

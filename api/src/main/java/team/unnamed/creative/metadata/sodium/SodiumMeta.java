@@ -23,17 +23,20 @@
  */
 package team.unnamed.creative.metadata.sodium;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import team.unnamed.creative.metadata.MetadataPart;
 
 import java.util.List;
 
+/**
+ * @since 1.8.0
+ */
 public interface SodiumMeta extends MetadataPart {
 
-    //@Unmodifiable
-    List<String> ignoredShaders();
+    @NotNull @Unmodifiable List<String> ignoredShaders();
 
-    static SodiumMeta of(List<String> ignoredShaders) {
+    static @NotNull SodiumMeta sodium(final @NotNull List<String> ignoredShaders) {
         return new SodiumMetaImpl(ignoredShaders);
     }
 }

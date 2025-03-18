@@ -33,15 +33,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 public class SodiumMetaImpl implements SodiumMeta {
     private final List<String> ignoredShaders;
 
     SodiumMetaImpl(final @NotNull List<String> ignoredShaders) {
-        this.ignoredShaders = ignoredShaders;
+        this.ignoredShaders = requireNonNull(ignoredShaders, "ignoredShaders");
     }
 
     @Override
-    public @Unmodifiable List<String> ignoredShaders() {
+    public @Unmodifiable @NotNull List<String> ignoredShaders() {
         return ignoredShaders;
     }
 
