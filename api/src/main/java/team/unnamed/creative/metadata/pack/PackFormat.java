@@ -92,6 +92,33 @@ public interface PackFormat extends Examinable {
     boolean isInRange(final int format);
 
     /**
+     * Returns a new pack format that is the union of this
+     * pack format and the given {@code other} pack format.
+     *
+     * <p>The union of two pack formats is the pack format
+     * that supports the lowest format, the lowest min and
+     * the highest max.</p>
+     *
+     * <p>This method assumes that both pack formats are
+     * compatible with each other, meaning that the ranges
+     * do overlap</p>
+     *
+     * @param other The other pack format
+     * @return The union of this pack format and the other
+     * @since 1.8.0
+     */
+    default @NotNull PackFormat union(final @NotNull PackFormat other) {
+        if (this.isSingle() && other.isSingle()) {
+            return format(format());
+        }
+        return format(
+                Math.min(format(), other.format()),
+                Math.min(min(), other.min()),
+                Math.max(max(), other.max())
+        );
+    }
+
+    /**
      * Create a pack format that supports only a single
      * pack format, specified by the {@code format} parameter.
      *

@@ -29,6 +29,7 @@ import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.metadata.Metadata;
 import team.unnamed.creative.metadata.MetadataPart;
 import team.unnamed.creative.metadata.overlays.OverlayEntry;
+import team.unnamed.creative.metadata.pack.PackMeta;
 import team.unnamed.creative.overlay.Overlay;
 import team.unnamed.creative.overlay.ResourceContainer;
 import team.unnamed.creative.overlay.ResourceContainerImpl;
@@ -123,6 +124,24 @@ final class ResourcePackImpl extends ResourceContainerImpl implements ResourcePa
             // O(n^2) :C
             final Collection<MetadataPart> oldParts = new HashSet<>(metadata.parts());
             for (final MetadataPart part : newMetadata.parts()) {
+                // special case for pack meta merging
+                if (part.type() == PackMeta.class) {
+                    final PackMeta oldPackMeta = metadata.meta(PackMeta.class);
+                    if (oldPackMeta == null || strategy == MergeStrategy.override()) {
+                        // if the receptor resource pack doesn't have a pack meta,
+                        // or we want to override, just use the one from the other
+                        // resource pack
+                        oldParts.add(part);
+                    } else {
+                        // merge formats, keep receptor resource pack description
+                        final PackMeta newPackMeta = (PackMeta) part;
+                        oldParts.add(PackMeta.of(
+                                oldPackMeta.formats().union(newPackMeta.formats()),
+                                oldPackMeta.description0() // keep base description
+                        ));
+                    }
+                    continue;
+                }
                 boolean duplicate = false;
                 for (final MetadataPart oldPart : oldParts) {
                     if (oldPart.type() == part.type()) {
