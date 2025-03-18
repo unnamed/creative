@@ -421,6 +421,20 @@ public class ResourceContainerImpl implements ResourceContainer {
             fonts.put(font.key(), oldFont.providers(providers));
         }
 
+        // merge items
+        for (final Item item : other.items()) {
+            if (items.containsKey(item.key())) {
+                if (override) {
+                    items.put(item.key(), item);
+                } else if (strategy == MergeStrategy.mergeAndFailOnError()) {
+                    throw new MergeException("Duplicated item '" + item.key()
+                            + "': exists in both resource containers");
+                }
+            } else {
+                items.put(item.key(), item);
+            }
+        }
+
         // merge languages
         for (final Language language : other.languages()) {
             final Language oldLanguage = languages.get(language.key());
