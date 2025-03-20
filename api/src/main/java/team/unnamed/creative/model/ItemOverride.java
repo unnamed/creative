@@ -120,15 +120,6 @@ public class ItemOverride implements Examinable {
         return Objects.hash(predicate, model);
     }
 
-    @ApiStatus.Experimental
-    public static @NotNull List<ItemModel> toItemModels(final @NotNull ItemModel fallback, final @NotNull List<ItemOverride> overrides) {
-        final ItemOverrideConverter converter = ItemOverrideConverter.converter(fallback);
-        for (final ItemOverride override : overrides) {
-            converter.addOverride(override);
-        }
-        return converter.convert();
-    }
-
     /**
      * Creates a new {@link ItemOverride} instance
      * from the given values
