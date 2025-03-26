@@ -65,5 +65,53 @@ public enum EquipmentLayerType {
      * @since 1.8.0
      * @sinceMinecraft 1.21.2
      */
-    LLAMA_BODY // llama_body
+    LLAMA_BODY, // llama_body
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    CAMEL_SADDLE, // camel_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    DONKEY_SADDLE, // donkey_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    HORSE_SADDLE, // horse_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    MULE_SADDLE, // mule_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    PIG_SADDLE, // pig_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    SKELETON_HORSE_SADDLE, // skeleton_horse_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    STRIDER_SADDLE, // strider_saddle
+
+    /**
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.5
+     */
+    ZOMBIE_HORSE_SADDLE, // zombie_horse_saddle
 }

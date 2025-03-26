@@ -208,6 +208,110 @@ public interface Equipment extends ResourcePackPart, Keyed, Examinable {
         default @NotNull Builder addLlamaBodyLayer(@NotNull EquipmentLayer layer) {
             return addLayer(EquipmentLayerType.LLAMA_BODY, layer);
         }
+
+        /**
+         * Adds a llama saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addCamelSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.CAMEL_SADDLE, layer);
+        }
+
+        /**
+         * Adds a donkey saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addDonkeySaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.DONKEY_SADDLE, layer);
+        }
+
+        /**
+         * Adds a horse saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addHorseSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.HORSE_SADDLE, layer);
+        }
+
+        /**
+         * Adds a mule saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addMuleSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.MULE_SADDLE, layer);
+        }
+
+        /**
+         * Adds a pig saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addPigSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.PIG_SADDLE, layer);
+        }
+
+        /**
+         * Adds a skeleton horse saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addSkeletonHorseSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.SKELETON_HORSE_SADDLE, layer);
+        }
+
+        /**
+         * Adds a strider saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addStriderSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.STRIDER_SADDLE, layer);
+        }
+
+        /**
+         * Adds a zombie horse saddle layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.4
+         * @sinceMinecraft 1.21.5
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addZombieHorseSaddle(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.ZOMBIE_HORSE_SADDLE, layer);
+        }
         //#endregion
 
         /**
