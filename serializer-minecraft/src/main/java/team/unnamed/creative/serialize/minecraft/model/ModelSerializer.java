@@ -148,8 +148,12 @@ public final class ModelSerializer implements JsonResourceSerializer<Model>, Jso
         if (objectNode.has("display")) {
             JsonObject displayNode = objectNode.getAsJsonObject("display");
             for (Map.Entry<String, JsonElement> entry : displayNode.entrySet()) {
-                ItemTransform.Type type = ItemTransform.Type.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
-                display.put(type, readItemTransform(entry.getValue()));
+                try {
+                    ItemTransform.Type type = ItemTransform.Type.valueOf(entry.getKey().toUpperCase(Locale.ROOT));
+                    display.put(type, readItemTransform(entry.getValue()));
+                } catch (IllegalArgumentException e) {
+                    // ignore unknown display types like the vanilla client does
+                }
             }
         }
 
