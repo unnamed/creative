@@ -45,6 +45,9 @@ public interface Item extends Keyed, ResourcePackPart, Examinable {
     @ApiStatus.Internal
     boolean DEFAULT_HAND_ANIMATION_ON_SWAP = true;
 
+    @ApiStatus.Internal
+    boolean DEFAULT_OVERSIZED_IN_GUI = true;
+
     /**
      * Describes if down-and-up animation should be played in first-person view
      * when item stack is changed (either type, count or components).
@@ -57,6 +60,13 @@ public interface Item extends Keyed, ResourcePackPart, Examinable {
      * @return If hand animation should be played
      */
     boolean handAnimationOnSwap();
+
+    /**
+     * Determines whether the item should be rendered oversized or clipped in the inventory.
+     *
+     * @return If clipping should not be applied
+     */
+    boolean oversizedInGui();
 
     @NotNull ItemModel model();
 
@@ -71,12 +81,27 @@ public interface Item extends Keyed, ResourcePackPart, Examinable {
      * @param key The item key
      * @param model The item model
      * @param handAnimationOnSwap If hand animation should be played
+     * @param oversizedInGui If item clipping should not be applied
+     * @return The item
+     * @since 1.8.4
+     */
+    @Contract(value = "_, _, _, _ -> new", pure = true)
+    static @NotNull Item item(final @NotNull Key key, final @NotNull ItemModel model, final boolean handAnimationOnSwap, final boolean oversizedInGui) {
+        return new ItemImpl(key, model, handAnimationOnSwap, oversizedInGui);
+    }
+
+    /**
+     * Creates a new {@link Item} instance with the given key, model and hand animation on swap.
+     *
+     * @param key The item key
+     * @param model The item model
+     * @param handAnimationOnSwap If hand animation should be played
      * @return The item
      * @since 1.8.0
      */
     @Contract(value = "_, _, _ -> new", pure = true)
     static @NotNull Item item(final @NotNull Key key, final @NotNull ItemModel model, final boolean handAnimationOnSwap) {
-        return new ItemImpl(key, model, handAnimationOnSwap);
+        return new ItemImpl(key, model, handAnimationOnSwap, DEFAULT_OVERSIZED_IN_GUI);
     }
 
     /**

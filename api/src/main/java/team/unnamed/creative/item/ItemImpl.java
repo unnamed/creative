@@ -37,11 +37,13 @@ final class ItemImpl implements Item {
     private final Key key;
     private final ItemModel model;
     private final boolean handAnimationOnSwap;
+    private final boolean oversizedInGui;
 
-    ItemImpl(final @NotNull Key key, final @NotNull ItemModel model, final boolean handAnimationOnSwap) {
+    ItemImpl(final @NotNull Key key, final @NotNull ItemModel model, final boolean handAnimationOnSwap, final boolean oversizedInGui) {
         this.key = requireNonNull(key, "key");
         this.model = requireNonNull(model, "model");
         this.handAnimationOnSwap = handAnimationOnSwap;
+        this.oversizedInGui = oversizedInGui;
     }
 
     @Override
@@ -55,6 +57,11 @@ final class ItemImpl implements Item {
     }
 
     @Override
+    public boolean oversizedInGui() {
+        return oversizedInGui;
+    }
+
+    @Override
     public @NotNull ItemModel model() {
         return model;
     }
@@ -64,7 +71,8 @@ final class ItemImpl implements Item {
         return Stream.of(
                 ExaminableProperty.of("key", key),
                 ExaminableProperty.of("model", model),
-                ExaminableProperty.of("handAnimationOnSwap", handAnimationOnSwap)
+                ExaminableProperty.of("handAnimationOnSwap", handAnimationOnSwap),
+                ExaminableProperty.of("oversized_in_gui", oversizedInGui)
         );
     }
 
@@ -72,12 +80,15 @@ final class ItemImpl implements Item {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ItemImpl item = (ItemImpl) o;
-        return key.equals(item.key) && model.equals(item.model) && handAnimationOnSwap == item.handAnimationOnSwap;
+        return key.equals(item.key)
+                && model.equals(item.model)
+                && handAnimationOnSwap == item.handAnimationOnSwap
+                && oversizedInGui == item.oversizedInGui;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, model, handAnimationOnSwap);
+        return Objects.hash(key, model, handAnimationOnSwap, oversizedInGui);
     }
 
     @Override

@@ -51,6 +51,7 @@ class ItemSerializationTest {
 
         assertEquals(Key.key("minecraft", "air"), item.key());
         assertEquals(Item.DEFAULT_HAND_ANIMATION_ON_SWAP, item.handAnimationOnSwap());
+        assertEquals(Item.DEFAULT_OVERSIZED_IN_GUI, item.oversizedInGui());
 
         final ItemModel model = item.model();
         assertInstanceOf(ReferenceItemModel.class, model);
@@ -101,6 +102,7 @@ class ItemSerializationTest {
 
         assertEquals(Key.key("minecraft", "bow"), item.key());
         assertEquals(Item.DEFAULT_HAND_ANIMATION_ON_SWAP, item.handAnimationOnSwap());
+        assertEquals(Item.DEFAULT_OVERSIZED_IN_GUI, item.oversizedInGui());
 
         final ItemModel model = item.model();
         assertInstanceOf(ConditionItemModel.class, model);
