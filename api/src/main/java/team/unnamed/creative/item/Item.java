@@ -46,7 +46,7 @@ public interface Item extends Keyed, ResourcePackPart, Examinable {
     boolean DEFAULT_HAND_ANIMATION_ON_SWAP = true;
 
     @ApiStatus.Internal
-    boolean DEFAULT_OVERSIZED_IN_GUI = true;
+    boolean DEFAULT_OVERSIZED_IN_GUI = false;
 
     /**
      * Describes if down-and-up animation should be played in first-person view

@@ -34,10 +34,11 @@ import team.unnamed.creative.item.ReferenceItemModel;
 import team.unnamed.creative.item.property.ItemBooleanProperty;
 import team.unnamed.creative.item.property.ItemNumericProperty;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ItemSerializationTest {
+
+
     @Test
     void test_air_deserialization() throws Exception {
         final @Language("JSON") String input = "{\n" +
@@ -62,8 +63,22 @@ class ItemSerializationTest {
     }
 
     @Test
+    void test_air_serialization() throws Exception {
+        final Item item = Item.item(Key.key("minecraft", "air"), ItemModel.reference(Key.key("minecraft:item/air")), false, true);
+
+        final String expected = "{\"model\":{\"type\":\"model\",\"model\":\"item/air\",\"tints\":[]},\"hand_animation_on_swap\":false,\"oversized_in_gui\":true}";
+
+        assertEquals(
+                expected,
+                ItemSerializer.INSTANCE.serializeToJsonString(item)
+        );
+    }
+
+    @Test
     void test_bow_deserialization() throws Exception {
         final @Language("JSON") String input = "{\n" +
+                "  \"hand_animation_on_swap\": false,\n" +
+                "  \"oversized_in_gui\": true,\n" +
                 "  \"model\": {\n" +
                 "    \"type\": \"minecraft:condition\",\n" +
                 "    \"on_false\": {\n" +
@@ -101,8 +116,8 @@ class ItemSerializationTest {
         final Item item = ItemSerializer.INSTANCE.deserializeFromJsonString(input, Key.key("minecraft", "bow"));
 
         assertEquals(Key.key("minecraft", "bow"), item.key());
-        assertEquals(Item.DEFAULT_HAND_ANIMATION_ON_SWAP, item.handAnimationOnSwap());
-        assertEquals(Item.DEFAULT_OVERSIZED_IN_GUI, item.oversizedInGui());
+        assertFalse(item.handAnimationOnSwap());
+        assertTrue(item.oversizedInGui());
 
         final ItemModel model = item.model();
         assertInstanceOf(ConditionItemModel.class, model);
@@ -155,4 +170,6 @@ class ItemSerializationTest {
         assertEquals(Key.key("minecraft:item/bow_pulling_2"), reference2.model());
         assertEquals(0, reference2.tints().size());
     }
+
+
 }
