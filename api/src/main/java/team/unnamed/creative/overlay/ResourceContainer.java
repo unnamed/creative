@@ -44,6 +44,8 @@ import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
+import team.unnamed.creative.waypoint.WaypointStyle;
+import team.unnamed.creative.waypoint.WaypointStyleImpl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -664,6 +666,47 @@ public interface ResourceContainer {
         texture(Texture.texture(key, data, meta));
     }
     //#endregion
+    //#endregion
+
+    //#region Waypoint Styles (Keyed)
+
+    /**
+     * Sets the style of the waypoint to the specified {@code WaypointStyle}.
+     *
+     * @param style the desired waypoint style to be applied; must not be null
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.6
+     */
+    void waypointStyle(final @NotNull WaypointStyle style);
+
+    /**
+     * Retrieves the waypoint style associated with the specified key.
+     *
+     * @param key the non-null key used to fetch the corresponding waypoint style
+     * @return the waypoint style associated with the given key, or null if no style is found
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.6
+     */
+    @Nullable WaypointStyle waypointStyle(final @NotNull Key key);
+
+    /**
+     * Removes the waypoint style associated with the specified key.
+     *
+     * @param key the key representing the waypoint style to be removed, must not be null
+     * @return true if the waypoint style was successfully removed, false otherwise
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.6
+     */
+    boolean removeWaypointStyle(final @NotNull Key key);
+
+    /**
+     * Retrieves a collection of waypoint styles.
+     *
+     * @return A non-null collection of {@link WaypointStyle} objects representing the styles of waypoints.
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.6
+     */
+    @NotNull Collection<WaypointStyle> waypointStyles();
     //#endregion
 
     /**
