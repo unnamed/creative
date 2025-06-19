@@ -40,6 +40,7 @@ final class NoFieldSpecialRenderImpl implements NoFieldSpecialRender {
     static final NoFieldSpecialRender DECORATED_POT = new NoFieldSpecialRenderImpl("decorated_pot"); // renders a decorated pot, uses values from minecraft:pot_decorations component
     static final NoFieldSpecialRender SHIELD = new NoFieldSpecialRenderImpl("shield"); // renders a shield, uses patterns from the minecraft:banner_patterns component and color from the minecraft:base_color component
     static final NoFieldSpecialRender TRIDENT = new NoFieldSpecialRenderImpl("trident"); // renders a trident
+    static final NoFieldSpecialRender PLAYER_HEAD = new NoFieldSpecialRenderImpl("player_head"); // renders a player head
 
     private final Key key;
 
