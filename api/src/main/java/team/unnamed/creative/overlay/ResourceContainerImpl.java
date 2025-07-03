@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.Atlas;
 import team.unnamed.creative.atlas.AtlasSource;
+import team.unnamed.creative.base.Readable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.equipment.Equipment;
@@ -49,6 +50,7 @@ import team.unnamed.creative.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,6 +72,7 @@ public class ResourceContainerImpl implements ResourceContainer {
     private final Map<String, SoundRegistry> soundRegistries = new LinkedHashMap<>();
     private final Map<Key, Sound> sounds = new LinkedHashMap<>();
     private final Map<Key, Texture> textures = new LinkedHashMap<>();
+    private final Map<Key, Writable> texts = new LinkedHashMap<>();
 
     // Unknown files we don't know how to parse
     private final Map<String, Writable> files = new LinkedHashMap<>();
@@ -321,6 +324,23 @@ public class ResourceContainerImpl implements ResourceContainer {
     @Override
     public @NotNull Collection<Texture> textures() {
         return textures.values();
+    }
+    //#endregion
+
+    //#region Texts
+    @Override
+    public void texts(final @NotNull Key key, final @NotNull Writable splashTexts) {
+        this.texts.put(key, splashTexts);
+    }
+
+    @Override
+    public @Nullable Writable texts(@NotNull Key key) {
+        return this.texts.get(key);
+    }
+
+    @Override
+    public @NotNull Map<Key, Writable> texts() {
+        return Collections.unmodifiableMap(this.texts);
     }
     //#endregion
 

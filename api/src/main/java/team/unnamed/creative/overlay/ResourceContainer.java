@@ -28,6 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.Atlas;
+import team.unnamed.creative.base.Readable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.equipment.Equipment;
@@ -676,6 +677,34 @@ public interface ResourceContainer {
         requireNonNull(part, "part");
         part.addTo(this);
     }
+
+    //#region Texts (Keyed)
+    /**
+     * Sets a texts file in this resource container.
+     *
+     * @param content The content of the text to add into the pack
+     * @since 1.8.4
+     */
+    void texts(final @NotNull Key key, final @NotNull Writable content);
+
+    /**
+     * Gets the text with the given key.
+     *
+     * @param key The text key
+     * @return The text, null if not found
+     * @since 1.8.4
+     */
+    @Nullable Writable texts(final @NotNull Key key);
+
+    /**
+     * Gets all the texts in this resource container.
+     * The returned map cannot be modified.
+     *
+     * @return The texts
+     * @since 1.8.4
+     */
+    @NotNull Map<Key, Writable> texts();
+    //#endregion
 
     //#region Unknown Files (By path, relative to current's resource container)
 
