@@ -28,7 +28,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.atlas.Atlas;
-import team.unnamed.creative.base.Readable;
 import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.blockstate.BlockState;
 import team.unnamed.creative.equipment.Equipment;
