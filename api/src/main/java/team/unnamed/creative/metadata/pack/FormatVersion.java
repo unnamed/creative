@@ -27,10 +27,30 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+/**
+ * Represents a pack-format version with <em>major</em> and <em>minor</em> components
+ * (for example, {@code 65.2} or {@code 68.0}).
+ *
+ * <p>Instances are immutable and implement a natural ordering where versions are
+ * first compared by their major component and then by their minor component.</p>
+ *
+ * @sinceMinecraft 1.21.9
+ * @sincePackFormat 86
+ * @since 1.8.4
+ */
 public class FormatVersion implements Comparable<FormatVersion> {
     private final int major;
     private final int minor;
 
+    /**
+     * Creates a new {@link FormatVersion}.
+     *
+     * <p>Both {@code major} and {@code minor} must be non-negative.</p>
+     *
+     * @param major The major component.
+     * @param minor The minor component.
+     * @throws IllegalArgumentException If {@code major} or {@code minor} is negative.
+     */
     private FormatVersion(final int major, final int minor) {
         if (major < 0 || minor < 0) {
             throw new IllegalArgumentException("PackVersion cannot be negative: " + major + "." + minor);
@@ -39,14 +59,49 @@ public class FormatVersion implements Comparable<FormatVersion> {
         this.minor = minor;
     }
 
+    /**
+     * Creates a version with the given {@code major} and a {@code minor} of {@code 0}.
+     *
+     * @param major The major component (non-negative).
+     * @return A new {@link FormatVersion} with {@code minor == 0}.
+     * @throws IllegalArgumentException If {@code major} is negative.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public static @NotNull FormatVersion of(final int major) {
         return new FormatVersion(major, 0);
     }
 
+    /**
+     * Creates a version with the given {@code major} and {@code minor}.
+     *
+     * @param major The major component (non-negative).
+     * @param minor The minor component (non-negative).
+     * @return A new {@link FormatVersion}.
+     * @throws IllegalArgumentException If {@code major} or {@code minor} is negative.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public static @NotNull FormatVersion of(final int major, final int minor) {
         return new FormatVersion(major, minor);
     }
 
+    /**
+     * Parses a version string in the form {@code M} or {@code M.m}.
+     *
+     * <p>Whitespace is trimmed. The components must be base-10 integers and non-negative.
+     * Examples of valid inputs: {@code "65"}, {@code "65.2"}, {@code "68.0"}.</p>
+     *
+     * @param value The string to parse.
+     * @return The parsed {@link FormatVersion}.
+     * @throws IllegalArgumentException If the input is not in {@code M} or {@code M.m} form
+     *                                  or contains negative components.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public static @NotNull FormatVersion parse(final @NotNull String value) {
         final String[] parts = value.trim().split("\\.");
         if (parts.length == 1) {
@@ -57,22 +112,70 @@ public class FormatVersion implements Comparable<FormatVersion> {
         throw new IllegalArgumentException("Invalid pack version: " + value);
     }
 
+    /**
+     * Returns the major component.
+     *
+     * @return The major component (non-negative).
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public int major() {
         return this.major;
     }
 
+    /**
+     * Returns the minor component.
+     *
+     * @return The minor component (non-negative).
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public int minor() {
         return this.minor;
     }
 
+    /**
+     * Returns the minimum (≤) of two versions using natural ordering.
+     *
+     * @param a The first version.
+     * @param b The second version.
+     * @return {@code a} if {@code a ≤ b}, otherwise {@code b}.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public static @NotNull FormatVersion min(final @NotNull FormatVersion a, final @NotNull FormatVersion b) {
         return a.compareTo(b) <= 0 ? a : b;
     }
 
+    /**
+     * Returns the maximum (≥) of two versions using natural ordering.
+     *
+     * @param a The first version.
+     * @param b The second version.
+     * @return {@code a} if {@code a ≥ b}, otherwise {@code b}.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     public static @NotNull FormatVersion max(final @NotNull FormatVersion a, final @NotNull FormatVersion b) {
         return a.compareTo(b) >= 0 ? a : b;
     }
 
+    /**
+     * Compares this version with the specified version for order.
+     *
+     * <p>Ordering is by major component first; if equal, by minor component.</p>
+     *
+     * @param o The version to be compared.
+     * @return A negative integer, zero, or a positive integer as this version
+     *         is less than, equal to, or greater than the specified version.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     @Override
     public int compareTo(@NotNull FormatVersion o) {
         final int c = Integer.compare(this.major, o.major);
@@ -80,6 +183,16 @@ public class FormatVersion implements Comparable<FormatVersion> {
         return Integer.compare(this.minor, o.minor);
     }
 
+    /**
+     * Returns a canonical string representation.
+     *
+     * <p>If {@code minor == 0}, returns {@code "M"}; otherwise returns {@code "M.m"}.</p>
+     *
+     * @return The string representation of this version.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     @Override
     public String toString() {
         return this.minor == 0 ? Integer.toString(this.major) : (this.major + "." + this.minor);

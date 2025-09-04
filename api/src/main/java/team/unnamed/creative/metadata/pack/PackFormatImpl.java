@@ -36,11 +36,6 @@ final class PackFormatImpl implements PackFormat {
     private final @NotNull FormatVersion min;
     private final @NotNull FormatVersion max;
 
-    @Deprecated
-    PackFormatImpl(final int format, final int min, final int max) {
-        this(FormatVersion.of(format), FormatVersion.of(min), FormatVersion.of(max));
-    }
-
     PackFormatImpl(final @NotNull FormatVersion format, final @NotNull FormatVersion min, final @NotNull FormatVersion max) {
         this.format = format;
         this.min = min;
@@ -53,6 +48,11 @@ final class PackFormatImpl implements PackFormat {
         if (format.compareTo(min) < 0 || format.compareTo(max) > 0) {
             throw new IllegalArgumentException("Format " + format + " is not in the range [" + min + ", " + max + "]");
         }
+    }
+
+    @Deprecated
+    PackFormatImpl(final int format, final int min, final int max) {
+        this(FormatVersion.of(format), FormatVersion.of(min), FormatVersion.of(max));
     }
 
     @Override
@@ -94,14 +94,14 @@ final class PackFormatImpl implements PackFormat {
     }
 
     @Override
-    @Deprecated
-    public boolean isInRange(int format) {
-        return isInRange(FormatVersion.of(format));
+    public boolean isInRange(final @NotNull FormatVersion format) {
+        return format.compareTo(min) >= 0 && format.compareTo(max) <= 0;
     }
 
     @Override
-    public boolean isInRange(final @NotNull FormatVersion format) {
-        return format.compareTo(min) >= 0 && format.compareTo(max) <= 0;
+    @Deprecated
+    public boolean isInRange(int format) {
+        return isInRange(FormatVersion.of(format));
     }
 
     @Override

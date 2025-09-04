@@ -39,9 +39,19 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.NonExtendable
 public interface PackFormat extends Examinable {
 
+    /**
+     * Returns the pack format as a {@link FormatVersion}, which supports
+     * both <em>major</em> and <em>minor</em> components (e.g., {@code 65.2}, {@code 68.0}).
+     *
+     * <p>This value must be within the range defined by {@link #minVersion()}
+     * and {@link #maxVersion()} (inclusive).</p>
+     *
+     * @return The pack format as a {@link FormatVersion}.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
     FormatVersion formatVersion();
-    FormatVersion minVersion();
-    FormatVersion maxVersion();
 
     /**
      * Returns the pack format.
@@ -59,6 +69,20 @@ public interface PackFormat extends Examinable {
     int format();
 
     /**
+     * Returns the minimum supported pack format (Inclusive) as a {@link FormatVersion}.
+     *
+     * <p>This corresponds to the lower bound of {@code supported_formats} in
+     * {@code pack.mcmeta} when present. Old game versions that ignore ranges will
+     * still read {@link #formatVersion()} as the single version.</p>
+     *
+     * @return The minimum supported pack format (Inclusive).
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
+    FormatVersion minVersion();
+
+    /**
      * Returns the minimum supported pack format. (Inclusive)
      *
      * @return The minimum supported pack format (Inclusive)
@@ -69,6 +93,19 @@ public interface PackFormat extends Examinable {
      */
     @Deprecated
     int min();
+
+    /**
+     * Returns the maximum supported pack format (Inclusive) as a {@link FormatVersion}.
+     *
+     * <p>This corresponds to the upper bound of {@code supported_formats} in
+     * {@code pack.mcmeta} when present.</p>
+     *
+     * @return The maximum supported pack format (Inclusive).
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
+    FormatVersion maxVersion();
 
     /**
      * Returns the maximum supported pack format. (Inclusive)
@@ -92,6 +129,21 @@ public interface PackFormat extends Examinable {
     boolean isSingle();
 
     /**
+     * Determines whether the given {@link FormatVersion} is in the
+     * range of this pack format.
+     *
+     * <p>The check is inclusive; it returns {@code true} when the given version
+     * equals {@link #minVersion()} or {@link #maxVersion()}.</p>
+     *
+     * @param version The version to check.
+     * @return True if the version is in the range.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
+    boolean isInRange(final FormatVersion version);
+
+    /**
      * Determines whether the given {@code format} is in the
      * range of this pack format.
      *
@@ -102,8 +154,6 @@ public interface PackFormat extends Examinable {
      */
     @Deprecated
     boolean isInRange(final int format);
-
-    boolean isInRange(final FormatVersion version);
 
     /**
      * Returns a new pack format that is the union of this
@@ -136,6 +186,22 @@ public interface PackFormat extends Examinable {
      * Create a pack format that supports only a single
      * pack format, specified by the {@code format} parameter.
      *
+     * <p>The returned instance has {@code formatVersion == minVersion == maxVersion}.</p>
+     *
+     * @param format The pack format (e.g., {@code FormatVersion.of(68, 0)}).
+     * @return The created pack format
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
+    static @NotNull PackFormat format(final FormatVersion format) {
+        return format(format, format, format);
+    }
+
+    /**
+     * Create a pack format that supports only a single
+     * pack format, specified by the {@code format} parameter.
+     *
      * @param format The pack format
      * @return The created pack format
      * @deprecated Use {@link #format(FormatVersion)} instead.
@@ -146,8 +212,30 @@ public interface PackFormat extends Examinable {
         return format(format, format, format);
     }
 
-    static @NotNull PackFormat format(final FormatVersion format) {
-        return format(format, format, format);
+    /**
+     * Create a pack format that supports a range of formats
+     * specified by the {@code min} and {@code max} parameters.
+     *
+     * <p>Note: since this range information is ignored by old
+     * versions of the game, they will always see a "normal",
+     * single-version pack, without any extended compatibility.
+     * The single-version for this pack is specified by the
+     * {@code formatVersion} parameter.</p>
+     *
+     * <p>Also note that the given {@code formatVersion} must be in
+     * the bounds of the provided range.</p>
+     *
+     * @param formatVersion The pack format (for older versions)
+     * @param min           The minimum supported pack format (INCLUSIVE)
+     * @param max           The maximum supported pack format (INCLUSIVE)
+     * @return The created pack format
+     * @throws IllegalArgumentException If {@code min > max} or {@code formatVersion} is not in {@code [min, max]}.
+     * @sinceMinecraft 1.21.9
+     * @sincePackFormat 86
+     * @since 1.8.4
+     */
+    static @NotNull PackFormat format(final FormatVersion formatVersion, final FormatVersion min, final FormatVersion max) {
+        return new PackFormatImpl(formatVersion, min, max);
     }
 
     /**
@@ -175,10 +263,6 @@ public interface PackFormat extends Examinable {
     @Deprecated
     static @NotNull PackFormat format(final int format, final int min, final int max) {
         return new PackFormatImpl(format, min, max);
-    }
-
-    static @NotNull PackFormat format(final FormatVersion formatVersion, final FormatVersion min, final FormatVersion max) {
-        return new PackFormatImpl(formatVersion, min, max);
     }
 
 }
