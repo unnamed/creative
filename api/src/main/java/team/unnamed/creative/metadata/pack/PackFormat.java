@@ -39,6 +39,10 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.NonExtendable
 public interface PackFormat extends Examinable {
 
+    FormatVersion formatVersion();
+    FormatVersion minVersion();
+    FormatVersion maxVersion();
+
     /**
      * Returns the pack format.
      *
@@ -48,8 +52,10 @@ public interface PackFormat extends Examinable {
      * <p>The value is between min and max values.</p>
      *
      * @return The pack format.
+     * @deprecated Use {@link #formatVersion()} instead.
      * @since 1.1.0
      */
+    @Deprecated
     int format();
 
     /**
@@ -58,8 +64,10 @@ public interface PackFormat extends Examinable {
      * @return The minimum supported pack format (Inclusive)
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @deprecated Use {@link #minVersion()} instead.
      * @since 1.1.0
      */
+    @Deprecated
     int min();
 
     /**
@@ -68,8 +76,10 @@ public interface PackFormat extends Examinable {
      * @return The maximum supported pack format (Inclusive)
      * @sincePackFormat 18
      * @sinceMinecraft 1.20.2
+     * @deprecated Use {@link #maxVersion()} instead.
      * @since 1.1.0
      */
+    @Deprecated
     int max();
 
     /**
@@ -87,9 +97,13 @@ public interface PackFormat extends Examinable {
      *
      * @param format The format to check.
      * @return True if the format is in the range.
+     * @deprecated Use {@link #isInRange(FormatVersion)} instead.
      * @since 1.1.0
      */
+    @Deprecated
     boolean isInRange(final int format);
+
+    boolean isInRange(final FormatVersion version);
 
     /**
      * Returns a new pack format that is the union of this
@@ -109,12 +123,12 @@ public interface PackFormat extends Examinable {
      */
     default @NotNull PackFormat union(final @NotNull PackFormat other) {
         if (this.isSingle() && other.isSingle()) {
-            return format(format());
+            return format(formatVersion());
         }
         return format(
-                Math.min(format(), other.format()),
-                Math.min(min(), other.min()),
-                Math.max(max(), other.max())
+                FormatVersion.min(formatVersion(), other.formatVersion()),
+                FormatVersion.min(minVersion(), other.minVersion()),
+                FormatVersion.max(maxVersion(), other.maxVersion())
         );
     }
 
@@ -124,9 +138,15 @@ public interface PackFormat extends Examinable {
      *
      * @param format The pack format
      * @return The created pack format
+     * @deprecated Use {@link #format(FormatVersion)} instead.
      * @since 1.1.0
      */
+    @Deprecated
     static @NotNull PackFormat format(final int format) {
+        return format(format, format, format);
+    }
+
+    static @NotNull PackFormat format(final FormatVersion format) {
         return format(format, format, format);
     }
 
@@ -149,10 +169,16 @@ public interface PackFormat extends Examinable {
      * @return The created pack format
      * @sinceMinecraft 1.20.2
      * @sincePackFormat 18
+     * @deprecated Use {@link #format(FormatVersion, FormatVersion, FormatVersion)} instead.
      * @since 1.1.0
      */
+    @Deprecated
     static @NotNull PackFormat format(final int format, final int min, final int max) {
         return new PackFormatImpl(format, min, max);
+    }
+
+    static @NotNull PackFormat format(final FormatVersion formatVersion, final FormatVersion min, final FormatVersion max) {
+        return new PackFormatImpl(formatVersion, min, max);
     }
 
 }
