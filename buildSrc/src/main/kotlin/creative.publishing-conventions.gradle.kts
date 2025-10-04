@@ -54,5 +54,8 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications["maven"])
+    val isJitpack = System.getenv("JITPACK") != null
+    if (!isJitpack) {
+        sign(publishing.publications["maven"])
+    }
 }
