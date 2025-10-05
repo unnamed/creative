@@ -157,6 +157,18 @@ public interface SpecialRender extends Examinable {
     }
 
     /**
+     * Returns a player head special renderer. Which renders a player head.
+     *
+     * @return A player head special renderer
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.6
+     * @sincePackFormat 63
+     */
+    static @NotNull NoFieldSpecialRender playerHead() {
+        return NoFieldSpecialRenderImpl.PLAYER_HEAD;
+    }
+
+    /**
      * Returns a special renderer which renders a hanging sign with the given wood type and texture.
      *
      * @param woodType The wood type of the sign
