@@ -268,6 +268,13 @@ final class MinecraftResourcePackReaderImpl implements MinecraftResourcePackRead
                         ));
                     }
                 }
+            } else if (categoryName.equals(TEXTS_FOLDER)) {
+                String textKey = withoutExtension(categoryPath, TEXT_EXTENSION);
+                if (textKey != null) {
+                    Key key = Key.key(namespace, textKey);
+
+                    container.texts(key, reader.content().asWritable());
+                }
             } else {
                 // get the resource category, if the local pack format (overlay or root) is the same as the
                 // root pack format, we can use the previously computed map, otherwise we need to compute it
