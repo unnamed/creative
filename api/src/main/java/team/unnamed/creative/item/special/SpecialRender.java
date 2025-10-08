@@ -267,6 +267,18 @@ public interface SpecialRender extends Examinable {
     }
 
     /**
+     * Returns a special renderer which renders a player head using the item profile component
+     *
+     * @return A player head special renderer
+     * @since 1.8.4
+     * @sinceMinecraft 1.21.6
+     * @sincePackFormat 63
+     */
+    static @NotNull NoFieldSpecialRender playerHead() {
+        return NoFieldSpecialRenderImpl.PLAYER_HEAD;
+    }
+
+    /**
      * Returns a special renderer which renders a shulker box with the given texture, openness
      * and orientation.
      *

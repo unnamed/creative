@@ -65,8 +65,8 @@ public class ElementRotation implements Examinable {
 
     private void validate() {
         float absAngle = Math.abs(angle);
-        if (angle != 0F && absAngle != 22.5F && absAngle != 45F)
-            throw new IllegalArgumentException("Angle must be multiple of 22.5, in range of -45 to 45");
+        if (absAngle > 45.0f)
+            throw new IllegalArgumentException("Angle must be between [-45.0, 45.0] (inclusive), but was " + absAngle);
     }
 
     /**
@@ -91,8 +91,7 @@ public class ElementRotation implements Examinable {
     }
 
     /**
-     * Returns the actual rotation angle,
-     * must a multiple of 22.5 and exist in
+     * Returns the actual rotation angle in the
      * range of [-45.0, 45.0]
      *
      * @return The rotation angle

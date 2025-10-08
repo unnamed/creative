@@ -46,9 +46,11 @@ import team.unnamed.creative.sound.Sound;
 import team.unnamed.creative.sound.SoundEvent;
 import team.unnamed.creative.sound.SoundRegistry;
 import team.unnamed.creative.texture.Texture;
+import team.unnamed.creative.waypoint.WaypointStyle;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,6 +72,7 @@ public class ResourceContainerImpl implements ResourceContainer {
     private final Map<String, SoundRegistry> soundRegistries = new LinkedHashMap<>();
     private final Map<Key, Sound> sounds = new LinkedHashMap<>();
     private final Map<Key, Texture> textures = new LinkedHashMap<>();
+    private final Map<String, WaypointStyle> waypointStyles = new LinkedHashMap<>();
 
     // Unknown files we don't know how to parse
     private final Map<String, Writable> files = new LinkedHashMap<>();
@@ -321,6 +324,29 @@ public class ResourceContainerImpl implements ResourceContainer {
     @Override
     public @NotNull Collection<Texture> textures() {
         return textures.values();
+    }
+
+    @Override
+    public void waypointStyle(@NotNull WaypointStyle style) {
+        requireNonNull(style, "style");
+        waypointStyles.put(style.key().asString(), style);
+    }
+
+    @Override
+    public @Nullable WaypointStyle waypointStyle(@NotNull Key key) {
+        requireNonNull(key, "key");
+        return waypointStyles.get(key.asString());
+    }
+
+    @Override
+    public boolean removeWaypointStyle(@NotNull Key key) {
+        requireNonNull(key, "key");
+        return waypointStyles.remove(key.asString()) != null;
+    }
+
+    @Override
+    public @NotNull Collection<WaypointStyle> waypointStyles() {
+        return waypointStyles.values();
     }
     //#endregion
 

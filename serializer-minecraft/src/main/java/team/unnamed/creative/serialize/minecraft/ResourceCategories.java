@@ -31,6 +31,7 @@ import team.unnamed.creative.serialize.minecraft.item.ItemSerializer;
 import team.unnamed.creative.serialize.minecraft.language.LanguageSerializer;
 import team.unnamed.creative.serialize.minecraft.model.ModelSerializer;
 import team.unnamed.creative.serialize.minecraft.sound.SoundSerializer;
+import team.unnamed.creative.serialize.minecraft.waypoint.WaypointStyleSerializer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,6 +53,7 @@ public class ResourceCategories {
         registerCategory(FontSerializer.CATEGORY);
         registerCategory(EquipmentCategory.INSTANCE);
         registerCategory(ItemSerializer.CATEGORY);
+        registerCategory(WaypointStyleSerializer.CATEGORY);
     }
 
     private ResourceCategories() {
