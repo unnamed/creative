@@ -23,11 +23,16 @@
  */
 package team.unnamed.creative.model;
 
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import team.unnamed.creative.ResourcePack;
+import team.unnamed.creative.base.Writable;
 import team.unnamed.creative.item.ConditionItemModel;
+import team.unnamed.creative.item.Item;
 import team.unnamed.creative.item.ItemModel;
 import team.unnamed.creative.item.RangeDispatchItemModel;
+import team.unnamed.creative.item.ReferenceItemModel;
 import team.unnamed.creative.item.SelectItemModel;
 import team.unnamed.creative.item.property.CompassItemNumericProperty;
 import team.unnamed.creative.item.property.ItemBooleanProperty;
@@ -42,195 +47,107 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-@ApiStatus.Experimental
-@SuppressWarnings("deprecation") // we know, we're trying to update it
 public final class ItemOverrideConverter {
-    private final Map<ItemProperty, ItemModel> byProperty = new LinkedHashMap<>();
-    private final @NotNull ItemModel fallback;
 
-    private ItemOverrideConverter(final @NotNull ItemModel fallback) {
-        this.fallback = requireNonNull(fallback, "fallback");
-    }
+    public static void patchPack(ResourcePack resourcePack) {
+        for (Model model : resourcePack.models()) {
+            if (!model.key().namespace().equals("minecraft")) continue;
+            if (!model.key().value().startsWith("block/") && !model.key().value().startsWith("item/")) continue;
 
-    public void load(final @NotNull ItemModel model) {
-        if (model instanceof ConditionItemModel) {
-            byProperty.put(((ConditionItemModel) model).condition(), model);
-        } else if (model instanceof RangeDispatchItemModel) {
-            byProperty.put(((RangeDispatchItemModel) model).property(), model);
-        } else if (model instanceof SelectItemModel) {
-            byProperty.put(((SelectItemModel) model).property(), model);
-        } else {
-            throw new IllegalArgumentException("Unsupported item model type: " + model.getClass());
-        }
-    }
+            Key itemKey = Key.key(model.key().namespace(), model.key().value().replace("block/", "").replace("item/", ""));
+            Item standardItem = resourcePack.item(itemKey);
+            if (standardItem != null && standardItem.model() instanceof ReferenceItemModel) standardItem = null;
 
-    private void addPredicate(final @NotNull ItemBooleanProperty property, final @NotNull ItemModel model) {
-        if (byProperty.containsKey(property)) {
-            throw new IllegalArgumentException("Multiple overrides for the same property: " + property);
-        }
-        byProperty.put(property, ItemModel.conditional(property, model, fallback));
-    }
+            if (standardItem == null) {
+                RangeDispatchItemModel.Builder builder = ItemModel.rangeDispatch().property(ItemNumericProperty.customModelData());
+                builder.scale(1f).fallback(ItemModel.reference(model.key()));
 
-    private void addPredicate(final @NotNull ItemNumericProperty property, final @NotNull ItemModel model, final @NotNull ItemPredicate predicate) {
-        // not sure if this is really needed, since "value" could also be an Integer,
-        // casting it directly to a float like "(float) value" could throw a ClassCastException
-        Object value = predicate.value();
-        float floatValue;
-        if (value instanceof Number) {
-            floatValue = ((Number) value).floatValue();
-        } else {
-            throw new IllegalArgumentException("Invalid numeric value: " + value);
-        }
+                for (ItemOverride override : model.overrides()) {
+                    Integer cmd = getCustomModelData(override);
+                    if (cmd == null) continue;
 
-        RangeDispatchItemModel.Entry entry = RangeDispatchItemModel.Entry.entry(floatValue, model);
-        RangeDispatchItemModel rangeDispatch = (RangeDispatchItemModel) byProperty.get(property);
-        if (rangeDispatch == null) {
-            byProperty.put(property, ItemModel.rangeDispatch(property, RangeDispatchItemModel.DEFAULT_SCALE, Collections.singletonList(entry), fallback));
-        } else {
-            byProperty.put(property, rangeDispatch.toBuilder().addEntry(entry).build());
-        }
-    }
-
-    public void addOverride(final @NotNull ItemOverride override) {
-        final ItemModel model = ItemModel.reference(override.model());
-        for (final ItemPredicate predicate : override.predicate()) {
-            switch (predicate.name()) {
-                case "angle": {
-                    // ("angle" -> float) predicate converts to compass property, targetting the spawn location, value is the same
-                    ItemNumericProperty property = ItemNumericProperty.compass(CompassItemNumericProperty.Target.SPAWN);
-                    RangeDispatchItemModel rangeDispatch = (RangeDispatchItemModel) byProperty.get(property);
-                    RangeDispatchItemModel.Entry entry = RangeDispatchItemModel.Entry.entry((float) predicate.value(), model);
-                    if (rangeDispatch == null) {
-                        // create the range dispatch item model, use default scale, and pass our fallback
-                        byProperty.put(property, ItemModel.rangeDispatch(property, RangeDispatchItemModel.DEFAULT_SCALE, Collections.singletonList(entry), fallback));
-                    } else {
-                        byProperty.put(property, rangeDispatch.toBuilder().addEntry(entry).build());
-                    }
-                    break;
+                    builder.addEntry(cmd, ItemModel.reference(override.model()));
                 }
 
-                case "blocking":
-                case "pulling":
-                case "throwing": {
-                    // ("blocking" -> 1 || "pulling" -> 1 || "throwing" -> 1) predicate converts to boolean property, value is ignored
+                resourcePack.item(Item.item(itemKey, builder.build()));
+            } else {
+                String modelValue = model.key().value();
+                if (modelValue.endsWith("crossbow")) {
 
-                    ItemBooleanProperty property = ItemBooleanProperty.usingItem();
+                } else if (modelValue.endsWith("bow")) {
 
-                    if (byProperty.containsKey(property)) {
-                        // warning here! using multiple, "blocking", "pulling" and "throwing"
-                        // wouldn't make sense in previous version, though it was allowed,
-                        // now we have to skip this case
-                        // TODO: Better error handling (since it's very unlikely to happen, we just print it)
-                        System.err.println("Skipping multiple 'blocking', 'pulling' or 'throwing' predicates in the same item override");
-                        continue;
+                } else if (modelValue.endsWith("player_head")) {
+
+                } else if (modelValue.endsWith("shulker_box")) {
+
+                } else {
+                    // cases
+                    if (standardItem.model() instanceof SelectItemModel) {
+                        SelectItemModel.Builder builder = ItemModel.select();
+                        builder.property(ItemStringProperty.customModelData()).fallback(standardItem.model());
+                        for (ItemOverride override : model.overrides()) {
+                            Integer cmd = getCustomModelData(override);
+                            if (cmd == null) continue;
+                            builder.addCase(ItemModel.reference(override.model()), cmd.toString());
+                        }
+
+                        resourcePack.item(Item.item(itemKey, builder.build()));
+                    }
+                    // onTrue onFalse
+                    if (standardItem.model() instanceof ConditionItemModel) {
+                        ConditionItemModel conditionItemModel = (ConditionItemModel) standardItem.model();
+
+                        Map<Integer, List<ItemOverride>> grouped = model.overrides().stream().filter(o -> getCustomModelData(o) != 0)
+                                .collect(Collectors.groupingBy(ItemOverrideConverter::getCustomModelData));
+
+                        //onTrue Model
+                        List<ItemOverride> trueOverrides = grouped.values().stream().map(overrides -> overrides.get(overrides.size() - 1)).collect(Collectors.toList());
+                        RangeDispatchItemModel.Builder trueBuilder = ItemModel.rangeDispatch();
+                        List<ItemOverride> falseOverrides = grouped.values().stream().map(overrides -> overrides.get(0)).collect(Collectors.toList());
+                        RangeDispatchItemModel.Builder falseBuilder = ItemModel.rangeDispatch();
+
+                        trueBuilder.addEntry(RangeDispatchItemModel.Entry.entry(0f, conditionItemModel.onTrue()));
+                        falseBuilder.addEntry(RangeDispatchItemModel.Entry.entry(0f, conditionItemModel.onFalse()));
+
+                        for (ItemOverride override : trueOverrides) {
+                            Integer cmd = getCustomModelData(override);
+                            if (cmd == null) continue;
+                            trueBuilder.addEntry(cmd, ItemModel.reference(override.model()));
+                        }
+
+                        for (ItemOverride override : falseOverrides) {
+                            Integer cmd = getCustomModelData(override);
+                            if (cmd == null) continue;
+                            falseBuilder.addEntry(cmd, ItemModel.reference(override.model()));
+                        }
+
+                        conditionItemModel = ItemModel.conditional(conditionItemModel.condition(), trueBuilder.build(), falseBuilder.build());
+                        resourcePack.item(Item.item(itemKey, conditionItemModel));
                     }
 
-                    byProperty.put(property, ItemModel.conditional(property, model, fallback));
-                    break;
-                }
+                    if (standardItem.model() instanceof ReferenceItemModel) {
+                        ReferenceItemModel referenceItemModel = (ReferenceItemModel) standardItem.model();
+                        RangeDispatchItemModel.Builder builder = ItemModel.rangeDispatch();
+                        builder.fallback(standardItem.model()).property(ItemNumericProperty.customModelData());
 
-                case "charged":
-                case "firework": {
-                    // ("charged" -> 1 || "firework" -> 1) predicate converts to string property, value is ignored
-                    // "charged" matches both "rocket" and "arrow"
-                    // "firework" matches only "rocket"
-                    ItemStringProperty property = ItemStringProperty.chargeType();
-                    List<String> when = predicate.name().equals("charged")
-                            ? Arrays.asList("rocket", "arrow")
-                            : Collections.singletonList("rocket");
+                        for (ItemOverride override : model.overrides()) {
+                            Integer cmd = getCustomModelData(override);
+                            if (cmd == null) continue;
+                            builder.addEntry(cmd, ItemModel.reference(override.model(), referenceItemModel.tints()));
+                        }
 
-                    SelectItemModel selectItemModel = (SelectItemModel) byProperty.get(property);
-                    SelectItemModel.Case _case = SelectItemModel.Case._case(model, when);
-
-                    if (selectItemModel == null) {
-                        // new select item model
-                        byProperty.put(property, ItemModel.select(property, Collections.singletonList(_case), fallback));
-                    } else {
-                        // add a new case to the existing select item model
-                        byProperty.put(property, selectItemModel.toBuilder().addCase(_case).build());
+                        resourcePack.item(Item.item(itemKey, builder.build()));
                     }
-                    break;
                 }
-
-                case "lefthanded": {
-                    // ("lefthanded" -> "true") predicate converts to string property, value is ignored
-                    ItemStringProperty property = ItemStringProperty.mainHand();
-                    SelectItemModel selectItemModel = (SelectItemModel) byProperty.get(property);
-                    SelectItemModel.Case _case = SelectItemModel.Case._case(model, "left");
-                    if (selectItemModel == null) {
-                        // new select item model
-                        byProperty.put(property, ItemModel.select(property, Collections.singletonList(_case), fallback));
-                    } else {
-                        // add a new case to the existing select item model
-                        byProperty.put(property, selectItemModel.toBuilder().addCase(_case).build());
-                    }
-                    break;
-                }
-
-                case "trim_type": {
-                    ItemStringProperty property = ItemStringProperty.trimMaterial();
-                    SelectItemModel selectItemModel = (SelectItemModel) byProperty.get(property);
-                    String when = override.model().asString().split("_")[2];
-                    SelectItemModel.Case _case = SelectItemModel.Case._case(model, when);
-                    if (selectItemModel == null) {
-                        byProperty.put(property, ItemModel.select(property, Collections.singletonList(_case), fallback));
-                    } else {
-                        byProperty.put(property, selectItemModel.toBuilder().addCase(_case).build());
-                    }
-                    break;
-                }
-
-                // plain boolean properties, values are ignored
-                case "broken": {
-                    addPredicate(ItemBooleanProperty.broken(), model);
-                    break;
-                }
-                case "cast": {
-                    addPredicate(ItemBooleanProperty.fishingRodCast(), model);
-                    break;
-                }
-                case "damaged": {
-                    addPredicate(ItemBooleanProperty.damaged(), model);
-                    break;
-                }
-
-                // plain numeric properties, values are taken as-is
-                case "cooldown": {
-                    addPredicate(ItemNumericProperty.cooldown(), model, predicate);
-                    break;
-                }
-                case "damage": {
-                    addPredicate(ItemNumericProperty.damage(), model, predicate);
-                    break;
-                }
-                case "time": {
-                    addPredicate(ItemNumericProperty.time(TimeItemNumericProperty.Source.DAYTIME), model, predicate);
-                    break;
-                }
-                case "custom_model_data": {
-                    addPredicate(ItemNumericProperty.customModelData(), model, predicate);
-                    break;
-                }
-                case "pull": {
-                    // TODO: this might not be supported
-                    addPredicate(ItemNumericProperty.useDuration(), model, predicate);
-                    break;
-                }
-                default:
-                    throw new IllegalArgumentException("Unknown item predicate: " + predicate.name() + ". Don't know how to convert it to an item property!");
             }
         }
     }
 
-    public @NotNull List<ItemModel> convert() {
-        // return as a list
-        return new ArrayList<>(byProperty.values());
-    }
-
-    public static @NotNull ItemOverrideConverter converter(final @NotNull ItemModel fallback) {
-        return new ItemOverrideConverter(fallback);
+    private static Integer getCustomModelData(ItemOverride override) {
+        return override.predicate().stream().filter(p -> p.name().equals("custom_model_data")).findFirst().map(p -> Integer.parseInt(p.value().toString())).orElse(null);
     }
 }

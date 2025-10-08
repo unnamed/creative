@@ -312,6 +312,19 @@ public interface Equipment extends ResourcePackPart, Keyed, Examinable {
         default @NotNull Builder addZombieHorseSaddle(@NotNull EquipmentLayer layer) {
             return addLayer(EquipmentLayerType.ZOMBIE_HORSE_SADDLE, layer);
         }
+
+        /**
+         * Adds a happy ghast harness layer to the equipment.
+         *
+         * @param layer The layer to add
+         * @return This builder
+         * @since 1.8.5
+         * @sinceMinecraft 1.21.6
+         */
+        @Contract("_ -> this")
+        default @NotNull Builder addHappyGhastHarness(@NotNull EquipmentLayer layer) {
+            return addLayer(EquipmentLayerType.HAPPY_GHAST_HARNESS, layer);
+        }
         //#endregion
 
         /**

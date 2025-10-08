@@ -114,4 +114,10 @@ public enum EquipmentLayerType {
      * @sinceMinecraft 1.21.5
      */
     ZOMBIE_HORSE_SADDLE, // zombie_horse_saddle
+
+    /**
+     * @since 1.8.5
+     * @sinceMinecraft 1.21.6
+     */
+    HAPPY_GHAST_HARNESS, // happy_ghast_harness
 }
