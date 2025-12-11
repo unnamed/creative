@@ -102,7 +102,7 @@ final class PackMetaCodec implements MetadataPartCodec<PackMeta> {
         }
 
         // Formats higher than 64 are required to have min_format and max_format fields
-        if (pack.formats().isInRange(64)) {
+        if (pack.formats().min() > 64 || pack.formats().max() > 64) {
             writer.name("min_format");
             writer.value(pack.formats().min());
             writer.name("max_format");

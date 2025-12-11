@@ -80,7 +80,7 @@ final class OverlaysMetaCodec implements MetadataPartCodec<OverlaysMeta> {
             writer.name("directory").value(overlay.directory());
 
             // Formats higher than 64 are required to have min_format and max_format fields for overlays
-            if (overlay.formats().isInRange(64)) {
+            if (overlay.formats().min() > 64 || overlay.formats().max() > 64) {
                 writer.name("min_format");
                 writer.value(overlay.formats().min());
                 writer.name("max_format");
