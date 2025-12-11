@@ -101,6 +101,14 @@ final class PackMetaCodec implements MetadataPartCodec<PackMeta> {
             PackFormatSerializer.serialize(pack.formats(), writer);
         }
 
+        // Formats higher than 64 are required to have min_format and max_format fields
+        if (pack.formats().isInRange(64)) {
+            writer.name("min_format");
+            writer.value(pack.formats().min());
+            writer.name("max_format");
+            writer.value(pack.formats().max());
+        }
+
         writer.endObject();
     }
 
