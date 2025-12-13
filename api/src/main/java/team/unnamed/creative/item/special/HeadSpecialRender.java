@@ -30,8 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import team.unnamed.creative.base.HeadType;
 
 /**
- * Represents a special render for heads. Uses profile from {@code minecraft:profile} component
- * when applicable.
+ * Represents a special render for heads.
  *
  * @since 1.8.0
  * @sinceMinecraft 1.21.4
