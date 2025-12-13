@@ -24,6 +24,7 @@
 package team.unnamed.creative.serialize.minecraft;
 
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 import team.unnamed.creative.ResourcePack;
@@ -48,6 +49,7 @@ import team.unnamed.creative.texture.Texture;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,6 +132,14 @@ final class MinecraftResourcePackWriterImpl implements MinecraftResourcePackWrit
             if (!metadata.parts().isEmpty()) {
                 writeToJson(target, MetadataSerializer.INSTANCE, metadata, basePath + MinecraftResourcePackStructure.pathOfMeta(texture), localTargetPackFormat);
             }
+        }
+
+        // write texts
+        for (Map.Entry<Key, Writable> text : container.texts().entrySet()) {
+            target.write(
+                    String.format("%sassets/%s/texts/%s.txt", basePath, text.getKey().namespace(), text.getKey().value()),
+                    text.getValue()
+            );
         }
 
         // write unknown files
