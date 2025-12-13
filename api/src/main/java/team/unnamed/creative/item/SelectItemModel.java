@@ -71,12 +71,6 @@ public interface SelectItemModel extends ItemModel {
         static @NotNull Case _case(final @NotNull ItemModel model, final @NotNull String @NotNull ... when) {
             return _case(model, Arrays.asList(when));
         }
-
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval
-        static @NotNull Case _case(final @NotNull ItemModel model) {
-            return _case(model, Collections.emptyList());
-        }
     }
 
     interface Builder {
