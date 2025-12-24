@@ -91,7 +91,8 @@ public interface ItemTransform extends Examinable {
         GUI,
         HEAD,
         GROUND,
-        FIXED
+        FIXED,
+        ON_SHELF
     }
 
     /**
