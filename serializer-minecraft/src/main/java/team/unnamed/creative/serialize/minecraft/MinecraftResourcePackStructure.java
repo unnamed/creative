@@ -41,6 +41,7 @@ public final class MinecraftResourcePackStructure {
     public static final String TEXTURE_EXTENSION = ".png";
     public static final String METADATA_EXTENSION = ".mcmeta";
     public static final String OBJECT_EXTENSION = ".json";
+    public static final String TEXT_EXTENSION = ".txt";
 
     public static final String FILE_SEPARATOR = "/";
 
