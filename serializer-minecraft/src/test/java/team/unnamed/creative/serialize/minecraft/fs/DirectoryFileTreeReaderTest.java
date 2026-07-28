@@ -23,13 +23,48 @@
  */
 package team.unnamed.creative.serialize.minecraft.fs;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DirectoryFileTreeReaderTest implements FileTreeReaderTest {
 
     @Override
     public FileTreeReader createReader() {
         return FileTreeReader.directory(new File("src/test/resources/folder"));
+    }
+
+    @Test
+    @DisplayName("Test that a directory is always read in the same order")
+    void test_read_order_is_sorted_by_name(final @TempDir Path root) throws IOException {
+        // written in an order that is not alphabetical, so a reader that follows
+        // the file system order is unlikely to match the expected list below
+        Files.write(root.resolve("z.txt"), "z".getBytes());
+        Files.write(root.resolve("m.txt"), "m".getBytes());
+        Files.write(root.resolve("a.txt"), "a".getBytes());
+
+        final Path sub = Files.createDirectory(root.resolve("sub"));
+        Files.write(sub.resolve("y.txt"), "y".getBytes());
+        Files.write(sub.resolve("b.txt"), "b".getBytes());
+
+        final List<String> paths = new ArrayList<>();
+        try (FileTreeReader reader = FileTreeReader.directory(root.toFile())) {
+            while (reader.hasNext()) {
+                paths.add(reader.next());
+            }
+        }
+
+        assertEquals(Arrays.asList("a.txt", "m.txt", "z.txt", "sub/b.txt", "sub/y.txt"), paths);
     }
 
 }
