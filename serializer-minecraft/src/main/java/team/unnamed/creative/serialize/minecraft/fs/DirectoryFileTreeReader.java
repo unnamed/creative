@@ -31,6 +31,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -61,11 +63,17 @@ final class DirectoryFileTreeReader implements FileTreeReader {
                 }
 
                 File folder = folders.get(folderCursor++);
-                files = folder.listFiles();
+                File[] children = folder.listFiles();
 
-                if (files == null) {
+                if (children == null) {
                     throw new IllegalStateException("Null children from file " + folder);
                 }
+
+                // listFiles() returns entries in whatever order the file system
+                // stores them, which is not the same on every machine. sorting by
+                // name means the same folder is always read in the same order
+                Arrays.sort(children, Comparator.comparing(File::getName));
+                files = children;
             }
 
             while (fileCursor < files.length) {
